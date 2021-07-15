@@ -1,0 +1,9 @@
+version: '3.9'
+services:
+  bot:
+    build: .
+    container_name: discord-interactions-bot
+    env_file:
+      - ./.env.dev
+    ports:
+      - '3000:3000/tcp'

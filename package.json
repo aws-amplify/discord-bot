@@ -1,40 +1,52 @@
 {
-  "name": "serverlessdiscordbot",
-  "version": "0.1.0",
-  "bin": {
-    "app": "dist/app.js"
-  },
+  "name": "discord-bot-interactions",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "src/app.js",
+  "license": "MIT",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
-    "test": "jest",
-    "cdk": "cdk"
+    "start": "node src/app.js",
+    "build": "echo 'no build necessary'"
   },
   "dependencies": {
-    "@aws-cdk/core": "1.110.0",
+    "@aws-sdk/client-ssm": "^3.21.0",
     "aws-sdk": "^2.935.0",
+    "express": "^4.17.1",
     "fast-glob": "^3.2.5",
+    "morgan": "^1.10.0",
     "node-fetch": "^2.6.1",
     "slash-commands": "^1.4.0",
     "source-map-support": "^0.5.16"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "1.110.0",
-    "@aws-cdk/aws-apigatewayv2": "^1.110.0",
-    "@aws-cdk/aws-apigatewayv2-integrations": "^1.110.0",
-    "@aws-cdk/aws-iam": "^1.110.0",
-    "@aws-cdk/aws-lambda": "^1.110.0",
-    "@aws-cdk/aws-lambda-nodejs": "^1.110.0",
-    "@aws-cdk/aws-secretsmanager": "^1.110.0",
-    "@types/aws-lambda": "^8.10.77",
-    "@types/jest": "^26.0.10",
-    "@types/node": "10.17.27",
-    "@types/node-fetch": "^2.5.10",
-    "aws-cdk": "1.110.0",
-    "discord-bot-cdk-construct": "^0.1.8",
+    "esbuild": "^0.12.15",
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
     "jest": "^26.4.2",
-    "ts-jest": "^26.2.0",
-    "ts-node": "^9.0.0",
-    "typescript": "~3.9.7"
+    "prettier": "^2.3.2"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "bracketSpacing": true,
+    "singleQuote": true,
+    "printWidth": 80,
+    "useTabs": false,
+    "semi": false
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "eslint:recommended",
+      "prettier"
+    ],
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaVersion": 2020
+    },
+    "env": {
+      "browser": false,
+      "es2017": true,
+      "node": true
+    }
   }
 }
