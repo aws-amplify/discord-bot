@@ -33,6 +33,7 @@ app.all('/', handler)
 app.get('/_health', (req, res) => {
   res.send('ok')
 })
+// TODO: move `sync` to command handler only executable by mods/frontend
 app.post('/sync', sync.handler)
 app.use(errorHandler)
 app.listen(PORT, () => console.log('Listening...'))
