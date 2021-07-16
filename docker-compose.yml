@@ -5,5 +5,9 @@ services:
     container_name: discord-interactions-bot
     env_file:
       - ./.env.dev
+    environment:
+      - AWS_REGION=us-east-1
+    volumes:
+      - ${HOME}/.aws/credentials:/root/.aws/credentials:ro
     ports:
       - '3000:3000/tcp'
