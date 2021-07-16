@@ -3,5 +3,8 @@ node_modules
 *.log
 
 .env
+.env.local
 dist
 app
+
+notes.md

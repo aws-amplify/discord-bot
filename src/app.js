@@ -1,14 +1,18 @@
 import express from 'express'
 import morgan from 'morgan'
 import * as interact from './api/interact.js'
+import * as sync from './api/sync.js'
 
 async function handler(request, response) {
-  const interactionResponse = await interact.handler(request)
-  if (interactionResponse) {
-    return response.json(interactionResponse)
+  try {
+    const interactionResponse = await interact.handler(request)
+    if (interactionResponse) {
+      return response.json(interactionResponse)
+    }
+  } catch (error) {
+    response.status(500)
+    response.json({ error })
   }
-  response.status(500)
-  response.json({ error: 'Unable to respond' })
 }
 
 function errorHandler(error, request, response, next) {
@@ -29,5 +33,6 @@ app.all('/', handler)
 app.get('/_health', (req, res) => {
   res.send('ok')
 })
+app.post('/sync', sync.handler)
 app.use(errorHandler)
 app.listen(PORT, () => console.log('Listening...'))

@@ -20,7 +20,9 @@ async function handleCommand({ token, data, member }) {
     console.log(
       `Handling command ${command?.config?.name} for user ${member.user.id}`
     )
-    const commandResponse = await command.handler()
+
+    const context = { data, member }
+    const commandResponse = await command.handler(context)
 
     let toRespond = commandResponse ?? somethingWentWrongResponse
     if (typeof commandResponse === 'string') {

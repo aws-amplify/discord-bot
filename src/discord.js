@@ -1,0 +1,111 @@
+import fetch from 'node-fetch'
+import { secrets } from './secrets.js'
+import { bank } from './commands/_bank.js'
+
+export async function getGuilds() {
+  const { DISCORD_TOKEN } = secrets
+  const config = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bot ${DISCORD_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+  }
+  const url = `https://discord.com/api/v6/users/@me/guilds`
+
+  let data
+  try {
+    const response = await fetch(url, config)
+    if (response.ok && response.status === 200) {
+      data = await response.json()
+    }
+  } catch (error) {
+    throw new Error('Error fetching guilds', error)
+  }
+
+  return data
+}
+
+export async function getRegisteredCommands() {
+  const { DISCORD_APP_ID, DISCORD_TOKEN } = secrets
+  const config = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bot ${DISCORD_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+  }
+  const url = `https://discord.com/api/v8/applications/${DISCORD_APP_ID}/commands`
+
+  let data
+  try {
+    const response = await fetch(url, config)
+    if (response.ok && response.status === 200) {
+      data = await response.json()
+    }
+  } catch (error) {
+    throw new Error('Error fetching registered commands', error)
+  }
+
+  return data
+}
+
+export async function registerCommand(command) {
+  const { DISCORD_APP_ID, DISCORD_TOKEN } = secrets
+  const config = {
+    method: 'POST',
+    headers: {
+      Authorization: `Bot ${DISCORD_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(command.config),
+  }
+  const url = `https://discord.com/api/v8/applications/${DISCORD_APP_ID}/commands`
+
+  let data
+  try {
+    console.log(`Registering ${command.config.name}`)
+    const response = await fetch(url, config)
+    if (response.ok && response.status === 200) {
+      console.log(`Registered ${command.config.name} successfully`)
+      data = await response.json()
+    }
+  } catch (error) {
+    throw new Error(
+      `Error registering command ${command?.config?.name}:`,
+      error
+    )
+  }
+
+  return data
+}
+
+export async function syncCommands() {
+  const commands = Array.from(bank.values()).map(registerCommand)
+  return Promise.allSettled(commands)
+}
+
+export async function getCurrentUser() {
+  const { DISCORD_TOKEN } = secrets
+  const config = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bot ${DISCORD_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+  }
+  const url = `https://discord.com/api/v6/users/@me`
+
+  let data
+  try {
+    const response = await fetch(url, config)
+    if (response.ok && response.status === 200) {
+      data = await response.json()
+    }
+  } catch (error) {
+    throw new Error('Error fetching guilds', error)
+  }
+
+  if (!data) return
+  return `${data.name}#${data.discriminator}`
+}

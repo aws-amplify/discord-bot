@@ -1,3 +1,6 @@
 {
-  "github": "https://github.com/aws-amplify"
+  "github": {
+    "description": "Get the AWS Amplify GitHub URL",
+    "return": "https://github.com/aws-amplify"
+  }
 }
