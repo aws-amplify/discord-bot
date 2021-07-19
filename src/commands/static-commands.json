@@ -1,6 +1,54 @@
 {
   "github": {
     "description": "Get the AWS Amplify GitHub URL",
-    "return": "https://github.com/aws-amplify"
+    "return": "https://github.com/aws-amplify",
+    "options": [
+      {
+        "name": "repository",
+        "description": "The AWS Amplify repository",
+        "type": 3,
+        "required": false,
+        "choices": [
+          {
+            "name": "CLI",
+            "value": "amplify-cli",
+            "return": "https://github.com/aws-amplify/amplify-cli"
+          },
+          {
+            "name": "JS",
+            "value": "amplify-js",
+            "return": "https://github.com/aws-amplify/amplify-js"
+          }
+        ]
+      }
+    ]
+  },
+  "blep": {
+    "description": "Send a random adorable animal photo",
+    "options": [
+      {
+        "name": "animal",
+        "description": "The type of animal",
+        "type": 3,
+        "required": true,
+        "choices": [
+          {
+            "name": "Dog",
+            "value": "animal_dog",
+            "return": "https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg"
+          },
+          {
+            "name": "Cat",
+            "value": "animal_cat",
+            "return": "https://jngnposwzs-flywheel.netdna-ssl.com/wp-content/uploads/2019/05/Transparent-OrangeWhiteCat-764x1024.png"
+          },
+          {
+            "name": "Penguin",
+            "value": "animal_penguin",
+            "return": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXEvPmLWDIPD3Tzs5AKTXW1vB2W-qcK96YSQ&usqp=CAU"
+          }
+        ]
+      }
+    ]
   }
 }

@@ -7,9 +7,9 @@
 
 Ideally command config and logic will lie within this codebase, and granular permissions can be tweaked from an admin UI. Calling a POST request to `/sync` will add or update all commands from the codebase with default permissions (anyone can execute).
 
-Thoughts on creating `draft` commands...
-Thoughts on promoting commands from sandbox env to prod/global
-Thoughts on managing permissions for admin-only from code
+- Thoughts on creating `draft` commands...
+- Thoughts on promoting commands from sandbox env to prod/global
+- Thoughts on managing permissions for admin-only from code
 
 ## Development
 

@@ -7,6 +7,10 @@ services:
       - ./.env.dev
     environment:
       - AWS_REGION=us-east-1
+      - NODE_ENV=production
+      - DISCORD_TOKEN=/copilot/amplify-discord/local/secrets/DISCORD_TOKEN
+      - DISCORD_PUBLIC_KEY=/copilot/amplify-discord/local/secrets/DISCORD_PUBLIC_KEY
+      - DISCORD_APP_ID=/copilot/amplify-discord/local/secrets/DISCORD_APP_ID
     volumes:
       - ${HOME}/.aws/credentials:/root/.aws/credentials:ro
     ports:
