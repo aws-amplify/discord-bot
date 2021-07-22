@@ -2,6 +2,7 @@ import { readFileSync } from 'fs'
 
 import * as hello from './hello.js'
 import * as staff from './staff.js'
+import * as giverole from './giverole.js'
 
 const staticCommandsData = JSON.parse(
   readFileSync(new URL('./static-commands.json', import.meta.url), 'utf-8')
@@ -35,7 +36,7 @@ const staticCommands = Object.entries(staticCommandsData).map(
   }
 )
 
-const commands = [hello, staff, ...staticCommands]
+const commands = [hello, staff, giverole, ...staticCommands]
 
 const validCommandNameRegex = /^[\w-]{1,32}$/
 export const bank = new Map(

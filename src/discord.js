@@ -109,3 +109,28 @@ export async function getCurrentUser() {
   if (!data) return
   return `${data.name}#${data.discriminator}`
 }
+
+export async function addRoleToUser({ guildId, userId, roleId }) {
+  const { DISCORD_TOKEN } = secrets
+  const config = {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bot ${DISCORD_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+  }
+  const url = `https://discord.com/api/v6/guilds/${guildId}/members/${userId}/roles/${roleId}`
+
+  let data
+  try {
+    const response = await fetch(url, config)
+    if (response.ok && response.status === 204) {
+      return true
+    }
+  } catch (error) {
+    throw new Error('Error adding role', error)
+  }
+
+  if (!data) return
+  return data
+}

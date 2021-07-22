@@ -4,7 +4,7 @@ import { bank } from '../commands/_bank.js'
 import { generateResponse } from '../commands/_command.js'
 import { secrets } from '../secrets.js'
 
-async function handleCommand({ token, data, member }) {
+async function handleCommand({ token, context }) {
   if (token) {
     const config = {
       method: 'POST',
@@ -15,13 +15,12 @@ async function handleCommand({ token, data, member }) {
     }
 
     const somethingWentWrongResponse = 'Something went wrong'
-    const command = bank.get(data.name)
-    if (!command) throw new Error(`Invalid slash command: ${data.name}`)
+    const command = bank.get(context.data.name)
+    if (!command) throw new Error(`Invalid slash command: ${context.data.name}`)
     console.log(
-      `Handling command ${command?.config?.name} for user ${member.user.id}`
+      `Handling command ${command?.config?.name} for user ${context.member.user.id}`
     )
 
-    const context = { data, member }
     const commandResponse = await command.handler(context)
 
     let toRespond = commandResponse ?? somethingWentWrongResponse
@@ -51,7 +50,7 @@ async function handleCommand({ token, data, member }) {
 
 export async function handler(event) {
   if (event) {
-    const { type, token, data, member } = event.body
+    const { type, token, ...context } = event.body
     const verified = await verifyEvent(event)
     switch (type) {
       case 1: {
@@ -62,7 +61,7 @@ export async function handler(event) {
       }
       case 2: {
         // return "thinking" response, invoke command handler
-        const invokeHandleCommand = handleCommand({ token, data, member })
+        const invokeHandleCommand = handleCommand({ token, context })
         if (verified && invokeHandleCommand) {
           console.log('Returning temporary response...')
           return {

@@ -34,7 +34,7 @@ app.get('/_health', (req, res) => {
   res.send('ok')
 })
 // TODO: move `sync` to command handler only executable by mods/frontend
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV !== 'production') {
   app.post('/sync', sync.handler)
 }
 app.use(errorHandler)
