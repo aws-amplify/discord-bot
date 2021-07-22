@@ -11,6 +11,13 @@ Ideally command config and logic will lie within this codebase, and granular per
 - Thoughts on promoting commands from sandbox env to prod/global
 - Thoughts on managing permissions for admin-only from code
 
+### Required Bot Permissions
+
+- view channels
+- manage channels
+- manage roles
+- send messages
+
 ## Development
 
 For local development, ensure the following preqrequisites are met:
