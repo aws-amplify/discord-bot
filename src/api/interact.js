@@ -18,7 +18,7 @@ async function handleCommand({ token, context }) {
     const command = bank.get(context.data.name)
     if (!command) throw new Error(`Invalid slash command: ${context.data.name}`)
     console.log(
-      `Handling command ${command?.config?.name} for user ${context.member.user.id}`
+      `Handling command "${command?.config?.name}" for user ${context.member.user.id}`
     )
 
     const commandResponse = await command.handler(context)

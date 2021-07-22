@@ -21,10 +21,10 @@ export const config = {
 }
 
 export async function handler({ data, guild_id }) {
-  const [userId] = Object.keys(data.resolved.members)
-  const [roleId] = Object.keys(data.resolved.roles)
+  const [[userId, user]] = Object.entries(data.resolved.members)
+  const [[roleId, role]] = Object.entries(data.resolved.roles)
   if (await addRoleToUser({ guildId: guild_id, userId, roleId })) {
-    return 'Successfully added role to user'
+    return `Successfully added ${role.name} to user`
   }
   return '🤢 something went wrong'
 }
