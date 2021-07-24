@@ -1,5 +1,9 @@
 {
   "name": "discord-bot-interactions",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "type": "module",
   "version": "1.0.0",
   "main": "src/app.js",
@@ -7,6 +11,7 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon -r dotenv/config",
+    "prebuild": "yarn workspace @amplify-discord-bots/app run build",
     "build": "echo 'no build necessary'"
   },
   "dependencies": {

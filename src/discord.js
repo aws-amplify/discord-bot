@@ -50,7 +50,7 @@ export async function getRegisteredCommands() {
   return data
 }
 
-export async function registerCommand(command) {
+export async function registerCommand(command, guildId) {
   const { DISCORD_APP_ID, DISCORD_TOKEN } = secrets
   const config = {
     method: 'POST',
@@ -60,7 +60,10 @@ export async function registerCommand(command) {
     },
     body: JSON.stringify(command.config),
   }
-  const url = `https://discord.com/api/v8/applications/${DISCORD_APP_ID}/commands`
+  let url = `https://discord.com/api/v8/applications/${DISCORD_APP_ID}/commands`
+  if (guildId) {
+    url = `https://discord.com/api/v8/applications/${DISCORD_APP_ID}/guilds/${guildId}/commands`
+  }
 
   let data
   try {

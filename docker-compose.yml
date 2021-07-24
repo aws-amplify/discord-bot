@@ -3,8 +3,8 @@ services:
   bot:
     build: .
     container_name: discord-interactions-bot
-    env_file:
-      - ./.env.dev
+    # env_file:
+    #   - ./.env.dev
     environment:
       - AWS_REGION=us-east-1
       - NODE_ENV=production

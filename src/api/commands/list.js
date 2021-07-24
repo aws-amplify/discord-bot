@@ -1,9 +1,9 @@
-import { syncCommands } from '../discord.js'
+import { getRegisteredCommands } from '../../discord.js'
 
 export async function handler(request, response) {
   let data
   try {
-    data = await syncCommands()
+    data = await getRegisteredCommands()
   } catch (error) {
     response.status(500)
     response.json({ error })

@@ -5,6 +5,8 @@ node_modules
 .env
 .env.local
 dist
-app
+packages/**
+!packages/app
+!packages/app/**
 
 notes.md
