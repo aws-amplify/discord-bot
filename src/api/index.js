@@ -22,7 +22,7 @@ async function notImplemented(request, response) {
 
 export const api = new Router()
 
-api.all('/interaction', interactionHandler)
+api.all('/interact', interactionHandler)
 // TODO: move `sync` to command handler only executable by mods/frontend
 if (process.env.NODE_ENV !== 'production') {
   api.get('/commands/list', list.handler)
