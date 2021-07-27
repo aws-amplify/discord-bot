@@ -14,18 +14,23 @@ async function handleCommand({ token, context }) {
       },
     }
 
-    const somethingWentWrongResponse = 'Something went wrong'
+    const somethingWentWrongResponse = '🤕 Something went wrong'
     const command = bank.get(context.data.name)
     if (!command) throw new Error(`Invalid slash command: ${context.data.name}`)
     console.log(
       `Handling command "${command?.config?.name}" for user ${context.member.user.id}`
     )
 
-    const commandResponse = await command.handler(context)
+    let commandResponse
+    try {
+      commandResponse = await command.handler(context)
+    } catch (error) {
+      console.error(`Error executing command "${command?.config?.name}"`, error)
+    }
 
     let toRespond = commandResponse ?? somethingWentWrongResponse
-    if (typeof commandResponse === 'string') {
-      toRespond = generateResponse(commandResponse)
+    if (typeof toRespond === 'string') {
+      toRespond = generateResponse(toRespond)
     }
 
     const interactionResponseOptions = Object.assign(
