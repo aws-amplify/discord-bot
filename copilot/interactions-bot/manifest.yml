@@ -52,3 +52,8 @@ environments:
       DISCORD_TOKEN: /copilot/amplify-discord/main/secrets/DISCORD_TOKEN
       DISCORD_PUBLIC_KEY: /copilot/amplify-discord/main/secrets/DISCORD_PUBLIC_KEY
       DISCORD_APP_ID: /copilot/amplify-discord/main/secrets/DISCORD_APP_ID
+  next:
+    variables:
+      DISCORD_APP_ID: /copilot/amplify-discord/next/secrets/DISCORD_APP_ID
+      DISCORD_PUBLIC_KEY: /copilot/amplify-discord/next/secrets/DISCORD_PUBLIC_KEY
+      DISCORD_TOKEN: /copilot/amplify-discord/next/secrets/DISCORD_TOKEN
