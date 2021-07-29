@@ -1,9 +1,5 @@
 {
   "name": "discord-bot-interactions",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "type": "module",
   "version": "1.0.0",
   "main": "src/app.js",
@@ -11,7 +7,6 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon -r dotenv/config",
-    "prebuild": "yarn workspace @amplify-discord-bots/app run build",
     "build": "echo 'no build necessary'"
   },
   "dependencies": {
@@ -26,10 +21,8 @@
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
-    "esbuild": "^0.12.15",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
-    "jest": "^26.4.2",
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2"
   },
