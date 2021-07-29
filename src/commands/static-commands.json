@@ -1,28 +1,4 @@
 {
-  "github": {
-    "description": "Get the AWS Amplify GitHub URL",
-    "return": "https://github.com/aws-amplify",
-    "options": [
-      {
-        "name": "repository",
-        "description": "The AWS Amplify repository",
-        "type": 3,
-        "required": false,
-        "choices": [
-          {
-            "name": "CLI",
-            "value": "amplify-cli",
-            "return": "https://github.com/aws-amplify/amplify-cli"
-          },
-          {
-            "name": "JS",
-            "value": "amplify-js",
-            "return": "https://github.com/aws-amplify/amplify-js"
-          }
-        ]
-      }
-    ]
-  },
   "blep": {
     "description": "Send a random adorable animal photo",
     "options": [

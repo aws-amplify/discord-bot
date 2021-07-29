@@ -1,7 +1,7 @@
 export const config = {
   name: 'staff',
   description: 'Toggles staff role to tagged user',
-  default_permission: true,
+  default_permission: false,
   options: [
     {
       name: 'user',
@@ -13,6 +13,5 @@ export const config = {
 }
 
 export async function handler(context) {
-  console.log('CONTEXt', context, context.data.options, context.data.resolved)
   return '🤢 not implemented'
 }
