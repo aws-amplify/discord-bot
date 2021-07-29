@@ -22,10 +22,10 @@ jobs:
           # make copilot bin executable
           chmod +x copilot
           # move to path
-          mv copilot $$GITHUB_WORKSPACE/bin/copilot
+          mv copilot $GITHUB_WORKSPACE/bin/copilot
 
       - name: Deploy service
-        run: copilot svc deploy --env
+        run: copilot svc deploy --env next
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
