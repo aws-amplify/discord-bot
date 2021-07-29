@@ -13,5 +13,6 @@ services:
       - DISCORD_APP_ID=/copilot/amplify-discord/local/secrets/DISCORD_APP_ID
     volumes:
       - ${HOME}/.aws/credentials:/root/.aws/credentials:ro
+      - ./node_modules:/usr/app/node_modules
     ports:
       - '3000:3000/tcp'
