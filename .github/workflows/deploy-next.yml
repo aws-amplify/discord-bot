@@ -4,7 +4,7 @@ on:
     branches:
       - next
 jobs:
-  release:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,12 +17,12 @@ jobs:
       - name: Install copilot
         run: |
           mkdir -p $GITHUB_WORKSPACE/bin
+          cd $GITHUB_WORKSPACE/bin
           # download copilot
           curl -Lo copilot https://github.com/aws/copilot-cli/releases/download/v1.8.3/copilot-linux
           # make copilot bin executable
           chmod +x copilot
           # move to path
-          mv copilot $GITHUB_WORKSPACE/bin/copilot
 
       - name: Deploy service
         run: copilot svc deploy --env next
