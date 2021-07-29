@@ -4,9 +4,8 @@ node_modules
 
 .env
 .env.local
-dist
+secrets.yml
+
 packages/**
-!packages/app
-!packages/app/**
 
 notes.md
