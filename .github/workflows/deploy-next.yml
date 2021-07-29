@@ -18,7 +18,7 @@ jobs:
         run: brew install aws/tap/copilot-cli
 
       - name: Deploy service
-        run: copilot deploy --name interactions-bot --env next
+        run: copilot deploy --name amplify-discord --env next
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
