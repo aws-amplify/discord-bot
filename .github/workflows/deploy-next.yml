@@ -25,7 +25,7 @@ jobs:
           mv copilot-linux $GITHUB_WORKSPACE/bin/copilot
           # add to PATH
           echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
-          ls -al
+          ls -al copilot
 
       - name: Deploy service
         run: copilot deploy --env next
