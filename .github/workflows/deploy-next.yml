@@ -18,29 +18,13 @@ jobs:
         run: |
           mkdir -p $GITHUB_WORKSPACE/bin
           # download copilot
-          curl -Lo copilot-linux https://github.com/aws/copilot-cli/releases/download/v1.8.3/copilot-linux && \
+          curl -Lo copilot-linux https://github.com/aws/copilot-cli/releases/download/v1.9.0/copilot-linux && \
           # make copilot bin executable
           chmod +x copilot-linux && \
           # move to path
           mv copilot-linux $GITHUB_WORKSPACE/bin/copilot && \
           # add to PATH
           echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
-
-      - run: copilot app ls
-        env:
-          AWS_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - run: copilot env ls
-        env:
-          AWS_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - run: copilot svc ls
-        env:
-          AWS_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Deploy service
         run: copilot deploy --env next
