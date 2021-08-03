@@ -41,11 +41,6 @@ memory: 2048
 #     variables:
 #       LOG_LEVEL: debug        # Log level for the "test" environment.
 
-variables:
-  DISCORD_TOKEN: /copilot/amplify-discord/main/secrets/DISCORD_TOKEN
-  DISCORD_PUBLIC_KEY: /copilot/amplify-discord/main/secrets/DISCORD_PUBLIC_KEY
-  DISCORD_APP_ID: /copilot/amplify-discord/main/secrets/DISCORD_APP_ID
-
 environments:
   main:
     variables:
