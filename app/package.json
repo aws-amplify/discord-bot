@@ -1,7 +1,7 @@
 {
   "name": "@amplify-discord-bots/app",
-  "version": "0.0.1",
   "type": "module",
+  "version": "0.0.1",
   "scripts": {
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",

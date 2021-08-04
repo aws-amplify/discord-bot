@@ -83,6 +83,35 @@ export async function registerCommand(command, guildId) {
   return data
 }
 
+export async function deleteCommand(commandId, guildId) {
+  const { DISCORD_APP_ID, DISCORD_TOKEN } = secrets
+  const config = {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bot ${DISCORD_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+  }
+  let url = `https://discord.com/api/v8/applications/${DISCORD_APP_ID}/commands/${commandId}`
+  if (guildId) {
+    url = `https://discord.com/api/v8/applications/${DISCORD_APP_ID}/guilds/${guildId}/commands/${commandId}`
+  }
+
+  let data
+  try {
+    console.log(`Deleting ${commandId}`)
+    const response = await fetch(url, config)
+    if (response.ok && response.status === 200) {
+      console.log(`Deleted ${commandId} successfully`)
+      data = await response.json()
+    }
+  } catch (error) {
+    throw new Error(`Error deleting command ${commandId}:`, error)
+  }
+
+  return data
+}
+
 export async function syncCommands() {
   const commands = Array.from(bank.values()).map(registerCommand)
   return Promise.allSettled(commands)
