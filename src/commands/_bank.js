@@ -1,7 +1,4 @@
 import { readFileSync } from 'fs'
-
-import * as hello from './hello.js'
-import * as staff from './staff.js'
 import * as giverole from './giverole.js'
 
 const staticCommandsData = JSON.parse(
@@ -36,9 +33,12 @@ const staticCommands = Object.entries(staticCommandsData).map(
   }
 )
 
-const commands = [hello, staff, giverole, ...staticCommands]
+const commands = [giverole, ...staticCommands]
 
 const validCommandNameRegex = /^[\w-]{1,32}$/
+
+// TODO: validate command name
+// TODO: ensure duplicates are not added -- static commands do not get precedence
 export const bank = new Map(
   commands.map((command) => [command.config.name, command])
 )

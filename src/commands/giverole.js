@@ -3,7 +3,7 @@ import { addRoleToUser } from '../discord.js'
 export const config = {
   name: 'giverole',
   description: 'Gives role to user',
-  default_permission: true, // todo: constrain who can execute
+  default_permission: false, // todo: constrain who can execute
   options: [
     {
       name: 'role',
