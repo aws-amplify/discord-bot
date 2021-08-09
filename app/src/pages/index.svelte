@@ -20,23 +20,27 @@
         data = await response.json()
       }
     } catch (error) {
-      store.notifications.push({
-        kind: 'error',
-        title: 'Error syncing commands',
-        subtitle: error.message,
-        caption: Date.now().toLocaleString(),
-      })
+      store.notifications.update(notifications =>
+        notifications.push({
+          kind: 'error',
+          title: 'Error syncing commands',
+          subtitle: error.message,
+          caption: Date.now().toLocaleString(),
+        })
+      )
       // throw new Error('Unable to fetch commands')
       console.error('Unable to sync commands', error)
     }
     isSyncing = false
     if (data) {
-      store.notifications.push({
-        kind: 'success',
-        title: 'Successfully synced commands',
-        subtitle: '',
-        caption: Date.now().toLocaleString(),
-      })
+      store.notifications.update(notifications =>
+        notifications.push({
+          kind: 'success',
+          title: 'Successfully synced commands',
+          subtitle: '',
+          caption: Date.now().toLocaleString(),
+        })
+      )
       syncData = data
     }
     return data
@@ -61,22 +65,22 @@
 <Grid noGutter>
   <Row>
     <Column>
-      <!-- <Button disabled="{isSyncing}" on:click="{syncCommands}">
+      <Button disabled="{isSyncing}" on:click="{syncCommands}">
         Sync Commands
-      </Button> -->
-      {#await getCommands()}
-        <p>...getting commands</p>
-      {:then commands}
-        <!-- TODO: grid, row, columns for commands -->
-        <section>
-          <h2>Commands:</h2>
+      </Button>
+      <section>
+        <h2>Commands:</h2>
+        {#await getCommands()}
+          <p>...getting commands</p>
+        {:then commands}
+          <!-- TODO: grid, row, columns for commands -->
           {#each commands.data as command (command.id)}
             <Command {...command} />
           {/each}
-        </section>
-      {:catch error}
-        <p style="color: red">{error.message}</p>
-      {/await}
+        {:catch error}
+          <p style="color: red">{error.message}</p>
+        {/await}
+      </section>
     </Column>
   </Row>
 </Grid>
