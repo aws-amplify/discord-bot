@@ -8,9 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: echo NVMRC=`cat .nvmrc` >> $GITHUB_ENV
       - uses: actions/setup-node@v2
         with:
-          node-version: '16.x'
+          node-version: ${{ env.NVMRC }}
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
 
