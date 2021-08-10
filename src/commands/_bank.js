@@ -34,9 +34,7 @@ const staticCommands = Object.entries(staticCommandsData).map(
 )
 
 const commands = [giverole, ...staticCommands]
-
 const validCommandNameRegex = /^[\w-]{1,32}$/
-
 // TODO: validate command name
 // TODO: ensure duplicates are not added -- static commands do not get precedence
 export const bank = new Map(
