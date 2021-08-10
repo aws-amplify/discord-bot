@@ -50,7 +50,7 @@ export async function getRegisteredCommands() {
   return data
 }
 
-export async function registerCommand(command, guildId) {
+export async function registerCommand(command, { guildId }) {
   const { DISCORD_APP_ID, DISCORD_TOKEN } = secrets
   const config = {
     method: 'POST',
@@ -69,9 +69,20 @@ export async function registerCommand(command, guildId) {
   try {
     console.log(`Registering ${command.config.name}`)
     const response = await fetch(url, config)
-    if (response.ok && response.status === 200) {
-      console.log(`Registered ${command.config.name} successfully`)
+    if (response.ok && (response.status === 200 || response.status === 201)) {
+      console.log(
+        `${response.status === 201 ? 'Created' : 'Updated'} ${
+          command.config.name
+        } successfully`
+      )
       data = await response.json()
+    } else {
+      data.errors = [
+        {
+          message: `Unable to register ${command.config.name}`,
+          status: response.status,
+        },
+      ]
     }
   } catch (error) {
     throw new Error(
@@ -83,7 +94,7 @@ export async function registerCommand(command, guildId) {
   return data
 }
 
-export async function deleteCommand(commandId, guildId) {
+export async function deleteCommand(commandId, { guildId }) {
   const { DISCORD_APP_ID, DISCORD_TOKEN } = secrets
   const config = {
     method: 'DELETE',
@@ -99,10 +110,8 @@ export async function deleteCommand(commandId, guildId) {
 
   let data
   try {
-    console.log(`Deleting ${commandId}`)
     const response = await fetch(url, config)
     if (response.ok && response.status === 200) {
-      console.log(`Deleted ${commandId} successfully`)
       data = await response.json()
     }
   } catch (error) {
@@ -114,7 +123,7 @@ export async function deleteCommand(commandId, guildId) {
 
 export async function syncCommands() {
   const commands = Array.from(bank.values()).map(registerCommand)
-  return Promise.allSettled(commands)
+  return await Promise.allSettled(commands)
 }
 
 export async function getCurrentUser() {

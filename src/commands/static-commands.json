@@ -1,12 +1,13 @@
 {
   "github": {
     "description": "Get links for AWS Amplify GitHub repositories",
+    "return": "https://github.com/aws-amplify",
     "options": [
       {
         "name": "repository",
         "description": "The AWS Amplify repository",
         "type": 3,
-        "required": false,
+        "required": true,
         "choices": [
           {
             "name": "admin-ui",
