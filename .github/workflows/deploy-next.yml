@@ -1,0 +1,35 @@
+name: Deploy NEXT
+on:
+  push:
+    branches:
+      - next
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: echo NVMRC=`cat .nvmrc` >> $GITHUB_ENV
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NVMRC }}
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+
+      - name: Install copilot
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/bin
+          # download copilot
+          curl -Lo copilot-linux https://github.com/aws/copilot-cli/releases/download/v1.9.0/copilot-linux && \
+          # make copilot bin executable
+          chmod +x copilot-linux && \
+          # move to path
+          mv copilot-linux $GITHUB_WORKSPACE/bin/copilot && \
+          # add to PATH
+          echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
+
+      - name: Deploy service
+        run: copilot deploy --env next
+        env:
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
