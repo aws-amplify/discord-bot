@@ -1,0 +1,21 @@
+{
+  "name": "@amplify-discord-bots/command-giverole",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./lib/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "esbuild ./*.js --outdir=lib --platform=node --format=cjs --target=node14 --out-extension:.js=.cjs"
+  },
+  "dependencies": {
+    "@amplify-discord-bots/discord": "*"
+  },
+  "devDependencies": {
+    "esbuild": "^0.12.28"
+  }
+}

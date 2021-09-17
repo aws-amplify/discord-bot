@@ -16,16 +16,16 @@
         "discordinteraction": {
           "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
           "deploymentBucketName": "amplify-amplifydiscordbot-next-112552-deployment",
-          "s3Key": "amplify-builds/discordinteraction-5041366b66564f4c5741-build.zip"
+          "s3Key": "amplify-builds/discordinteraction-68664a314d6e48784875-build.zip"
         },
         "discordsync": {
           "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
           "deploymentBucketName": "amplify-amplifydiscordbot-next-112552-deployment",
-          "s3Key": "amplify-builds/discordsync-50636e6a4a752b6a3238-build.zip"
+          "s3Key": "amplify-builds/discordsync-2b6966694e4f72654562-build.zip"
         },
         "discordlayer": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-112552-deployment",
-          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersion5c229a6e-build.zip"
+          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersiondb9fbab8-build.zip"
         }
       }
     }

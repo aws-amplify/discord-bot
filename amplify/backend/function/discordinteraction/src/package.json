@@ -3,9 +3,8 @@
   "version": "0.0.1",
   "main": "index.js",
   "license": "Apache-2.0",
-  "dependencies": {
-    "@aws-sdk/client-ssm": "^3.30.0",
-    "node-fetch": "^2.6.2",
-    "tweetnacl": "^1.0.3"
+  "dependencies": {},
+  "scripts": {
+    "build": "echo 'no build required for $npm_package_name'"
   }
 }

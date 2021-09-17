@@ -1,0 +1,19 @@
+{
+  "name": "@amplify-discord-bots/bank",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./bank.js",
+      "require": "./lib/bank.cjs"
+    }
+  },
+  "scripts": {
+    "build": "esbuild ./*.js --outdir=lib --platform=node --format=cjs --target=node14 --out-extension:.js=.cjs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "esbuild": "^0.12.28"
+  }
+}

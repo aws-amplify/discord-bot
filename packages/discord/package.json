@@ -1,0 +1,22 @@
+{
+  "name": "@amplify-discord-bots/discord",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./lib/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "esbuild ./*.js --outdir=lib --platform=node --format=cjs --target=node14 --out-extension:.js=.cjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ssm": "^3.21.0",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.12.28"
+  }
+}

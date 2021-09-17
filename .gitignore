@@ -28,6 +28,4 @@ node_modules
 .env.local
 secrets.yml
 
-packages/**
-
 notes.md

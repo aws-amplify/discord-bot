@@ -21,3 +21,4 @@ exports.generateResponse = function generateResponse(content, embeds) {
     allowed_mentions: [],
   }
 }
+
