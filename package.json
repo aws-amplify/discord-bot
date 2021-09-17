@@ -1,30 +1,17 @@
 {
-  "name": "discord-bot-interactions",
-  "type": "module",
-  "version": "1.0.0",
-  "main": "src/app.js",
+  "name": "amplify-discord-bots",
+  "version": "0.1.0",
   "license": "MIT",
-  "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon -r dotenv/config",
-    "build": "echo 'no build necessary'"
-  },
-  "dependencies": {
-    "@aws-sdk/client-ssm": "^3.21.0",
-    "aws-sdk": "^2.935.0",
-    "express": "^4.17.1",
-    "fast-glob": "^3.2.5",
-    "morgan": "^1.10.0",
-    "node-fetch": "^2.6.1",
-    "slash-commands": "^1.4.0",
-    "source-map-support": "^0.5.16"
-  },
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {},
   "devDependencies": {
-    "dotenv": "^10.0.0",
-    "eslint": "^7.30.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "nodemon": "^2.0.12",
-    "prettier": "^2.3.2"
+    "prettier": "^2.4.0"
   },
   "prettier": {
     "tabWidth": 2,

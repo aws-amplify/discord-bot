@@ -1,0 +1,49 @@
+{
+  "paths": [
+    {
+      "name": "/interact",
+      "lambdaFunction": "discordinteraction",
+      "privacy": {
+        "open": true
+      },
+      "policyResourceName": "/interact"
+    },
+    {
+      "name": "/sync",
+      "lambdaFunction": "discordsync",
+      "privacy": {
+        "open": true
+      },
+      "policyResourceName": "/sync"
+    }
+  ],
+  "resourceName": "discordapi",
+  "apiName": "discordapi",
+  "functionArns": [
+    {
+      "lambdaFunction": "discordinteraction"
+    },
+    {
+      "lambdaFunction": "discordsync"
+    }
+  ],
+  "privacy": {
+    "auth": 0,
+    "unauth": 0,
+    "authRoleName": "amplify-discordbot-next-113659-authRole",
+    "unAuthRoleName": "amplify-discordbot-next-113659-unauthRole"
+  },
+  "dependsOn": [
+    {
+      "category": "function",
+      "resourceName": "discordinteraction",
+      "attributes": ["Name", "Arn"]
+    },
+    {
+      "category": "function",
+      "resourceName": "discordsync",
+      "attributes": ["Name", "Arn"]
+    }
+  ],
+  "uuid": "842bafe4"
+}

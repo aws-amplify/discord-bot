@@ -1,0 +1,51 @@
+{
+  "function": {
+    "discordinteraction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "discordlayer",
+          "attributes": ["Arn"]
+        }
+      ]
+    },
+    "discordlayer": {
+      "providerPlugin": "awscloudformation",
+      "service": "LambdaLayer",
+      "build": true
+    },
+    "discordsync": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "discordlayer",
+          "attributes": ["Arn"]
+        }
+      ]
+    }
+  },
+  "api": {
+    "discordapi": {
+      "service": "API Gateway",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "discordinteraction",
+          "attributes": ["Name", "Arn"]
+        },
+        {
+          "category": "function",
+          "resourceName": "discordsync",
+          "attributes": ["Name", "Arn"]
+        }
+      ]
+    }
+  }
+}
