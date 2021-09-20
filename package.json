@@ -13,7 +13,7 @@
     "build": "yarn workspaces run build",
     "push": "yarn build && amplify push",
     "registry:start": "verdaccio --config ./verdaccio.yaml",
-    "registry:publish": "lerna publish --yes --registry http://localhost:4873",
+    "registry:publish": "lerna publish --canary --preid next --pre-dist-tag next --registry http://localhost:4873 --yes",
     "registry": "run-p registry:*"
   },
   "devDependencies": {
