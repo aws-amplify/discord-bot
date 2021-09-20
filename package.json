@@ -5,23 +5,25 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/*",
-      "amplify/backend/function/**"
-    ],
-    "nohoist": [
-      "**/**"
+      "packages/*"
     ]
   },
   "scripts": {
     "start": "echo 'no start command needed'",
     "build": "yarn workspaces run build",
-    "push": "yarn build && amplify push"
+    "push": "yarn build && amplify push",
+    "registry:start": "verdaccio --config ./verdaccio.yaml",
+    "registry:publish": "lerna publish --canary --yes --registry http://localhost:4873",
+    "registry": "run-p registry:*"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
+    "lerna": "^4.0.0",
     "nodemon": "^2.0.12",
-    "prettier": "^2.4.0"
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.4.0",
+    "verdaccio": "^5.1.5"
   },
   "prettier": {
     "tabWidth": 2,

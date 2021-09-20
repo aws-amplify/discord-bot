@@ -29,5 +29,28 @@
         }
       }
     }
+  },
+  "main": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplifydiscordbot-main-170303-authRole",
+      "UnauthRoleArn": "arn:aws:iam::229156689808:role/amplify-amplifydiscordbot-main-170303-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::229156689808:role/amplify-amplifydiscordbot-main-170303-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
+      "UnauthRoleName": "amplify-amplifydiscordbot-main-170303-unauthRole",
+      "StackName": "amplify-amplifydiscordbot-main-170303",
+      "StackId": "arn:aws:cloudformation:us-east-1:229156689808:stack/amplify-amplifydiscordbot-main-170303/088d76e0-1803-11ec-ba92-0a4787c8e289",
+      "AmplifyAppId": "d2fv4cpitjxh2e"
+    },
+    "categories": {
+      "function": {
+        "discordinteraction": {
+          "secretsPathAmplifyAppId": "d2fv4cpitjxh2e"
+        },
+        "discordsync": {
+          "secretsPathAmplifyAppId": "d2fv4cpitjxh2e"
+        }
+      }
+    }
   }
 }

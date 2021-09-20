@@ -1,3 +1,17 @@
+/*
+Use the following code to retrieve configured secrets from SSM:
+
+const aws = require('aws-sdk');
+
+const { Parameters } = await (new aws.SSM())
+  .getParameters({
+    Names: ["DISCORD_BOT_TOKEN","DISCORD_APP_ID","DISCORD_PUBLIC_KEY"].map(secretName => process.env[secretName]),
+    WithDecryption: true,
+  })
+  .promise();
+
+Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
+*/
 const fetch = require('node-fetch')
 const { bank } = require('/opt/bank')
 const { loadSecrets } = require('/opt/secrets')

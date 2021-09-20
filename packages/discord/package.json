@@ -10,7 +10,8 @@
     }
   },
   "scripts": {
-    "build": "esbuild ./*.js --outdir=lib --platform=node --format=cjs --target=node14 --out-extension:.js=.cjs"
+    "build": "esbuild ./*.js --outdir=lib --platform=node --format=cjs --target=node14 --out-extension:.js=.cjs",
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.21.0",
