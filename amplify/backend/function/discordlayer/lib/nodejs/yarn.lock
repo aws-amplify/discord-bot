@@ -3,21 +3,21 @@
 
 
 "@amplify-discord-bots/bank@next":
-  version "0.0.1-next.61"
-  resolved "http://localhost:4873/@amplify-discord-bots%2fbank/-/bank-0.0.1-next.61.tgz#1f9dceed0735bc39e58e4d55d63c7a4df2d8930d"
-  integrity sha512-vpkt7E318Fcba4zn9StC0DaHOST4XsQCWygc8sJY4B0UBzmCJjarqGsZ3qhuxVRZ5mPvW7+TI/5SwjeaKBJiHg==
+  version "0.0.1-next.63"
+  resolved "http://localhost:4873/@amplify-discord-bots%2fbank/-/bank-0.0.1-next.63.tgz#cf9f20b116132983542e82258fb868e9c2c2ac0c"
+  integrity sha512-Za0wLAdhRBKF+wRS6qImzHiebNsmf9O+qPDGiSwS5XscOE21tBKbWIqM4T4kY9RXU3ztE+aSctNeEHTuHDnO0Q==
 
 "@amplify-discord-bots/command-giverole@next":
-  version "0.0.1-next.61"
-  resolved "http://localhost:4873/@amplify-discord-bots%2fcommand-giverole/-/command-giverole-0.0.1-next.61.tgz#539dce4c22d270828414466f4d07e17bca0887c6"
-  integrity sha512-Jf7AxhKuHYTnn6WbrzcqMoG51LJyj26XTZf0p2qQ6GKNhiuwY938bVnsTF1mnvt4jLWPOMCQ9S1GZqfvZmPvfw==
+  version "0.0.1-next.63"
+  resolved "http://localhost:4873/@amplify-discord-bots%2fcommand-giverole/-/command-giverole-0.0.1-next.63.tgz#144d8c492c8dc2101229e542189f33f92d3b54e0"
+  integrity sha512-4rKLjct59t/oeg+eo+wnhRMiKyPP04PsVbXPEukJ3NlmmIz6HVioPHkxAqwBAz/OwfZ5s8JehDL2A/n6CxvrVw==
   dependencies:
-    "@amplify-discord-bots/discord" "^0.0.1-next.61+bd310c9"
+    "@amplify-discord-bots/discord" "^0.0.1-next.63+3b7173d"
 
-"@amplify-discord-bots/discord@^0.0.1-next.61+bd310c9":
-  version "0.0.1-next.61"
-  resolved "http://localhost:4873/@amplify-discord-bots%2fdiscord/-/discord-0.0.1-next.61.tgz#bd74d9be69d86e6c7fdc7bf3c8e71ef257c6eed1"
-  integrity sha512-vgKB5Jv5bdKS9CohFOIqlrJS/LTDMBmXwYNLpLo17nfy3gLzoJzmj1qzIVFumOf9YRv/c0Db6DiHOEs2kenPnQ==
+"@amplify-discord-bots/discord@^0.0.1-next.63+3b7173d":
+  version "0.0.1-next.63"
+  resolved "http://localhost:4873/@amplify-discord-bots%2fdiscord/-/discord-0.0.1-next.63.tgz#b7cdbabaaca1875f34ced51d63b83d21dd098145"
+  integrity sha512-LhjbgTuivy3y3vE2ugMIt/Mbknii0B4n/3pZyQVjA205qiCCAc/joB4525OteJaLNySRgdywXGHRaRP1G28lnQ==
   dependencies:
     "@aws-sdk/client-ssm" "^3.21.0"
     node-fetch "^2.6.1"

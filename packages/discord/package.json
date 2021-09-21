@@ -8,12 +8,12 @@
   ],
   "exports": {
     ".": {
-      "import": "./index.js",
-      "require": "./lib/index.cjs"
+      "import": "./discord.js",
+      "require": "./lib/discord.cjs"
     }
   },
   "scripts": {
-    "build": "esbuild ./*.js --outdir=lib --platform=node --format=cjs --target=node14 --out-extension:.js=.cjs",
+    "build": "esbuild ./discord.js --outdir=lib --platform=node --format=cjs --target=node14 --out-extension:.js=.cjs",
     "prepublish": "yarn build"
   },
   "dependencies": {

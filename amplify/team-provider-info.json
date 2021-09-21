@@ -56,7 +56,7 @@
         },
         "discordlayer": {
           "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
-          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersion20827d27-build.zip"
+          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersiona81c9fe2-build.zip"
         }
       }
     }
