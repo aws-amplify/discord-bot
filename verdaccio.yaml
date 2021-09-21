@@ -6,7 +6,6 @@ packages:
   '@amplify-discord-bots/*':
     access: $all
     publish: $all
-    proxy: npmjs
   '**':
     proxy: npmjs
 logs: { type: stdout, format: pretty, level: http }
