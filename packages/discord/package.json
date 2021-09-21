@@ -1,6 +1,6 @@
 {
   "name": "@amplify-discord-bots/discord",
-  "version": "0.1.0",
+  "version": "0.1.1-next.2",
   "type": "module",
   "license": "MIT",
   "files": [
