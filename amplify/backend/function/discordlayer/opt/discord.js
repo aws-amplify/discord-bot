@@ -1,3 +1,4 @@
+const fetch = require('node-fetch')
 const nacl = require('tweetnacl')
 
 exports.verifyEvent = async function verifyEvent(event) {
@@ -22,3 +23,30 @@ exports.generateResponse = function generateResponse(content, embeds) {
   }
 }
 
+exports.addRoleToUser = async function addRoleToUser({
+  guildId,
+  userId,
+  roleId,
+}) {
+  const config = {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+  }
+  const url = `https://discord.com/api/v6/guilds/${guildId}/members/${userId}/roles/${roleId}`
+
+  let data
+  try {
+    const response = await fetch(url, config)
+    if (response.ok && response.status === 204) {
+      return true
+    }
+  } catch (error) {
+    throw new Error('Error adding role', error)
+  }
+
+  if (!data) return
+  return data
+}

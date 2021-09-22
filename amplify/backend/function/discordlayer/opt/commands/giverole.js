@@ -1,6 +1,6 @@
-import { addRoleToUser } from '@amplify-discord-bots/discord'
+const { addRoleToUser } = require('../discord')
 
-export const config = {
+const config = {
   name: 'giverole',
   description: 'Gives role to user',
   default_permission: false, // todo: constrain who can execute
@@ -20,7 +20,7 @@ export const config = {
   ],
 }
 
-export async function handler({ data, guild_id, member }) {
+async function handler({ data, guild_id, member }) {
   const [[userId, user]] = Object.entries(data.resolved.members)
   const [[roleId, role]] = Object.entries(data.resolved.roles)
 
@@ -32,3 +32,6 @@ export async function handler({ data, guild_id, member }) {
   }
   return '🤢 something went wrong'
 }
+
+exports.config = config
+exports.handler = handler

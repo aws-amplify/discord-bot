@@ -4,9 +4,7 @@
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.30.0",
     "node-fetch": "^2.6.2",
-    "tweetnacl": "^1.0.3",
-    "@amplify-discord-bots/bank": "next",
-    "@amplify-discord-bots/command-giverole": "next"
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {},
   "scripts": {

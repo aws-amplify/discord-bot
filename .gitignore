@@ -24,7 +24,6 @@ amplifytools.xcconfig
 node_modules
 *.log
 
-.verdaccio
 .env
 .env.local
 secrets.yml
