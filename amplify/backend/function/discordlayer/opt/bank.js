@@ -1,4 +1,5 @@
 const staticCommandsData = require('./commands/static-commands.json')
+const giverole = require('./commands/giverole')
 
 const validCommandNameRegex = /^[\w-]{1,32}$/
 // TODO: filter on command name regex to prevent sync errors
@@ -40,17 +41,14 @@ function createBank({ staticCommandsData = [], commands = [] }) {
 }
 
 const commands = [
-  [
-    'hello',
-    {
-      config: {
-        name: 'hello',
-        description: 'say hello',
-      },
-      handler: async (event) => 'Hello, World!',
+  {
+    config: {
+      name: 'hello',
+      description: 'say hello',
     },
-  ],
-  ...[giverole].map((command) => [command.config.name, command]),
+    handler: async (event) => 'Hello, World!',
+  },
+  ...[giverole],
 ]
 
 exports.bank = createBank({ staticCommandsData, commands })
