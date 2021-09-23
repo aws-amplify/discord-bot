@@ -50,3 +50,75 @@ exports.addRoleToUser = async function addRoleToUser({
   if (!data) return
   return data
 }
+
+exports.deleteCommand = async function deleteCommand(commandId, { guildId }) {
+  const config = {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+  }
+  let url = `https://discord.com/api/v8/applications/${process.env.DISCORD_APP_ID}/commands/${commandId}`
+  if (guildId) {
+    url = `https://discord.com/api/v8/applications/${process.env.DISCORD_APP_ID}/guilds/${guildId}/commands/${commandId}`
+  }
+
+  let data
+  try {
+    const response = await fetch(url, config)
+    if (response.ok && response.status === 200) {
+      data = await response.json()
+    }
+  } catch (error) {
+    throw new Error(`Error deleting command ${commandId}:`, error)
+  }
+
+  return data
+}
+
+exports.getRegisteredCommands = async function getRegisteredCommands() {
+  const config = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+  }
+  const url = `https://discord.com/api/v8/applications/${process.env.DISCORD_APP_ID}/commands`
+
+  let data
+  try {
+    const response = await fetch(url, config)
+    if (response.ok && response.status === 200) {
+      data = await response.json()
+    }
+  } catch (error) {
+    throw new Error('Error fetching registered commands', error)
+  }
+
+  return data
+}
+
+exports.getGuilds = async function getGuilds() {
+  const config = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+  }
+  const url = `https://discord.com/api/v6/users/@me/guilds`
+
+  let data
+  try {
+    const response = await fetch(url, config)
+    if (response.ok && response.status === 200) {
+      data = await response.json()
+    }
+  } catch (error) {
+    throw new Error('Error fetching guilds', error)
+  }
+
+  return data
+}
