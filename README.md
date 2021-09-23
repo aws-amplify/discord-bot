@@ -19,22 +19,18 @@ Ideally command config and logic will lie within this codebase, and granular per
 For local development, ensure the following preqrequisites are met:
 
 - AWS account (with credentials stored in `~/.aws/credentials`, this is mounted to container for local development)
-- Docker
 - Node.js v16.x
 
 To confirm changes to code are made successfully, use the following steps to set up and run the interaction bot:
 
 1. [Register Discord bot](https://discord.com/developers/applications)
-2. Using `.env.sample` as a template, use [AWS Copilot CLI](https://aws.github.io/copilot-cli/) to add secrets
-   ```sh
-   copilot secret init
-   ```
-3. Run `docker-compose up --build`
+2. Clone/download this repository and run `amplify init` using a new environment
+3. Add Discord secrets to function when prompted, **do not** add secrets to `discordsync` function. It is not necessary as the sync function references `discordinteraction` secrets
+4. TBD
 
 ### Local Development Notes
 
-- `.env` should match environment variables set up to deploy with Copilot as shown in [the manifest](./copilot/interactions-bot/manifest.yml), using `.env.sample` as a template
-- Discord requires a secure public URL registered as an "Interactions Endpoint URL". This can be found in the Discord application's "General Information" section. When deploying to your AWS account, this URL will be returned from `copilot deploy`
+- Discord requires a secure public URL registered as an "Interactions Endpoint URL". This can be found in the Discord application's "General Information" section. When deploying to your AWS account, this URL will be returned from `amplify push -y`
   - Use [ngrok](https://ngrok.com) to tunnel connections to your local host
 
 #### Run the Bot
@@ -56,4 +52,4 @@ The [management UI](/app) proxies requests to `/api` in local dev, and is recomm
 
 ## Deployment
 
-Currently this process is manual and executed with `copilot deploy`
+Currently this process is manual and executed with `amplify push -y`
