@@ -57,7 +57,13 @@
         "discordlayer": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
           "s3Key": "amplify-builds/discordlayer-LambdaLayerVersion5f3a99a8-build.zip"
+        },
+        "amplifydiscordbotauthPreSignup": {
+          "DOMAINALLOWLIST": "amazon.com"
         }
+      },
+      "auth": {
+        "amplifydiscordbotauth": {}
       }
     }
   }
