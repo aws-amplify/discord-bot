@@ -1,14 +1,6 @@
 {
     "paths": [
         {
-            "name": "/interact",
-            "lambdaFunction": "discordinteraction",
-            "privacy": {
-                "open": true
-            },
-            "policyResourceName": "/interact"
-        },
-        {
             "name": "/sync",
             "lambdaFunction": "discordsync",
             "privacy": {
@@ -19,33 +11,33 @@
                 }
             },
             "policyResourceName": "/sync"
+        },
+        {
+            "name": "/interact",
+            "lambdaFunction": "discordinteraction",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/interact"
         }
     ],
     "resourceName": "discordapi",
     "apiName": "discordapi",
     "functionArns": [
         {
-            "lambdaFunction": "discordinteraction"
+            "lambdaFunction": "discordsync"
         },
         {
-            "lambdaFunction": "discordsync"
+            "lambdaFunction": "discordinteraction"
         }
     ],
     "privacy": {
         "auth": 0,
         "unauth": 0,
-        "authRoleName": "amplify-amplifydiscordbot-next-95718-authRole",
-        "unAuthRoleName": "amplify-amplifydiscordbot-next-95718-unauthRole"
+        "authRoleName": "amplify-amplifydiscordbot-main-170303-authRole",
+        "unAuthRoleName": "amplify-amplifydiscordbot-main-170303-unauthRole"
     },
     "dependsOn": [
-        {
-            "category": "function",
-            "resourceName": "discordinteraction",
-            "attributes": [
-                "Name",
-                "Arn"
-            ]
-        },
         {
             "category": "function",
             "resourceName": "discordsync",
@@ -67,8 +59,16 @@
             "attributes": [
                 "adminsGroupRole"
             ]
+        },
+        {
+            "category": "function",
+            "resourceName": "discordinteraction",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
         }
     ],
-    "uuid": "780a1f92",
+    "uuid": "e2b7cd64",
     "authResourceName": "amplifydiscordbotauth"
 }

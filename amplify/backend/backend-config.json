@@ -60,14 +60,6 @@
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "discordinteraction",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        },
-        {
-          "category": "function",
           "resourceName": "discordsync",
           "attributes": [
             "Name",
@@ -86,6 +78,14 @@
           "resourceName": "userPoolGroups",
           "attributes": [
             "adminsGroupRole"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "discordinteraction",
+          "attributes": [
+            "Name",
+            "Arn"
           ]
         }
       ]
