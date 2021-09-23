@@ -1,0 +1,41 @@
+{
+  "name": "@amplify-discord-bots/app",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "svelte-kit dev",
+    "build": "svelte-kit build",
+    "preview": "svelte-kit preview"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "next",
+    "@sveltejs/kit": "next",
+    "autoprefixer": "^10.3.1",
+    "carbon-components-svelte": "^0.42.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-svelte3": "^3.2.1",
+    "prettier": "^2.4.1",
+    "prettier-plugin-svelte": "^2.4.0",
+    "svelte": "3.40.1",
+    "svelte-check": "^2.2.3",
+    "svelte-preprocess": "^4.7.4"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "bracketSpacing": true,
+    "htmlWhitespaceSensitivity": "ignore",
+    "arrowParens": "avoid",
+    "singleQuote": true,
+    "svelteSortOrder": "scripts-markup-styles",
+    "svelteStrictMode": true,
+    "svelteBracketNewLine": true,
+    "svelteAllowShorthand": false,
+    "plugins": [
+      "./node_modules/prettier-plugin-svelte"
+    ]
+  }
+}

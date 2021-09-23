@@ -1,0 +1,17 @@
+{
+  "projectName": "amplifydiscordbot",
+  "version": "3.1",
+  "frontend": "javascript",
+  "javascript": {
+    "framework": "none",
+    "config": {
+      "SourceDir": "./",
+      "DistributionDir": "packages/app/build",
+      "BuildCommand": "yarn workspace @amplify-discord-bots/app run build",
+      "StartCommand": "yarn start"
+    }
+  },
+  "providers": [
+    "awscloudformation"
+  ]
+}
