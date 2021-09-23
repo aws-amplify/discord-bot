@@ -59,7 +59,13 @@
           "s3Key": "amplify-builds/discordlayer-LambdaLayerVersion5f3a99a8-build.zip"
         },
         "amplifydiscordbotauthPreSignup": {
-          "DOMAINALLOWLIST": "amazon.com"
+          "DOMAINALLOWLIST": "amazon.com",
+          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
+          "s3Key": "amplify-builds/amplifydiscordbotauthPreSignup-73466b472f532b56795a-build.zip"
+        },
+        "AdminQueries0cb0a3ea": {
+          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
+          "s3Key": "amplify-builds/AdminQueries0cb0a3ea-6166596165794e77324c-build.zip"
         }
       },
       "auth": {
