@@ -12,8 +12,11 @@
     "@sveltejs/kit": "next",
     "autoprefixer": "^10.3.1",
     "carbon-components-svelte": "^0.42.0",
-    "prettier": "~2.3.2",
-    "prettier-plugin-svelte": "^2.3.1",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-svelte3": "^3.2.1",
+    "prettier": "^2.4.1",
+    "prettier-plugin-svelte": "^2.4.0",
     "svelte": "3.40.1",
     "svelte-check": "^2.2.3",
     "svelte-preprocess": "^4.7.4"

@@ -68,7 +68,6 @@ let secretsLoaded = false
 exports.handler = async function handler(event) {
   console.log('EVENT:', JSON.stringify(event))
   if (!secretsLoaded && (await loadSecrets())) secretsLoaded = true
-  console.log(process.env)
   try {
     return {
       statusCode: 200,

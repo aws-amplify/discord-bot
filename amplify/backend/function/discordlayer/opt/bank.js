@@ -40,15 +40,6 @@ function createBank({ staticCommandsData = [], commands = [] }) {
   )
 }
 
-const commands = [
-  {
-    config: {
-      name: 'hello',
-      description: 'say hello',
-    },
-    handler: async (event) => 'Hello, World!',
-  },
-  ...[giverole],
-]
+const commands = [giverole]
 
 exports.bank = createBank({ staticCommandsData, commands })

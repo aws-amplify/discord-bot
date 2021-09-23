@@ -52,11 +52,11 @@
         "discordsync": {
           "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordsync-43394c6b516a626d6f6e-build.zip"
+          "s3Key": "amplify-builds/discordsync-642b33456d6c50674151-build.zip"
         },
         "discordlayer": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersion2fbf8d11-build.zip"
+          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersion5f3a99a8-build.zip"
         }
       }
     }
