@@ -21,12 +21,24 @@
         "discordsync": {
           "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
           "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
-          "s3Key": "amplify-builds/discordsync-43394c6b516a626d6f6e-build.zip"
+          "s3Key": "amplify-builds/discordsync-642b33456d6c50674151-build.zip"
         },
         "discordlayer": {
           "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
-          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersionbf8f8f09-build.zip"
+          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersione4be6dc6-build.zip"
+        },
+        "amplifydiscordbotauthPreSignup": {
+          "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
+          "s3Key": "amplify-builds/amplifydiscordbotauthPreSignup-73466b472f532b56795a-build.zip"
+        },
+        "AdminQueries0cb0a3ea": {
+          "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
+          "s3Key": "amplify-builds/AdminQueries0cb0a3ea-6166596165794e77324c-build.zip"
         }
+      },
+      "auth": {
+        "userPoolGroups": {},
+        "amplifydiscordbotauth": {}
       }
     }
   },
