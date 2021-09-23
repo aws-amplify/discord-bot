@@ -69,19 +69,19 @@
         Sync Commands
       </Button>
       <section>
-        <h2>Commands:</h2>
+        <!-- <h2>Commands:</h2>
         {#await getCommands()}
           <p>...getting commands</p>
         {:then commands}
-          <!-- TODO: grid, row, columns for commands -->
           {#each commands.data as command (command.id)}
             <Command {...command} />
           {/each}
         {:catch error}
           <p style="color: red">{error.message}</p>
         {/await}
-      </section>
-    </Column>
+      </section> -->
+      </section></Column
+    >
   </Row>
 </Grid>
 
