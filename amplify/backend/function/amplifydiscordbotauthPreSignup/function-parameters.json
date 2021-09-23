@@ -1,0 +1,18 @@
+{
+  "trigger": true,
+  "modules": [
+    "email-filter-allowlist"
+  ],
+  "parentResource": "amplifydiscordbotauth",
+  "functionName": "amplifydiscordbotauthPreSignup",
+  "resourceName": "amplifydiscordbotauthPreSignup",
+  "parentStack": "auth",
+  "triggerEnvs": [],
+  "triggerDir": "/Users/josef/.config/yarn/global/node_modules/amplify-category-auth/provider-utils/awscloudformation/triggers/PreSignup",
+  "triggerTemplate": "PreSignup.json.ejs",
+  "triggerEventPath": "PreSignup.event.json",
+  "roleName": "amplifydiscordbotauthPreSignup",
+  "skipEdit": true,
+  "DOMAINALLOWLIST": "amazon.com",
+  "enableCors": false
+}
