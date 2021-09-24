@@ -6,10 +6,10 @@ frontend:
         - yarn install
     build:
       commands:
-        - yarn run build
+        - yarn workspace @amplify-discord-bots/app run build
   artifacts:
     # IMPORTANT - Please verify your build output directory
-    baseDirectory: packages/app
+    baseDirectory: packages/app/build
     files:
       - '**/*'
   cache:

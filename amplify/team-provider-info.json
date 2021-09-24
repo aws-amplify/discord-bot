@@ -1,88 +1,89 @@
 {
-  "main": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-amplifydiscordbot-main-170303-authRole",
-      "UnauthRoleArn": "arn:aws:iam::229156689808:role/amplify-amplifydiscordbot-main-170303-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::229156689808:role/amplify-amplifydiscordbot-main-170303-authRole",
-      "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
-      "UnauthRoleName": "amplify-amplifydiscordbot-main-170303-unauthRole",
-      "StackName": "amplify-amplifydiscordbot-main-170303",
-      "StackId": "arn:aws:cloudformation:us-east-1:229156689808:stack/amplify-amplifydiscordbot-main-170303/088d76e0-1803-11ec-ba92-0a4787c8e289",
-      "AmplifyAppId": "d2fv4cpitjxh2e"
-    },
-    "categories": {
-      "function": {
-        "discordinteraction": {
-          "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
-          "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
-          "s3Key": "amplify-builds/discordinteraction-6e47644e653434364658-build.zip"
+    "main": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-amplifydiscordbot-main-170303-authRole",
+            "UnauthRoleArn": "arn:aws:iam::229156689808:role/amplify-amplifydiscordbot-main-170303-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::229156689808:role/amplify-amplifydiscordbot-main-170303-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
+            "UnauthRoleName": "amplify-amplifydiscordbot-main-170303-unauthRole",
+            "StackName": "amplify-amplifydiscordbot-main-170303",
+            "StackId": "arn:aws:cloudformation:us-east-1:229156689808:stack/amplify-amplifydiscordbot-main-170303/088d76e0-1803-11ec-ba92-0a4787c8e289",
+            "AmplifyAppId": "d2fv4cpitjxh2e"
         },
-        "discordsync": {
-          "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
-          "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
-          "s3Key": "amplify-builds/discordsync-642b33456d6c50674151-build.zip"
-        },
-        "discordlayer": {
-          "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
-          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersione4be6dc6-build.zip"
-        },
-        "amplifydiscordbotauthPreSignup": {
-          "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
-          "s3Key": "amplify-builds/amplifydiscordbotauthPreSignup-73466b472f532b56795a-build.zip"
-        },
-        "AdminQueries0cb0a3ea": {
-          "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
-          "s3Key": "amplify-builds/AdminQueries0cb0a3ea-6166596165794e77324c-build.zip"
+        "categories": {
+            "function": {
+                "discordinteraction": {
+                    "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
+                    "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
+                    "s3Key": "amplify-builds/discordinteraction-6e47644e653434364658-build.zip"
+                },
+                "discordsync": {
+                    "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
+                    "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
+                    "s3Key": "amplify-builds/discordsync-642b33456d6c50674151-build.zip"
+                },
+                "discordlayer": {
+                    "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
+                    "s3Key": "amplify-builds/discordlayer-LambdaLayerVersione9c1d607-build.zip"
+                },
+                "amplifydiscordbotauthPreSignup": {
+                    "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
+                    "s3Key": "amplify-builds/amplifydiscordbotauthPreSignup-73466b472f532b56795a-build.zip"
+                },
+                "AdminQueries0cb0a3ea": {
+                    "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
+                    "s3Key": "amplify-builds/AdminQueries0cb0a3ea-6166596165794e77324c-build.zip"
+                }
+            },
+            "auth": {
+                "userPoolGroups": {},
+                "amplifydiscordbotauth": {}
+            },
+            "hosting": {}
         }
-      },
-      "auth": {
-        "userPoolGroups": {},
-        "amplifydiscordbotauth": {}
-      }
-    }
-  },
-  "next": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-amplifydiscordbot-next-95718-authRole",
-      "UnauthRoleArn": "arn:aws:iam::229156689808:role/amplify-amplifydiscordbot-next-95718-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::229156689808:role/amplify-amplifydiscordbot-next-95718-authRole",
-      "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-      "UnauthRoleName": "amplify-amplifydiscordbot-next-95718-unauthRole",
-      "StackName": "amplify-amplifydiscordbot-next-95718",
-      "StackId": "arn:aws:cloudformation:us-east-1:229156689808:stack/amplify-amplifydiscordbot-next-95718/62bb10e0-1bb5-11ec-b836-122a896c5b43",
-      "AmplifyAppId": "d2fv4cpitjxh2e"
     },
-    "categories": {
-      "function": {
-        "discordinteraction": {
-          "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
-          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordinteraction-6e47644e653434364658-build.zip"
+    "next": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-amplifydiscordbot-next-95718-authRole",
+            "UnauthRoleArn": "arn:aws:iam::229156689808:role/amplify-amplifydiscordbot-next-95718-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::229156689808:role/amplify-amplifydiscordbot-next-95718-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
+            "UnauthRoleName": "amplify-amplifydiscordbot-next-95718-unauthRole",
+            "StackName": "amplify-amplifydiscordbot-next-95718",
+            "StackId": "arn:aws:cloudformation:us-east-1:229156689808:stack/amplify-amplifydiscordbot-next-95718/62bb10e0-1bb5-11ec-b836-122a896c5b43",
+            "AmplifyAppId": "d2fv4cpitjxh2e"
         },
-        "discordsync": {
-          "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
-          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordsync-642b33456d6c50674151-build.zip"
-        },
-        "discordlayer": {
-          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersion5f3a99a8-build.zip"
-        },
-        "amplifydiscordbotauthPreSignup": {
-          "DOMAINALLOWLIST": "amazon.com",
-          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/amplifydiscordbotauthPreSignup-73466b472f532b56795a-build.zip"
-        },
-        "AdminQueries0cb0a3ea": {
-          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/AdminQueries0cb0a3ea-6166596165794e77324c-build.zip"
+        "categories": {
+            "function": {
+                "discordinteraction": {
+                    "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
+                    "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
+                    "s3Key": "amplify-builds/discordinteraction-6e47644e653434364658-build.zip"
+                },
+                "discordsync": {
+                    "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
+                    "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
+                    "s3Key": "amplify-builds/discordsync-642b33456d6c50674151-build.zip"
+                },
+                "discordlayer": {
+                    "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
+                    "s3Key": "amplify-builds/discordlayer-LambdaLayerVersion5f3a99a8-build.zip"
+                },
+                "amplifydiscordbotauthPreSignup": {
+                    "DOMAINALLOWLIST": "amazon.com",
+                    "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
+                    "s3Key": "amplify-builds/amplifydiscordbotauthPreSignup-73466b472f532b56795a-build.zip"
+                },
+                "AdminQueries0cb0a3ea": {
+                    "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
+                    "s3Key": "amplify-builds/AdminQueries0cb0a3ea-6166596165794e77324c-build.zip"
+                }
+            },
+            "auth": {
+                "amplifydiscordbotauth": {}
+            }
         }
-      },
-      "auth": {
-        "amplifydiscordbotauth": {}
-      }
     }
-  }
 }
