@@ -3,11 +3,11 @@ frontend:
   phases:
     preBuild:
       commands:
-        - nvm use
+        - nvm install
         - yarn install
     build:
       commands:
-        - nvm use
+        - nvm install
         - yarn workspace @amplify-discord-bots/app run build
   artifacts:
     # IMPORTANT - Please verify your build output directory
