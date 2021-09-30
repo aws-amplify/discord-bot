@@ -5,7 +5,7 @@
       "resourceName": "discordlayer",
       "version": "Always choose latest version",
       "isLatestVersionSelected": true,
-      "env": "main"
+      "env": "next"
     }
   ],
   "secretNames": [
