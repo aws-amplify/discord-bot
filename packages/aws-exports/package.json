@@ -1,0 +1,9 @@
+{
+  "name": "@amplify-discord-bots/aws-exports",
+  "version": "0.0.0",
+  "exports": {
+    ".": {
+      "import": "./aws-exports.js"
+    }
+  }
+}

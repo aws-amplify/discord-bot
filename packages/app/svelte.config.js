@@ -35,6 +35,11 @@ const config = {
     },
 
     vite: {
+      resolve: {
+        alias: {
+          './runtimeConfig': './runtimeConfig.browser',
+        },
+      },
       ssr: {
         noExternal: Object.keys(pkg.dependencies || {}),
       },

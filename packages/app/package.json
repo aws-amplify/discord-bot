@@ -7,7 +7,12 @@
     "build": "svelte-kit build",
     "preview": "svelte-kit preview"
   },
+  "dependencies": {
+    "@aws-amplify/ui-components": "^1.8.2",
+    "aws-amplify": "^4.3.1"
+  },
   "devDependencies": {
+    "@amplify-discord-bots/aws-exports": "*",
     "@sveltejs/adapter-static": "next",
     "@sveltejs/kit": "next",
     "autoprefixer": "^10.3.1",
