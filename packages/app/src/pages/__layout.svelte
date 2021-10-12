@@ -1,9 +1,6 @@
 <script>
   import { Amplify } from '@aws-amplify/core'
-  import {
-    applyPolyfills,
-    defineCustomElements,
-  } from '@aws-amplify/ui-components/loader'
+  import { defineCustomElements } from '@aws-amplify/ui-components/dist/components/index.js'
   import amplifyConfig from '@amplify-discord-bots/aws-exports'
   import {
     Header,
@@ -14,9 +11,7 @@
   import { onMount } from 'svelte'
 
   onMount(() => {
-    applyPolyfills().then(() => {
-      defineCustomElements(window)
-    })
+    defineCustomElements(window)
   })
 
   Amplify.configure(amplifyConfig)
