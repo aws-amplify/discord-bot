@@ -1,5 +1,6 @@
 <script>
   import {
+    Content,
     Grid,
     Row,
     Column,
@@ -62,14 +63,15 @@
   }
 </script>
 
-<Grid noGutter>
-  <Row>
-    <Column>
-      <Button disabled="{isSyncing}" on:click="{syncCommands}">
-        Sync Commands
-      </Button>
-      <section>
-        <!-- <h2>Commands:</h2>
+<Content>
+  <Grid noGutter>
+    <Row>
+      <Column>
+        <Button disabled="{isSyncing}" on:click="{syncCommands}">
+          Sync Commands
+        </Button>
+        <section>
+          <!-- <h2>Commands:</h2>
         {#await getCommands()}
           <p>...getting commands</p>
         {:then commands}
@@ -80,10 +82,11 @@
           <p style="color: red">{error.message}</p>
         {/await}
       </section> -->
-      </section></Column
-    >
-  </Row>
-</Grid>
+        </section>
+      </Column>
+    </Row>
+  </Grid>
+</Content>
 
 <style>
   section {
