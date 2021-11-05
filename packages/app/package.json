@@ -2,6 +2,7 @@
   "name": "@amplify-discord-bots/app",
   "type": "module",
   "version": "0.0.1",
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",
