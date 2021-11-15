@@ -29,24 +29,19 @@ let secretsLoaded = false
 exports.interact = async function interact(event) {
   console.log('EVENT:', JSON.stringify(event))
   if (!secretsLoaded && (await loadSecrets())) secretsLoaded = true
-  if (event?.body) {
+  if (event?.body && (await verifyEvent(event))) {
     const { type, ...context } = event.body
-    const verified = await verifyEvent(event)
     switch (type) {
       case 1: {
-        if (!verified) break
         return {
           type: 1,
         }
       }
       case 2: {
-        if (verified) {
-          return {
-            type: 4,
-            data: await handleCommand({ context }),
-          }
+        return {
+          type: 4,
+          data: await handleCommand({ context }),
         }
-        break
       }
     }
   }
