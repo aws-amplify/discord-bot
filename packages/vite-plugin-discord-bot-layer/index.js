@@ -48,7 +48,10 @@ export function DiscordBotLayerPlugin(pluginOptions = {}) {
       try {
         await loadSecrets()
       } catch (error) {
-        console.warn('Error loading secrets', error)
+        console.warn(
+          'Error loading secrets, Discord bot layer unstable...',
+          error
+        )
       }
       server.middlewares.use(DiscordBotLayerPluginHandler)
     },
