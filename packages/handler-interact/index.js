@@ -1,6 +1,6 @@
 import { verifyEvent, handleCommand } from '@amplify-discord-bots/discord'
 
-export async function interact(event) {
+export async function handler(event) {
   if (event?.body && (await verifyEvent(event))) {
     const { type, ...context } = event.body
     switch (type) {
