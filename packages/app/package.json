@@ -1,5 +1,11 @@
 {
   "name": "@amplify-discord-bots/app",
+  "private": true,
+  "workspaces": {
+    "nohoist": [
+      "prettier*"
+    ]
+  },
   "type": "module",
   "version": "0.0.1",
   "license": "Apache-2.0",
@@ -24,7 +30,8 @@
     "prettier-plugin-svelte": "^2.4.0",
     "svelte": "3.44.0",
     "svelte-check": "^2.2.7",
-    "svelte-preprocess": "^4.9.8"
+    "svelte-preprocess": "^4.9.8",
+    "vite-plugin-discord-bot-layer": "*"
   },
   "prettier": {
     "printWidth": 80,

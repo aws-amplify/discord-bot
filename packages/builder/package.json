@@ -1,0 +1,19 @@
+{
+  "name": "@amplify-discord-bots/builder",
+  "private": true,
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "bin": {
+    "builder": "./index.js"
+  },
+  "exports": {
+    ".": {
+      "require": "./index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "esbuild": "^0.13.15",
+    "tiny-glob": "^0.2.9"
+  }
+}

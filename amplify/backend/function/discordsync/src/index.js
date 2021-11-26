@@ -13,7 +13,7 @@ const { Parameters } = await (new aws.SSM())
 Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
 */
 const fetch = require('node-fetch')
-const { bank } = require('/opt/bank')
+const { bank } = require('/opt')
 const { loadSecrets } = require('/opt/secrets')
 
 async function registerCommand(command, { guildId }) {
