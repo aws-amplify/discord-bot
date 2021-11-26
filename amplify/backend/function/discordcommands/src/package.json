@@ -1,0 +1,15 @@
+{
+  "name": "discordcommands",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@amplify-discord-bots/handler-commands": "0.1.0",
+    "aws-serverless-express": "^3.3.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -2099,6 +2099,14 @@
   dependencies:
     "@types/node" "*"
 
+"@vendia/serverless-express@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@vendia/serverless-express/-/serverless-express-3.4.0.tgz#156f47d364b067ae6fa678a914c51887f494321a"
+  integrity sha512-/UAAbi9qRjUtjRISt5MJ1sfhtrHb26hqQ0nvE5qhMLsAdR5H7ErBwPD8Q/v2OENKm0iWsGwErIZEg7ebUeFDjQ==
+  dependencies:
+    binary-case "^1.0.0"
+    type-is "^1.6.16"
+
 "@verdaccio/commons-api@10.0.1":
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/@verdaccio/commons-api/-/commons-api-10.0.1.tgz#7217a167e428a7603ff46685c4cc40bb1526e463"
@@ -2371,6 +2379,15 @@ aws-amplify@^4.3.3:
     "@aws-amplify/ui" "2.0.3"
     "@aws-amplify/xr" "3.0.26"
 
+aws-serverless-express@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/aws-serverless-express/-/aws-serverless-express-3.4.0.tgz#74153b8cc80dbd2c6a32a51e6d353a325c2710d7"
+  integrity sha512-YG9ZjAOI9OpwqDDWzkRc3kKJYJuR7gTMjLa3kAWopO17myoprxskCUyCEee+RKe34tcR4UNrVtgAwW5yDe74bw==
+  dependencies:
+    "@vendia/serverless-express" "^3.4.0"
+    binary-case "^1.0.0"
+    type-is "^1.6.16"
+
 aws-sign2@~0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.7.0.tgz#b46e890934a9591f2d2f6f86d7e6a9f1b3fe76a8"
@@ -2410,12 +2427,17 @@ bcryptjs@2.4.3:
   resolved "https://registry.yarnpkg.com/bcryptjs/-/bcryptjs-2.4.3.tgz#9ab5627b93e60621ff7cdac5da9733027df1d0cb"
   integrity sha1-mrVie5PmBiH/fNrF2pczAn3x0Ms=
 
+binary-case@^1.0.0:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/binary-case/-/binary-case-1.1.4.tgz#d687104d59e38f2b9e658d3a58936963c59ab931"
+  integrity sha512-9Kq8m6NZTAgy05Ryuh7U3Qc4/ujLQU1AZ5vMw4cr3igTdi5itZC6kCNrRr2X8NzPiDn2oUIFTfa71DKMnue/Zg==
+
 binary-extensions@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
 
-body-parser@1.19.0:
+body-parser@1.19.0, body-parser@^1.19.0:
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.19.0.tgz#96b2709e57c9c4e09a6fd66a8fd979844f69f08a"
   integrity sha512-dhEPs72UPbDnAQJ9ZKMNTP6ptJaionhP5cBb541nXPlW60Jepo9RV/a4fX4XWW9CuFNK22krhrj1+rgzifNCsw==
@@ -3292,7 +3314,7 @@ events@^3.1.0:
   resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
 
-express@4.17.1:
+express@4.17.1, express@^4.17.1:
   version "4.17.1"
   resolved "https://registry.yarnpkg.com/express/-/express-4.17.1.tgz#4491fc38605cf51f8629d39c2b5d026f98a4c134"
   integrity sha512-mHJ9O79RqluphRrcw2X/GTh3k9tVv8YcoyY4Kkh4WDMUYKRZUq0h1o0w2rrrxBqM7VoeUVqgb27xlEMXTnYt4g==
@@ -5243,7 +5265,7 @@ type-fest@^0.20.2:
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.20.2.tgz#1bf207f4b28f91583666cb5fbd327887301cd5f4"
   integrity sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==
 
-type-is@~1.6.17, type-is@~1.6.18:
+type-is@^1.6.16, type-is@~1.6.17, type-is@~1.6.18:
   version "1.6.18"
   resolved "https://registry.yarnpkg.com/type-is/-/type-is-1.6.18.tgz#4e552cd05df09467dcbc4ef739de89f2cf37c131"
   integrity sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==

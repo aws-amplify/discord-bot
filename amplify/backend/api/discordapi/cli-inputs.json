@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "paths": {
+    "/interact": {
+      "permissions": {
+        "setting": "open"
+      },
+      "lambdaFunction": "discordinteraction"
+    },
+    "/commands": {
+      "name": "/commands",
+      "lambdaFunction": "discordcommands",
+      "permissions": {
+        "groups": {
+          "admins": [
+            "create",
+            "read",
+            "update",
+            "delete"
+          ]
+        },
+        "setting": "private"
+      }
+    }
+  }
+}

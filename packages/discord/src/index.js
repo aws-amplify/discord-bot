@@ -1,6 +1,8 @@
 import fetch from 'node-fetch'
 import nacl from 'tweetnacl'
+
 export * from './handleCommand.js'
+export * from './registerCommand.js'
 
 export async function verifyEvent(event) {
   const signature = event.headers['X-Signature-Ed25519'.toLowerCase()]
