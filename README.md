@@ -1,4 +1,6 @@
-# Discord Interaction Bot
+# amplify-bot
+
+Welcome to the amplify-bot repository!
 
 - [Ideas Discussion](https://github.com/josefaidt/amplify-discord-bots/discussions/1)
 - [Discord API Documentation - Application (slash) Commands](https://discord.com/developers/docs/interactions/application-commands)
@@ -33,6 +35,6 @@ For local development, ensure the following preqrequisites are met:
 2. Rename `.env.sample` to `.env` and add necessary Discord environment values
 3. Install dependencies with `yarn install`
 4. Run the app with `yarn app dev` -- this will run both the Svelte-Kit app and the bot layer
-5. Tunnel your connection with [ngrok]: `ngrok http 3000`
+5. Tunnel your connection with [ngrok](https://www.npmjs.com/package/ngrok): `ngrok http 3000`
 6. Add tunneled URL to your bot's Interaction Endpoint URL: `<ngrok-https-url>/api/interact`
 7. Save your changes and register application commands to your bot with the frontend (or send an empty POST request to `http://localhost:3000/api/commands/sync`). **NOTE**: allow about 30 minutes for commands to show in Discord
