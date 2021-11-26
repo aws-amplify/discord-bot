@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
-import { interact } from '@amplify-discord-bots/handler-interact'
+import { handler as interact } from '@amplify-discord-bots/handler-interact'
+import { app } from '@amplify-discord-bots/handler-commands'
 
 /**
  *
@@ -18,7 +19,7 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
     data += chunk
   })
   req.on('end', async () => {
-    req.body = JSON.parse(data)
+    if (data) req.body = JSON.parse(data)
     res.setHeader('Content-Type', 'application/json')
 
     let result
@@ -27,11 +28,19 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
       result = await interact(req)
     }
 
-    if (req.url === '/api/hello') {
-      result = req.body
+    if (req.url.startsWith('/api/commands')) {
+      const commands = app()
+      req.url = req.url.slice(4)
+      commands.handle(req, res, next)
     }
 
-    res.end(JSON.stringify(result))
+    if (req.url === '/api/hello') {
+      result = { hello: 'world' }
+      if (req.body) result = req.body
+    }
+
+    if (result) res.end(JSON.stringify(result))
+    else res.end()
   })
 }
 

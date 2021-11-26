@@ -19,20 +19,6 @@
       "service": "LambdaLayer",
       "build": true
     },
-    "discordsync": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "discordlayer",
-          "attributes": [
-            "Arn"
-          ]
-        }
-      ]
-    },
     "amplifydiscordbotauthPreSignup": {
       "build": true,
       "providerPlugin": "awscloudformation",
