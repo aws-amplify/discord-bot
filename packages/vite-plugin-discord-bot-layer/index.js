@@ -3,7 +3,7 @@ import { handler as interact } from '@amplify-discord-bots/handler-interact'
 import { app } from '@amplify-discord-bots/handler-commands'
 
 /**
- *
+ * Connect-style middleware handler for Discord bot API layer
  * @param {import('vite').Connect.IncomingMessage} req
  * @param {import('http').ServerResponse} res
  * @param {import('vite').Connect.NextHandleFunction} next
@@ -45,13 +45,21 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
   })
 }
 
+/**
+ * Loads secrets from .env file in project root
+ * @returns {void} loads secrets to `process.env`
+ */
 async function loadSecrets() {
   ;(await import('dotenv')).config({
     path: resolve('../../', '.env'),
   })
 }
 
-export function DiscordBotLayerPlugin(pluginOptions = {}) {
+/**
+ * Adds the Discord bot routes to Vite dev server, mimicking API Gateway setup
+ * @returns {import('vite').Plugin}
+ */
+export function DiscordBotLayerPlugin() {
   return {
     name: 'discord-bot-layer-plugin',
     configureServer: async (server) => {

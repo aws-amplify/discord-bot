@@ -100,7 +100,7 @@ After creating the new Application Command project, head on over to the [bank](.
 +   "@amplify-discord-bots/command-sample": "*",
     "@amplify-discord-bots/command-static": "*"
   },
-  }
+}
 ```
 
 ```js
@@ -109,6 +109,6 @@ After creating the new Application Command project, head on over to the [bank](.
 const commands = [giverole, sample]
 ```
 
-From the project root, install dependencies with `yarn install`, restart the dev server, and sync commands.
+From the project root, install dependencies with `yarn install`, restart the dev server (`yarn dev`), and sync commands.
 
 **NOTE**: allow about 30 minutes for commands to show in Discord

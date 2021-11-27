@@ -2,6 +2,11 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import { syncCommands } from '@amplify-discord-bots/discord'
 
+/**
+ * Express.js app
+ * @param {import('express').RequestHandler[]} middlewares - middleware to add on init
+ * @returns {import('express').Application}
+ */
 export function app(middlewares = []) {
   const server = express()
   server.use(bodyParser.json())

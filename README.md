@@ -27,8 +27,8 @@ The URL noted in step 2 above has the permissions integer of `2483045376` which 
 
 For local development, ensure the following preqrequisites are met:
 
-- Node.js v16.x
-- yarn v1.x
+- Node.js v16.x (`nvm use`)
+- yarn v1.x (`npm i -g yarn`)
 
 1. [Register Discord bot](https://discord.com/developers/applications)
 2. Rename `.env.sample` to `.env` and add necessary Discord environment values
@@ -37,3 +37,5 @@ For local development, ensure the following preqrequisites are met:
 5. Tunnel your connection with [ngrok](https://www.npmjs.com/package/ngrok): `ngrok http 3000`
 6. Add tunneled URL to your bot's Interaction Endpoint URL: `<ngrok-https-url>/api/interact`
 7. Save your changes and register application commands to your bot with the frontend (or send an empty POST request to `http://localhost:3000/api/commands/sync`). **NOTE**: allow about 30 minutes for commands to show in Discord
+
+For more information on how to contribute, visit the [contributing documentation](./CONTRIBUTING.md)
