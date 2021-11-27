@@ -1,6 +1,6 @@
 # Contributing
 
-Refer to the [readme guide](/readme.md#development) to get set up for local development.
+Refer to the [readme guide](./readme.md#development) to get set up for local development.
 
 [Discord API Documentation - Application (slash) Commands](https://discord.com/developers/docs/interactions/application-commands)
 
@@ -90,7 +90,7 @@ export async function handler(context) {
 }
 ```
 
-After creating the new Application Command project, head on over to the [bank](/packages/bank), add it as a dependency, and add to the commands array.
+After creating the new Application Command project, head on over to the [bank](./packages/bank), add it as a dependency, and add to the commands array.
 
 ```diff
 {
