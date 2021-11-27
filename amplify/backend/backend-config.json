@@ -19,20 +19,6 @@
       "service": "LambdaLayer",
       "build": true
     },
-    "discordsync": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "discordlayer",
-          "attributes": [
-            "Arn"
-          ]
-        }
-      ]
-    },
     "amplifydiscordbotauthPreSignup": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -51,6 +37,20 @@
           ]
         }
       ]
+    },
+    "discordcommands": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "discordlayer",
+          "attributes": [
+            "Arn"
+          ]
+        }
+      ]
     }
   },
   "api": {
@@ -60,7 +60,15 @@
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "discordsync",
+          "resourceName": "discordinteraction",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "discordcommands",
           "attributes": [
             "Name",
             "Arn"
@@ -78,14 +86,6 @@
           "resourceName": "userPoolGroups",
           "attributes": [
             "adminsGroupRole"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "discordinteraction",
-          "attributes": [
-            "Name",
-            "Arn"
           ]
         }
       ]

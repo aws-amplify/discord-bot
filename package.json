@@ -8,12 +8,15 @@
   ],
   "scripts": {
     "start": "echo 'no start command needed'",
-    "app": "yarn workspace @amplify-discord-bots/app"
+    "app": "yarn workspace @amplify-discord-bots/app",
+    "dev": "yarn app dev",
+    "push": "scripts/push"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "prettier": "^2.4.0"
+    "prettier": "^2.4.0",
+    "verdaccio": "^5.2.2"
   },
   "prettier": {
     "tabWidth": 2,

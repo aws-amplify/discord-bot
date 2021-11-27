@@ -1,7 +1,11 @@
-const fetch = require('node-fetch')
-const nacl = require('tweetnacl')
+import fetch from 'node-fetch'
+import nacl from 'tweetnacl'
 
-exports.verifyEvent = async function verifyEvent(event) {
+export * from './handleCommand.js'
+export * from './registerCommand.js'
+export * from './syncCommands.js'
+
+export async function verifyEvent(event) {
   const signature = event.headers['X-Signature-Ed25519'.toLowerCase()]
   const timestamp = event.headers['X-Signature-Timestamp'.toLowerCase()]
   const body = JSON.stringify(event.body)
@@ -14,7 +18,7 @@ exports.verifyEvent = async function verifyEvent(event) {
   return isVerified
 }
 
-exports.generateResponse = function generateResponse(content, embeds) {
+export function generateResponse(content, embeds) {
   return {
     tts: false,
     content,
@@ -23,11 +27,7 @@ exports.generateResponse = function generateResponse(content, embeds) {
   }
 }
 
-exports.addRoleToUser = async function addRoleToUser({
-  guildId,
-  userId,
-  roleId,
-}) {
+export async function addRoleToUser({ guildId, userId, roleId }) {
   const config = {
     method: 'PUT',
     headers: {
@@ -51,7 +51,7 @@ exports.addRoleToUser = async function addRoleToUser({
   return data
 }
 
-exports.deleteCommand = async function deleteCommand(commandId, { guildId }) {
+export async function deleteCommand(commandId, { guildId }) {
   const config = {
     method: 'DELETE',
     headers: {
@@ -77,7 +77,7 @@ exports.deleteCommand = async function deleteCommand(commandId, { guildId }) {
   return data
 }
 
-exports.getRegisteredCommands = async function getRegisteredCommands() {
+export async function getRegisteredCommands() {
   const config = {
     method: 'GET',
     headers: {
@@ -100,7 +100,7 @@ exports.getRegisteredCommands = async function getRegisteredCommands() {
   return data
 }
 
-exports.getGuilds = async function getGuilds() {
+export async function getGuilds() {
   const config = {
     method: 'GET',
     headers: {

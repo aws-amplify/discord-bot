@@ -60,12 +60,7 @@
         "discordinteraction": {
           "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordinteraction-6e47644e653434364658-build.zip"
-        },
-        "discordsync": {
-          "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
-          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordsync-642b33456d6c50674151-build.zip"
+          "s3Key": "amplify-builds/discordinteraction-6f5a713465756235447a-build.zip"
         },
         "discordlayer": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",

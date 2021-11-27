@@ -1,13 +1,17 @@
 version: 1
 env:
   variables:
-    AMPLIFY_DIFF_BACKEND: true
+    AMPLIFY_DIFF_BACKEND: false # important to deploy backend
 backend:
   phases:
+    preBuild:
+      commands:
+        - nvm install
+        - yarn global add @aws-amplify/cli
+        - yarn install
     build:
       commands:
-        - '# Execute Amplify CLI with the helper script'
-        - amplifyPush --simple
+        - yarn push
 frontend:
   phases:
     preBuild:
