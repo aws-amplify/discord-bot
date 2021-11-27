@@ -106,6 +106,7 @@ After creating the new Application Command project, head on over to the [bank](.
 
 ```js
 // packages/bank/src/index.js
+import * as sample from '@amplify-discord-bots/command-sample'
 // ...
 const commands = [giverole, sample]
 ```
