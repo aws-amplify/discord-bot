@@ -27,8 +27,8 @@ The URL noted in step 2 above has the permissions integer of `2483045376` which 
 
 For local development, ensure the following preqrequisites are met:
 
-- Node.js v16.x (`nvm use`)
-- yarn v1.x (`npm i -g yarn`)
+- Node.js v16.x
+- yarn v1.x
 
 1. [Register Discord bot](https://discord.com/developers/applications)
 2. Rename `.env.sample` to `.env` and add necessary Discord environment values
