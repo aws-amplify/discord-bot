@@ -9,6 +9,7 @@
   "scripts": {
     "start": "echo 'no start command needed'",
     "app": "yarn workspace @amplify-discord-bots/app",
+    "dev": "yarn app dev",
     "push": "scripts/push"
   },
   "devDependencies": {

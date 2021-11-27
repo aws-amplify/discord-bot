@@ -43,4 +43,5 @@ export function createBank({ staticCommandsData = [], commands = [] }) {
   )
 }
 
-export const bank = createBank({ staticCommandsData, commands: [giverole] })
+const commands = [giverole]
+export const bank = createBank({ staticCommandsData, commands })
