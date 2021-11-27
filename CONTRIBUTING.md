@@ -94,6 +94,7 @@ After creating the new Application Command project, head on over to the [bank](.
 
 ```diff
 {
+  "name": "@amplify-discord-bots/bank",
   // ...
   "dependencies": {
     "@amplify-discord-bots/command-giverole": "*",
