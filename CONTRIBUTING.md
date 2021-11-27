@@ -1,6 +1,6 @@
 # Contributing
 
-Refer to the [readme guide](./readme.md#development) to get set up for local development.
+Refer to the [readme guide](./README.md#development) to get set up for local development.
 
 [Discord API Documentation - Application (slash) Commands](https://discord.com/developers/docs/interactions/application-commands)
 
