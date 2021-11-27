@@ -28,15 +28,16 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
       result = await interact(req)
     }
 
+    if (req.url === '/api/hello') {
+      result = { hello: 'world' }
+      if (req.body) result = req.body
+    }
+
     if (req.url.startsWith('/api/commands')) {
       const commands = app()
       req.url = req.url.slice(4)
       commands.handle(req, res, next)
-    }
-
-    if (req.url === '/api/hello') {
-      result = { hello: 'world' }
-      if (req.body) result = req.body
+      return
     }
 
     if (result) res.end(JSON.stringify(result))
@@ -62,6 +63,9 @@ export function DiscordBotLayerPlugin(pluginOptions = {}) {
           error
         )
       }
+      console.log(
+        `Started Discord Bot Layer for env: ${process.env.DISCORD_ENV}`
+      )
       server.middlewares.use(DiscordBotLayerPluginHandler)
     },
   }

@@ -21,10 +21,12 @@ export function app(middlewares = []) {
 
   server.post('/commands/sync', async function (req, res) {
     try {
-      return res.json(JSON.stringify(await syncCommands()))
+      res.end(JSON.stringify(await syncCommands()))
+      return
     } catch (error) {
+      console.error('Error syncing commands', error)
       res.status(500)
-      res.json(JSON.stringify({ error, message: 'Unable to sync commands' }))
+      res.end(JSON.stringify({ error, message: 'Unable to sync commands' }))
     }
   })
 
