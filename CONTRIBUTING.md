@@ -86,7 +86,7 @@ export const config = {
  * @returns {(string|object)}
  */
 export async function handler(context) {
-  //
+  return 'Hello from my sample command!'
 }
 ```
 
