@@ -9,7 +9,7 @@ Refer to the [readme guide](./readme.md#development) to get set up for local dev
 - Node.js v16.x
 - yarn v1.x
 
-## Getting Started
+## Package Overview
 
 ### [@amplify-discord-bots/app](./packages/app)
 

@@ -2,7 +2,9 @@
 
 Welcome to the amplify-bot repository!
 
-## Setting up a Discord Bot
+## Getting Started
+
+### Setting up a Discord Bot
 
 <!-- TODO: screenshots -->
 
@@ -12,7 +14,7 @@ Welcome to the amplify-bot repository!
    https://discord.com/api/oauth2/authorize?client_id=<app-id>&permissions=2483045376&scope=bot%20applications.commands
    ```
 
-### Required Bot Permissions
+#### Required Bot Permissions
 
 The URL noted in step 2 above has the permissions integer of `2483045376` which includes the following bot permissions:
 
@@ -21,7 +23,7 @@ The URL noted in step 2 above has the permissions integer of `2483045376` which 
 - manage roles
 - send messages
 
-## Development
+### Development
 
 For local development, ensure the following preqrequisites are met:
 
