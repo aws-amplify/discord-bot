@@ -74,6 +74,9 @@
         "AdminQueries0cb0a3ea": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
           "s3Key": "amplify-builds/AdminQueries0cb0a3ea-6166596165794e77324c-build.zip"
+        },
+        "discordcommands": {
+          "secretsPathAmplifyAppId": "d2fv4cpitjxh2e"
         }
       },
       "auth": {

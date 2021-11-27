@@ -9,12 +9,6 @@ export type AmplifyDependentResourcesAttributes = {
         "discordlayer": {
             "Arn": "string"
         },
-        "discordsync": {
-            "Name": "string",
-            "Arn": "string",
-            "Region": "string",
-            "LambdaExecutionRole": "string"
-        },
         "amplifydiscordbotauthPreSignup": {
             "Name": "string",
             "Arn": "string",
@@ -26,14 +20,15 @@ export type AmplifyDependentResourcesAttributes = {
             "Arn": "string",
             "Region": "string",
             "LambdaExecutionRole": "string"
+        },
+        "discordcommands": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
         }
     },
     "api": {
-        "discordapi": {
-            "RootUrl": "string",
-            "ApiName": "string",
-            "ApiId": "string"
-        },
         "AdminQueries": {
             "RootUrl": "string",
             "ApiName": "string",

@@ -16,6 +16,9 @@
     "s3Key": {
       "Type": "String"
     },
+    "secretsPathAmplifyAppId": {
+      "Type": "String"
+    },
     "functiondiscordlayerArn": {
       "Type": "String",
       "Default": "functiondiscordlayerArn"

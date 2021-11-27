@@ -3,10 +3,14 @@
     {
       "type": "ProjectLayer",
       "resourceName": "discordlayer",
-      "env": "next",
       "version": "Always choose latest version",
-      "isLatestVersionSelected": true
+      "isLatestVersionSelected": true,
+      "env": "next"
     }
   ],
-  "secretNames": ["DISCORD_BOT_TOKEN", "DISCORD_APP_ID", "DISCORD_PUBLIC_KEY"]
+  "secretNames": [
+    "DISCORD_BOT_TOKEN",
+    "DISCORD_APP_ID",
+    "DISCORD_PUBLIC_KEY"
+  ]
 }
