@@ -62,14 +62,14 @@ then
 else
   echo 'no amplifyPush script found'
   # if not in Amplify Console (local) run from Amplify CLI directly
-  # amplify push -y
+  amplify push -y
 fi
 
 
 # kill verdaccio, remove storage
 echo "Killing Verdaccio and removing storage..."
 kill $VERDACCIO_PID
-rm -rf .verdaccio
+rm -rf ./scripts/.verdaccio
 echo "Done! 🙌"
 
 if [ $HELPER_BACKEND_BUILD_EXIT_CODE -ne 0 ]; then
