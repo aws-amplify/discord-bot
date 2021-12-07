@@ -31,3 +31,4 @@ secrets.yml
 notes.md
 
 packages/**/lib
+!packages/app/src/lib
