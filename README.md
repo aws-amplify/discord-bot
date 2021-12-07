@@ -1,6 +1,6 @@
-# amplify-bot
+# hey-amplify
 
-Welcome to the amplify-bot repository!
+Welcome to hey-amplify! This repository contains the source code for the [AWS Amplify Discord Server](https://discord.gg/8RFCGKMfVM)'s bot!
 
 ## Getting Started
 
