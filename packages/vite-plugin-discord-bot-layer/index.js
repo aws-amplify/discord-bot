@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
-import { handler as interact } from '@amplify-discord-bots/handler-interact'
-import { app } from '@amplify-discord-bots/handler-commands'
+import { handler as interact } from '@hey-amplify/handler-interact'
+import { app } from '@hey-amplify/handler-commands'
 
 /**
  * Connect-style middleware handler for Discord bot API layer

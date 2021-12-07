@@ -1,4 +1,4 @@
-import { bank } from '@amplify-discord-bots/bank'
+import { bank } from '@hey-amplify/bank'
 import { generateResponse } from './index.js'
 
 export async function handleCommand({ context }) {

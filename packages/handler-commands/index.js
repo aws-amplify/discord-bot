@@ -1,6 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { syncCommands } from '@amplify-discord-bots/discord'
+import { syncCommands } from '@hey-amplify/discord'
 
 /**
  * Express.js app

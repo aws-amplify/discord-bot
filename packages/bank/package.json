@@ -1,5 +1,5 @@
 {
-  "name": "@amplify-discord-bots/bank",
+  "name": "@hey-amplify/bank",
   "version": "0.1.0",
   "type": "module",
   "license": "Apache-2.0",
@@ -15,10 +15,10 @@
     "prepublishOnly": "yarn build --minify"
   },
   "dependencies": {
-    "@amplify-discord-bots/command-giverole": "*",
-    "@amplify-discord-bots/command-static": "*"
+    "@hey-amplify/command-giverole": "*",
+    "@hey-amplify/command-static": "*"
   },
   "devDependencies": {
-    "@amplify-discord-bots/builder": "*"
+    "@hey-amplify/builder": "*"
   }
 }

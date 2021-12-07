@@ -1,4 +1,4 @@
-import { bank } from '@amplify-discord-bots/bank'
+import { bank } from '@hey-amplify/bank'
 import { registerCommand } from './registerCommand.js'
 
 export async function syncCommands() {

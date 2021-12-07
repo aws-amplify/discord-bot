@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@amplify-discord-bots/handler-interact": "0.1.0"
+    "@hey-amplify/handler-interact": "0.1.0"
   },
   "scripts": {
     "build": "echo 'no build required for $npm_package_name'"

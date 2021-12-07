@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@amplify-discord-bots/handler-commands": "0.1.0",
+    "@hey-amplify/handler-commands": "0.1.0",
     "aws-serverless-express": "^3.3.5"
   },
   "scripts": {

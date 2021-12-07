@@ -10,8 +10,8 @@
     }
   },
   "dependencies": {
-    "@amplify-discord-bots/handler-interact": "*",
-    "@amplify-discord-bots/handler-commands": "*",
+    "@hey-amplify/handler-interact": "*",
+    "@hey-amplify/handler-commands": "*",
     "dotenv": "^10.0.0"
   },
   "devDependencies": {

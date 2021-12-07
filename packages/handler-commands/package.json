@@ -1,5 +1,5 @@
 {
-  "name": "@amplify-discord-bots/handler-commands",
+  "name": "@hey-amplify/handler-commands",
   "version": "0.1.0",
   "type": "module",
   "license": "Apache-2.0",
@@ -15,10 +15,10 @@
     "prepublishOnly": "yarn build --minify"
   },
   "devDependencies": {
-    "@amplify-discord-bots/builder": "*"
+    "@hey-amplify/builder": "*"
   },
   "dependencies": {
-    "@amplify-discord-bots/discord": "*",
+    "@hey-amplify/discord": "*",
     "body-parser": "^1.19.0",
     "express": "^4.17.1"
   }

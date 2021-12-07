@@ -1,5 +1,5 @@
 {
-  "name": "@amplify-discord-bots/command-static",
+  "name": "@hey-amplify/command-static",
   "version": "0.1.0",
   "type": "module",
   "license": "Apache-2.0",
@@ -15,6 +15,6 @@
     "prepublish": "yarn build --minify"
   },
   "devDependencies": {
-    "@amplify-discord-bots/builder": "*"
+    "@hey-amplify/builder": "*"
   }
 }

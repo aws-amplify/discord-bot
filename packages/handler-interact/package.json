@@ -1,5 +1,5 @@
 {
-  "name": "@amplify-discord-bots/handler-interact",
+  "name": "@hey-amplify/handler-interact",
   "version": "0.1.0",
   "type": "module",
   "license": "Apache-2.0",
@@ -15,9 +15,9 @@
     "prepublishOnly": "yarn build --minify"
   },
   "devDependencies": {
-    "@amplify-discord-bots/builder": "*"
+    "@hey-amplify/builder": "*"
   },
   "dependencies": {
-    "@amplify-discord-bots/discord": "*"
+    "@hey-amplify/discord": "*"
   }
 }

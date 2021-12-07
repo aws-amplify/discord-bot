@@ -13,7 +13,7 @@ const { Parameters } = await (new aws.SSM())
 Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
 */
 const { loadSecrets } = require('/opt/secrets')
-const { handler: interact } = require('@amplify-discord-bots/handler-interact')
+const { handler: interact } = require('@hey-amplify/handler-interact')
 
 let secretsLoaded = false
 exports.handler = async (event) => {

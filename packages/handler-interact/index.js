@@ -1,4 +1,4 @@
-import { verifyEvent, handleCommand } from '@amplify-discord-bots/discord'
+import { verifyEvent, handleCommand } from '@hey-amplify/discord'
 
 export async function handler(event) {
   if (event?.body && (await verifyEvent(event))) {

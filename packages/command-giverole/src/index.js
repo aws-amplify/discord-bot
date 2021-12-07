@@ -1,4 +1,4 @@
-import { addRoleToUser } from '@amplify-discord-bots/discord'
+import { addRoleToUser } from '@hey-amplify/discord'
 
 export const config = {
   name: 'giverole',
