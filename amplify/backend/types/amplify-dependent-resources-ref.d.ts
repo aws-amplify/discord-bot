@@ -29,6 +29,11 @@ export type AmplifyDependentResourcesAttributes = {
         }
     },
     "api": {
+        "discordapi": {
+            "RootUrl": "string",
+            "ApiName": "string",
+            "ApiId": "string"
+        },
         "AdminQueries": {
             "RootUrl": "string",
             "ApiName": "string",
