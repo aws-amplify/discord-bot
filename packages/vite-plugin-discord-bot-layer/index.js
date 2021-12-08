@@ -25,7 +25,19 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
     let result
 
     if (req.url === '/api/interact') {
-      result = await interact(req)
+      try {
+        result = await interact(req)
+      } catch (error) {
+        console.error('Failed to interact:', error)
+        if (res.statusCode === 200) res.statusCode = 401
+        result = {
+          error: {
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+          },
+        }
+      }
     }
 
     if (req.url === '/api/hello') {
@@ -40,8 +52,14 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
       return
     }
 
-    if (result) res.end(JSON.stringify(result))
-    else res.end()
+    if (result) {
+      if (result.error) {
+        if (res?.statusCode === 200) res.statusCode = 500
+        res.end(JSON.stringify(result))
+        return
+      }
+      res.end(JSON.stringify(result))
+    } else res.end()
   })
 }
 
@@ -50,8 +68,9 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
  * @returns {void} loads secrets to `process.env`
  */
 async function loadSecrets() {
+  const path = resolve('../../', '.env')
   ;(await import('dotenv')).config({
-    path: resolve('../../', '.env'),
+    path,
   })
 }
 
