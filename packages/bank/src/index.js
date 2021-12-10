@@ -1,5 +1,5 @@
-import * as giverole from '@amplify-discord-bots/command-giverole'
-import { staticCommandsData } from '@amplify-discord-bots/command-static'
+import * as giverole from '@hey-amplify/command-giverole'
+import { staticCommandsData } from '@hey-amplify/command-static'
 
 const validCommandNameRegex = /^[\w-]{1,32}$/
 // TODO: filter on command name regex to prevent sync errors

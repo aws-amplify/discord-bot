@@ -1,5 +1,5 @@
 {
-  "name": "amplify-discord-bots",
+  "name": "@hey-amplify/root",
   "version": "0.1.0",
   "license": "Apache-2.0",
   "private": true,
@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "start": "echo 'no start command needed'",
-    "app": "yarn workspace @amplify-discord-bots/app",
+    "app": "yarn workspace @hey-amplify/app",
     "dev": "yarn app dev",
     "push": "scripts/push"
   },

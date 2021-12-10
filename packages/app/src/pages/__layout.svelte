@@ -1,7 +1,7 @@
 <script context="module">
   import { Auth } from '@aws-amplify/auth'
   import { Amplify } from '@aws-amplify/core'
-  import amplifyConfig from '@amplify-discord-bots/aws-exports'
+  import amplifyConfig from '@hey-amplify/aws-exports'
   import { user as userStore } from '$lib/store'
 
   Amplify.configure(amplifyConfig)

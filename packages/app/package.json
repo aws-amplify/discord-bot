@@ -1,5 +1,5 @@
 {
-  "name": "@amplify-discord-bots/app",
+  "name": "@hey-amplify/app",
   "private": true,
   "workspaces": {
     "nohoist": [
@@ -18,7 +18,7 @@
     "aws-amplify": "^4.3.3"
   },
   "devDependencies": {
-    "@amplify-discord-bots/aws-exports": "*",
+    "@hey-amplify/aws-exports": "*",
     "@sveltejs/adapter-static": "next",
     "@sveltejs/kit": "next",
     "autoprefixer": "^10.3.7",

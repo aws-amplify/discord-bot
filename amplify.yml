@@ -21,7 +21,7 @@ frontend:
     build:
       commands:
         - nvm install
-        - yarn workspace @amplify-discord-bots/app run build
+        - yarn workspace @hey-amplify/app run build
   artifacts:
     baseDirectory: packages/app/build
     files:

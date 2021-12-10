@@ -11,7 +11,7 @@ Refer to the [readme guide](./README.md#development) to get set up for local dev
 
 ## Package Overview
 
-### [@amplify-discord-bots/app](./packages/app)
+### [@hey-amplify/app](./packages/app)
 
 The frontend is built using [Svelte-Kit](https://kit.svelte.dev) and [carbon-components-svelte](https://carbon-components-svelte.onrender.com/). It also includes a plugin for the Vite dev server to power the Discord bot. All requests routed through `/api` are handled by the plugin.
 
@@ -19,7 +19,7 @@ reference: [vite-plugin-discord-bot-layer](./packages/vite-plugin-discord-bot-la
 
 Run `yarn dev` from the project root to get started!
 
-### [@amplify-discord-bots/builder](./packages/builder)
+### [@hey-amplify/builder](./packages/builder)
 
 Builder is a build tool built on [esbuild](https://esbuild.github.io/). Instead of copying the same command and arguments to each individual package, this has been wrapped into a single tool for use with ESM packages. It leverages a plugin to convert extensions on import to cjs due to [Node 16 ESM requiring file extensions](https://nodejs.org/docs/latest-v16.x/api/esm.html#mandatory-file-extensions):
 
@@ -38,7 +38,7 @@ const { namedExport } = require('./my-module.cjs)
 - auto-resolves the entrypoint to either `./index.js` or `./src/*`
 - marks package dependencies as "external"
 
-### [@amplify-discord-bots/bank](./packages/bank)
+### [@hey-amplify/bank](./packages/bank)
 
 The command bank! More on this below in [Authoring Application Commands](#authoring-application-commands)
 
@@ -48,7 +48,7 @@ The following sample `package.json` serves as a template for authoring `/sample`
 
 ```json
 {
-  "name": "@amplify-discord-bots/command-sample",
+  "name": "@hey-amplify/command-sample",
   "version": "0.1.0",
   "type": "module",
   "license": "Apache-2.0",
@@ -65,7 +65,7 @@ The following sample `package.json` serves as a template for authoring `/sample`
   },
   "dependencies": {},
   "devDependencies": {
-    "@amplify-discord-bots/builder": "*"
+    "@hey-amplify/builder": "*"
   }
 }
 ```
@@ -94,19 +94,19 @@ After creating the new Application Command project, head on over to the [bank](.
 
 ```diff
 {
-  "name": "@amplify-discord-bots/bank",
+  "name": "@hey-amplify/bank",
   // ...
   "dependencies": {
-    "@amplify-discord-bots/command-giverole": "*",
-+   "@amplify-discord-bots/command-sample": "*",
-    "@amplify-discord-bots/command-static": "*"
+    "@hey-amplify/command-giverole": "*",
++   "@hey-amplify/command-sample": "*",
+    "@hey-amplify/command-static": "*"
   },
 }
 ```
 
 ```js
 // packages/bank/src/index.js
-import * as sample from '@amplify-discord-bots/command-sample'
+import * as sample from '@hey-amplify/command-sample'
 // ...
 const commands = [giverole, sample]
 ```

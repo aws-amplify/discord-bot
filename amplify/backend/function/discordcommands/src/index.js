@@ -1,6 +1,6 @@
 const awsServerlessExpress = require('aws-serverless-express')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
-const { app } = require('@amplify-discord-bots/handler-commands')
+const { app } = require('@hey-amplify/handler-commands')
 const { loadSecrets } = require('/opt/secrets')
 
 const wrapped = app([awsServerlessExpressMiddleware.eventContext()])

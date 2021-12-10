@@ -1,5 +1,5 @@
 {
-  "name": "@amplify-discord-bots/command-giverole",
+  "name": "@hey-amplify/command-giverole",
   "version": "0.1.0",
   "type": "module",
   "license": "Apache-2.0",
@@ -15,9 +15,9 @@
     "prepublishOnly": "yarn build --minify"
   },
   "dependencies": {
-    "@amplify-discord-bots/discord": "*"
+    "@hey-amplify/discord": "*"
   },
   "devDependencies": {
-    "@amplify-discord-bots/builder": "*"
+    "@hey-amplify/builder": "*"
   }
 }
