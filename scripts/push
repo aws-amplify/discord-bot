@@ -64,7 +64,7 @@ fi
 
 
 # kill verdaccio, remove storage
-echo "Killing Verdaccio and removing storage..."
+echo "Stopping Verdaccio..."
 kill $VERDACCIO_PID
 echo "Done! 🙌"
 

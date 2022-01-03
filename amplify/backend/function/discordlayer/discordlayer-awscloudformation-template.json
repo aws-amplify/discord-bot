@@ -20,19 +20,23 @@
     }
   },
   "Resources": {
-    "LambdaLayerVersiond8ea4c83": {
+    "LambdaLayerVersionec50f29a": {
       "Type": "AWS::Lambda::LayerVersion",
       "Properties": {
-        "CompatibleRuntimes": [
-          "nodejs14.x"
-        ],
+        "CompatibleRuntimes": {
+          "Ref": "runtimes"
+        },
         "Content": {
           "S3Bucket": {
             "Ref": "deploymentBucketName"
           },
-          "S3Key": "amplify-builds/discordlayer-LambdaLayerVersiond8ea4c83-build.zip"
+          "S3Key": {
+            "Ref": "s3Key"
+          }
         },
-        "Description": "Updated layer version 2022-01-03T22:10:30.036Z",
+        "Description": {
+          "Ref": "description"
+        },
         "LayerName": {
           "Fn::Sub": [
             "discordlayer-${env}",
@@ -47,11 +51,13 @@
       "DeletionPolicy": "Delete",
       "UpdateReplacePolicy": "Retain"
     },
-    "LambdaLayerPermissionPrivated8ea4c83": {
+    "LambdaLayerPermissionPrivateec50f29a": {
       "Type": "AWS::Lambda::LayerVersionPermission",
       "Properties": {
         "Action": "lambda:GetLayerVersion",
-        "LayerVersionArn": "arn:aws:lambda:us-east-1:229156689808:layer:discordlayer-next:31",
+        "LayerVersionArn": {
+          "Ref": "LambdaLayerVersionec50f29a"
+        },
         "Principal": {
           "Ref": "AWS::AccountId"
         }
@@ -61,7 +67,7 @@
   "Outputs": {
     "Arn": {
       "Value": {
-        "Ref": "LambdaLayerVersiond8ea4c83"
+        "Ref": "LambdaLayerVersionec50f29a"
       }
     }
   }
