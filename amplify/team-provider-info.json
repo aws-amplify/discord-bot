@@ -18,11 +18,6 @@
           "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
           "s3Key": "amplify-builds/discordinteraction-6e47644e653434364658-build.zip"
         },
-        "discordsync": {
-          "secretsPathAmplifyAppId": "d2fv4cpitjxh2e",
-          "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
-          "s3Key": "amplify-builds/discordsync-642b33456d6c50674151-build.zip"
-        },
         "discordlayer": {
           "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
           "s3Key": "amplify-builds/discordlayer-LambdaLayerVersione9c1d607-build.zip"
@@ -34,6 +29,9 @@
         "AdminQueries0cb0a3ea": {
           "deploymentBucketName": "amplify-amplifydiscordbot-main-170303-deployment",
           "s3Key": "amplify-builds/AdminQueries0cb0a3ea-6166596165794e77324c-build.zip"
+        },
+        "discordcommands": {
+          "secretsPathAmplifyAppId": "d2fv4cpitjxh2e"
         }
       },
       "auth": {
