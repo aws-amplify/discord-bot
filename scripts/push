@@ -4,17 +4,8 @@ function publish () {
   yarn publish --cwd $1 --registry http://localhost:4000 --non-interactive
 }
 
-# if jq does not exist, attempt install
-if ! [ -x "$(command -v jq)" ]
-then
-  yum install jq -y
-fi
-
 function write_to_plugins () {
-  AMPLIFY_PLUGINS_FILE=~/.amplify/plugins.json
-  [[ -e $AMPLIFY_PLUGINS_FILE ]] && \
-    content="$(jq '.pluginDirectories += ["packaged-node-modules"]' $AMPLIFY_PLUGINS_FILE)" && \
-    echo "${content}" > $AMPLIFY_PLUGINS_FILE
+  node scripts/patch.js
 }
 
 # start_verdaccio
@@ -69,6 +60,7 @@ fi
 # kill verdaccio, remove storage
 echo "Killing Verdaccio and removing storage..."
 kill $VERDACCIO_PID
+ls; ls scripts
 rm -rf ./scripts/.verdaccio
 echo "Done! 🙌"
 
