@@ -6,7 +6,7 @@ const glob = require('tiny-glob')
 let transformJsImportToCjsPlugin = {
   name: 'transform-js-import-to-cjs',
   setup(build) {
-    build.onResolve({ filter: /\.js$/ }, (args) => {
+    build.onResolve({ filter: /^.[./].+([A-z0-9-_])?\.js$/ }, (args) => {
       if (args.importer)
         return { path: args.path.slice(0, -3) + '.cjs', external: true }
     })
