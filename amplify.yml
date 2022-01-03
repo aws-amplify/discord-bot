@@ -7,6 +7,7 @@ backend:
     preBuild:
       commands:
         - nvm install
+        - yarn cache clean
         - yarn global add @aws-amplify/cli
         - yarn install
     build:
