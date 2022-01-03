@@ -75,4 +75,4 @@ echo "Done! 🙌"
 if [ $HELPER_BACKEND_BUILD_EXIT_CODE -ne 0 ]; then
   echo "Oh no 🤕"
 fi
-exit $IS_BAD_BACKEND_BUILD
+exit $HELPER_BACKEND_BUILD_EXIT_CODE
