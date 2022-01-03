@@ -1,19 +1,32 @@
 version: 1
+env:
+  variables:
+    AMPLIFY_DIFF_BACKEND: false # important to deploy backend
+backend:
+  phases:
+    preBuild:
+      commands:
+        - nvm install
+        - yarn global add @aws-amplify/cli
+        - yarn install
+    build:
+      commands:
+        - yarn push
 frontend:
   phases:
     preBuild:
       commands:
         - nvm install
-        - yarn install
+        - yarn install --frozen-lockfile
     build:
       commands:
         - nvm install
-        - yarn workspace @amplify-discord-bots/app run build
+        - yarn workspace @hey-amplify/app run build
   artifacts:
-    # IMPORTANT - Please verify your build output directory
     baseDirectory: packages/app/build
     files:
       - '**/*'
   cache:
     paths:
       - node_modules/**/*
+      - packages/app/node_modules/**/*

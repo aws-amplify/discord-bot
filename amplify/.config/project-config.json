@@ -5,13 +5,11 @@
   "javascript": {
     "framework": "none",
     "config": {
-      "SourceDir": "./",
+      "SourceDir": "packages/aws-exports",
       "DistributionDir": "packages/app/build",
-      "BuildCommand": "yarn workspace @amplify-discord-bots/app run build",
+      "BuildCommand": "yarn workspace @hey-amplify/app run build",
       "StartCommand": "yarn start"
     }
   },
-  "providers": [
-    "awscloudformation"
-  ]
+  "providers": ["awscloudformation"]
 }

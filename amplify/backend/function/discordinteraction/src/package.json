@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "main": "index.js",
   "license": "Apache-2.0",
-  "dependencies": {},
+  "dependencies": {
+    "@hey-amplify/handler-interact": "0.1.0"
+  },
   "scripts": {
     "build": "echo 'no build required for $npm_package_name'"
   }

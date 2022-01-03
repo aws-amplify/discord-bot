@@ -1,0 +1,23 @@
+{
+  "name": "@hey-amplify/command-giverole",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "require": "./lib/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "builder",
+    "prepublishOnly": "yarn build --minify"
+  },
+  "dependencies": {
+    "@hey-amplify/discord": "*"
+  },
+  "devDependencies": {
+    "@hey-amplify/builder": "*"
+  }
+}

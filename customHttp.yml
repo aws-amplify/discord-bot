@@ -12,4 +12,4 @@ applications:
           - key: 'X-Content-Type-Options'
             value: 'nosniff'
           - key: 'Content-Security-Policy'
-            value: "font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; script-src 'self' 'unsafe-inline'; default-src 'self'"
+            value: "font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; script-src 'self' 'unsafe-inline'; default-src 'self'; connect-src https://cognito-idp.us-east-1.amazonaws.com https://cognito-identity.us-east-1.amazonaws.com/"

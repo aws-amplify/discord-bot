@@ -1,42 +1,41 @@
-# Discord Interaction Bot
+# hey-amplify
 
-- [Ideas Discussion](https://github.com/josefaidt/amplify-discord-bots/discussions/1)
-- [Discord API Documentation - Slash Commands](https://discord.com/developers/docs/interactions/slash-commands)
+Welcome to hey-amplify! This repository contains the source code for the [AWS Amplify Discord Server](https://discord.gg/8RFCGKMfVM)'s bot!
 
-## Commands and Permissions
+## Getting Started
 
-Ideally command config and logic will lie within this codebase, and granular permissions can be tweaked from an admin UI. Calling a POST request to `/sync` will add or update all commands from the codebase with default permissions (anyone can execute).
+### Setting up a Discord Bot
 
-### Required Bot Permissions
+<!-- TODO: screenshots -->
+
+1. [Register Discord bot](https://discord.com/developers/applications)
+2. Make note of the App ID to add to your Discord server using the following URL
+   ```text
+   https://discord.com/api/oauth2/authorize?client_id=<app-id>&permissions=2483045376&scope=bot%20applications.commands
+   ```
+
+#### Required Bot Permissions
+
+The URL noted in step 2 above has the permissions integer of `2483045376` which includes the following bot permissions:
 
 - view channels
 - manage channels
 - manage roles
 - send messages
 
-## Development
+### Development
 
 For local development, ensure the following preqrequisites are met:
 
-- AWS account
 - Node.js v16.x
-
-To confirm changes to code are made successfully, use the following steps to set up and run the interaction bot:
+- yarn v1.x
 
 1. [Register Discord bot](https://discord.com/developers/applications)
-2. `amplify init --app https://github.com/josefaidt/amplify-discord-bots`
-3. Add Discord secrets to function when prompted, **do not** add secrets to `discordsync` function. It is not necessary as the sync function references `discordinteraction` secrets
-4. `amplify push`
-5. Register commands by calling `/sync` endpoint from API Gateway
-6. Register interaction endpoint (API Gateway endpoint + `/interact`) with Discord
+2. Rename `.env.sample` to `.env` and add necessary Discord environment values
+3. Install dependencies with `yarn install`
+4. Run the app with `yarn dev` -- this will run both the Svelte-Kit app and the bot layer
+5. Tunnel your connection with [ngrok](https://www.npmjs.com/package/ngrok): `ngrok http 3000`
+6. Add tunneled URL to your bot's Interaction Endpoint URL: `<ngrok-https-url>/api/interact`
+7. Save your changes and register application commands to your bot with the frontend (or send an empty POST request to `http://localhost:3000/api/commands/sync`). **NOTE**: allow about 30 minutes for commands to show in Discord
 
-### Local Development Notes
-
-- Discord requires a secure public URL registered as an "Interactions Endpoint URL". This can be found in the Discord application's "General Information" section. When deploying to your AWS account, this URL will be returned from `amplify push -y`
-  - Use [ngrok](https://ngrok.com) to tunnel connections to your local host
-
-Further local development notes TBD.
-
-## Deployment
-
-This repository is connected using [AWS Amplify Console](https://docs.amplify.aws/console/) for continuous integration.
+For more information on how to contribute, visit the [contributing documentation](./CONTRIBUTING.md)

@@ -1,0 +1,78 @@
+#!/bin/sh
+
+function publish () {
+  yarn publish --cwd $1 --registry http://localhost:4000 --non-interactive
+}
+
+# if jq does not exist, attempt install
+if ! [ -x "$(command -v jq)" ]
+then
+  yum install jq -y
+fi
+
+function write_to_plugins () {
+  AMPLIFY_PLUGINS_FILE=~/.amplify/plugins.json
+  [[ -e $AMPLIFY_PLUGINS_FILE ]] && \
+    content="$(jq '.pluginDirectories += ["packaged-node-modules"]' $AMPLIFY_PLUGINS_FILE)" && \
+    echo "${content}" > $AMPLIFY_PLUGINS_FILE
+}
+
+# start_verdaccio
+yarn verdaccio --listen 4000 --config ./scripts/verdaccio.yaml &
+VERDACCIO_PID=$!
+# wait for verdaccio layer to start
+while ! curl --output /dev/null --silent --head --fail http://localhost:4000
+do 
+  sleep 1
+done
+echo "Verdaccio layer started! 🚀"
+
+# iterate over workspace packages to publish
+for PACKAGE in $(find ~+/packages -mindepth 1 -maxdepth 1 -type d)
+do
+  PACKAGE_NAME=$(jq '.name' -r $PACKAGE/package.json)
+  PACKAGE_VERSION=$(jq '.version' -r $PACKAGE/package.json)
+  PACKAGE_BUILD_COMMAND=$(jq '.scripts.build' -r $PACKAGE/package.json)
+  PACKAGE_IS_PRIVATE=$(jq '.private' -r $PACKAGE/package.json)
+
+
+  if [ $PACKAGE_IS_PRIVATE != true ] 
+  then
+    # if ! [ -z "$PACKAGE_BUILD_COMMAND" ]
+    # then
+    #   yarn workspace $PACKAGE_NAME run build
+    # fi
+    echo "Publishing $PACKAGE_NAME@$PACKAGE_VERSION"
+    # publish workspace package to verdaccio
+    publish $PACKAGE
+  fi
+done
+
+
+# push resources (should install lambda deps from verdaccio)
+echo "Running amplify push..."
+HELPER_BACKEND_BUILD_EXIT_CODE=0
+# check if we're running in Amplify Console, where helper scripts should be available
+if [ -x "$(command -v amplifyPush)" ]
+then
+  echo 'amplifyPush helper script detected!'
+  write_to_plugins
+  amplifyPush --simple
+  HELPER_BACKEND_BUILD_EXIT_CODE=$?
+else
+  echo 'no amplifyPush script found'
+  # if not in Amplify Console (local) run from Amplify CLI directly
+  amplify push -y
+fi
+
+
+# kill verdaccio, remove storage
+echo "Killing Verdaccio and removing storage..."
+kill $VERDACCIO_PID
+rm -rf ./scripts/.verdaccio
+echo "Done! 🙌"
+
+if [ $HELPER_BACKEND_BUILD_EXIT_CODE -ne 0 ]; then
+  echo "Oh no 🤕"
+fi
+exit $IS_BAD_BACKEND_BUILD

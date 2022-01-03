@@ -1,12 +1,6 @@
 {
   "permissions": [
     {
-      "type": "AwsAccounts",
-      "accounts": [
-        "229156689808"
-      ]
-    },
-    {
       "type": "Private"
     }
   ],

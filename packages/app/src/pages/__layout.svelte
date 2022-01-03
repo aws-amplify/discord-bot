@@ -1,74 +1,79 @@
+<script context="module">
+  import { Auth } from '@aws-amplify/auth'
+  import { Amplify } from '@aws-amplify/core'
+  import amplifyConfig from '@hey-amplify/aws-exports'
+  import { user as userStore } from '$lib/store'
+
+  Amplify.configure(amplifyConfig)
+
+  /**
+   * @type {import('@sveltejs/kit').Load}
+   */
+  export async function load({ page, fetch, session, stuff }) {
+    try {
+      const user = await Auth.currentAuthenticatedUser()
+      userStore.set(user)
+      return {
+        props: {
+          user,
+        },
+      }
+    } catch (error) {
+      // not logged in
+      console.error('Error getting current user', error)
+      if (page.path === '/login') return {}
+      return {
+        status: 302,
+        redirect: '/login',
+      }
+    }
+  }
+</script>
+
 <script>
-  import {
-    Header,
-    HeaderNav,
-    HeaderNavItem,
-    HeaderNavMenu,
-    SkipToContent,
-    Content,
-    SideNav,
-    SideNavItems,
-    SideNavMenu,
-    SideNavMenuItem,
-    SideNavLink,
-    SideNavDivider,
-  } from 'carbon-components-svelte'
+  import { Header, SkipToContent, Theme } from 'carbon-components-svelte'
   import 'carbon-components-svelte/css/all.css'
+  import { page } from '$app/stores'
+  import { goto } from '$app/navigation'
+
+  /** @type {import('@aws-amplify/auth').CognitoUser} */
+  export let user
+
+  // if user is logged in and on the login page, redirect home
+  if (user?.username && $page.path === '/login') goto('/')
+
+  /** @type {boolean} */
+  let isSideNavOpen = false
 
   /** @type {"white" | "g10" | "g80" | "g90" | "g100"} */
   let theme = 'g100'
-
-  // document.documentElement.setAttribute('theme', theme)
-
-  let isSideNavOpen = false
 </script>
 
-<Header company="" platformName="AWS Amplify Discord Bot" bind:isSideNavOpen>
-  <div slot="skip-to-content">
-    <SkipToContent />
-  </div>
+<Theme bind:theme>
+  <Header href="/" bind:isSideNavOpen>
+    <div slot="skip-to-content">
+      <SkipToContent />
+    </div>
 
-  <!-- <HeaderNav>
-    <HeaderNavItem href="/" text="Link 1" />
-    <HeaderNavItem href="/" text="Link 2" />
-    <HeaderNavItem href="/" text="Link 3" />
-    <HeaderNavMenu text="Menu">
-      <HeaderNavItem href="/" text="Link 1" />
-      <HeaderNavItem href="/" text="Link 2" />
-      <HeaderNavItem href="/" text="Link 3" />
-    </HeaderNavMenu>
-  </HeaderNav> -->
-</Header>
+    <span slot="platform" class="platform-name">
+      AWS Amplify Discord Bot
+      <!-- <code>v{process.env.VERSION || ""}</code> -->
+    </span>
+  </Header>
 
-<!-- <SideNav bind:isOpen="{isSideNavOpen}">
-  <SideNavItems>
-    <SideNavLink text="Link 1" />
-    <SideNavLink text="Link 2" />
-    <SideNavLink text="Link 3" />
-    <SideNavMenu text="Menu">
-      <SideNavMenuItem href="/" text="Link 1" />
-      <SideNavMenuItem href="/" text="Link 2" />
-      <SideNavMenuItem href="/" text="Link 3" />
-    </SideNavMenu>
-    <SideNavDivider />
-    <SideNavLink text="Link 4" />
-  </SideNavItems>
-</SideNav> -->
-
-<Content>
   <slot />
-</Content>
+</Theme>
 
-<style>
-  :global(.bx--content) {
-    background: 0 0;
+<style global>
+  .bx--col > h1 {
+    font-size: var(--cds-display-01-font-size);
+    font-weight: var(--cds-display-01-font-weight);
+    letter-spacing: var(--cds-display-01-letter-spacing);
+    line-height: var(--cds-display-01-line-height);
+    margin-bottom: var(--cds-layout-01);
   }
 
-  /* @media (max-width: 1056px) {
-    :global(.bx--side-nav ~ .bx--content) {
-      margin-left: 0;
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-  } */
+  .bx--content {
+    background-color: var(--cds-ui-background);
+  }
 </style>

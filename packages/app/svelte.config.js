@@ -1,8 +1,9 @@
-import { readFile } from 'fs/promises'
-import { resolve } from 'path'
-import preprocess from 'svelte-preprocess'
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import autoprefixer from 'autoprefixer'
+import preprocess from 'svelte-preprocess'
 import adapter from '@sveltejs/adapter-static'
+import { DiscordBotLayerPlugin } from 'vite-plugin-discord-bot-layer'
 import { optimizeCarbonImports } from 'carbon-components-svelte/preprocess/index.js'
 // https://nodejs.org/api/esm.html#esm_no_json_module_loading
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
@@ -35,17 +36,10 @@ const config = {
     },
 
     vite: {
-      ssr: {
-        noExternal: Object.keys(pkg.dependencies || {}),
-      },
-      server: {
-        proxy: {
-          '/api': {
-            target: 'http://localhost:3000',
-            changeOrigin: true,
-            secure: false,
-            ws: true,
-          },
+      plugins: [DiscordBotLayerPlugin()],
+      resolve: {
+        alias: {
+          './runtimeConfig': './runtimeConfig.browser',
         },
       },
     },

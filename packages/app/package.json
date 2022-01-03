@@ -1,5 +1,11 @@
 {
-  "name": "@amplify-discord-bots/app",
+  "name": "@hey-amplify/app",
+  "private": true,
+  "workspaces": {
+    "nohoist": [
+      "prettier*"
+    ]
+  },
   "type": "module",
   "version": "0.0.1",
   "license": "Apache-2.0",
@@ -8,19 +14,24 @@
     "build": "svelte-kit build",
     "preview": "svelte-kit preview"
   },
+  "dependencies": {
+    "aws-amplify": "^4.3.3"
+  },
   "devDependencies": {
+    "@hey-amplify/aws-exports": "*",
     "@sveltejs/adapter-static": "next",
     "@sveltejs/kit": "next",
-    "autoprefixer": "^10.3.1",
-    "carbon-components-svelte": "^0.42.0",
-    "eslint": "^7.32.0",
+    "autoprefixer": "^10.3.7",
+    "carbon-components-svelte": "^0.47.3",
+    "eslint": "^8.1.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-svelte3": "^3.2.1",
     "prettier": "^2.4.1",
     "prettier-plugin-svelte": "^2.4.0",
-    "svelte": "3.40.1",
-    "svelte-check": "^2.2.3",
-    "svelte-preprocess": "^4.7.4"
+    "svelte": "3.44.0",
+    "svelte-check": "^2.2.7",
+    "svelte-preprocess": "^4.9.8",
+    "vite-plugin-discord-bot-layer": "*"
   },
   "prettier": {
     "printWidth": 80,
