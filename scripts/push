@@ -66,8 +66,6 @@ fi
 # kill verdaccio, remove storage
 echo "Killing Verdaccio and removing storage..."
 kill $VERDACCIO_PID
-ls; ls scripts
-rm -rf ./scripts/.verdaccio
 echo "Done! 🙌"
 
 if [ $HELPER_BACKEND_BUILD_EXIT_CODE -ne 0 ]; then

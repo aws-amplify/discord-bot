@@ -1,0 +1,57 @@
+{
+	"name": "@hey-amplify/discord",
+	"versions": {
+		"0.1.0": {
+			"name": "@hey-amplify/discord",
+			"version": "0.1.0",
+			"type": "module",
+			"license": "Apache-2.0",
+			"exports": {
+				".": {
+					"import": "./src/index.js",
+					"require": "./lib/index.cjs"
+				},
+				"./package.json": "./package.json"
+			},
+			"scripts": {
+				"build": "builder",
+				"prepublishOnly": "yarn build --minify"
+			},
+			"devDependencies": {
+				"@hey-amplify/builder": "*"
+			},
+			"dependencies": {
+				"@hey-amplify/bank": "*",
+				"node-fetch": "^2.6.6",
+				"tweetnacl": "^1.0.3"
+			},
+			"_id": "@hey-amplify/discord@0.1.0",
+			"dist": {
+				"shasum": "6f1a85719db1eb591536e0d376015b92e987317a",
+				"integrity": "sha512-qt59jo7bAnp/b5Zj353J7k4mx3bE6SiCCwUNpCACiD0Y4N6yYnhU2Lr4pYBwUOuYNPQlO3F2PovJfA9niDqGWA==",
+				"tarball": "http://localhost:4000/@hey-amplify/discord/-/@hey-amplify/discord-0.1.0.tgz"
+			},
+			"contributors": []
+		}
+	},
+	"time": {
+		"modified": "2022-01-03T22:17:20.866Z",
+		"created": "2022-01-03T22:17:20.866Z",
+		"0.1.0": "2022-01-03T22:17:20.866Z"
+	},
+	"users": {},
+	"dist-tags": {
+		"latest": "0.1.0"
+	},
+	"_uplinks": {},
+	"_distfiles": {},
+	"_attachments": {
+		"discord-0.1.0.tgz": {
+			"shasum": "6f1a85719db1eb591536e0d376015b92e987317a",
+			"version": "0.1.0"
+		}
+	},
+	"_rev": "3-721d0ca155328b2d",
+	"_id": "@hey-amplify/discord",
+	"readme": ""
+}

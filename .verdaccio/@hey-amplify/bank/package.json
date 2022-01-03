@@ -1,0 +1,56 @@
+{
+	"name": "@hey-amplify/bank",
+	"versions": {
+		"0.1.0": {
+			"name": "@hey-amplify/bank",
+			"version": "0.1.0",
+			"type": "module",
+			"license": "Apache-2.0",
+			"exports": {
+				".": {
+					"import": "./src/index.js",
+					"require": "./lib/index.cjs"
+				},
+				"./package.json": "./package.json"
+			},
+			"scripts": {
+				"build": "builder",
+				"prepublishOnly": "yarn build --minify"
+			},
+			"dependencies": {
+				"@hey-amplify/command-giverole": "*",
+				"@hey-amplify/command-static": "*"
+			},
+			"devDependencies": {
+				"@hey-amplify/builder": "*"
+			},
+			"_id": "@hey-amplify/bank@0.1.0",
+			"dist": {
+				"shasum": "f844459f6b002b5388286e4a616937fa8acd1576",
+				"integrity": "sha512-uDlSx8q7Nfz8ur1eUkK7KZ7UcG+oluWTgXLUh9ZCNovOyN4y43izEw1jHI2VCK8r0BXAz72uYOdUwK+SLg5MQg==",
+				"tarball": "http://localhost:4000/@hey-amplify/bank/-/@hey-amplify/bank-0.1.0.tgz"
+			},
+			"contributors": []
+		}
+	},
+	"time": {
+		"modified": "2022-01-03T22:17:21.388Z",
+		"created": "2022-01-03T22:17:21.388Z",
+		"0.1.0": "2022-01-03T22:17:21.388Z"
+	},
+	"users": {},
+	"dist-tags": {
+		"latest": "0.1.0"
+	},
+	"_uplinks": {},
+	"_distfiles": {},
+	"_attachments": {
+		"bank-0.1.0.tgz": {
+			"shasum": "f844459f6b002b5388286e4a616937fa8acd1576",
+			"version": "0.1.0"
+		}
+	},
+	"_rev": "3-10b8dbe912f5d7f0",
+	"_id": "@hey-amplify/bank",
+	"readme": ""
+}

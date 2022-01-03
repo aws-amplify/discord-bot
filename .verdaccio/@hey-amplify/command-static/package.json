@@ -1,0 +1,52 @@
+{
+	"name": "@hey-amplify/command-static",
+	"versions": {
+		"0.1.0": {
+			"name": "@hey-amplify/command-static",
+			"version": "0.1.0",
+			"type": "module",
+			"license": "Apache-2.0",
+			"exports": {
+				".": {
+					"import": "./index.js",
+					"require": "./lib/index.cjs"
+				},
+				"./package.json": "./package.json"
+			},
+			"scripts": {
+				"build": "builder",
+				"prepublish": "yarn build --minify"
+			},
+			"devDependencies": {
+				"@hey-amplify/builder": "*"
+			},
+			"_id": "@hey-amplify/command-static@0.1.0",
+			"dist": {
+				"shasum": "4e8ad9bdd387b83611113667c0aa225b7e90ace4",
+				"integrity": "sha512-6fHoZT7PtX8CLZWaApNs5cMWR9sgcSbtKUjxBHFxj2T8/Z7Ict3BTMuHBLXBrMPXXs4u+bW5H3VQO3d++9Hnpw==",
+				"tarball": "http://localhost:4000/@hey-amplify/command-static/-/@hey-amplify/command-static-0.1.0.tgz"
+			},
+			"contributors": []
+		}
+	},
+	"time": {
+		"modified": "2022-01-03T22:17:22.448Z",
+		"created": "2022-01-03T22:17:22.448Z",
+		"0.1.0": "2022-01-03T22:17:22.448Z"
+	},
+	"users": {},
+	"dist-tags": {
+		"latest": "0.1.0"
+	},
+	"_uplinks": {},
+	"_distfiles": {},
+	"_attachments": {
+		"command-static-0.1.0.tgz": {
+			"shasum": "4e8ad9bdd387b83611113667c0aa225b7e90ace4",
+			"version": "0.1.0"
+		}
+	},
+	"_rev": "3-5ad2cb3f1483a259",
+	"_id": "@hey-amplify/command-static",
+	"readme": ""
+}

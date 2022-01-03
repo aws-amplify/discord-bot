@@ -4,28 +4,28 @@
 
 "@hey-amplify/bank@*":
   version "0.1.0"
-  resolved "http://localhost:4000/@hey-amplify%2fbank/-/bank-0.1.0.tgz#6639fbe78ac51d8306d92f6378d1b22edf7e21a5"
-  integrity sha512-oixiVud/g1HPk+a6/ZVlzQUPGu7OHG/xHL1JkQZoX7h03h83Kr5OsNLceUtOIN9oMApAlsXXUjU+At52Nsw7Bw==
+  resolved "http://localhost:4000/@hey-amplify%2fbank/-/bank-0.1.0.tgz#f844459f6b002b5388286e4a616937fa8acd1576"
+  integrity sha512-uDlSx8q7Nfz8ur1eUkK7KZ7UcG+oluWTgXLUh9ZCNovOyN4y43izEw1jHI2VCK8r0BXAz72uYOdUwK+SLg5MQg==
   dependencies:
     "@hey-amplify/command-giverole" "*"
     "@hey-amplify/command-static" "*"
 
 "@hey-amplify/command-giverole@*":
   version "0.1.0"
-  resolved "http://localhost:4000/@hey-amplify%2fcommand-giverole/-/command-giverole-0.1.0.tgz#7979efddaf7a7f4942113ec27b75a45aa5314071"
-  integrity sha512-QkCUIfzOGW3Hdo5IJXJUcnOBLDKvPyfLhBsTV86xiu7+0h3mzwM0nDiXSsqTCUTf4WzYtycyX+Jx1sP9MDkOdA==
+  resolved "http://localhost:4000/@hey-amplify%2fcommand-giverole/-/command-giverole-0.1.0.tgz#694a356ed4479b59bae8490b61c8d3d8051a920e"
+  integrity sha512-wJuwZoj6Bc0PntRl/cXSOdbFVezfhJCoqPus287biW5HXqbgxGpLgRVGHwowqwoX51+QHSFoATBLxCc9J6zmAg==
   dependencies:
     "@hey-amplify/discord" "*"
 
 "@hey-amplify/command-static@*":
   version "0.1.0"
-  resolved "http://localhost:4000/@hey-amplify%2fcommand-static/-/command-static-0.1.0.tgz#bb9eded9eff85da345274d758f68023e54d81051"
-  integrity sha512-owfg2OtaJZWbxn65KdMFdIxkn81UHg33jGWZqPaoKAnPR91w8veHGcR1dA3MWE4vsLZWzGx0+JnN9NwyJnp9XA==
+  resolved "http://localhost:4000/@hey-amplify%2fcommand-static/-/command-static-0.1.0.tgz#4e8ad9bdd387b83611113667c0aa225b7e90ace4"
+  integrity sha512-6fHoZT7PtX8CLZWaApNs5cMWR9sgcSbtKUjxBHFxj2T8/Z7Ict3BTMuHBLXBrMPXXs4u+bW5H3VQO3d++9Hnpw==
 
 "@hey-amplify/discord@*":
   version "0.1.0"
-  resolved "http://localhost:4000/@hey-amplify%2fdiscord/-/discord-0.1.0.tgz#3a287336ba53d0e0aafe7b469f11d1b5f1887fcd"
-  integrity sha512-vaya2TWzUz5Y8PeunyBe63Z8Iy0saMckZBGkFj4Ma7j7m270dLbIGZmfrc+XoQMSvfTNbtYm8/8/J0ERNdjZgg==
+  resolved "http://localhost:4000/@hey-amplify%2fdiscord/-/discord-0.1.0.tgz#6f1a85719db1eb591536e0d376015b92e987317a"
+  integrity sha512-qt59jo7bAnp/b5Zj353J7k4mx3bE6SiCCwUNpCACiD0Y4N6yYnhU2Lr4pYBwUOuYNPQlO3F2PovJfA9niDqGWA==
   dependencies:
     "@hey-amplify/bank" "*"
     node-fetch "^2.6.6"
@@ -33,8 +33,8 @@
 
 "@hey-amplify/handler-commands@0.1.0":
   version "0.1.0"
-  resolved "http://localhost:4000/@hey-amplify%2fhandler-commands/-/handler-commands-0.1.0.tgz#2cc5e466ff05cea13fe977b8e432b52bc0fa3089"
-  integrity sha512-35r2SBQQwtWpMyaIkdSP6tCXr1QDVVPjQM3NMYaFd0y4nzYM2cOm7KRzK/hyDj7xTNYztVTi/aB+t3DX3+iDgg==
+  resolved "http://localhost:4000/@hey-amplify%2fhandler-commands/-/handler-commands-0.1.0.tgz#80f85ae47ddd43e9b8baddbce35c7e1292dd82d3"
+  integrity sha512-z+rI1XV2N7OEMJFPaSezV0zJoSSJcbMO9MMSB11sdYmwlfYK/n2byDUAwikzLfwI3rIUIk3usJY6F6aCvRhsIA==
   dependencies:
     "@hey-amplify/discord" "*"
     body-parser "^1.19.0"
