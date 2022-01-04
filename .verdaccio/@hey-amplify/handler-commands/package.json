@@ -1,0 +1,57 @@
+{
+	"name": "@hey-amplify/handler-commands",
+	"versions": {
+		"0.1.0": {
+			"name": "@hey-amplify/handler-commands",
+			"version": "0.1.0",
+			"type": "module",
+			"license": "Apache-2.0",
+			"exports": {
+				".": {
+					"import": "./index.js",
+					"require": "./lib/index.cjs"
+				},
+				"./package.json": "./package.json"
+			},
+			"scripts": {
+				"build": "builder",
+				"prepublishOnly": "yarn build --minify"
+			},
+			"devDependencies": {
+				"@hey-amplify/builder": "*"
+			},
+			"dependencies": {
+				"@hey-amplify/discord": "*",
+				"body-parser": "^1.19.0",
+				"express": "^4.17.1"
+			},
+			"_id": "@hey-amplify/handler-commands@0.1.0",
+			"dist": {
+				"shasum": "80f85ae47ddd43e9b8baddbce35c7e1292dd82d3",
+				"integrity": "sha512-z+rI1XV2N7OEMJFPaSezV0zJoSSJcbMO9MMSB11sdYmwlfYK/n2byDUAwikzLfwI3rIUIk3usJY6F6aCvRhsIA==",
+				"tarball": "http://localhost:4000/@hey-amplify/handler-commands/-/@hey-amplify/handler-commands-0.1.0.tgz"
+			},
+			"contributors": []
+		}
+	},
+	"time": {
+		"modified": "2022-01-03T22:17:22.880Z",
+		"created": "2022-01-03T22:17:22.880Z",
+		"0.1.0": "2022-01-03T22:17:22.880Z"
+	},
+	"users": {},
+	"dist-tags": {
+		"latest": "0.1.0"
+	},
+	"_uplinks": {},
+	"_distfiles": {},
+	"_attachments": {
+		"handler-commands-0.1.0.tgz": {
+			"shasum": "80f85ae47ddd43e9b8baddbce35c7e1292dd82d3",
+			"version": "0.1.0"
+		}
+	},
+	"_rev": "3-5c25d29337c9ede1",
+	"_id": "@hey-amplify/handler-commands",
+	"readme": ""
+}

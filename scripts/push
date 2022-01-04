@@ -11,10 +11,7 @@ then
 fi
 
 function write_to_plugins () {
-  AMPLIFY_PLUGINS_FILE=~/.amplify/plugins.json
-  [[ -e $AMPLIFY_PLUGINS_FILE ]] && \
-    content="$(jq '.pluginDirectories += ["packaged-node-modules"]' $AMPLIFY_PLUGINS_FILE)" && \
-    echo "${content}" > $AMPLIFY_PLUGINS_FILE
+  node scripts/patch.js
 }
 
 # start_verdaccio
@@ -67,9 +64,8 @@ fi
 
 
 # kill verdaccio, remove storage
-echo "Killing Verdaccio and removing storage..."
+echo "Stopping Verdaccio..."
 kill $VERDACCIO_PID
-rm -rf ./scripts/.verdaccio
 echo "Done! 🙌"
 
 if [ $HELPER_BACKEND_BUILD_EXIT_CODE -ne 0 ]; then

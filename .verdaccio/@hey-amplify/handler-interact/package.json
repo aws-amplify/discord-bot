@@ -1,0 +1,55 @@
+{
+	"name": "@hey-amplify/handler-interact",
+	"versions": {
+		"0.1.0": {
+			"name": "@hey-amplify/handler-interact",
+			"version": "0.1.0",
+			"type": "module",
+			"license": "Apache-2.0",
+			"exports": {
+				".": {
+					"import": "./index.js",
+					"require": "./lib/index.cjs"
+				},
+				"./package.json": "./package.json"
+			},
+			"scripts": {
+				"build": "builder",
+				"prepublishOnly": "yarn build --minify"
+			},
+			"devDependencies": {
+				"@hey-amplify/builder": "*"
+			},
+			"dependencies": {
+				"@hey-amplify/discord": "*"
+			},
+			"_id": "@hey-amplify/handler-interact@0.1.0",
+			"dist": {
+				"shasum": "d846e5cd22707669e0ba317666e06197782f1877",
+				"integrity": "sha512-VcQ/NcT1jpGEwsnRcILrLFg82pwlYa3TMMMQjXUtFir6vHcIRLVd4w0jn6+zQ0IGrUSz4NE4UALhujxVRqh4XA==",
+				"tarball": "http://localhost:4000/@hey-amplify/handler-interact/-/@hey-amplify/handler-interact-0.1.0.tgz"
+			},
+			"contributors": []
+		}
+	},
+	"time": {
+		"modified": "2022-01-03T22:17:22.005Z",
+		"created": "2022-01-03T22:17:22.005Z",
+		"0.1.0": "2022-01-03T22:17:22.005Z"
+	},
+	"users": {},
+	"dist-tags": {
+		"latest": "0.1.0"
+	},
+	"_uplinks": {},
+	"_distfiles": {},
+	"_attachments": {
+		"handler-interact-0.1.0.tgz": {
+			"shasum": "d846e5cd22707669e0ba317666e06197782f1877",
+			"version": "0.1.0"
+		}
+	},
+	"_rev": "3-d81c9a82c4b23dbb",
+	"_id": "@hey-amplify/handler-interact",
+	"readme": ""
+}
