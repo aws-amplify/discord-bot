@@ -8,9 +8,19 @@
       "env": "next"
     }
   ],
-  "secretNames": [
-    "DISCORD_BOT_TOKEN",
-    "DISCORD_APP_ID",
-    "DISCORD_PUBLIC_KEY"
+  "secretNames": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "discordAppId",
+      "environmentVariableName": "DISCORD_APP_ID"
+    },
+    {
+      "cloudFormationParameterName": "discordBotToken",
+      "environmentVariableName": "DISCORD_BOT_TOKEN"
+    },
+    {
+      "cloudFormationParameterName": "discordPublicKey",
+      "environmentVariableName": "DISCORD_PUBLIC_KEY"
+    }
   ]
 }
