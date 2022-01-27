@@ -1,6 +1,6 @@
 [
   {
     "Action": ["ssm:GetParameters"],
-    "Resource": ["arn:aws:ssm:::parameter/amplify/amplifydiscordbots/${env}/*"]
+    "Resource": ["arn:aws:ssm:::parameter/amplify/amplifydiscordbot/${env}/*"]
   }
 ]

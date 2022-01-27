@@ -196,7 +196,7 @@
               "Resource": [
                 {
                   "Fn::Sub": [
-                    "arn:aws:ssm:::parameter/amplify/amplifydiscordbots/${env}/*",
+                    "arn:aws:ssm:::parameter/amplify/amplifydiscordbot/${env}/*",
                     {
                       "env": {
                         "Ref": "env"
