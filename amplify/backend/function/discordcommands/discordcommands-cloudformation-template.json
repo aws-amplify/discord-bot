@@ -82,6 +82,15 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
+            },
+            "DISCORD_APP_ID": {
+              "Ref": "discordAppId"
+            },
+            "DISCORD_PUBLIC_KEY": {
+              "Ref": "discordPublicKey"
+            },
+            "DISCORD_BOT_TOKEN": {
+              "Ref": "discordBotToken"
             }
           }
         },
