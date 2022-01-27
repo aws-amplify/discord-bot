@@ -23,6 +23,7 @@ async function getSecrets(secretNames) {
       return acc
     }, {})
   } catch (error) {
+    console.error(error)
     throw new Error('Unable to get secrets', error)
   }
 }
@@ -37,6 +38,7 @@ async function loadSecrets() {
     console.log('Secrets loaded successfully')
     return true
   } catch (error) {
+    console.error(error)
     throw new Error('Unable to load secrets', error)
   }
 }
