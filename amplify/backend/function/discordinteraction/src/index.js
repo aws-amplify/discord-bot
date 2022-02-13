@@ -1,8 +1,12 @@
-const { loadSecrets } = require('/opt/secrets')
-const { handler: interact } = require('@hey-amplify/handler-interact')
+import { loadSecrets } from '@hey-amplify/support'
+import { handler as interact } from './interact.js'
 
 let secretsLoaded = false
-exports.handler = async (event) => {
+
+/**
+ * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ */
+export async function handler(event) {
   console.log('EVENT:', JSON.stringify(event))
   if (!secretsLoaded && (await loadSecrets())) secretsLoaded = true
   try {

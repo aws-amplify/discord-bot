@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Lambda Function resource stack creation using Amplify CLI",
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.19\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "CloudWatchRule": {
       "Type": "String",
@@ -20,17 +20,13 @@
       "Type": "String",
       "Default": "functiondiscordlayerArn"
     },
-    "functiondiscordinteractionhandlerName": {
-      "Type": "String",
-      "Default": "functiondiscordinteractionhandlerName"
-    },
     "discordAppId": {
       "Type": "String"
     },
-    "discordBotToken": {
+    "discordPublicKey": {
       "Type": "String"
     },
-    "discordPublicKey": {
+    "discordBotToken": {
       "Type": "String"
     }
   },
@@ -64,12 +60,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "discordinteraction",
+            "discordinteractionhandler",
             {
               "Fn::Join": [
                 "",
                 [
-                  "discordinteraction",
+                  "discordinteractionhandler",
                   "-",
                   {
                     "Ref": "env"
@@ -87,17 +83,14 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "FUNCTION_DISCORDINTERACTIONHANDLER_NAME": {
-              "Ref": "functiondiscordinteractionhandlerName"
-            },
             "DISCORD_APP_ID": {
               "Ref": "discordAppId"
             },
-            "DISCORD_BOT_TOKEN": {
-              "Ref": "discordBotToken"
-            },
             "DISCORD_PUBLIC_KEY": {
               "Ref": "discordPublicKey"
+            },
+            "DISCORD_BOT_TOKEN": {
+              "Ref": "discordBotToken"
             }
           }
         },
@@ -118,12 +111,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "discordbotLambdaRole9d18be74",
+            "amplifydiscordbotLambdaRole21470fb0",
             {
               "Fn::Join": [
                 "",
                 [
-                  "discordbotLambdaRole9d18be74",
+                  "amplifydiscordbotLambdaRole21470fb0",
                   "-",
                   {
                     "Ref": "env"
@@ -228,54 +221,6 @@
         ]
       },
       "DependsOn": "LambdaExecutionRole"
-    },
-    "AmplifyResourcesPolicy": {
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ],
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "amplify-lambda-execution-policy",
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "lambda:Get*",
-                "lambda:List*",
-                "lambda:Invoke*"
-              ],
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:lambda:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":function:",
-                      {
-                        "Ref": "functiondiscordinteractionhandlerName"
-                      }
-                    ]
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      }
     }
   },
   "Outputs": {

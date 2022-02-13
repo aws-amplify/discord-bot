@@ -1,13 +1,5 @@
 {
-  "lambdaLayers": [
-    {
-      "type": "ProjectLayer",
-      "resourceName": "discordlayer",
-      "version": "Always choose latest version",
-      "isLatestVersionSelected": true,
-      "env": "next"
-    }
-  ],
+  "lambdaLayers": [],
   "secretNames": [],
   "environmentVariableList": [
     {
@@ -22,5 +14,12 @@
       "cloudFormationParameterName": "discordPublicKey",
       "environmentVariableName": "DISCORD_PUBLIC_KEY"
     }
-  ]
+  ],
+  "permissions": {
+    "function": {
+      "discordinteractionhandler": [
+        "read"
+      ]
+    }
+  }
 }

@@ -25,10 +25,8 @@ node_modules
 *.log
 
 .env
-.env.local
-secrets.yml
-
-notes.md
+.env.*
+!.env.sample
 
 packages/**/lib
 !packages/app/src/lib

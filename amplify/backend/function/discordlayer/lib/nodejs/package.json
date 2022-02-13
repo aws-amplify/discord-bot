@@ -1,5 +1,6 @@
 {
   "name": "discordlayer",
+  "type": "module",
   "version": "0.1.1",
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.30.0"

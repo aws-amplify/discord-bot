@@ -7,9 +7,9 @@
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "discordlayer",
+          "resourceName": "discordinteractionhandler",
           "attributes": [
-            "Arn"
+            "Name"
           ]
         }
       ]
@@ -42,15 +42,13 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "discordlayer",
-          "attributes": [
-            "Arn"
-          ]
-        }
-      ]
+      "dependsOn": []
+    },
+    "discordinteractionhandler": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": []
     }
   },
   "api": {

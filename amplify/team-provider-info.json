@@ -59,14 +59,14 @@
       "function": {
         "discordinteraction": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordinteraction-5a66595947333968767a-build.zip",
+          "s3Key": "amplify-builds/discordinteraction-552b6d35794231762b67-build.zip",
           "discordAppId": "/amplify/amplifydiscordbot/next/secrets/DISCORD_APP_ID",
           "discordBotToken": "/amplify/amplifydiscordbot/next/secrets/DISCORD_BOT_TOKEN",
           "discordPublicKey": "/amplify/amplifydiscordbot/next/secrets/DISCORD_PUBLIC_KEY"
         },
         "discordlayer": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersion54a2d76a-build.zip"
+          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersionf4b05f57-build.zip"
         },
         "amplifydiscordbotauthPreSignup": {
           "DOMAINALLOWLIST": "amazon.com",
@@ -79,10 +79,17 @@
         },
         "discordcommands": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordcommands-336d65423545414d6262-build.zip",
+          "s3Key": "amplify-builds/discordcommands-6e6b6431615a79516c59-build.zip",
           "discordAppId": "/amplify/amplifydiscordbot/next/secrets/DISCORD_APP_ID",
           "discordBotToken": "/amplify/amplifydiscordbot/next/secrets/DISCORD_BOT_TOKEN",
           "discordPublicKey": "/amplify/amplifydiscordbot/next/secrets/DISCORD_PUBLIC_KEY"
+        },
+        "discordinteractionhandler": {
+          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
+          "s3Key": "amplify-builds/discordinteractionhandler-486946794e2f57594e6d-build.zip",
+          "discordAppId": "/amplify/amplifydiscordbot/next/secrets/DISCORD_APP_ID",
+          "discordPublicKey": "/amplify/amplifydiscordbot/next/secrets/DISCORD_PUBLIC_KEY",
+          "discordBotToken": "/amplify/amplifydiscordbot/next/secrets/DISCORD_BOT_TOKEN"
         }
       },
       "auth": {

@@ -65,46 +65,6 @@
     "@aws-sdk/types" "3.50.0"
     tslib "^2.3.0"
 
-"@aws-sdk/client-lambda@^3.51.0":
-  version "3.51.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-lambda/-/client-lambda-3.51.0.tgz#e6a00a3ac8e03e6ead58a0412f5406e753e5d9f9"
-  integrity sha512-UPZo+BmlM13lkrq3ajTdrm9A8fNq7Sh/rpx2PpAIast36rmwXHvNPoRh7I0M0meNOrzylaUhF3WoMUs+iS6afg==
-  dependencies:
-    "@aws-crypto/sha256-browser" "2.0.0"
-    "@aws-crypto/sha256-js" "2.0.0"
-    "@aws-sdk/client-sts" "3.51.0"
-    "@aws-sdk/config-resolver" "3.51.0"
-    "@aws-sdk/credential-provider-node" "3.51.0"
-    "@aws-sdk/fetch-http-handler" "3.50.0"
-    "@aws-sdk/hash-node" "3.50.0"
-    "@aws-sdk/invalid-dependency" "3.50.0"
-    "@aws-sdk/middleware-content-length" "3.50.0"
-    "@aws-sdk/middleware-host-header" "3.50.0"
-    "@aws-sdk/middleware-logger" "3.50.0"
-    "@aws-sdk/middleware-retry" "3.51.0"
-    "@aws-sdk/middleware-serde" "3.50.0"
-    "@aws-sdk/middleware-signing" "3.50.0"
-    "@aws-sdk/middleware-stack" "3.50.0"
-    "@aws-sdk/middleware-user-agent" "3.50.0"
-    "@aws-sdk/node-config-provider" "3.51.0"
-    "@aws-sdk/node-http-handler" "3.50.0"
-    "@aws-sdk/protocol-http" "3.50.0"
-    "@aws-sdk/smithy-client" "3.50.0"
-    "@aws-sdk/types" "3.50.0"
-    "@aws-sdk/url-parser" "3.50.0"
-    "@aws-sdk/util-base64-browser" "3.49.0"
-    "@aws-sdk/util-base64-node" "3.49.0"
-    "@aws-sdk/util-body-length-browser" "3.49.0"
-    "@aws-sdk/util-body-length-node" "3.49.0"
-    "@aws-sdk/util-defaults-mode-browser" "3.50.0"
-    "@aws-sdk/util-defaults-mode-node" "3.51.0"
-    "@aws-sdk/util-user-agent-browser" "3.50.0"
-    "@aws-sdk/util-user-agent-node" "3.51.0"
-    "@aws-sdk/util-utf8-browser" "3.49.0"
-    "@aws-sdk/util-utf8-node" "3.49.0"
-    "@aws-sdk/util-waiter" "3.50.0"
-    tslib "^2.3.0"
-
 "@aws-sdk/client-ssm@^3.51.0":
   version "3.51.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-ssm/-/client-ssm-3.51.0.tgz#cce8cd9323957988d1031d920b1bfea68b85fc27"
@@ -718,10 +678,10 @@
     node-fetch "^2.6.6"
     tweetnacl "^1.0.3"
 
-"@hey-amplify/discord@^0.2.2":
-  version "0.2.2"
-  resolved "http://localhost:4000/@hey-amplify%2fdiscord/-/discord-0.2.2.tgz#d87bf3a8f86e6a7583ab764af905033ad246cccd"
-  integrity sha512-7mIJM5IWm3e9RwjLIEYMob+rxA7wXMyKHyRUYF5PRD/i4Hxq4Ly86CRBzA8G1Tgh9GfmOmCp37m3/CORIh5gAQ==
+"@hey-amplify/discord@^0.2.3":
+  version "0.2.3"
+  resolved "http://localhost:4000/@hey-amplify%2fdiscord/-/discord-0.2.3.tgz#2bd21c2027e9bb5bd82f182d793685786ed2fec3"
+  integrity sha512-Guqfmh7Mpnp4Ci/vW9ef9G+rXT8jge49wr8jJV0z0ariV1GVZn6iIQ/sz9SegN2ajk5u1+FG+iHZS2JQ0qo2Fw==
   dependencies:
     "@hey-amplify/bank" "*"
     discord-api-types "^0.26.1"
@@ -853,17 +813,10 @@ mime-types@^2.1.12:
   dependencies:
     mime-db "1.51.0"
 
-node-fetch@^2.6.1:
+node-fetch@^2.6.1, node-fetch@^2.6.6:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
-  dependencies:
-    whatwg-url "^5.0.0"
-
-node-fetch@^2.6.6:
-  version "2.6.6"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.6.tgz#1751a7c01834e8e1697758732e9efb6eeadfaf89"
-  integrity sha512-Z8/6vRlTUChSdIgMa51jxQ4lrw/Jy5SOW10ObaA47/RElsAN2c5Pn8bTgFGWn/ibwzXTE8qwr1Yzx28vsecXEA==
   dependencies:
     whatwg-url "^5.0.0"
 

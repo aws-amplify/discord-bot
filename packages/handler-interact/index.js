@@ -1,5 +1,8 @@
 import { verifyEvent, handleCommand } from '@hey-amplify/discord'
 
+/**
+ * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ */
 export async function handler(event) {
   if (event?.body && (await verifyEvent(event))) {
     const { type, ...context } = event.body

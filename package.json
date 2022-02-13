@@ -10,14 +10,15 @@
     "start": "echo 'no start command needed'",
     "app": "yarn workspace @hey-amplify/app",
     "dev": "yarn app dev",
-    "push": "scripts/push"
+    "push": "scripts/push",
+    "registry": "verdaccio --listen 4000 --config ./scripts/verdaccio.yaml"
   },
   "devDependencies": {
     "@aws-sdk/client-ssm": "^3.48.0",
     "dotenv": "^14.3.2",
-    "eslint": "^7.32.0",
+    "eslint": "^8.7.0",
     "eslint-config-prettier": "^8.3.0",
-    "prettier": "^2.4.0",
+    "prettier": "^2.5.1",
     "verdaccio": "^5.2.2"
   },
   "prettier": {
