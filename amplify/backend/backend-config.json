@@ -44,6 +44,12 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
       "dependsOn": []
+    },
+    "discordwebhook": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": []
     }
   },
   "api": {
@@ -79,6 +85,14 @@
           "resourceName": "userPoolGroups",
           "attributes": [
             "adminsGroupRole"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "discordwebhook",
+          "attributes": [
+            "Name",
+            "Arn"
           ]
         }
       ]

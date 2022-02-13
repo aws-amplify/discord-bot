@@ -1,6 +1,7 @@
 import { resolve } from 'node:path'
 import { handler as interact } from '@hey-amplify/handler-interact'
 import { app } from '@hey-amplify/handler-commands'
+import { app as webhookApp } from '@hey-amplify/handler-webhook'
 
 /**
  * Connect-style middleware handler for Discord bot API layer
@@ -49,6 +50,13 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
       const commands = app()
       req.url = req.url.slice(4)
       commands.handle(req, res, next)
+      return
+    }
+
+    if (req.url.startsWith('/api/webhook')) {
+      const webhook = webhookApp()
+      req.url = req.url.slice(4)
+      webhook.handle(req, res, next)
       return
     }
 

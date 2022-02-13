@@ -5,7 +5,7 @@ async function respond({ token, payload }) {
   const api = createAPI(process.env.DISCORD_BOT_TOKEN)
   const url = `/webhooks/${process.env.DISCORD_APP_ID}/${token}`
   const response = await api.post(url, payload)
-  console.log('responding', response)
+  if (response.error) throw response.error.message
   return response
 }
 
@@ -20,10 +20,6 @@ export async function handler(event) {
   // event.body = JSON.parse(event.body)
   const { token } = event.body
   try {
-    console.log(
-      'before repsonding',
-      await handleCommand({ context: event.body })
-    )
     const response = await respond({
       token,
       payload: await handleCommand({ context: event.body }),
@@ -34,7 +30,7 @@ export async function handler(event) {
     }
   } catch (error) {
     console.log('ERROR:', error)
-    await respond({ token, payload: error.message })
+    // await respond({ token, payload: error.message })
     return {
       statusCode: 500,
       body: JSON.stringify(error),

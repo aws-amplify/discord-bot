@@ -33,7 +33,11 @@ export async function handler(event) {
         }
       }
       case 2: {
-        await invoke(event)
+        try {
+          await invoke(event)
+        } catch (error) {
+          console.warn('Error invoking discord interaction handler', error)
+        }
         return {
           type: 5,
         }

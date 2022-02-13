@@ -59,7 +59,7 @@
       "function": {
         "discordinteraction": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordinteraction-552b6d35794231762b67-build.zip",
+          "s3Key": "amplify-builds/discordinteraction-4532694c584a54497a54-build.zip",
           "discordAppId": "/amplify/amplifydiscordbot/next/secrets/DISCORD_APP_ID",
           "discordBotToken": "/amplify/amplifydiscordbot/next/secrets/DISCORD_BOT_TOKEN",
           "discordPublicKey": "/amplify/amplifydiscordbot/next/secrets/DISCORD_PUBLIC_KEY"
@@ -82,10 +82,17 @@
         },
         "discordinteractionhandler": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordinteractionhandler-486946794e2f57594e6d-build.zip",
+          "s3Key": "amplify-builds/discordinteractionhandler-44545a6f79496c707747-build.zip",
           "discordAppId": "/amplify/amplifydiscordbot/next/secrets/DISCORD_APP_ID",
           "discordPublicKey": "/amplify/amplifydiscordbot/next/secrets/DISCORD_PUBLIC_KEY",
           "discordBotToken": "/amplify/amplifydiscordbot/next/secrets/DISCORD_BOT_TOKEN"
+        },
+        "discordwebhook": {
+          "discordAppId": "/amplify/amplifydiscordbot/next/secrets/DISCORD_APP_ID",
+          "discordPublicKey": "/amplify/amplifydiscordbot/next/secrets/DISCORD_PUBLIC_KEY",
+          "discordBotToken": "/amplify/amplifydiscordbot/next/secrets/DISCORD_BOT_TOKEN",
+          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
+          "s3Key": "amplify-builds/discordwebhook-44302b6e435248624239-build.zip"
         }
       },
       "auth": {
