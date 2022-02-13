@@ -64,10 +64,6 @@
           "discordBotToken": "/amplify/amplifydiscordbot/next/secrets/DISCORD_BOT_TOKEN",
           "discordPublicKey": "/amplify/amplifydiscordbot/next/secrets/DISCORD_PUBLIC_KEY"
         },
-        "discordlayer": {
-          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordlayer-LambdaLayerVersionf4b05f57-build.zip"
-        },
         "amplifydiscordbotauthPreSignup": {
           "DOMAINALLOWLIST": "amazon.com",
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",

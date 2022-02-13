@@ -6,9 +6,6 @@ export type AmplifyDependentResourcesAttributes = {
             "Region": "string",
             "LambdaExecutionRole": "string"
         },
-        "discordlayer": {
-            "Arn": "string"
-        },
         "amplifydiscordbotauthPreSignup": {
             "Name": "string",
             "Arn": "string",

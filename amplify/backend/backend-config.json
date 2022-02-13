@@ -14,11 +14,6 @@
         }
       ]
     },
-    "discordlayer": {
-      "providerPlugin": "awscloudformation",
-      "service": "LambdaLayer",
-      "build": true
-    },
     "amplifydiscordbotauthPreSignup": {
       "build": true,
       "providerPlugin": "awscloudformation",
