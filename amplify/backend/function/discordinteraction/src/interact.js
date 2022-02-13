@@ -33,6 +33,9 @@ export async function handler(event) {
         }
       }
       case 2: {
+        console.log(
+          'Invoking Discord interaction handler, returning waiting response'
+        )
         try {
           await invoke(event)
         } catch (error) {
