@@ -1,7 +1,13 @@
 import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda'
 import { verifyEvent } from '@hey-amplify/discord'
 
+/**
+ * Invoke our Lambda function with a payload
+ * @param {Object.<string, any>} payload
+ * @returns {Promise<import('@aws-sdk/client-lambda').InvokeCommandOutput>}
+ */
 async function invoke(payload) {
+  /** @type {import('@aws-sdk/client-lambda').LambdaClient} */
   const client = new LambdaClient({ region: process.env.REGION })
 
   /** @type {import('@aws-sdk/client-lambda').InvokeCommandInput} */
