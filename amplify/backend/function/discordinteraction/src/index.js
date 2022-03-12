@@ -1,14 +1,10 @@
-import { loadSecrets } from '@hey-amplify/support'
 import { handler as interact } from './interact.js'
-
-let secretsLoaded = false
 
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 export async function handler(event) {
   console.log('EVENT:', JSON.stringify(event))
-  if (!secretsLoaded && (await loadSecrets())) secretsLoaded = true
   try {
     event.body = JSON.parse(event.body)
     return {

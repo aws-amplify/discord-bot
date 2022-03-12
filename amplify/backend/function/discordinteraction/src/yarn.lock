@@ -105,47 +105,6 @@
     "@aws-sdk/util-waiter" "3.50.0"
     tslib "^2.3.0"
 
-"@aws-sdk/client-ssm@^3.51.0":
-  version "3.51.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-ssm/-/client-ssm-3.51.0.tgz#cce8cd9323957988d1031d920b1bfea68b85fc27"
-  integrity sha512-FKzkARx3Jjw++6UJU8ig3XL3aUwE9TU97N5duX6sOxgypLPuhUKLEGBgB9XOI9aKdgQGpkEVcV3rRZi7wS4owA==
-  dependencies:
-    "@aws-crypto/sha256-browser" "2.0.0"
-    "@aws-crypto/sha256-js" "2.0.0"
-    "@aws-sdk/client-sts" "3.51.0"
-    "@aws-sdk/config-resolver" "3.51.0"
-    "@aws-sdk/credential-provider-node" "3.51.0"
-    "@aws-sdk/fetch-http-handler" "3.50.0"
-    "@aws-sdk/hash-node" "3.50.0"
-    "@aws-sdk/invalid-dependency" "3.50.0"
-    "@aws-sdk/middleware-content-length" "3.50.0"
-    "@aws-sdk/middleware-host-header" "3.50.0"
-    "@aws-sdk/middleware-logger" "3.50.0"
-    "@aws-sdk/middleware-retry" "3.51.0"
-    "@aws-sdk/middleware-serde" "3.50.0"
-    "@aws-sdk/middleware-signing" "3.50.0"
-    "@aws-sdk/middleware-stack" "3.50.0"
-    "@aws-sdk/middleware-user-agent" "3.50.0"
-    "@aws-sdk/node-config-provider" "3.51.0"
-    "@aws-sdk/node-http-handler" "3.50.0"
-    "@aws-sdk/protocol-http" "3.50.0"
-    "@aws-sdk/smithy-client" "3.50.0"
-    "@aws-sdk/types" "3.50.0"
-    "@aws-sdk/url-parser" "3.50.0"
-    "@aws-sdk/util-base64-browser" "3.49.0"
-    "@aws-sdk/util-base64-node" "3.49.0"
-    "@aws-sdk/util-body-length-browser" "3.49.0"
-    "@aws-sdk/util-body-length-node" "3.49.0"
-    "@aws-sdk/util-defaults-mode-browser" "3.50.0"
-    "@aws-sdk/util-defaults-mode-node" "3.51.0"
-    "@aws-sdk/util-user-agent-browser" "3.50.0"
-    "@aws-sdk/util-user-agent-node" "3.51.0"
-    "@aws-sdk/util-utf8-browser" "3.49.0"
-    "@aws-sdk/util-utf8-node" "3.49.0"
-    "@aws-sdk/util-waiter" "3.50.0"
-    tslib "^2.3.0"
-    uuid "^8.3.2"
-
 "@aws-sdk/client-sso@3.51.0":
   version "3.51.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-sso/-/client-sso-3.51.0.tgz#229212ffd5f41feeca8238556d8aa87b263c2515"
@@ -728,13 +687,6 @@
     discord.js "^13.6.0"
     node-fetch "^2.6.6"
     tweetnacl "^1.0.3"
-
-"@hey-amplify/support@*":
-  version "0.1.0"
-  resolved "http://localhost:4000/@hey-amplify%2fsupport/-/support-0.1.0.tgz#ae6e6d0162f2ca850b440a590414116e790303bc"
-  integrity sha512-eTwW8PJatwk/1xehSyCpf74Q4qihbIxVjTVsJyvvRnd/wEU76ojbJi3P1f3yrCkFchXZQFd8SLYD2YBxDGzdEg==
-  dependencies:
-    "@aws-sdk/client-ssm" "^3.51.0"
 
 "@sapphire/async-queue@^1.1.9":
   version "1.2.0"

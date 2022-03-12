@@ -23,15 +23,6 @@
     "functiondiscordinteractionhandlerName": {
       "Type": "String",
       "Default": "functiondiscordinteractionhandlerName"
-    },
-    "discordAppId": {
-      "Type": "String"
-    },
-    "discordBotToken": {
-      "Type": "String"
-    },
-    "discordPublicKey": {
-      "Type": "String"
     }
   },
   "Conditions": {
@@ -89,15 +80,6 @@
             },
             "FUNCTION_DISCORDINTERACTIONHANDLER_NAME": {
               "Ref": "functiondiscordinteractionhandlerName"
-            },
-            "DISCORD_APP_ID": {
-              "Ref": "discordAppId"
-            },
-            "DISCORD_BOT_TOKEN": {
-              "Ref": "discordBotToken"
-            },
-            "DISCORD_PUBLIC_KEY": {
-              "Ref": "discordPublicKey"
             }
           }
         },
@@ -193,41 +175,6 @@
           ]
         }
       }
-    },
-    "CustomLambdaExecutionPolicy": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "custom-lambda-execution-policy",
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Action": [
-                "ssm:GetParameters"
-              ],
-              "Resource": [
-                {
-                  "Fn::Sub": [
-                    "arn:aws:ssm:us-east-1:*:parameter/amplify/amplifydiscordbot/${env}/*",
-                    {
-                      "env": {
-                        "Ref": "env"
-                      }
-                    }
-                  ]
-                }
-              ],
-              "Effect": "Allow"
-            }
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ]
-      },
-      "DependsOn": "LambdaExecutionRole"
     },
     "AmplifyResourcesPolicy": {
       "DependsOn": [

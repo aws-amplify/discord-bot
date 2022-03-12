@@ -30,3 +30,5 @@ node_modules
 
 packages/**/lib
 !packages/app/src/lib
+
+notes.md

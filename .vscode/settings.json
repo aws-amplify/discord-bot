@@ -8,8 +8,8 @@
     "amplify/backend/amplify-meta.json": false,
     "amplify/backend/awscloudformation": false
   },
-  "conventionalCommits.scopes": [
-    "app",
-    "bot"
-  ]
+  "conventionalCommits.scopes": ["app", "bot"],
+  "files.associations": {
+    "*.env.*": "dotenv"
+  }
 }

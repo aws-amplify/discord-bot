@@ -1,17 +1,4 @@
 {
   "lambdaLayers": [],
-  "environmentVariableList": [
-    {
-      "cloudFormationParameterName": "discordAppId",
-      "environmentVariableName": "DISCORD_APP_ID"
-    },
-    {
-      "cloudFormationParameterName": "discordPublicKey",
-      "environmentVariableName": "DISCORD_PUBLIC_KEY"
-    },
-    {
-      "cloudFormationParameterName": "discordBotToken",
-      "environmentVariableName": "DISCORD_BOT_TOKEN"
-    }
-  ]
+  "environmentVariableList": []
 }

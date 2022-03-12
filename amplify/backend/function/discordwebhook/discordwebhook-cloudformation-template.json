@@ -15,15 +15,6 @@
     },
     "s3Key": {
       "Type": "String"
-    },
-    "discordAppId": {
-      "Type": "String"
-    },
-    "discordPublicKey": {
-      "Type": "String"
-    },
-    "discordBotToken": {
-      "Type": "String"
     }
   },
   "Conditions": {
@@ -78,15 +69,6 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
-            },
-            "DISCORD_APP_ID": {
-              "Ref": "discordAppId"
-            },
-            "DISCORD_PUBLIC_KEY": {
-              "Ref": "discordPublicKey"
-            },
-            "DISCORD_BOT_TOKEN": {
-              "Ref": "discordBotToken"
             }
           }
         },

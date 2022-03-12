@@ -1,5 +1,4 @@
 import { handleCommand, createAPI } from '@hey-amplify/discord'
-import { loadSecrets } from '@hey-amplify/support'
 
 async function respond({ token, payload }) {
   const api = createAPI(process.env.DISCORD_BOT_TOKEN)
@@ -9,14 +8,11 @@ async function respond({ token, payload }) {
   return response
 }
 
-let secretsLoaded = false
-
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 export async function handler(event) {
   console.log('EVENT:', JSON.stringify(event))
-  if (!secretsLoaded && (await loadSecrets())) secretsLoaded = true
   // event.body = JSON.parse(event.body)
   const { token } = event.body
   try {

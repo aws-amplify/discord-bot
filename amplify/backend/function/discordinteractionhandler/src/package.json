@@ -6,8 +6,7 @@
   "module": "index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@hey-amplify/discord": "^0.2.3",
-    "@hey-amplify/support": "*"
+    "@hey-amplify/discord": "^0.2.3"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.92"
