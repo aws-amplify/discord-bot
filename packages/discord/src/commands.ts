@@ -35,12 +35,21 @@ export async function syncCommands() {
 
 export async function listCommands() {
   const api = createAPI()
-  const registered = await api.get(
+  const registeredCommands = await api.get(
     `/applications/${process.env.DISCORD_APP_ID}/commands`
   )
   const banked = Array.from(bank.values()).map((command) => command.config)
-  console.log({ registered: registered.data, banked })
-  // TODO: compare registered and banked commands and return all (isRegistered, isBanked)
+  let commands = []
+  for (let command of banked) {
+    const registered = registeredCommands.data.find(
+      (c) => c.name === command.name
+    )
+    if (registered) {
+      command.registration = registered
+    }
+    commands.push(command)
+  }
+  return commands
 }
 
 export async function deleteCommand(commandId, { guildId }) {

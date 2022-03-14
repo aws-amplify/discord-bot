@@ -1,0 +1,10 @@
+{
+  "extends": "@hey-amplify/tsconfig/base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build",
+    "noImplicitAny": false
+  },
+  "include": ["src"],
+  "exclude": ["build", "bin", "node_modules"]
+}
