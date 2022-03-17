@@ -3,9 +3,6 @@
   "version": "0.1.1",
   "license": "Apache-2.0",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "start": "echo 'no start command needed'",
     "app": "pnpm --filter @hey-amplify/app",
@@ -46,5 +43,6 @@
       "es2017": true,
       "node": true
     }
-  }
+  },
+  "packageManager": "pnpm@6.32.3"
 }

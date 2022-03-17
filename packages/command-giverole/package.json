@@ -5,19 +5,21 @@
   "license": "Apache-2.0",
   "exports": {
     ".": {
-      "import": "./src/index.js",
-      "require": "./lib/index.cjs"
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "builder",
-    "prepublishOnly": "yarn build --minify"
+    "build": "tsc",
+    "dev": "pnpm build -- -w",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@hey-amplify/discord": "*"
   },
   "devDependencies": {
-    "@hey-amplify/builder": "*"
+    "@hey-amplify/builder": "*",
+    "typescript": "next"
   }
 }

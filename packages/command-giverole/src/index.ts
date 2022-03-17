@@ -29,6 +29,7 @@ export async function handler({ data, guild_id, member }) {
   }
   console.log({ userId, roleId, guild_id, addRoleToUser })
   if (await addRoleToUser({ guildId: guild_id, userId, roleId })) {
+    // @ts-ignore
     return `Successfully added role \`${role.name}\` to user.`
   }
   return '🤢 something went wrong'

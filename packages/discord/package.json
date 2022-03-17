@@ -12,8 +12,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "yarn build -w",
-    "prepublishOnly": "yarn build"
+    "dev": "pnpm build -- -w",
+    "prepublishOnly": "pnpm build"
   },
   "devDependencies": {
     "@hey-amplify/builder": "*"
@@ -23,6 +23,7 @@
     "discord-api-types": "^0.26.1",
     "discord.js": "^13.6.0",
     "node-fetch": "^2.6.6",
-    "tweetnacl": "^1.0.3"
+    "tweetnacl": "^1.0.3",
+    "typescript": "next"
   }
 }

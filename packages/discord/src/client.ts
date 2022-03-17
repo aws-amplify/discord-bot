@@ -13,3 +13,4 @@
 // }
 
 // export const DiscordClient = new Discord.Client(clientOptions)
+export {}

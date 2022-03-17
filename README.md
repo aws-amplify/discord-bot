@@ -4,6 +4,10 @@ Welcome to hey-amplify! This repository contains the source code for the [AWS Am
 
 ## Getting Started
 
+1. `gh repo fork josefaidt/amplify-discord-bots`
+2. `pnpm install`
+3. `pnpm build`
+
 ### Setting up a Discord Bot
 
 <!-- TODO: screenshots -->
