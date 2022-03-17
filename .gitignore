@@ -32,3 +32,4 @@ packages/**/lib
 !packages/app/src/lib
 
 notes.md
+.turbo
