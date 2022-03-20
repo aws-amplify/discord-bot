@@ -42,7 +42,7 @@ async function main(args) {
   if (exists(srcDirPath)) entryPoints = await glob(`${srcDirPath}/**/*.{js}`)
   if (!entryPoints) throw new Error('Unsupported entrypoint(s)')
 
-  const outdir = resolve(packageDir, 'lib')
+  const outdir = resolve(packageDir, 'build')
   const external = Object.keys(
     require(resolve(packageDir, 'package.json'))?.dependencies || {}
   )
@@ -60,7 +60,9 @@ async function main(args) {
       outExtension: { '.js': '.cjs' },
       plugins: [transformJsImportToCjsPlugin],
     })
-    .catch(() => process.exit(1))
+    .catch((error) => {
+      process.exit(1)
+    })
 }
 
 const args = parseArgs(process.argv.slice(2))
