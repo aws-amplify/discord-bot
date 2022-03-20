@@ -4,15 +4,7 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "discordinteractionhandler",
-          "attributes": [
-            "Name"
-          ]
-        }
-      ]
+      "dependsOn": []
     },
     "amplifydiscordbotauthPreSignup": {
       "build": true,
@@ -34,12 +26,6 @@
       ]
     },
     "discordcommands": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": []
-    },
-    "discordinteractionhandler": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
