@@ -6,8 +6,8 @@
   "scripts": {
     "start": "echo 'no start command needed'",
     "app": "pnpm --filter @hey-amplify/app",
-    "build": "turbo run build",
-    "dev": "turbo run dev",
+    "build": "pnpm run build --filter ./packages --parallel",
+    "dev": "pnpm run dev --filter ./packages --parallel",
     "push": "scripts/push",
     "registry": "verdaccio --listen 4000 --config ./scripts/verdaccio.yaml"
   },
