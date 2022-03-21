@@ -37,9 +37,6 @@ const config = {
     // specifying a different adapter
     adapter: adapter(),
 
-    // hydrate the <div id="svelte"> element in src/app.html
-    target: '#svelte',
-
     files: {
       assets: resolve('public'),
       routes: resolve('src/pages'),

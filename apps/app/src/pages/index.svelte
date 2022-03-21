@@ -47,7 +47,7 @@
     return data
   }
 
-  async function getCommands() {
+  async function listCommands() {
     let data
     try {
       const response = await fetch('/api/commands/list')
@@ -59,6 +59,7 @@
       // throw new Error('Unable to fetch commands')
       console.error('Unable to fetch commands', error)
     }
+    console.log(data)
     return data
   }
 </script>
@@ -71,17 +72,19 @@
           Sync Commands
         </Button>
         <section>
-          <!-- <h2>Commands:</h2>
-        {#await getCommands()}
-          <p>...getting commands</p>
-        {:then commands}
-          {#each commands.data as command (command.id)}
-            <Command {...command} />
-          {/each}
-        {:catch error}
-          <p style="color: red">{error.message}</p>
-        {/await}
-      </section> -->
+          <h2>Commands:</h2>
+          {#await listCommands()}
+            <p>...getting commands</p>
+          {:then commands}
+            {#each commands as command (command)}
+              {@const tags = [command.registration && 'Registered'].filter(
+                Boolean
+              )}
+              <Command {...command} tags="{tags}" />
+            {/each}
+          {:catch error}
+            <p style="color: red">{error.message}</p>
+          {/await}
         </section>
       </Column>
     </Row>

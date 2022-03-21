@@ -1,4 +1,4 @@
-<script context="module">
+<script context="module" lang="ts">
   /**
    * @typedef {"initial"} DELETE_STEP_INITIAL
    */
@@ -13,8 +13,8 @@
   const DELETE_STEP_DELETING = 'deleting'
 </script>
 
-<script>
-  import { Button, Tile } from 'carbon-components-svelte'
+<script lang="ts">
+  import { Button, Tile, Tag } from 'carbon-components-svelte'
   import { TrashCan16 } from 'carbon-icons-svelte'
 
   /**
@@ -24,9 +24,9 @@
 
   /**
    * Command ID
-   * @type {string}
+   * @type {Object.<string, any>}
    */
-  export let id
+  export let registration
   /**
    * Command name; used to execute command
    * @type {string}
@@ -37,6 +37,10 @@
    * @type {string}
    */
   export let description
+
+  export let tags
+
+  const { id } = registration
 
   async function onDeleteCommand(event) {
     deleteCommandStep = DELETE_STEP_DELETING
@@ -63,8 +67,19 @@
   <article>
     <div>
       <div>
-        <span>{id}</span>
-        <h3>{name}</h3>
+        <slot name="header">
+          <span>{id}</span>
+          <h3>{name}</h3>
+        </slot>
+        <slot name="tags">
+          {#if tags}
+            <div>
+              {#each tags as tag}
+                <Tag>{tag}</Tag>
+              {/each}
+            </div>
+          {/if}
+        </slot>
       </div>
       <div>
         {#if deleteCommandStep === DELETE_STEP_INITIAL}

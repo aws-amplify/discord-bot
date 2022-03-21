@@ -1,46 +1,13 @@
 <script context="module">
-  import { Auth } from '@aws-amplify/auth'
   import { Amplify } from '@aws-amplify/core'
   import amplifyConfig from '@hey-amplify/aws-exports'
-  import { user as userStore } from '$lib/store'
 
   Amplify.configure(amplifyConfig)
-
-  /**
-   * @type {import('@sveltejs/kit').Load}
-   */
-  export async function load({ page, fetch, session, stuff }) {
-    try {
-      const user = await Auth.currentAuthenticatedUser()
-      userStore.set(user)
-      return {
-        props: {
-          user,
-        },
-      }
-    } catch (error) {
-      // not logged in
-      console.error('Error getting current user', error)
-      if (page.path === '/login') return {}
-      return {
-        status: 302,
-        redirect: '/login',
-      }
-    }
-  }
 </script>
 
 <script>
   import { Header, SkipToContent, Theme } from 'carbon-components-svelte'
   import 'carbon-components-svelte/css/all.css'
-  import { page } from '$app/stores'
-  import { goto } from '$app/navigation'
-
-  /** @type {import('@aws-amplify/auth').CognitoUser} */
-  export let user
-
-  // if user is logged in and on the login page, redirect home
-  if (user?.username && $page.path === '/login') goto('/')
 
   /** @type {boolean} */
   let isSideNavOpen = false
