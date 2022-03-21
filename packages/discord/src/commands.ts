@@ -1,7 +1,11 @@
+// @ts-ignore
 import { bank } from '@hey-amplify/bank'
 import { createAPI } from './api.js'
 
-export async function registerCommand(command, { guildId } = {}) {
+export async function registerCommand(
+  command,
+  { guildId } = { guildId: null }
+) {
   const api = createAPI(process.env.DISCORD_BOT_TOKEN)
 
   let url = `/applications/${process.env.DISCORD_APP_ID}`
@@ -15,8 +19,9 @@ export async function registerCommand(command, { guildId } = {}) {
 }
 
 export async function syncCommands() {
+  // @ts-ignore
   const commands = Array.from(bank.values()).map(registerCommand)
-  let result = []
+  let result = [] as any
   for await (let registered of commands) {
     if (registered.error) {
       console.error(
@@ -38,8 +43,8 @@ export async function listCommands() {
   const registeredCommands = await api.get(
     `/applications/${process.env.DISCORD_APP_ID}/commands`
   )
-  const banked = Array.from(bank.values()).map((command) => command.config)
-  let commands = []
+  const banked = Array.from(bank.values()).map((command: any) => command.config)
+  let commands = [] as any
   for (let command of banked) {
     const registered = registeredCommands.data.find(
       (c) => c.name === command.name

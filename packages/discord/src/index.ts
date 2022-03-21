@@ -14,12 +14,12 @@ export async function verifyEvent(event) {
   const isVerified = nacl.sign.detached.verify(
     Buffer.from(timestamp + body),
     Buffer.from(signature, 'hex'),
-    Buffer.from(process.env.DISCORD_PUBLIC_KEY, 'hex')
+    Buffer.from(process.env.DISCORD_PUBLIC_KEY as string, 'hex')
   )
   return isVerified
 }
 
-export function generateResponse(content, embeds) {
+export function generateResponse(content, embeds?) {
   return {
     tts: false,
     content,
@@ -45,7 +45,7 @@ export async function addRoleToUser({ guildId, userId, roleId }) {
       return true
     }
   } catch (error) {
-    throw new Error('Error adding role', error)
+    throw new Error(`Error adding role: ${error}`)
   }
 
   if (!data) return
@@ -69,7 +69,7 @@ export async function getGuilds() {
       data = await response.json()
     }
   } catch (error) {
-    throw new Error('Error fetching guilds', error)
+    throw new Error(`Error fetching guilds: ${error}`)
   }
 
   return data

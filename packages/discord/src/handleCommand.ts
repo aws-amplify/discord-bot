@@ -1,3 +1,4 @@
+// @ts-ignore
 import { bank } from '@hey-amplify/bank'
 import { generateResponse } from './index.js'
 

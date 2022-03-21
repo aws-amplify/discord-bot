@@ -1,35 +1,42 @@
 import fetch from 'node-fetch'
+import type { RequestInit } from 'node-fetch'
 
-export function createAPI(token = process.env.DISCORD_BOT_TOKEN) {
-  const baseURL = 'https://discord.com/api/v8'
-  const options = {
+type DiscordAPIRequestResponse = {
+  data: { [key: string]: any }
+  error: { name: string; message: string }
+  status: number
+}
+
+type DiscordAPIRequestPayload = {
+  [prop: string]: any
+}
+
+export interface IDiscordAPI {
+  token?: string
+}
+
+export class DiscordAPI implements IDiscordAPI {
+  private readonly baseURL = 'https://discordapp.com/api/v8'
+  readonly token = process.env.DISCORD_TOKEN
+  private options: RequestInit = {
     method: 'GET',
     headers: {
-      Authorization: `Bot ${token}`,
+      Authorization: `Bot ${this.token}`,
       'Content-Type': 'application/json',
     },
   }
 
-  /**
-   * @typedef {Object} RequestResponse
-   * @property {Object} data
-   * @property {Object} error
-   * @property {number} status
-   */
+  constructor(props: IDiscordAPI) {
+    this.token = props.token
+  }
 
-  /**
-   * @typedef {Object.<string, any>} RequestPayload
-   */
-
-  /**
-   * @type RequestHandler
-   * @param {string} url
-   * @param {RequestPayload} payload
-   * @returns {RequestResponse}
-   */
-  async function request(url, payload) {
-    if (payload) options.body = JSON.stringify(payload)
-    const response = await fetch(`${baseURL}${url}`, options)
+  private request = async (
+    url: string,
+    payload?: DiscordAPIRequestPayload
+  ): Promise<DiscordAPIRequestResponse> => {
+    if (payload) this.options.body = JSON.stringify(payload)
+    const fetchUrl = new URL(url, this.baseURL)
+    const response = await fetch(fetchUrl.href, this.options)
 
     let data
     let error
@@ -41,52 +48,45 @@ export function createAPI(token = process.env.DISCORD_BOT_TOKEN) {
       error = await response.json()
     }
 
+    // cleanup, is this needed? is there a better way to handle fetch options?
+    // ... should we just create options every time?
+    delete this.options.body
+
     return { data, error, status }
   }
 
-  let api = {}
-
-  /**
-   * @name get
-   * @param {string} url
-   * @returns {Promise<RequestResponse>}
-   */
-  api.get = function (url) {
-    return request(url)
+  public get = async (url: string): Promise<DiscordAPIRequestResponse> => {
+    this.options.method = 'GET'
+    return this.request(url)
   }
 
-  /**
-   * @name post
-   * @param {string} url
-   * @param {RequestPayload} payload
-   * @returns {Promise<RequestResponse>}
-   */
-  api.post = function (url, payload) {
-    options.method = 'POST'
-    return request(url, payload)
+  public post = async (
+    url: string,
+    payload?: DiscordAPIRequestPayload
+  ): Promise<DiscordAPIRequestResponse> => {
+    this.options.method = 'POST'
+    return this.request(url, payload)
   }
 
-  /**
-   * @name put
-   * @param {string} url
-   * @param {RequestPayload} payload
-   * @returns {Promise<RequestResponse>}
-   */
-  api.put = function (url, payload) {
-    options.method = 'PUT'
-    return request(url, payload)
+  public put = async (
+    url: string,
+    payload?: DiscordAPIRequestPayload
+  ): Promise<DiscordAPIRequestResponse> => {
+    this.options.method = 'PUT'
+    return this.request(url, payload)
   }
 
-  /**
-   * @name delete
-   * @param {string} url
-   * @param {RequestPayload} payload
-   * @returns {Promise<RequestResponse>}
-   */
-  api.delete = function (url, payload) {
-    options.method = 'DELETE'
-    return request(url, payload)
+  public delete = async (
+    url: string,
+    payload?: DiscordAPIRequestPayload
+  ): Promise<DiscordAPIRequestResponse> => {
+    this.options.method = 'DELETE'
+    return this.request(url, payload)
   }
+}
 
-  return api
+export function createAPI(
+  token: string = process.env.DISCORD_BOT_TOKEN as string
+): DiscordAPI {
+  return new DiscordAPI({ token })
 }

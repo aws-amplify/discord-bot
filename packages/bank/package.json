@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "type": "module",
   "license": "Apache-2.0",
+  "types": "./build/index.d.ts",
   "exports": {
     ".": {
       "types": "./build/index.d.ts",
-      "import": "./src/index.js"
+      "import": "./build/index.js"
     },
     "./package.json": "./package.json"
   },

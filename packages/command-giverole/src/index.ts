@@ -27,7 +27,7 @@ export async function handler({ data, guild_id, member }) {
   if (userId === member.user.id) {
     return `This command does not support adding roles to yourself.`
   }
-  console.log({ userId, roleId, guild_id, addRoleToUser })
+  // console.log({ userId, roleId, guild_id, addRoleToUser })
   if (await addRoleToUser({ guildId: guild_id, userId, roleId })) {
     // @ts-ignore
     return `Successfully added role \`${role.name}\` to user.`

@@ -1,11 +1,15 @@
 import * as giverole from '@hey-amplify/command-giverole'
 import { staticCommandsData } from '@hey-amplify/command-static'
+import { createDiscordCommandBank } from './Bank.js'
+
+export * from './Bank.js'
+export * from './Command.js'
 
 const validCommandNameRegex = /^[\w-]{1,32}$/
 // TODO: filter on command name regex to prevent sync errors
 export function createStaticCommands(data) {
   return Object.entries(data).map(
-    ([staticCommandName, staticCommandConfig]) => {
+    ([staticCommandName, staticCommandConfig]: [string, any]) => {
       return {
         config: {
           name: staticCommandName,
@@ -33,15 +37,8 @@ export function createStaticCommands(data) {
   )
 }
 
-export function createBank({ staticCommandsData = [], commands = [] }) {
-  // TODO: validate command name
-  // TODO: ensure duplicates are not added -- static commands do not get precedence
-  return new Map(
-    [...commands, ...createStaticCommands(staticCommandsData)].map(
-      (command) => [command.config.name, command]
-    )
-  )
-}
-
 const commands = [giverole]
-export const bank = createBank({ staticCommandsData, commands })
+export const bank = createDiscordCommandBank([
+  ...commands,
+  ...createStaticCommands(staticCommandsData),
+])
