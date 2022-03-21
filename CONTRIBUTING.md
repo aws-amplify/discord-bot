@@ -7,21 +7,21 @@ Refer to the [readme guide](./README.md#development) to get set up for local dev
 ## Prerequisites
 
 - Node.js v16.x
-- yarn v1.x
+- pnpm v6.32.3
 
 ## Package Overview
 
-### [@hey-amplify/app](./packages/app)
+### [@hey-amplify/app](./apps/app)
 
 The frontend is built using [Svelte-Kit](https://kit.svelte.dev) and [carbon-components-svelte](https://carbon-components-svelte.onrender.com/). It also includes a plugin for the Vite dev server to power the Discord bot. All requests routed through `/api` are handled by the plugin.
 
 reference: [vite-plugin-discord-bot-layer](./packages/vite-plugin-discord-bot-layer)
 
-Run `yarn dev` from the project root to get started!
+Run `pnpm app dev` from the project root to get started!
 
-### [@hey-amplify/builder](./packages/builder)
+### [@hey-amplify/builder](./packages/builder) (deprecated)
 
-Builder is a build tool built on [esbuild](https://esbuild.github.io/). Instead of copying the same command and arguments to each individual package, this has been wrapped into a single tool for use with ESM packages. It leverages a plugin to convert extensions on import to cjs due to [Node 16 ESM requiring file extensions](https://nodejs.org/docs/latest-v16.x/api/esm.html#mandatory-file-extensions):
+Builder is a build tool built on [esbuild](https://esbuild.github.io/). Instead of copying the same command and arguments to each individual package, this has been wrapped into a single tool for use with ESM packages. It uses a plugin to convert extensions on import from `.js` to `.cjs` due to [Node 16 ESM requiring file extensions](https://nodejs.org/docs/latest-v16.x/api/esm.html#mandatory-file-extensions):
 
 ```js
 import { namedExport } from './my-module.js'
@@ -30,7 +30,7 @@ import { namedExport } from './my-module.js'
 Turns into:
 
 ```js
-const { namedExport } = require('./my-module.cjs)
+const { namedExport } = require('./my-module.cjs')
 ```
 
 #### Features
@@ -52,21 +52,23 @@ The following sample `package.json` serves as a template for authoring `/sample`
   "version": "0.1.0",
   "type": "module",
   "license": "Apache-2.0",
+  "types": "./build/index.d.ts",
   "exports": {
     ".": {
-      "import": "./src/index.js",
-      "require": "./lib/index.cjs"
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "builder",
-    "prepublishOnly": "yarn build --minify"
+    "build": "tsc",
+    "dev": "pnpm build -- -w",
+    "prepublishOnly": "pnpm build"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@hey-amplify/builder": "*"
-  }
+    "typescript": "next"
+  },
+  "dependencies": {}
 }
 ```
 
