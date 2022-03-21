@@ -17,7 +17,6 @@
     "prepublishOnly": "pnpm build"
   },
   "devDependencies": {
-    "@hey-amplify/builder": "*",
     "typescript": "next"
   },
   "dependencies": {

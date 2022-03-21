@@ -16,9 +16,7 @@
     "dev": "pnpm build -- -w",
     "prepublishOnly": "pnpm build"
   },
-  "devDependencies": {
-    "@hey-amplify/builder": "*"
-  },
+  "devDependencies": {},
   "dependencies": {
     "@hey-amplify/bank": "*",
     "discord-api-types": "^0.26.1",

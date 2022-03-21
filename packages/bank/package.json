@@ -21,7 +21,6 @@
     "@hey-amplify/command-static": "*"
   },
   "devDependencies": {
-    "@hey-amplify/builder": "*",
     "@hey-amplify/tsconfig": "*",
     "typescript": "next"
   }

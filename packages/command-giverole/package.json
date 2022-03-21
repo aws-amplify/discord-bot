@@ -20,7 +20,6 @@
     "@hey-amplify/discord": "*"
   },
   "devDependencies": {
-    "@hey-amplify/builder": "*",
     "typescript": "next"
   }
 }
