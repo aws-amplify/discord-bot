@@ -5,7 +5,7 @@
   "module": "index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@hey-amplify/discord": "^0.2.2",
+    "@hey-amplify/handler-interact": "^0.1.0",
     "@aws-sdk/client-lambda": "^3.51.0"
   },
   "devDependencies": {

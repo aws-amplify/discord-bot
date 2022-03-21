@@ -74,10 +74,6 @@
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
           "s3Key": "amplify-builds/discordcommands-57317759364f6b476836-build.zip"
         },
-        "discordinteractionhandler": {
-          "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordinteractionhandler-4f7548734a656c737a73-build.zip"
-        },
         "discordwebhook": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
           "s3Key": "amplify-builds/discordwebhook-47524e656c56666c7556-build.zip"
