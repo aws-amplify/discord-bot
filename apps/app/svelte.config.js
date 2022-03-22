@@ -13,8 +13,6 @@ const include = ['../../packages'].map(
   path => new URL(path + '/**/**/*.(js|ts)', import.meta.url).pathname
 )
 
-console.log({ include })
-
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
