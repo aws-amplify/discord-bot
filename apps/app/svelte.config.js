@@ -9,14 +9,11 @@ import { optimizeCarbonImports } from 'carbon-components-svelte/preprocess/index
 // https://nodejs.org/api/esm.html#esm_no_json_module_loading
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
 
-const include = [
-  '../discord',
-  '../handler-commands',
-  '../handler-interact',
-  '../handler-webhook',
-  '../command-giverole',
-  '../command-static',
-].map(path => new URL(path + '/**/*.(js|ts)', import.meta.url).pathname)
+const include = ['../../packages'].map(
+  path => new URL(path + '/**/**/*.(js|ts)', import.meta.url).pathname
+)
+
+console.log({ include })
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
