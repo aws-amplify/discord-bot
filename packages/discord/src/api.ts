@@ -16,8 +16,8 @@ export interface IDiscordAPI {
 }
 
 export class DiscordAPI implements IDiscordAPI {
-  private readonly baseURL = 'https://discordapp.com/api/v8'
-  readonly token = process.env.DISCORD_TOKEN
+  private readonly baseURL = new URL('/api/v8', 'https://discordapp.com')
+  readonly token = process.env.DISCORD_BOT_TOKEN
   private options: RequestInit = {
     method: 'GET',
     headers: {
@@ -27,7 +27,9 @@ export class DiscordAPI implements IDiscordAPI {
   }
 
   constructor(props: IDiscordAPI) {
-    this.token = props.token
+    if (props.token) {
+      this.token = props.token
+    }
   }
 
   private request = async (
@@ -35,7 +37,8 @@ export class DiscordAPI implements IDiscordAPI {
     payload?: DiscordAPIRequestPayload
   ): Promise<DiscordAPIRequestResponse> => {
     if (payload) this.options.body = JSON.stringify(payload)
-    const fetchUrl = new URL(url, this.baseURL)
+    const apiPath = `${this.baseURL.pathname}${url}`
+    const fetchUrl = new URL(apiPath, this.baseURL)
     const response = await fetch(fetchUrl.href, this.options)
 
     let data
