@@ -6,32 +6,35 @@ export interface IDiscordCommandConfig {
 }
 
 export interface IDiscordCommandContext {
-  //
+  [key: string]: any
 }
 
-export interface IDiscordCommand {
-  config: IDiscordCommandConfig
-  handler: (context: IDiscordCommandContext) => Promise<string | undefined>
+export interface IDiscordCommand extends IDiscordCommandConfig {
+  handler: (
+    context: IDiscordCommandContext
+  ) => Promise<string | undefined> | (string | undefined)
 }
 
 export type DiscordCommandContext = IDiscordCommandContext
 export type DiscordCommandConfig = IDiscordCommandConfig
 
 export class DiscordCommand implements IDiscordCommand {
-  public readonly config: IDiscordCommandConfig
+  public readonly name: string
+  public readonly description?: string
+  public readonly usage?: string
   public readonly handler: (
     context: IDiscordCommandContext
-  ) => Promise<string | undefined>
+  ) => Promise<string | undefined> | (string | undefined)
 
   constructor(props) {
-    this.config = props.config
+    this.name = props.name
+    this.description = props.description
+    this.usage = props.usage
     this.handler = props.handler
   }
 }
 
-export function createDiscordCommand(
-  props: IDiscordCommandConfig
-): IDiscordCommand {
+export function createDiscordCommand(props: IDiscordCommand): IDiscordCommand {
   return new DiscordCommand(props)
 }
 

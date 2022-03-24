@@ -1,6 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { syncCommands, listCommands } from '@hey-amplify/discord'
+import { discord } from '@hey-amplify/discord'
 
 /**
  * Express.js app
@@ -26,7 +26,7 @@ export function app(middlewares = []) {
 
   server.get('/commands/list', async function (req, res) {
     try {
-      res.end(JSON.stringify(await listCommands()))
+      res.end(JSON.stringify(await discord.listCommands()))
       return
     } catch (error) {
       console.error('Error listing commands', error)
@@ -37,7 +37,7 @@ export function app(middlewares = []) {
 
   server.post('/commands/sync', async function (req, res) {
     try {
-      res.end(JSON.stringify(await syncCommands()))
+      res.end(JSON.stringify(await discord.syncCommands()))
       return
     } catch (error) {
       console.error('Error syncing commands', error)
