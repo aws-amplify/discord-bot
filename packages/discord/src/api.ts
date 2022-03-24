@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 import type { RequestInit } from 'node-fetch'
 
-type DiscordAPIRequestResponse = {
+export type DiscordAPIRequestResponse = {
   data: { [key: string]: any }
   error: { name: string; message: string }
   status: number
@@ -15,7 +15,7 @@ export interface IDiscordAPI {
   token?: string
 }
 
-export class DiscordAPI implements IDiscordAPI {
+export class DiscordApi implements IDiscordAPI {
   private readonly baseURL = new URL('/api/v8', 'https://discordapp.com')
   readonly token = process.env.DISCORD_BOT_TOKEN
   private options: RequestInit = {
@@ -88,8 +88,11 @@ export class DiscordAPI implements IDiscordAPI {
   }
 }
 
-export function createAPI(
+export function createDiscordApi(
   token: string = process.env.DISCORD_BOT_TOKEN as string
-): DiscordAPI {
-  return new DiscordAPI({ token })
+): DiscordApi {
+  return new DiscordApi({ token })
 }
+
+export const createApi = createDiscordApi
+export const api = createDiscordApi()

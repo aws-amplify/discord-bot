@@ -14,15 +14,18 @@
   "scripts": {
     "build": "tsc",
     "dev": "pnpm build -- -w",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm build",
+    "clean": "rimraf build"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "fast-glob": "^3.2.11",
+    "rimraf": "^3.0.2",
+    "typescript": "next"
+  },
   "dependencies": {
-    "@hey-amplify/bank": "*",
     "discord-api-types": "^0.26.1",
     "discord.js": "^13.6.0",
     "node-fetch": "^2.6.6",
-    "tweetnacl": "^1.0.3",
-    "typescript": "next"
+    "tweetnacl": "^1.0.3"
   }
 }

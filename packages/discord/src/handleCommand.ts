@@ -1,5 +1,4 @@
-// @ts-ignore
-import { bank } from '@hey-amplify/bank'
+import { bank } from './Bank.js'
 import { generateResponse } from './index.js'
 
 export async function handleCommand({ context }) {
@@ -7,14 +6,14 @@ export async function handleCommand({ context }) {
   const command = bank.get(context.data.name)
   if (!command) throw new Error(`Invalid slash command: ${context.data.name}`)
   console.log(
-    `Handling command "${command?.config?.name}" for user ${context.member.user.id}`
+    `Handling command "${command?.name}" for user ${context.member.user.id}`
   )
 
   let commandResponse
   try {
     commandResponse = await command.handler(context)
   } catch (error) {
-    console.error(`Error executing command "${command?.config?.name}"`, error)
+    console.error(`Error executing command "${command?.name}"`, error)
   }
 
   let toRespond = commandResponse ?? somethingWentWrongResponse
