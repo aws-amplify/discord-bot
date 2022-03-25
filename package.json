@@ -6,6 +6,7 @@
   "scripts": {
     "start": "echo 'no start command needed'",
     "app": "pnpm --filter @hey-amplify/app",
+    "packages": "pnpm run --filter ./packages --parallel",
     "build": "pnpm run build --filter ./packages --parallel",
     "dev": "pnpm run dev --filter ./packages --parallel",
     "push": "scripts/push",
