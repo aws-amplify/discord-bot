@@ -1,8 +1,8 @@
-import { Construct } from "constructs";
-import * as ec2 from "aws-cdk-lib/aws-ec2";
-import * as ecs from "aws-cdk-lib/aws-ecs";
-import * as ecs_patterns from "aws-cdk-lib/aws-ecs-patterns";
-import * as ssm from "aws-cdk-lib/aws-ssm";
+import { Construct } from 'constructs'
+import * as ec2 from 'aws-cdk-lib/aws-ec2'
+import * as ecs from 'aws-cdk-lib/aws-ecs'
+import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns'
+import * as ssm from 'aws-cdk-lib/aws-ssm'
 
 /**
  * Properties for deployment of the {@link DiscordBot} to AWS Fargate.
@@ -11,21 +11,21 @@ export interface DiscordBotProps {
   /**
    * The path to the directory with the Dockerfile.
    */
-  dockerPath: string;
+  dockerPath: string
 
   /**
    * The Discord bot token, injected as a secret to the Docker container.
    *
    * Discord bots can be managed in the {@link https://discord.com/developers/applications Developer Portal}.
    */
-  discordBotToken: ssm.IParameter;
+  discordBotToken: ssm.IParameter
 
   /**
    * Optional integration with GitHub Discussions.
    *
    * Requires creating a GitHub App and private key in GitHub {@link https://github.com/settings/apps settings}.
    */
-  githubIntegration?: DiscordBotGithubIntegration;
+  githubIntegration?: DiscordBotGithubIntegration
 }
 
 /**
@@ -38,21 +38,21 @@ export interface DiscordBotGithubIntegration {
    *
    * e.g. `"aws-amplify/amplify-flutter,aws-amplify/amplify-js"`
    */
-  githubRepos: ssm.IParameter;
+  githubRepos: ssm.IParameter
 
   /**
    * The GitHub App ID, injected as a secret to the Docker container.
    *
    * GitHub Apps can be created in GitHub {@link https://github.com/settings/apps settings}.
    */
-  githubAppId: ssm.IParameter;
+  githubAppId: ssm.IParameter
 
   /**
    * The GitHub App private key, injected as a secret to the Docker container.
    *
    * GitHub Apps can be created in GitHub {@link https://github.com/settings/apps settings}.
    */
-  githubPrivateKey: ssm.IParameter;
+  githubPrivateKey: ssm.IParameter
 }
 
 /**
@@ -62,61 +62,61 @@ export class DiscordBot extends Construct {
   /**
    * The environment variable name for the Discord bot token.
    */
-  static discordBotTokenEnv = "DISCORD_BOT_TOKEN";
+  static discordBotTokenEnv = 'DISCORD_BOT_TOKEN'
 
   /**
    * The environment variable name for the string-separated GitHub repositories.
    */
-  static githubReposEnv = "GITHUB_REPOS";
+  static githubReposEnv = 'GITHUB_REPOS'
 
   /**
    * The environment variable name for the GitHub App ID.
-   * 
+   *
    * GitHub Apps can be created in GitHub {@link https://github.com/settings/apps settings}.
    */
-  static githubAppIdEnv = "GITHUB_APP_ID";
+  static githubAppIdEnv = 'GITHUB_APP_ID'
 
   /**
    * The environment variable name for the GitHub App private key.
-   * 
+   *
    * GitHub Apps can be created in GitHub {@link https://github.com/settings/apps settings}.
    */
-  static githubPrivateKeyEnv = "GITHUB_PRIVATE_KEY";
+  static githubPrivateKeyEnv = 'GITHUB_PRIVATE_KEY'
 
   constructor(scope: Construct, id: string, props: DiscordBotProps) {
-    super(scope, id);
+    super(scope, id)
 
-    const vpc = new ec2.Vpc(this, "Vpc", {
+    const vpc = new ec2.Vpc(this, 'Vpc', {
       maxAzs: 2,
-      vpcName: "Discord Bot VPC",
-    });
+      vpcName: 'Discord Bot VPC',
+    })
 
-    const cluster = new ecs.Cluster(this, "Cluster", {
+    const cluster = new ecs.Cluster(this, 'Cluster', {
       vpc,
-    });
+    })
 
     const secrets: {
-      [key: string]: ecs.Secret;
+      [key: string]: ecs.Secret
     } = {
       [DiscordBot.discordBotTokenEnv]: ecs.Secret.fromSsmParameter(
         props.discordBotToken
       ),
-    };
-    const githubIntegration = props.githubIntegration;
+    }
+    const githubIntegration = props.githubIntegration
     if (githubIntegration) {
       secrets[DiscordBot.githubReposEnv] = ecs.Secret.fromSsmParameter(
         githubIntegration.githubRepos
-      );
+      )
       secrets[DiscordBot.githubAppIdEnv] = ecs.Secret.fromSsmParameter(
         githubIntegration.githubAppId
-      );
+      )
       secrets[DiscordBot.githubPrivateKeyEnv] = ecs.Secret.fromSsmParameter(
         githubIntegration.githubPrivateKey
-      );
+      )
     }
     new ecs_patterns.ApplicationLoadBalancedFargateService(
       this,
-      "FargateService",
+      'FargateService',
       {
         cluster,
         cpu: 256,
@@ -130,6 +130,6 @@ export class DiscordBot extends Construct {
         assignPublicIp: false,
         publicLoadBalancer: true,
       }
-    );
+    )
   }
 }
