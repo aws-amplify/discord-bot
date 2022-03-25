@@ -38,81 +38,22 @@ const { namedExport } = require('./my-module.cjs')
 - auto-resolves the entrypoint to either `./index.js` or `./src/*`
 - marks package dependencies as "external"
 
-### [@hey-amplify/bank](./packages/bank)
+## Authoring Discord Commands
 
-The command bank! More on this below in [Authoring Application Commands](#authoring-application-commands)
+To get started, let's create a new command file in `packages/discord/src/commands`: `hello.ts`
 
-## Authoring Application Commands
+```ts
+import { createDiscordCommand } from '../Command.js'
 
-The following sample `package.json` serves as a template for authoring `/sample`, an application command located at `/packages/command-sample`:
-
-```json
-{
-  "name": "@hey-amplify/command-sample",
-  "version": "0.1.0",
-  "type": "module",
-  "license": "Apache-2.0",
-  "types": "./build/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./build/index.d.ts",
-      "import": "./build/index.js"
-    },
-    "./package.json": "./package.json"
+export default createDiscordCommand({
+  name: 'hello',
+  description: 'Say hello',
+  handler: ({ context }) => {
+    return 'world'
   },
-  "scripts": {
-    "build": "tsc",
-    "dev": "pnpm build -- -w",
-    "prepublishOnly": "pnpm build"
-  },
-  "devDependencies": {
-    "typescript": "next"
-  },
-  "dependencies": {}
-}
+})
 ```
 
-Application Commands' entrypoint requires two exports:
-
-```js
-// https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-structure
-export const config = {
-  name: 'sample',
-  description: 'My Sample Command',
-  // ...
-}
-
-/**
- * @name handler
- * @param {object} context
- * @returns {(string|object)}
- */
-export async function handler(context) {
-  return 'Hello from my sample command!'
-}
-```
-
-After creating the new Application Command project, head on over to the [bank](./packages/bank), add it as a dependency, and add to the commands array.
-
-```diff
-{
-  "name": "@hey-amplify/bank",
-  // ...
-  "dependencies": {
-    "@hey-amplify/command-giverole": "*",
-+   "@hey-amplify/command-sample": "*",
-    "@hey-amplify/command-static": "*"
-  },
-}
-```
-
-```js
-// packages/bank/src/index.js
-import * as sample from '@hey-amplify/command-sample'
-// ...
-const commands = [giverole, sample]
-```
-
-From the project root, install dependencies with `yarn install`, restart the dev server (`yarn dev`), and sync commands.
+Save and register the new command with `commands.sync()`
 
 **NOTE**: allow about 30 minutes for commands to show in Discord
