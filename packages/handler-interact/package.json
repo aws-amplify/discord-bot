@@ -11,16 +11,20 @@
     },
     "./package.json": "./package.json"
   },
+  "files": [
+    "build"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "pnpm build -- -w",
     "prepublishOnly": "pnpm build"
   },
   "devDependencies": {
+    "@hey-amplify/tsconfig": "workspace:*",
     "@types/aws-lambda": "^8.10.92",
     "typescript": "next"
   },
   "dependencies": {
-    "@hey-amplify/discord": "*"
+    "@hey-amplify/discord": "workspace:*"
   }
 }

@@ -90,6 +90,7 @@ importers:
 
   packages/discord:
     specifiers:
+      '@hey-amplify/tsconfig': workspace:*
       discord-api-types: ^0.26.1
       discord.js: ^13.6.0
       fast-glob: ^3.2.11
@@ -103,13 +104,15 @@ importers:
       node-fetch: 2.6.7
       tweetnacl: 1.0.3
     devDependencies:
+      '@hey-amplify/tsconfig': link:../tsconfig
       fast-glob: 3.2.11
       rimraf: 3.0.2
-      typescript: 4.7.0-dev.20220323
+      typescript: 4.7.0-dev.20220325
 
   packages/handler-commands:
     specifiers:
-      '@hey-amplify/discord': '*'
+      '@hey-amplify/discord': workspace:*
+      '@hey-amplify/tsconfig': workspace:*
       body-parser: ^1.19.0
       express: ^4.17.1
       typescript: next
@@ -118,22 +121,26 @@ importers:
       body-parser: 1.19.2
       express: 4.17.3
     devDependencies:
-      typescript: 4.7.0-dev.20220323
+      '@hey-amplify/tsconfig': link:../tsconfig
+      typescript: 4.7.0-dev.20220325
 
   packages/handler-interact:
     specifiers:
-      '@hey-amplify/discord': '*'
+      '@hey-amplify/discord': workspace:*
+      '@hey-amplify/tsconfig': workspace:*
       '@types/aws-lambda': ^8.10.92
       typescript: next
     dependencies:
       '@hey-amplify/discord': link:../discord
     devDependencies:
+      '@hey-amplify/tsconfig': link:../tsconfig
       '@types/aws-lambda': 8.10.93
-      typescript: 4.7.0-dev.20220323
+      typescript: 4.7.0-dev.20220325
 
   packages/handler-webhook:
     specifiers:
-      '@hey-amplify/discord': '*'
+      '@hey-amplify/discord': workspace:*
+      '@hey-amplify/tsconfig': workspace:*
       body-parser: ^1.19.0
       express: ^4.17.1
       typescript: next
@@ -142,17 +149,18 @@ importers:
       body-parser: 1.19.2
       express: 4.17.3
     devDependencies:
-      typescript: 4.7.0-dev.20220323
+      '@hey-amplify/tsconfig': link:../tsconfig
+      typescript: 4.7.0-dev.20220325
 
   packages/tsconfig:
     specifiers: {}
 
   packages/vite-plugin-discord-bot-layer:
     specifiers:
-      '@hey-amplify/discord': '*'
-      '@hey-amplify/handler-commands': '*'
-      '@hey-amplify/handler-interact': '*'
-      '@hey-amplify/handler-webhook': '*'
+      '@hey-amplify/discord': workspace:*
+      '@hey-amplify/handler-commands': workspace:*
+      '@hey-amplify/handler-interact': workspace:*
+      '@hey-amplify/handler-webhook': workspace:*
       dotenv: ^10.0.0
       vite: ^2.6.14
     dependencies:
@@ -6618,8 +6626,8 @@ packages:
     hasBin: true
     dev: true
 
-  /typescript/4.7.0-dev.20220323:
-    resolution: {integrity: sha512-fJQwwIgPcAJV9qn45kgIaiiklW6eY+SuTVAM2WgNAJS7pGN6mfuUB7sk0G+HGTsWWI/gMlGVgNdPY3jK4M7Hfg==}
+  /typescript/4.7.0-dev.20220325:
+    resolution: {integrity: sha512-3S7MAr3P2vkrpptkhoEuiATOU1kPa9+3FUrJAAYZ4/6mnI1SZWeVPeBIbhzIOUij27QrRMgSwN8aHrqtgGVqLA==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true

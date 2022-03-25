@@ -1,4 +1,4 @@
-import glob from 'fast-glob'
+import * as glob from 'fast-glob'
 import type { IDiscordCommand, DiscordCommand } from './Command.js'
 import { api, DiscordAPIRequestResponse } from './api.js'
 import { generateResponse } from './support.js'
@@ -45,6 +45,10 @@ export class DiscordCommandMap extends Map<string, DiscordCommand> {
 export interface IDiscordCommandBank extends DiscordCommandMap {
   // register(command: IDiscordCommand): Promise<DiscordAPIRequestResponse>
   handle(context): Promise<string>
+  register(
+    command: DiscordCommand,
+    context: any
+  ): Promise<DiscordAPIRequestResponse>
 }
 
 export class DiscordCommandBank
@@ -57,16 +61,16 @@ export class DiscordCommandBank
     super(commands)
   }
 
-  // public async register(command, { guildId } = { guildId: null }) {
-  //   let url = `/applications/${process.env.DISCORD_APP_ID}`
-  //   if (guildId) {
-  //     url += `/guilds/${guildId}`
-  //   }
-  //   url += '/commands'
+  public async register(command, { guildId } = { guildId: null }) {
+    let url = `/applications/${process.env.DISCORD_APP_ID}`
+    if (guildId) {
+      url += `/guilds/${guildId}`
+    }
+    url += '/commands'
 
-  //   // TODO: add whether command was added or updated based on status
-  //   return api.post(url, command.config)
-  // }
+    // TODO: add whether command was added or updated based on status
+    return api.post(url, command)
+  }
 
   // public async syncCommands() {
   //   // @ts-ignore
