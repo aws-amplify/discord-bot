@@ -88,6 +88,20 @@ importers:
       esbuild: 0.13.15
       tiny-glob: 0.2.9
 
+  packages/deploy:
+    specifiers:
+      '@hey-amplify/tsconfig': workspace:*
+      '@types/node': 17.0.23
+      aws-cdk-lib: ^2.17.0
+      constructs: ^10.0.95
+      typescript: next
+    devDependencies:
+      '@hey-amplify/tsconfig': link:../tsconfig
+      '@types/node': 17.0.23
+      aws-cdk-lib: 2.17.0_constructs@10.0.95
+      constructs: 10.0.95
+      typescript: 4.7.0-dev.20220325
+
   packages/discord:
     specifiers:
       '@hey-amplify/tsconfig': workspace:*
@@ -2877,6 +2891,10 @@ packages:
     resolution: {integrity: sha512-8FwbVoG4fy+ykY86XCAclKZDORttqE5/s7dyWZKLXTdv3vRy5HozBEinG5IqhvPXXzIZEcTVbuHlQEI6iuwcmw==}
     dev: true
 
+  /@types/node/17.0.23:
+    resolution: {integrity: sha512-UxDxWn7dl97rKVeVS61vErvw086aCYhDLyvRQZ5Rk65rZKepaFdm53GeqXaKBuOhED4e9uWq34IC3TdSdJJ2Gw==}
+    dev: true
+
   /@types/pug/2.0.6:
     resolution: {integrity: sha512-SnHmG9wN1UVmagJOnyo/qkk0Z7gejYxOYYmaAwr5u2yFYfsupN3sg10kyzN8Hep/2zbHxCnsumxOoRIRMBwKCg==}
     dev: true
@@ -3386,6 +3404,25 @@ packages:
       - react-native
     dev: false
 
+  /aws-cdk-lib/2.17.0_constructs@10.0.95:
+    resolution: {integrity: sha512-bga2HptbGx3rMdSkIKxBS13miogj/DHB2VPfQZAoKoCOAanOot+M3mHhYqe5aNdxhrppaRjG2eid2p1/MvRnvg==}
+    engines: {node: '>= 14.15.0'}
+    peerDependencies:
+      constructs: ^10.0.0
+    dependencies:
+      constructs: 10.0.95
+    dev: true
+    bundledDependencies:
+      - '@balena/dockerignore'
+      - case
+      - fs-extra
+      - ignore
+      - jsonschema
+      - minimatch
+      - punycode
+      - semver
+      - yaml
+
   /aws-sign2/0.7.0:
     resolution: {integrity: sha1-tG6JCTSpWR8tL2+G1+ap8bP+dqg=}
     dev: true
@@ -3649,6 +3686,11 @@ packages:
 
   /concat-map/0.0.1:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    dev: true
+
+  /constructs/10.0.95:
+    resolution: {integrity: sha512-mMay8dY4qOAumJLFacG6eFC1gXx96yPn+uFPPtGMtwZOKyjZ+k6nJ0hZZwm/gKfhUgeoHEOKpk4t2MxbiLsooA==}
+    engines: {node: '>= 12.7.0'}
     dev: true
 
   /content-disposition/0.5.4:

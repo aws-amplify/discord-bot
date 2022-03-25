@@ -1,24 +1,33 @@
 {
-  "name": "discord-bot-deploy",
+  "name": "@hey-amplify/cdk-construct-discord-bot",
+  "type": "module",
   "version": "0.1.0",
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "build"
+  ],
   "scripts": {
     "build": "tsc",
-    "watch": "tsc -w",
-    "test": "jest"
+    "dev": "pnpm build -- -w",
+    "prepublishOnly": "pnpm build",
+    "clean": "rimraf build"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.10",
-    "@types/node": "10.17.27",
+    "@hey-amplify/tsconfig": "workspace:*",
+    "@types/node": "17.0.23",
     "aws-cdk-lib": "^2.17.0",
-    "constructs": "^10.0.0",
-    "jest": "^26.4.2",
-    "ts-jest": "^26.2.0",
-    "typescript": "~3.9.7"
+    "constructs": "^10.0.95",
+    "typescript": "next"
   },
   "peerDependencies": {
     "aws-cdk-lib": "2.17.0",
-    "constructs": "^10.0.0"
+    "constructs": "^10.0.95"
   }
 }
