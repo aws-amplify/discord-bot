@@ -27,8 +27,7 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
     let result
 
     if (req.url === '/api/interact') {
-      const interact = await loadInteractionHandler()
-      console.log(interact)
+      const { handler: interact } = await loadInteractionHandler()
       try {
         result = await interact(req)
       } catch (error) {
