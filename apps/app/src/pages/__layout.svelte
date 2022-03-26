@@ -1,19 +1,39 @@
 <script context="module">
-  import { Amplify } from '@aws-amplify/core'
+  import { Amplify } from 'aws-amplify'
   import amplifyConfig from '@hey-amplify/aws-exports'
 
   Amplify.configure(amplifyConfig)
 </script>
 
 <script>
-  import { Header, SkipToContent, Theme } from 'carbon-components-svelte'
+  import {
+    Header,
+    SkipToContent,
+    Theme,
+    Button,
+    HeaderUtilities,
+    HeaderGlobalAction,
+    HeaderAction,
+    HeaderPanelLinks,
+    HeaderPanelLink,
+    HeaderPanelDivider,
+    SideNav,
+    SideNavItems,
+    SideNavLink,
+    SideNavMenu,
+    SideNavMenuItem,
+    SideNavDivider,
+  } from 'carbon-components-svelte'
+  import SettingsAdjust20 from 'carbon-icons-svelte/lib/SettingsAdjust20'
+  import UserAvatarFilledAlt20 from 'carbon-icons-svelte/lib/UserAvatarFilledAlt20'
+  import { Launch20 } from 'carbon-icons-svelte'
   import 'carbon-components-svelte/css/all.css'
 
-  /** @type {boolean} */
-  let isSideNavOpen = false
-
-  /** @type {"white" | "g10" | "g80" | "g90" | "g100"} */
   let theme = 'g100'
+
+  let user
+  let isSideNavOpen = false
+  let isUserPanelOpen = false
 </script>
 
 <Theme bind:theme>
@@ -26,9 +46,51 @@
       AWS Amplify Discord Bot
       <!-- <code>v{process.env.VERSION || ""}</code> -->
     </span>
+
+    <HeaderUtilities>
+      {#if user}
+        <HeaderGlobalAction aria-label="Settings" icon="{SettingsAdjust20}" />
+        <HeaderAction
+          aria-label="User settings"
+          icon="{UserAvatarFilledAlt20}"
+          closeIcon="{UserAvatarFilledAlt20}"
+          bind:isOpen="{isUserPanelOpen}"
+        >
+          <HeaderPanelLinks>
+            <HeaderPanelLink href="/settings">Settings</HeaderPanelLink>
+            <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
+          </HeaderPanelLinks>
+        </HeaderAction>
+      {:else}
+        <Button aria-label="Login" href="/login">Login</Button>
+      {/if}
+    </HeaderUtilities>
   </Header>
 
-  <slot />
+  <SideNav bind:isOpen="{isSideNavOpen}">
+    <SideNavItems>
+      <SideNavLink text="Link 1" />
+      <SideNavLink text="Link 2" />
+      <SideNavLink text="Link 3" />
+      <SideNavMenu text="Menu">
+        <SideNavMenuItem href="/" text="Link 1" />
+        <SideNavMenuItem href="/" text="Link 2" />
+        <SideNavMenuItem href="/" text="Link 3" />
+      </SideNavMenu>
+      <SideNavDivider />
+      <SideNavLink
+        text="GitHub Repository"
+        href="https://github.com/josefaidt/amplify-discord-bots"
+        icon="{Launch20}"
+        target="_blank"
+        rel="noopener noreferrer"
+      />
+    </SideNavItems>
+  </SideNav>
+
+  {#if import.meta.env.DEV}
+    <slot />
+  {/if}
 </Theme>
 
 <style global>

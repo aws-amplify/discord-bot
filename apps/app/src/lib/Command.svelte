@@ -40,7 +40,7 @@
 
   export let tags
 
-  const { id } = registration
+  const id = registration?.id
 
   async function onDeleteCommand(event) {
     deleteCommandStep = DELETE_STEP_DELETING
@@ -68,7 +68,6 @@
     <div>
       <div>
         <slot name="header">
-          <span>{id}</span>
           <h3>{name}</h3>
         </slot>
         <slot name="tags">
@@ -82,29 +81,31 @@
         </slot>
       </div>
       <div>
-        {#if deleteCommandStep === DELETE_STEP_INITIAL}
-          <Button
-            kind="danger-tertiary"
-            iconDescription="Delete"
-            icon="{TrashCan16}"
-            on:click="{() => (deleteCommandStep = DELETE_STEP_CONFIRM)}"
-          />
-        {:else if deleteCommandStep === DELETE_STEP_CONFIRM}
-          <Button
-            kind="danger-tertiary"
-            iconDescription="Confirm delete"
-            on:click="{onDeleteCommand}"
-          >
-            Are you sure?
-          </Button>
-        {:else if deleteCommandStep === DELETE_STEP_DELETING}
-          <Button
-            kind="danger-tertiary"
-            iconDescription="Confirm delete"
-            disabled
-          >
-            Are you sure?
-          </Button>
+        {#if id}
+          {#if deleteCommandStep === DELETE_STEP_INITIAL}
+            <Button
+              kind="danger-tertiary"
+              iconDescription="Delete"
+              icon="{TrashCan16}"
+              on:click="{() => (deleteCommandStep = DELETE_STEP_CONFIRM)}"
+            />
+          {:else if deleteCommandStep === DELETE_STEP_CONFIRM}
+            <Button
+              kind="danger-tertiary"
+              iconDescription="Confirm delete"
+              on:click="{onDeleteCommand}"
+            >
+              Are you sure?
+            </Button>
+          {:else if deleteCommandStep === DELETE_STEP_DELETING}
+            <Button
+              kind="danger-tertiary"
+              iconDescription="Confirm delete"
+              disabled
+            >
+              Are you sure?
+            </Button>
+          {/if}
         {/if}
       </div>
     </div>

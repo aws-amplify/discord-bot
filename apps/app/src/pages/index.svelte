@@ -21,27 +21,29 @@
         data = await response.json()
       }
     } catch (error) {
-      store.notifications.update(notifications =>
-        notifications.push({
+      store.notifications.update(notifications => [
+        ...notifications,
+        {
           kind: 'error',
           title: 'Error syncing commands',
           subtitle: error.message,
           caption: Date.now().toLocaleString(),
-        })
-      )
+        },
+      ])
       // throw new Error('Unable to fetch commands')
       console.error('Unable to sync commands', error)
     }
     isSyncing = false
     if (data) {
-      store.notifications.update(notifications =>
-        notifications.push({
+      store.notifications.update(notifications => [
+        ...notifications,
+        {
           kind: 'success',
           title: 'Successfully synced commands',
           subtitle: '',
           caption: Date.now().toLocaleString(),
-        })
-      )
+        },
+      ])
       syncData = data
     }
     return data
@@ -59,7 +61,7 @@
       // throw new Error('Unable to fetch commands')
       console.error('Unable to fetch commands', error)
     }
-    console.log(data)
+    console.log('list', data)
     return data
   }
 </script>

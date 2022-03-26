@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import autoprefixer from 'autoprefixer'
+import dotenv from 'dotenv'
 import preprocess from 'svelte-preprocess'
 import adapter from '@sveltejs/adapter-static'
 import ViteReload from 'vite-plugin-full-reload'
@@ -12,6 +13,10 @@ const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
 const include = ['../../packages'].map(
   path => new URL(path + '/**/**/*.(js|ts)', import.meta.url).pathname
 )
+
+dotenv.config({
+  path: resolve('../../', '.env.local'),
+})
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
