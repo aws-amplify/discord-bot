@@ -5,7 +5,7 @@
     "composite": false,
     "declaration": true,
     "declarationMap": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": false,
     "isolatedModules": true,
@@ -17,7 +17,8 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2017",
-    "sourceMap": true
+    "sourceMap": false,
+    "inlineSourceMap": true
   },
   "exclude": ["node_modules"]
 }

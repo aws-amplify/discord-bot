@@ -1,5 +1,11 @@
-import * as glob from 'fast-glob'
-import type { IDiscordCommand, DiscordCommand } from './Command.js'
+import * as path from 'node:path'
+import type {
+  RESTPostAPIApplicationCommandsJSONBody,
+  RESTPostAPIApplicationCommandsResult,
+} from 'discord-api-types/v10'
+import glob from 'fast-glob'
+import type { IDiscordCommand } from './Command.js'
+import { DiscordCommand } from './Command.js'
 import { api, DiscordAPIRequestResponse } from './api.js'
 import { generateResponse } from './support.js'
 
@@ -46,81 +52,92 @@ export interface IDiscordCommandBank extends DiscordCommandMap {
   // register(command: IDiscordCommand): Promise<DiscordAPIRequestResponse>
   handle(context): Promise<string>
   register(
-    command: DiscordCommand,
+    command: RESTPostAPIApplicationCommandsJSONBody,
     context: any
   ): Promise<DiscordAPIRequestResponse>
+  unregister(commandId: any, { guildId }): Promise<DiscordAPIRequestResponse>
+  list(): Promise<any>
+  sync(): Promise<DiscordAPIRequestResponse>
 }
 
 export class DiscordCommandBank
   extends DiscordCommandMap
   implements IDiscordCommandBank
 {
-  // TODO: validate command name
-  // TODO: ensure duplicates are not added -- static commands do not get precedence
   constructor(commands: DiscordCommand[]) {
     super(commands)
+    // needed when extending native types
+    Object.setPrototypeOf(this, new.target.prototype)
   }
 
-  public async register(command, { guildId } = { guildId: null }) {
+  public async register(
+    commandConfig: RESTPostAPIApplicationCommandsJSONBody,
+    { guildId } = { guildId: null }
+  ) {
     let url = `/applications/${process.env.DISCORD_APP_ID}`
     if (guildId) {
       url += `/guilds/${guildId}`
     }
     url += '/commands'
 
+    console.log(commandConfig)
+
+    // RESTPostAPIApplicationCommandsResult
     // TODO: add whether command was added or updated based on status
-    return api.post(url, command)
+    return api.post(url, commandConfig)
   }
 
-  // public async syncCommands() {
-  //   // @ts-ignore
-  //   const commands = Array.from(bank.values()).map(registerCommand)
-  //   let result = [] as any
-  //   for await (let registered of commands as any[]) {
-  //     if (registered.error) {
-  //       console.error(
-  //         `Error registering command ${registered.error.name}:`,
-  //         registered.error
-  //       )
-  //     } else {
-  //       result.push(registered.data)
-  //     }
-  //   }
-  //   if (!result.length) {
-  //     throw new Error('No commands registered')
-  //   }
-  //   return result
-  // }
+  public async unregister(
+    commandId,
+    { guildId }
+  ): Promise<DiscordAPIRequestResponse> {
+    let url = `/applications/${process.env.DISCORD_APP_ID}`
+    if (guildId) {
+      url += `/guilds/${guildId}`
+    }
+    url += `/commands/${commandId}`
 
-  // public async listCommands() {
-  //   const registeredCommands = await this.get(
-  //     `/applications/${process.env.DISCORD_APP_ID}/commands`
-  //   )
-  //   const banked = Array.from(bank.values()).map(
-  //     (command: any) => command.config
-  //   )
-  //   let commands = [] as any
-  //   for (let command of banked) {
-  //     const registered = registeredCommands.data.find(
-  //       (c) => c.name === command.name
-  //     )
-  //     if (registered) {
-  //       command.registration = registered
-  //     }
-  //     commands.push(command)
-  //   }
-  //   return commands
-  // }
+    return api.delete(url)
+  }
 
-  // public async deleteCommand(commandId, { guildId }) {
-  //   let url = `/applications/${process.env.DISCORD_APP_ID}`
-  //   if (guildId) {
-  //     url += `/guilds/${guildId}`
-  //   }
-  //   url += `/commands/${commandId}`
+  public async sync() {
+    const result = [] as any
+    for (const command of this.values()) {
+      const registered = await this.register(
+        command.createRegistrationPayload()
+      )
+      if (registered.error) {
+        console.error(
+          `Error registering command ${command.name}:`,
+          registered.error
+        )
+      } else {
+        result.push(registered.data)
+      }
+    }
+    if (!result.length) {
+      throw new Error('No commands registered')
+    }
+    return result
+  }
 
-  //   return this.delete(url)
-  // }
+  public async list() {
+    const registeredCommands = await api.get(
+      `/applications/${process.env.DISCORD_APP_ID}/commands`
+    )
+    const banked = Array.from(this.values())
+    const commands = [] as any
+    for (const command of banked) {
+      const registered = registeredCommands?.data?.find(
+        (c) => c.name === command.name
+      )
+      if (registered) {
+        command.registration = registered
+      }
+      commands.push(command)
+    }
+    return commands
+  }
 
   public async handle({ context }) {
     const somethingWentWrongResponse = '🤕 Something went wrong'
@@ -164,16 +181,27 @@ export async function createBank() {
   const commands: any[] = [] // TODO: type
   for (const commandPath of commandPaths) {
     let command
+    let mod
     try {
-      command = await import(commandPath)
+      mod = await import(commandPath)
     } catch (error) {
       throw new Error(`Error importing ${commandPath}`)
     }
-    if (!command?.default) commands.push(command)
-    else commands.push(command.default)
+    if (!mod?.default) command = mod
+    else command = mod.default
+    if (command instanceof DiscordCommand) {
+      commands.push(command)
+    } else {
+      console.warn(
+        `Command: ${path.basename(
+          commandPath
+        )} does not export a DiscordCommand, skipping...`
+      )
+    }
   }
 
   return createDiscordCommandBank(commands)
 }
 
 export const bank = await createBank()
+export const commands = bank

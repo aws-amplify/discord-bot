@@ -22,12 +22,12 @@
   },
   "devDependencies": {
     "@hey-amplify/tsconfig": "workspace:*",
+    "discord-api-types": "^0.30.0",
     "fast-glob": "^3.2.11",
     "rimraf": "^3.0.2",
     "typescript": "next"
   },
   "dependencies": {
-    "discord-api-types": "^0.26.1",
     "discord.js": "^13.6.0",
     "node-fetch": "^2.6.6",
     "tweetnacl": "^1.0.3"

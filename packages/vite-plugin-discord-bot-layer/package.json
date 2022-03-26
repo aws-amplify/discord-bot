@@ -12,8 +12,7 @@
   "dependencies": {
     "@hey-amplify/handler-interact": "workspace:*",
     "@hey-amplify/handler-commands": "workspace:*",
-    "@hey-amplify/handler-webhook": "workspace:*",
-    "dotenv": "^10.0.0"
+    "@hey-amplify/handler-webhook": "workspace:*"
   },
   "devDependencies": {
     "@hey-amplify/discord": "workspace:*",

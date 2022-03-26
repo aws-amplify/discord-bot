@@ -19,7 +19,7 @@ async function handler({ data, guild_id, member }) {
 export default createDiscordCommand({
   name: 'giverole',
   description: 'Gives role to user',
-  default_permission: false, // todo: constrain who can execute
+  enabledByDefault: false, // todo: constrain who can execute
   options: [
     {
       name: 'role',

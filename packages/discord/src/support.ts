@@ -1,4 +1,4 @@
-import * as nacl from 'tweetnacl'
+import nacl from 'tweetnacl'
 
 export async function verifyEvent(event) {
   const signature = event.headers['X-Signature-Ed25519'.toLowerCase()]
