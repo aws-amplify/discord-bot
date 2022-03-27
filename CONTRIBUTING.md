@@ -43,13 +43,23 @@ const { namedExport } = require('./my-module.cjs')
 To get started, let's create a new command file in `packages/discord/src/commands`: `hello.ts`
 
 ```ts
-import { createDiscordCommand } from '../Command.js'
+import { createCommand } from '../Command.js'
+import { createOption } from '../CommandOption.js'
 
-export default createDiscordCommand({
+const name = createOption({
+  name: 'name',
+  description: 'The name of the user to greet.',
+  required: true,
+  choices: ['world', 'everyone'],
+})
+
+export default createCommand({
   name: 'hello',
   description: 'Say hello',
-  handler: ({ context }) => {
-    return 'world'
+  options: [name],
+  handler: (context) => {
+    const [name] = context.data.options
+    return `hello ${name.value}`
   },
 })
 ```

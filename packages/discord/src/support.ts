@@ -1,6 +1,6 @@
 import nacl from 'tweetnacl'
 
-export async function verifyEvent(event) {
+export async function isVerifiedEvent(event) {
   const signature = event.headers['X-Signature-Ed25519'.toLowerCase()]
   const timestamp = event.headers['X-Signature-Timestamp'.toLowerCase()]
   const body = JSON.stringify(event.body)
@@ -10,6 +10,7 @@ export async function verifyEvent(event) {
     Buffer.from(signature, 'hex'),
     Buffer.from(process.env.DISCORD_PUBLIC_KEY as string, 'hex')
   )
+
   return isVerified
 }
 

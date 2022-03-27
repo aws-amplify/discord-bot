@@ -149,6 +149,7 @@ export class DiscordCommandBank
 
     let commandResponse
     try {
+      // TODO: create better handler context
       commandResponse = await command.handler(context)
     } catch (error) {
       console.error(`Error executing command "${command?.name}"`, error)

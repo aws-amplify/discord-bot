@@ -12,7 +12,8 @@ export default createCommand({
   name: 'hello',
   description: 'Say hello',
   options: [name],
-  handler: ({ context }) => {
-    return 'world'
+  handler: (context) => {
+    const [name] = context.data.options
+    return `hello ${name.value}`
   },
 })
