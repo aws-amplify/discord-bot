@@ -5,13 +5,12 @@ import { exists, getProjectInfo } from '../support.js'
 
 export async function getLocalSecrets() {
   const projectInfo = await getProjectInfo()
-  // const mainEnvFilePath = new URL('../../../.env', import.meta.url).pathname
-  // const envSpecificEnvFilePath = new URL(
-  //   `../../../.env.${projectInfo.envName}`,
-  //   import.meta.url
-  // ).pathname
-  const mainEnvFilePath = path.resolve('.env')
-  const envSpecificEnvFilePath = path.resolve(`.env.${projectInfo.envName}`)
+
+  const mainEnvFilePath = path.join(projectInfo.projectPath, '.env')
+  const envSpecificEnvFilePath = path.join(
+    projectInfo.projectPath,
+    `.env.${projectInfo.envName}`
+  )
 
   let localSecrets = {}
   if (
