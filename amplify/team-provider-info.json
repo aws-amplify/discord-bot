@@ -59,7 +59,7 @@
       "function": {
         "discordinteraction": {
           "deploymentBucketName": "amplify-amplifydiscordbot-next-95718-deployment",
-          "s3Key": "amplify-builds/discordinteraction-7a425130776a4c577549-build.zip"
+          "s3Key": "amplify-builds/discordinteraction-56775559376d614e705a-build.zip"
         },
         "amplifydiscordbotauthPreSignup": {
           "DOMAINALLOWLIST": "amazon.com",
