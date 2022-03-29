@@ -1,0 +1,69 @@
+{
+  "name": "@hey-amplify/app",
+  "private": true,
+  "workspaces": {
+    "nohoist": [
+      "prettier*"
+    ]
+  },
+  "type": "module",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "svelte-kit dev",
+    "build": "svelte-kit build",
+    "package": "svelte-kit package",
+    "preview": "svelte-kit preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
+    "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
+  },
+  "dependencies": {
+    "aws-amplify": "^4.3.17",
+    "cookie": "^0.4.2",
+    "next-auth": "^4.3.1"
+  },
+  "devDependencies": {
+    "@hey-amplify/aws-exports": "workspace:*",
+    "@sveltejs/adapter-static": "next",
+    "@sveltejs/kit": "next",
+    "@types/cookie": "^0.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.16.0",
+    "@typescript-eslint/parser": "^5.16.0",
+    "autoprefixer": "^10.4.4",
+    "carbon-components-svelte": "^0.62.1",
+    "carbon-icons-svelte": "^10.45.1",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-svelte3": "^3.4.1",
+    "dotenv": "^16.0.0",
+    "postcss": "^8.4.12",
+    "prettier": "^2.6.0",
+    "prettier-plugin-svelte": "^2.6.0",
+    "svelte": "3.46.4",
+    "svelte-check": "^2.4.6",
+    "svelte-preprocess": "^4.10.4",
+    "tslib": "^2.3.1",
+    "typescript": "~4.6.2",
+    "vite-plugin-discord-bot-layer": "workspace:*",
+    "vite-plugin-full-reload": "^1.0.0"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "bracketSpacing": true,
+    "htmlWhitespaceSensitivity": "ignore",
+    "arrowParens": "avoid",
+    "singleQuote": true,
+    "svelteSortOrder": "scripts-markup-styles",
+    "svelteStrictMode": true,
+    "svelteBracketNewLine": true,
+    "svelteAllowShorthand": false,
+    "plugins": [
+      "./node_modules/prettier-plugin-svelte"
+    ]
+  }
+}

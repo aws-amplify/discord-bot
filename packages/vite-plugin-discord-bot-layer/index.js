@@ -1,7 +1,8 @@
 import { resolve } from 'node:path'
-import { handler as interact } from '@hey-amplify/handler-interact'
-import { app } from '@hey-amplify/handler-commands'
-import { app as webhookApp } from '@hey-amplify/handler-webhook'
+
+const loadInteractionHandler = () => import('@hey-amplify/handler-interact')
+const loadCommandsApp = () => import('@hey-amplify/handler-commands')
+const loadWebhookApp = () => import('@hey-amplify/handler-webhook')
 
 /**
  * Connect-style middleware handler for Discord bot API layer
@@ -26,6 +27,7 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
     let result
 
     if (req.url === '/api/interact') {
+      const { handler: interact } = await loadInteractionHandler()
       try {
         result = await interact(req)
       } catch (error) {
@@ -47,6 +49,7 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
     }
 
     if (req.url.startsWith('/api/commands')) {
+      const { app } = await loadCommandsApp()
       const commands = app()
       req.url = req.url.slice(4)
       commands.handle(req, res, next)
@@ -54,7 +57,8 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
     }
 
     if (req.url.startsWith('/api/webhook')) {
-      const webhook = webhookApp()
+      const { app } = await loadWebhookApp()
+      const webhook = app()
       req.url = req.url.slice(4)
       webhook.handle(req, res, next)
       return
@@ -72,17 +76,6 @@ async function DiscordBotLayerPluginHandler(req, res, next) {
 }
 
 /**
- * Loads secrets from .env file in project root
- * @returns {void} loads secrets to `process.env`
- */
-async function loadSecrets() {
-  const path = resolve('../../', '.env')
-  ;(await import('dotenv')).config({
-    path,
-  })
-}
-
-/**
  * Adds the Discord bot routes to Vite dev server, mimicking API Gateway setup
  * @returns {import('vite').Plugin}
  */
@@ -90,14 +83,6 @@ export function DiscordBotLayerPlugin() {
   return {
     name: 'discord-bot-layer-plugin',
     configureServer: async (server) => {
-      try {
-        await loadSecrets()
-      } catch (error) {
-        console.warn(
-          'Error loading secrets, Discord bot layer unstable...',
-          error
-        )
-      }
       console.log(
         `Started Discord Bot Layer for env: ${process.env.DISCORD_ENV}`
       )

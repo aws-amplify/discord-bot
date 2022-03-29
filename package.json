@@ -3,23 +3,25 @@
   "version": "0.1.1",
   "license": "Apache-2.0",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "start": "echo 'no start command needed'",
-    "app": "yarn workspace @hey-amplify/app",
-    "dev": "yarn app dev",
+    "app": "pnpm --filter @hey-amplify/app",
+    "packages": "pnpm run --filter ./packages --parallel",
+    "build": "pnpm run build --filter ./packages --parallel",
+    "dev": "pnpm run dev --filter ./packages --parallel",
     "push": "scripts/push",
     "registry": "verdaccio --listen 4000 --config ./scripts/verdaccio.yaml"
   },
   "devDependencies": {
-    "@aws-sdk/client-ssm": "^3.48.0",
+    "@aws-sdk/client-ssm": "^3.54.1",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
     "dotenv": "^14.3.2",
-    "eslint": "^8.7.0",
-    "eslint-config-prettier": "^8.3.0",
-    "prettier": "^2.5.1",
-    "verdaccio": "^5.2.2"
+    "eslint": "7",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.6.0",
+    "turbo": "^1.1.9",
+    "verdaccio": "^5.8.0"
   },
   "prettier": {
     "tabWidth": 2,
@@ -33,16 +35,22 @@
     "root": true,
     "extends": [
       "eslint:recommended",
-      "prettier"
+      "prettier",
+      "plugin:@typescript-eslint/recommended"
     ],
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
-      "sourceType": "module",
-      "ecmaVersion": 2022
+      "ecmaVersion": 2022,
+      "sourceType": "module"
     },
     "env": {
       "browser": false,
       "es2017": true,
       "node": true
-    }
-  }
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ]
+  },
+  "packageManager": "pnpm@6.32.3"
 }

@@ -10,13 +10,12 @@
     }
   },
   "dependencies": {
-    "@hey-amplify/handler-interact": "*",
-    "@hey-amplify/handler-commands": "*",
-    "@hey-amplify/handler-webhook": "*",
-    "dotenv": "^10.0.0"
+    "@hey-amplify/handler-interact": "workspace:*",
+    "@hey-amplify/handler-commands": "workspace:*",
+    "@hey-amplify/handler-webhook": "workspace:*"
   },
   "devDependencies": {
-    "@hey-amplify/discord": "*",
+    "@hey-amplify/discord": "workspace:*",
     "vite": "^2.6.14"
   },
   "peerDependencies": {

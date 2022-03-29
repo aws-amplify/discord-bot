@@ -3,22 +3,28 @@
   "version": "0.1.0",
   "type": "module",
   "license": "Apache-2.0",
+  "types": "./build/index.d.ts",
   "exports": {
     ".": {
-      "import": "./index.js",
-      "require": "./lib/index.cjs"
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
+  "files": [
+    "build"
+  ],
   "scripts": {
-    "build": "builder",
-    "prepublishOnly": "yarn build --minify"
-  },
-  "dependencies": {
-    "@hey-amplify/discord": "*"
+    "build": "tsc",
+    "dev": "pnpm build -- -w",
+    "prepublishOnly": "pnpm build"
   },
   "devDependencies": {
-    "@hey-amplify/builder": "*",
-    "@types/aws-lambda": "^8.10.92"
+    "@hey-amplify/tsconfig": "workspace:*",
+    "@types/aws-lambda": "^8.10.92",
+    "typescript": "next"
+  },
+  "dependencies": {
+    "@hey-amplify/discord": "workspace:*"
   }
 }

@@ -17,7 +17,8 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2017",
-    "sourceMap": true
+    "sourceMap": false,
+    "inlineSourceMap": true
   },
   "exclude": ["node_modules"]
 }
