@@ -10,10 +10,12 @@
     "build": "pnpm run build --filter ./packages --parallel",
     "dev": "pnpm run dev --filter ./packages --parallel",
     "push": "scripts/push",
+    "test": "pnpm run test --filter ./e2e",
     "registry": "verdaccio --listen 4000 --config ./scripts/verdaccio.yaml"
   },
   "devDependencies": {
     "@aws-sdk/client-ssm": "^3.54.1",
+    "@hey-amplify/tsconfig": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
     "dotenv": "^14.3.2",
@@ -21,6 +23,7 @@
     "eslint-config-prettier": "^8.5.0",
     "prettier": "^2.6.0",
     "turbo": "^1.1.9",
+    "typescript": "next",
     "verdaccio": "^5.8.0"
   },
   "prettier": {
@@ -45,7 +48,6 @@
     },
     "env": {
       "browser": false,
-      "es2017": true,
       "node": true
     },
     "plugins": [
