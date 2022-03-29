@@ -31,14 +31,19 @@
     node-fetch "^2.6.6"
     tweetnacl "^1.0.3"
 
-"@hey-amplify/handler-commands@0.1.0":
-  version "0.1.0"
-  resolved "http://localhost:4000/@hey-amplify%2fhandler-commands/-/handler-commands-0.1.0.tgz#80f85ae47ddd43e9b8baddbce35c7e1292dd82d3"
-  integrity sha512-z+rI1XV2N7OEMJFPaSezV0zJoSSJcbMO9MMSB11sdYmwlfYK/n2byDUAwikzLfwI3rIUIk3usJY6F6aCvRhsIA==
+"@hey-amplify/handler-commands@*":
+  version "0.2.0"
+  resolved "http://localhost:4000/@hey-amplify%2fhandler-commands/-/handler-commands-0.2.0.tgz#09fa873142d39b2c802c8cb9304d0bcfd6d31686"
+  integrity sha512-59W3iEdvAtPVrJbB7BZZf+Xiwf8OWxzv857ngreauhAqUPe5LjpohxltwatkaBHeHTV7j0Pu6UM8muXRyCeLcw==
   dependencies:
     "@hey-amplify/discord" "*"
     body-parser "^1.19.0"
     express "^4.17.1"
+
+"@types/aws-lambda@^8.10.92":
+  version "8.10.92"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.92.tgz#645f769ff88b8eba1acd35542695ac322c7757c4"
+  integrity sha512-dB14TltT1SNq73z3MaZfKyyBZ37NAgAFl8jze59bisR4fJ6pB6AYGxItHFkooZbN7UcVJX/cFudM4p8wp1W4rA==
 
 "@vendia/serverless-express@^3.4.0":
   version "3.4.0"

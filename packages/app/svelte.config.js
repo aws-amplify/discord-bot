@@ -3,10 +3,20 @@ import { resolve } from 'node:path'
 import autoprefixer from 'autoprefixer'
 import preprocess from 'svelte-preprocess'
 import adapter from '@sveltejs/adapter-static'
+import ViteReload from 'vite-plugin-full-reload'
 import { DiscordBotLayerPlugin } from 'vite-plugin-discord-bot-layer'
 import { optimizeCarbonImports } from 'carbon-components-svelte/preprocess/index.js'
 // https://nodejs.org/api/esm.html#esm_no_json_module_loading
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
+
+const include = [
+  '../discord',
+  '../handler-commands',
+  '../handler-interact',
+  '../handler-webhook',
+  '../command-giverole',
+  '../command-static',
+].map(path => new URL(path + '/**/*.(js|ts)', import.meta.url).pathname)
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -36,7 +46,7 @@ const config = {
     },
 
     vite: {
-      plugins: [DiscordBotLayerPlugin()],
+      plugins: [ViteReload(include), DiscordBotLayerPlugin()],
       resolve: {
         alias: {
           './runtimeConfig': './runtimeConfig.browser',

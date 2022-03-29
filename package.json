@@ -1,6 +1,6 @@
 {
   "name": "@hey-amplify/root",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "Apache-2.0",
   "private": true,
   "workspaces": [
@@ -10,12 +10,15 @@
     "start": "echo 'no start command needed'",
     "app": "yarn workspace @hey-amplify/app",
     "dev": "yarn app dev",
-    "push": "scripts/push"
+    "push": "scripts/push",
+    "registry": "verdaccio --listen 4000 --config ./scripts/verdaccio.yaml"
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
+    "@aws-sdk/client-ssm": "^3.48.0",
+    "dotenv": "^14.3.2",
+    "eslint": "^8.7.0",
     "eslint-config-prettier": "^8.3.0",
-    "prettier": "^2.4.0",
+    "prettier": "^2.5.1",
     "verdaccio": "^5.2.2"
   },
   "prettier": {
@@ -34,7 +37,7 @@
     ],
     "parserOptions": {
       "sourceType": "module",
-      "ecmaVersion": 2021
+      "ecmaVersion": 2022
     },
     "env": {
       "browser": false,

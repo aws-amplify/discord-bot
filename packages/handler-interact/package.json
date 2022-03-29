@@ -14,10 +14,11 @@
     "build": "builder",
     "prepublishOnly": "yarn build --minify"
   },
-  "devDependencies": {
-    "@hey-amplify/builder": "*"
-  },
   "dependencies": {
     "@hey-amplify/discord": "*"
+  },
+  "devDependencies": {
+    "@hey-amplify/builder": "*",
+    "@types/aws-lambda": "^8.10.92"
   }
 }

@@ -1,0 +1,57 @@
+{
+	"name": "@hey-amplify/handler-webhook",
+	"versions": {
+		"0.2.0": {
+			"name": "@hey-amplify/handler-webhook",
+			"version": "0.2.0",
+			"type": "module",
+			"license": "Apache-2.0",
+			"exports": {
+				".": {
+					"import": "./index.js",
+					"require": "./lib/index.cjs"
+				},
+				"./package.json": "./package.json"
+			},
+			"scripts": {
+				"build": "builder",
+				"prepublishOnly": "yarn build --minify"
+			},
+			"devDependencies": {
+				"@hey-amplify/builder": "*"
+			},
+			"dependencies": {
+				"@hey-amplify/discord": "*",
+				"body-parser": "^1.19.0",
+				"express": "^4.17.1"
+			},
+			"_id": "@hey-amplify/handler-webhook@0.2.0",
+			"dist": {
+				"shasum": "53f59903eea26befb33e28766f40227395fe8c83",
+				"integrity": "sha512-uZTUyBlaCYMkufKk+zSCTauxkdn0XNuQ0VMpcw4JOKSKbgjcGNmFvl8uPVccnjS9OrWYhvDg7tElc30MHAzc5g==",
+				"tarball": "http://localhost:4000/@hey-amplify/handler-webhook/-/@hey-amplify/handler-webhook-0.2.0.tgz"
+			},
+			"contributors": []
+		}
+	},
+	"time": {
+		"modified": "2022-02-13T18:47:44.486Z",
+		"created": "2022-02-13T18:47:44.486Z",
+		"0.2.0": "2022-02-13T18:47:44.486Z"
+	},
+	"users": {},
+	"dist-tags": {
+		"latest": "0.2.0"
+	},
+	"_uplinks": {},
+	"_distfiles": {},
+	"_attachments": {
+		"handler-webhook-0.2.0.tgz": {
+			"shasum": "53f59903eea26befb33e28766f40227395fe8c83",
+			"version": "0.2.0"
+		}
+	},
+	"_rev": "3-947a5d89d4f098ca",
+	"_id": "@hey-amplify/handler-webhook",
+	"readme": ""
+}

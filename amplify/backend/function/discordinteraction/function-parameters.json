@@ -1,16 +1,6 @@
 {
-  "lambdaLayers": [
-    {
-      "type": "ProjectLayer",
-      "resourceName": "discordlayer",
-      "version": "Always choose latest version",
-      "isLatestVersionSelected": true,
-      "env": "next"
-    }
-  ],
-  "secretNames": [
-    "DISCORD_BOT_TOKEN",
-    "DISCORD_APP_ID",
-    "DISCORD_PUBLIC_KEY"
-  ]
+  "lambdaLayers": [],
+  "secretNames": [],
+  "environmentVariableList": [],
+  "permissions": {}
 }

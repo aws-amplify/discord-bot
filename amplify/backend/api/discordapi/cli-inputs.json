@@ -21,6 +21,13 @@
         },
         "setting": "private"
       }
+    },
+    "/webhook": {
+      "name": "/webhook",
+      "lambdaFunction": "discordwebhook",
+      "permissions": {
+        "setting": "open"
+      }
     }
   }
 }

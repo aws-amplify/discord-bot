@@ -32,16 +32,49 @@
 				"tarball": "http://localhost:4000/@hey-amplify/handler-commands/-/@hey-amplify/handler-commands-0.1.0.tgz"
 			},
 			"contributors": []
+		},
+		"0.2.0": {
+			"name": "@hey-amplify/handler-commands",
+			"version": "0.2.0",
+			"type": "module",
+			"license": "Apache-2.0",
+			"exports": {
+				".": {
+					"import": "./index.js",
+					"require": "./lib/index.cjs"
+				},
+				"./package.json": "./package.json"
+			},
+			"scripts": {
+				"build": "builder",
+				"prepublishOnly": "yarn build --minify"
+			},
+			"devDependencies": {
+				"@hey-amplify/builder": "*"
+			},
+			"dependencies": {
+				"@hey-amplify/discord": "*",
+				"body-parser": "^1.19.0",
+				"express": "^4.17.1"
+			},
+			"_id": "@hey-amplify/handler-commands@0.2.0",
+			"dist": {
+				"shasum": "09fa873142d39b2c802c8cb9304d0bcfd6d31686",
+				"integrity": "sha512-59W3iEdvAtPVrJbB7BZZf+Xiwf8OWxzv857ngreauhAqUPe5LjpohxltwatkaBHeHTV7j0Pu6UM8muXRyCeLcw==",
+				"tarball": "http://localhost:4000/@hey-amplify/handler-commands/-/@hey-amplify/handler-commands-0.2.0.tgz"
+			},
+			"contributors": []
 		}
 	},
 	"time": {
-		"modified": "2022-01-03T22:17:22.880Z",
+		"modified": "2022-02-13T17:24:50.190Z",
 		"created": "2022-01-03T22:17:22.880Z",
-		"0.1.0": "2022-01-03T22:17:22.880Z"
+		"0.1.0": "2022-01-03T22:17:22.880Z",
+		"0.2.0": "2022-02-13T17:24:50.190Z"
 	},
 	"users": {},
 	"dist-tags": {
-		"latest": "0.1.0"
+		"latest": "0.2.0"
 	},
 	"_uplinks": {},
 	"_distfiles": {},
@@ -49,9 +82,13 @@
 		"handler-commands-0.1.0.tgz": {
 			"shasum": "80f85ae47ddd43e9b8baddbce35c7e1292dd82d3",
 			"version": "0.1.0"
+		},
+		"handler-commands-0.2.0.tgz": {
+			"shasum": "09fa873142d39b2c802c8cb9304d0bcfd6d31686",
+			"version": "0.2.0"
 		}
 	},
-	"_rev": "3-5c25d29337c9ede1",
+	"_rev": "6-583ad4e3840a712b",
 	"_id": "@hey-amplify/handler-commands",
 	"readme": ""
 }

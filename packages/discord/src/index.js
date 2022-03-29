@@ -2,8 +2,9 @@ import fetch from 'node-fetch'
 import nacl from 'tweetnacl'
 
 export * from './handleCommand.js'
-export * from './registerCommand.js'
-export * from './syncCommands.js'
+export * from './commands.js'
+export * from './api.js'
+// export * from './client.js'
 
 export async function verifyEvent(event) {
   const signature = event.headers['X-Signature-Ed25519'.toLowerCase()]
@@ -48,55 +49,6 @@ export async function addRoleToUser({ guildId, userId, roleId }) {
   }
 
   if (!data) return
-  return data
-}
-
-export async function deleteCommand(commandId, { guildId }) {
-  const config = {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-  }
-  let url = `https://discord.com/api/v8/applications/${process.env.DISCORD_APP_ID}/commands/${commandId}`
-  if (guildId) {
-    url = `https://discord.com/api/v8/applications/${process.env.DISCORD_APP_ID}/guilds/${guildId}/commands/${commandId}`
-  }
-
-  let data
-  try {
-    const response = await fetch(url, config)
-    if (response.ok && response.status === 200) {
-      data = await response.json()
-    }
-  } catch (error) {
-    throw new Error(`Error deleting command ${commandId}:`, error)
-  }
-
-  return data
-}
-
-export async function getRegisteredCommands() {
-  const config = {
-    method: 'GET',
-    headers: {
-      Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-  }
-  const url = `https://discord.com/api/v8/applications/${process.env.DISCORD_APP_ID}/commands`
-
-  let data
-  try {
-    const response = await fetch(url, config)
-    if (response.ok && response.status === 200) {
-      data = await response.json()
-    }
-  } catch (error) {
-    throw new Error('Error fetching registered commands', error)
-  }
-
   return data
 }
 

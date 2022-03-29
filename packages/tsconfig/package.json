@@ -1,0 +1,11 @@
+{
+  "name": "@hey-amplify/tsconfig",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "base.json"
+  ],
+  "peerDependencies": {
+    "typescript": "^4.6.2"
+  }
+}

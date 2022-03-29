@@ -1,24 +1,10 @@
-/*
-Use the following code to retrieve configured secrets from SSM:
+import { handler as interact } from '@hey-amplify/handler-interact'
 
-const aws = require('aws-sdk');
-
-const { Parameters } = await (new aws.SSM())
-  .getParameters({
-    Names: ["DISCORD_BOT_TOKEN","DISCORD_APP_ID","DISCORD_PUBLIC_KEY"].map(secretName => process.env[secretName]),
-    WithDecryption: true,
-  })
-  .promise();
-
-Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
-*/
-const { loadSecrets } = require('/opt/secrets')
-const { handler: interact } = require('@hey-amplify/handler-interact')
-
-let secretsLoaded = false
-exports.handler = async (event) => {
+/**
+ * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ */
+export async function handler(event) {
   console.log('EVENT:', JSON.stringify(event))
-  if (!secretsLoaded && (await loadSecrets())) secretsLoaded = true
   try {
     event.body = JSON.parse(event.body)
     return {

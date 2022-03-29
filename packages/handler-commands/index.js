@@ -1,6 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { syncCommands } from '@hey-amplify/discord'
+import { syncCommands, listCommands } from '@hey-amplify/discord'
 
 /**
  * Express.js app
@@ -22,6 +22,17 @@ export function app(middlewares = []) {
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Access-Control-Allow-Headers', '*')
     next()
+  })
+
+  server.get('/commands/list', async function (req, res) {
+    try {
+      res.end(JSON.stringify(await listCommands()))
+      return
+    } catch (error) {
+      console.error('Error listing commands', error)
+      res.status(500)
+      res.end(JSON.stringify({ error, message: 'Unable to list commands' }))
+    }
   })
 
   server.post('/commands/sync', async function (req, res) {

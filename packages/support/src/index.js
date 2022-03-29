@@ -1,12 +1,12 @@
-const { SSMClient, GetParametersCommand } = require('@aws-sdk/client-ssm')
+import { SSMClient, GetParametersCommand } from '@aws-sdk/client-ssm'
 
-const SECRET_NAMES = [
+export const SECRET_NAMES = [
   'DISCORD_BOT_TOKEN',
   'DISCORD_APP_ID',
   'DISCORD_PUBLIC_KEY',
 ]
 
-async function getSecrets(secretNames) {
+export async function getSecrets(secretNames) {
   try {
     const client = new SSMClient({ region: process.env.AWS_REGION })
     const Names = secretNames.map((secretName) => process.env[secretName])
@@ -23,24 +23,22 @@ async function getSecrets(secretNames) {
       return acc
     }, {})
   } catch (error) {
+    console.error(error)
     throw new Error('Unable to get secrets', error)
   }
 }
 
-async function loadSecrets() {
+export async function loadSecrets(secretNames = SECRET_NAMES) {
   console.log('Loading secrets')
   try {
-    const secrets = await getSecrets(SECRET_NAMES)
+    const secrets = await getSecrets(secretNames)
     for (let [secretName, secretValue] of Object.entries(secrets)) {
       process.env[secretName] = secretValue
     }
     console.log('Secrets loaded successfully')
     return true
   } catch (error) {
+    console.error(error)
     throw new Error('Unable to load secrets', error)
   }
 }
-
-exports.SECRET_NAMES = SECRET_NAMES
-exports.loadSecrets = loadSecrets
-exports.getSecrets = getSecrets
