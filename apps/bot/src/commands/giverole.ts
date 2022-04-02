@@ -1,5 +1,4 @@
-import { createDiscordCommand } from '../Command.js'
-import { discord } from '../Discord.js'
+import { createDiscordCommand, discord } from '@hey-amplify/discord'
 
 async function handler({ data, guild_id, member }) {
   const [[userId, user]] = Object.entries(data.resolved.members)
