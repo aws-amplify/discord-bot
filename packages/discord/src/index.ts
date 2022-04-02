@@ -1,5 +1,6 @@
-export * from './handleCommand.js'
 export * from './support.js'
 export * from './Bank.js'
 export * from './api.js'
 export * from './Discord.js'
+export * from './Command.js'
+export * from './CommandOption.js'

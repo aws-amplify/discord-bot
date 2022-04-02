@@ -2,7 +2,7 @@ import type {
   APIApplicationCommandOption,
   APIApplicationCommand,
   RESTPostAPIApplicationCommandsJSONBody,
-} from 'discord-api-types/v10'
+} from 'discord-api-types/v9'
 
 export interface IDiscordCommandConfig {
   name: string
@@ -36,6 +36,10 @@ export class DiscordCommand implements IDiscordCommand {
   public registration?: APIApplicationCommand
 
   constructor(props) {
+    const validCommandNameRegex = /^[\w-]{1,32}$/g
+    if (!validCommandNameRegex.test(props.name)) {
+      throw new Error(`Invalid Command name: ${props.name}`)
+    }
     this.name = props.name
     this.description = props.description
     this.usage = props.usage

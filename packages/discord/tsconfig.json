@@ -3,7 +3,8 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "build",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "isolatedModules": false
   },
   "include": ["src"],
   "exclude": ["build", "bin", "node_modules"]

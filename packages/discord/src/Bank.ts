@@ -1,45 +1,10 @@
 import * as path from 'node:path'
-import type {
-  RESTPostAPIApplicationCommandsJSONBody,
-  RESTPostAPIApplicationCommandsResult,
-} from 'discord-api-types/v10'
+import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v9'
 import glob from 'fast-glob'
 import type { IDiscordCommand } from './Command.js'
 import { DiscordCommand } from './Command.js'
 import { api, DiscordAPIRequestResponse } from './api.js'
 import { generateResponse } from './support.js'
-
-const validCommandNameRegex = /^[\w-]{1,32}$/
-// TODO: filter on command name regex to prevent sync errors
-export function createStaticCommands(data) {
-  return Object.entries(data).map(
-    ([staticCommandName, staticCommandConfig]: [string, any]) => {
-      return {
-        config: {
-          name: staticCommandName,
-          ...staticCommandConfig,
-        },
-        handler: (context) => {
-          const { options } = context.data
-          let returnValue = staticCommandConfig.return
-          if (staticCommandConfig.options && options) {
-            for (const option of options) {
-              const { name, value } = option
-              const staticOption = staticCommandConfig.options.find(
-                (staticOption) => staticOption.name === name
-              )
-              const staticChoice = staticOption.choices.find(
-                (staticChoice) => staticChoice.value === value
-              )
-              returnValue = staticChoice?.return
-            }
-          }
-          return returnValue ?? 'Something went wrong.'
-        },
-      }
-    }
-  )
-}
 
 export class DiscordCommandMap extends Map<string, DiscordCommand> {
   constructor(commands: DiscordCommand[]) {
@@ -170,12 +135,20 @@ function createDiscordCommandBank(
   return new DiscordCommandBank(commands)
 }
 
-export async function createBank() {
+export async function createBank(commandDirectories: string[] | string) {
   // TODO: add support for other command dirs
-  const commandsDirectory = new URL('commands', import.meta.url).pathname
-  const commandPaths = await glob(['!(_*|*.d).(js|ts)'], {
+  const builtinCommandsDirectory = new URL('commands', import.meta.url).pathname
+  const providedCommandDirectories = Array.isArray(commandDirectories)
+    ? commandDirectories
+    : [commandDirectories]
+  const commandGlobPattern = '!(_*|*.d).(js|ts)'
+  const commandPathsGlob = [
+    builtinCommandsDirectory,
+    providedCommandDirectories,
+  ].map((path) => `${path}/${commandGlobPattern}`)
+
+  const commandPaths = await glob(commandPathsGlob, {
     onlyFiles: true,
-    cwd: commandsDirectory,
     absolute: true,
   })
 
@@ -203,6 +176,3 @@ export async function createBank() {
 
   return createDiscordCommandBank(commands)
 }
-
-export const bank = await createBank()
-export const commands = bank
