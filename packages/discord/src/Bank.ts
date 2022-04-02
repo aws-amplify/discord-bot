@@ -186,7 +186,7 @@ export async function createBank() {
     try {
       mod = await import(commandPath)
     } catch (error) {
-      throw new Error(`Error importing ${commandPath}`)
+      throw new Error(`Error importing ${commandPath}: ${error}`)
     }
     if (!mod?.default) command = mod
     else command = mod.default

@@ -1,4 +1,4 @@
-import { handler as interact } from './interact.js'
+import { handler as interact } from '@hey-amplify/handler-interact'
 
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}

@@ -55,7 +55,11 @@ export class DiscordApi implements IDiscordAPI {
     const status = response.status
 
     if (response.ok) {
-      data = await response.json()
+      try {
+        data = await response.json()
+      } catch (error) {
+        // not valid json body
+      }
     } else {
       error = await response.json()
     }

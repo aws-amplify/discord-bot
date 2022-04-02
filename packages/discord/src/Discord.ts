@@ -15,10 +15,11 @@ export class Discord extends DiscordApi implements IDiscord {
   }
 
   public async addRoleToUser({ guildId, userId, roleId }) {
+    // https://discord.com/developers/docs/resources/guild#add-guild-member-role
     const result = await this.put(
       `/guilds/${guildId}/members/${userId}/roles/${roleId}`
     )
-    return !!result.data
+    return result.status === 204
   }
 }
 

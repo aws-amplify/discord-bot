@@ -2,11 +2,5 @@
   "lambdaLayers": [],
   "secretNames": [],
   "environmentVariableList": [],
-  "permissions": {
-    "function": {
-      "discordinteractionhandler": [
-        "read"
-      ]
-    }
-  }
+  "permissions": {}
 }

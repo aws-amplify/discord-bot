@@ -64,17 +64,60 @@
 				"tarball": "http://localhost:4000/@hey-amplify/handler-commands/-/@hey-amplify/handler-commands-0.2.0.tgz"
 			},
 			"contributors": []
+		},
+		"0.2.1": {
+			"name": "@hey-amplify/handler-commands",
+			"version": "0.2.1",
+			"type": "module",
+			"license": "Apache-2.0",
+			"types": "./build/index.d.ts",
+			"exports": {
+				".": {
+					"types": "./build/index.d.ts",
+					"import": "./build/index.js"
+				},
+				"./package.json": "./package.json"
+			},
+			"files": [
+				"build"
+			],
+			"devDependencies": {
+				"@hey-amplify/tsconfig": "0.0.0",
+				"typescript": "next"
+			},
+			"dependencies": {
+				"@hey-amplify/discord": "0.3.0",
+				"body-parser": "^1.19.0",
+				"express": "^4.17.1"
+			},
+			"scripts": {
+				"build": "tsc",
+				"dev": "pnpm build -- -w"
+			},
+			"_id": "@hey-amplify/handler-commands@0.2.1",
+			"_integrity": "sha512-7dLfhhU2HQF4UHxkW0nU3sdCH3Owf64qyZ3cltsz3fra8ojZEHX/DCejk3D9AVJ6AfmboIgM4x7ajOIUZNy6jA==",
+			"_resolved": "/Users/josef/Documents/projects/aws-amplify/amplify-discord-bots/packages/handler-commands/hey-amplify-handler-commands-0.2.1.tgz",
+			"_from": "file:hey-amplify-handler-commands-0.2.1.tgz",
+			"_nodeVersion": "16.13.2",
+			"_npmVersion": "8.1.2",
+			"dist": {
+				"integrity": "sha512-7dLfhhU2HQF4UHxkW0nU3sdCH3Owf64qyZ3cltsz3fra8ojZEHX/DCejk3D9AVJ6AfmboIgM4x7ajOIUZNy6jA==",
+				"shasum": "d79fbb5e65e288fd4690b379fae747fa10a57956",
+				"tarball": "http://localhost:4000/@hey-amplify/handler-commands/-/@hey-amplify/handler-commands-0.2.1.tgz"
+			},
+			"contributors": []
 		}
 	},
 	"time": {
-		"modified": "2022-02-13T17:24:50.190Z",
+		"modified": "2022-03-29T21:20:10.943Z",
 		"created": "2022-01-03T22:17:22.880Z",
 		"0.1.0": "2022-01-03T22:17:22.880Z",
-		"0.2.0": "2022-02-13T17:24:50.190Z"
+		"0.2.0": "2022-02-13T17:24:50.190Z",
+		"0.2.1": "2022-03-29T21:20:10.943Z"
 	},
 	"users": {},
 	"dist-tags": {
-		"latest": "0.2.0"
+		"latest": "0.2.1"
 	},
 	"_uplinks": {},
 	"_distfiles": {},
@@ -86,9 +129,13 @@
 		"handler-commands-0.2.0.tgz": {
 			"shasum": "09fa873142d39b2c802c8cb9304d0bcfd6d31686",
 			"version": "0.2.0"
+		},
+		"handler-commands-0.2.1.tgz": {
+			"shasum": "d79fbb5e65e288fd4690b379fae747fa10a57956",
+			"version": "0.2.1"
 		}
 	},
-	"_rev": "6-583ad4e3840a712b",
+	"_rev": "9-7a7e51264ecc58f6",
 	"_id": "@hey-amplify/handler-commands",
 	"readme": ""
 }
