@@ -16,7 +16,7 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "es2017",
+    "target": "esnext",
     "sourceMap": false,
     "inlineSourceMap": true
   },
