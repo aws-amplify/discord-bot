@@ -7,7 +7,10 @@
   "decription": "",
   "exports": {
     ".": {
-      "import": "./index.js"
+      "import": "./build/index.js"
+    },
+    "./client": {
+      "import": "./build/client.js"
     },
     "./package.json": "./package.json"
   },

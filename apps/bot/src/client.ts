@@ -1,4 +1,3 @@
-import * as path from 'node:path'
 import { Client, Intents } from 'discord.js'
 import { createBank } from '@hey-amplify/discord'
 

@@ -4,8 +4,6 @@ import autoprefixer from 'autoprefixer'
 import dotenv from 'dotenv'
 import preprocess from 'svelte-preprocess'
 import adapter from '@sveltejs/adapter-static'
-import ViteReload from 'vite-plugin-full-reload'
-import { DiscordBotLayerPlugin } from 'vite-plugin-discord-bot-layer'
 import { optimizeCarbonImports } from 'carbon-components-svelte/preprocess/index.js'
 // https://nodejs.org/api/esm.html#esm_no_json_module_loading
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
@@ -43,7 +41,7 @@ const config = {
     },
 
     vite: {
-      plugins: [ViteReload(include), DiscordBotLayerPlugin()],
+      plugins: [],
       resolve: {
         alias: {
           './runtimeConfig': './runtimeConfig.browser',
