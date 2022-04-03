@@ -1,7 +1,6 @@
 import * as path from 'node:path'
 import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v9'
 import glob from 'fast-glob'
-import type { IDiscordCommand } from './Command.js'
 import { DiscordCommand } from './Command.js'
 import { api, DiscordAPIRequestResponse } from './api.js'
 import { generateResponse } from './support.js'
@@ -130,7 +129,7 @@ export class DiscordCommandBank
 }
 
 function createDiscordCommandBank(
-  commands: DiscordCommand[] | IDiscordCommand[] | any
+  commands: DiscordCommand[]
 ): DiscordCommandBank {
   return new DiscordCommandBank(commands)
 }

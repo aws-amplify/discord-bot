@@ -16,10 +16,16 @@ export interface IDiscordCommandContext {
   [key: string]: any
 }
 
+export type DiscordCommandHandler = (
+  context: IDiscordCommandContext
+) => string | Promise<string>
+
+export type CreateDiscordCommandInput = IDiscordCommandConfig & {
+  handler: DiscordCommandHandler
+}
+
 export interface IDiscordCommand extends IDiscordCommandConfig {
-  handler: (
-    context: IDiscordCommandContext
-  ) => Promise<string | undefined> | (string | undefined)
+  handler: DiscordCommandHandler
   registration?: APIApplicationCommand
 }
 
@@ -48,9 +54,7 @@ export class DiscordCommand implements IDiscordCommand {
     this.enabledByDefault = props.enabledByDefault ?? true
   }
 
-  public readonly handler: (
-    context: IDiscordCommandContext
-  ) => Promise<string | undefined> | (string | undefined)
+  public readonly handler: DiscordCommandHandler
 
   public createRegistrationPayload(): RESTPostAPIApplicationCommandsJSONBody {
     const name = this.name
@@ -66,7 +70,9 @@ export class DiscordCommand implements IDiscordCommand {
   }
 }
 
-export function createDiscordCommand(props: IDiscordCommand): IDiscordCommand {
+export function createDiscordCommand(
+  props: CreateDiscordCommandInput
+): DiscordCommand {
   return new DiscordCommand(props)
 }
 

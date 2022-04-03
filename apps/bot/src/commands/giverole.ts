@@ -1,4 +1,4 @@
-import { createDiscordCommand, discord } from '@hey-amplify/discord'
+import { createCommand, discord } from '@hey-amplify/discord'
 
 async function handler({ data, guild_id, member }) {
   const [[userId, user]] = Object.entries(data.resolved.members)
@@ -15,7 +15,7 @@ async function handler({ data, guild_id, member }) {
   return '🤢 something went wrong'
 }
 
-export default createDiscordCommand({
+export default createCommand({
   name: 'giverole',
   description: 'Gives role to user',
   enabledByDefault: false, // todo: constrain who can execute

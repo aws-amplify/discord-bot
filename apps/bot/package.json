@@ -12,8 +12,9 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "pnpm build -- -w"
+    "build": "vite build",
+    "dev": "nodemon --exec vite-node src/index.ts",
+    "clean": "rimraf build"
   },
   "dependencies": {
     "@hey-amplify/discord": "workspace:*",
@@ -22,6 +23,8 @@
   "devDependencies": {
     "@hey-amplify/tsconfig": "workspace:*",
     "fast-glob": "^3.2.11",
+    "nodemon": "^2.0.15",
+    "rimraf": "^3.0.2",
     "typescript": "next",
     "vite": "^2.9.1",
     "vite-node": "^0.8.2",

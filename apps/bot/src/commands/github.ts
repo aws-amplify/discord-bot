@@ -1,40 +1,36 @@
-export default {
-  name: 'GitHub',
-  description: 'Get links for AWS Amplify GitHub repositories',
-  return: 'https://github.com/aws-amplify',
-  options: [
-    {
-      name: 'repository',
-      description: 'The AWS Amplify repository',
-      type: 3,
-      required: true,
-      choices: [
-        {
-          name: 'admin-ui',
-          value: 'amplify-adminui',
-          return: 'https://github.com/aws-amplify/amplify-adminui',
-        },
-        {
-          name: 'cli',
-          value: 'amplify-cli',
-          return: 'https://github.com/aws-amplify/amplify-cli',
-        },
-        {
-          name: 'console',
-          value: 'amplify-console',
-          return: 'https://github.com/aws-amplify/amplify-console',
-        },
-        {
-          name: 'js',
-          value: 'amplify-js',
-          return: 'https://github.com/aws-amplify/amplify-js',
-        },
-        {
-          name: 'docs',
-          value: 'docs',
-          return: 'https://github.com/aws-amplify/docs',
-        },
-      ],
-    },
-  ],
+import { createCommand, createOption } from '@hey-amplify/discord'
+import { ApplicationCommandOptionType } from 'discord-api-types/v9'
+
+const repository = createOption({
+  name: 'repository',
+  description: 'The AWS Amplify repository',
+  required: true,
+  type: 3,
+  choices: ['cli', 'hosting', 'js', 'docs'],
+})
+
+function getRepositoryUrl(repository: string) {
+  switch (repository) {
+    case 'cli':
+      return 'https://github.com/aws-amplify/amplify-cli'
+    case 'hosting':
+      return 'https://github.com/aws-amplify/amplify-hosting'
+    case 'js':
+      return 'https://github.com/aws-amplify/amplify-js'
+    case 'docs':
+      return 'https://github.com/aws-amplify/docs'
+    default:
+      return '🤢 something went wrong, repository not found'
+  }
 }
+
+export default createCommand({
+  name: 'github',
+  description: 'Gives link to GitHub repository',
+  options: [repository],
+  // @ts-ignore
+  handler: (context) => {
+    const [{ value: repository }] = context.data.options
+    return getRepositoryUrl(repository)
+  },
+})
