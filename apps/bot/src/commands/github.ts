@@ -1,5 +1,5 @@
 import { createCommand, createOption } from '@hey-amplify/discord'
-import { ApplicationCommandOptionType } from 'discord-api-types/v9'
+import type { CommandInteraction } from 'discord.js'
 
 const repository = createOption({
   name: 'repository',
@@ -28,9 +28,8 @@ export default createCommand({
   name: 'github',
   description: 'Gives link to GitHub repository',
   options: [repository],
-  // @ts-ignore
-  handler: (context) => {
-    const [{ value: repository }] = context.data.options
-    return getRepositoryUrl(repository)
+  handler: (interaction: CommandInteraction) => {
+    const [{ value: repository }] = interaction.options.data
+    return getRepositoryUrl(repository as string)
   },
 })

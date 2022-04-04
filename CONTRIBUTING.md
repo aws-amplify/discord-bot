@@ -40,7 +40,7 @@ const { namedExport } = require('./my-module.cjs')
 
 ## Authoring Discord Commands
 
-To get started, let's create a new command file in `packages/discord/src/commands`: `hello.ts`
+To get started, let's create a new command file in `apps/bot/src/commands`: `hello.ts`
 
 ```ts
 import { createCommand } from '../Command.js'

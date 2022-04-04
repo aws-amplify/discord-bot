@@ -1,9 +1,10 @@
 import * as path from 'node:path'
-import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v9'
 import glob from 'fast-glob'
 import { DiscordCommand } from './Command.js'
 import { api, DiscordAPIRequestResponse } from './api.js'
 import { generateResponse } from './support.js'
+import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v9'
+import type { CommandInteraction } from 'discord.js'
 
 export class DiscordCommandMap extends Map<string, DiscordCommand> {
   constructor(commands: DiscordCommand[]) {
@@ -103,18 +104,15 @@ export class DiscordCommandBank
     return commands
   }
 
-  public async handle({ context }) {
+  public async handle(interaction: CommandInteraction) {
     const somethingWentWrongResponse = '🤕 Something went wrong'
-    const command = this.get(context.data.name)
-    if (!command) throw new Error(`Invalid slash command: ${context.data.name}`)
-    console.log(
-      `Handling command "${command?.name}" for user ${context.member.user.id}`
-    )
+    const command = this.get(interaction.commandName)
+    if (!command)
+      throw new Error(`Invalid slash command: ${interaction.commandName}`)
 
     let commandResponse
     try {
-      // TODO: create better handler context
-      commandResponse = await command.handler(context)
+      commandResponse = await command.handler(interaction)
     } catch (error) {
       console.error(`Error executing command "${command?.name}"`, error)
     }

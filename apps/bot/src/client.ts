@@ -14,14 +14,12 @@ client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return
   const { commandName } = interaction
   const command = bank.get(commandName)
-  console.log({ commandName, command })
   if (!command) return
 
   console.log(
-    `Handling command "${command?.name}" for user ${interaction.member?.user?.id}`
+    `Handling command "${command?.name}" for ${interaction.user.username}#${interaction.user.discriminator}`
   )
 
-  let response = 'test'
-
+  const response = await bank.handle(interaction)
   await interaction.reply(response)
 })

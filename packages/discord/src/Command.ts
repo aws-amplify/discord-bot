@@ -3,6 +3,7 @@ import type {
   APIApplicationCommand,
   RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord-api-types/v9'
+import type { CommandInteraction } from 'discord.js'
 
 export interface IDiscordCommandConfig {
   name: string
@@ -12,12 +13,8 @@ export interface IDiscordCommandConfig {
   enabledByDefault?: boolean
 }
 
-export interface IDiscordCommandContext {
-  [key: string]: any
-}
-
 export type DiscordCommandHandler = (
-  context: IDiscordCommandContext
+  interaction: CommandInteraction
 ) => string | Promise<string>
 
 export type CreateDiscordCommandInput = IDiscordCommandConfig & {
@@ -29,7 +26,6 @@ export interface IDiscordCommand extends IDiscordCommandConfig {
   registration?: APIApplicationCommand
 }
 
-export type DiscordCommandContext = IDiscordCommandContext
 export type DiscordCommandConfig = IDiscordCommandConfig
 
 export class DiscordCommand implements IDiscordCommand {

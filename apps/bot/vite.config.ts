@@ -1,5 +1,5 @@
 import * as fs from 'node:fs/promises'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import glob from 'fast-glob'
 
 const pkg = JSON.parse(
@@ -7,6 +7,14 @@ const pkg = JSON.parse(
 )
 
 const input = await glob('src/**/!(_*|*.d).(js|ts)')
+
+// load env vars for development
+Object.assign(
+  process.env,
+  loadEnv('production', new URL('../../', import.meta.url).pathname, [
+    'DISCORD_',
+  ])
+)
 
 export default defineConfig({
   // envPrefix: 'DISCORD_',

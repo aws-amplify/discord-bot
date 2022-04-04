@@ -1,6 +1,5 @@
 {
   "name": "@hey-amplify/bot",
-  "private": true,
   "type": "module",
   "version": "0.0.1",
   "license": "Apache-2.0",
@@ -9,15 +8,14 @@
     ".": {
       "import": "./build/index.js"
     },
-    "./client": {
-      "import": "./build/client.js"
-    },
     "./package.json": "./package.json"
   },
   "scripts": {
+    "start": "node ./build/app.js",
     "build": "vite build",
-    "dev": "nodemon --exec vite-node src/index.ts",
-    "clean": "rimraf build"
+    "dev": "nodemon --exec vite-node src/app.ts",
+    "clean": "rimraf build",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@hey-amplify/discord": "workspace:*",
@@ -25,13 +23,13 @@
   },
   "devDependencies": {
     "@hey-amplify/tsconfig": "workspace:*",
+    "dotenv": "^16.0.0",
     "fast-glob": "^3.2.11",
     "nodemon": "^2.0.15",
     "rimraf": "^3.0.2",
     "typescript": "next",
     "vite": "^2.9.1",
     "vite-node": "^0.8.2",
-    "vite-plugin-node": "^0.0.19",
     "vitest": "^0.8.2"
   }
 }
