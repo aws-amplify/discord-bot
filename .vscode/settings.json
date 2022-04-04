@@ -13,5 +13,8 @@
     "*.env.*": "dotenv",
     "*.mmd": "mermaid"
   },
-  "markdown.styles": ["https://use.fontawesome.com/releases/v5.7.1/css/all.css"]
+  "markdown.styles": [
+    "https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+  ],
+  "npm.packageManager": "pnpm"
 }
