@@ -5,7 +5,7 @@ const repository = createOption({
   name: 'Amplify Project',
   description: 'The name of the AWS Amplify project to contribute to.',
   required: true,
-  choices: ['cli'],
+  choices: ['android', 'cli', 'docs', 'flutter', 'ios', 'js', 'ui'],
 })
 
 function getRepositoryContributeUrl(repository) {
