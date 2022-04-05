@@ -6,12 +6,12 @@ const pkg = JSON.parse(
   await fs.readFile(new URL('package.json', import.meta.url).pathname, 'utf8')
 )
 
-const input = await glob('src/**/!(_*|*.d).(js|ts)')
+const input = await glob('src/**/!(*.d).(js|ts)')
 
 // load env vars for development
 Object.assign(
   process.env,
-  loadEnv('production', new URL('../../', import.meta.url).pathname, [
+  loadEnv('development', new URL('../../', import.meta.url).pathname, [
     'DISCORD_',
   ])
 )
@@ -21,6 +21,7 @@ export default defineConfig({
   envDir: '../../',
   build: {
     target: 'esnext',
+    sourcemap: true,
     outDir: 'build',
     ssr: true,
     lib: {

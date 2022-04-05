@@ -1,15 +1,16 @@
 import { createCommand, discord } from '@hey-amplify/discord'
+import type { CommandInteraction } from 'discord.js'
 
-async function handler({ data, guild_id, member }) {
-  const [[userId, user]] = Object.entries(data.resolved.members)
-  const [[roleId, role]] = Object.entries(data.resolved.roles)
+async function handler(interaction: CommandInteraction) {
+  const { message, options, user: caller } = interaction
+  const { user } = Object.entries(options.data.member)
+  const { role, roleId } = Object.entries(options.data.role)
 
-  if (userId === member.user.id) {
+  if (caller.id === user.id) {
     return `This command does not support adding roles to yourself.`
   }
   // console.log({ userId, roleId, guild_id, addRoleToUser })
   if (await discord.addRoleToUser({ guildId: guild_id, userId, roleId })) {
-    // @ts-ignore
     return `Successfully added role \`${role.name}\` to user.`
   }
   return '🤢 something went wrong'
@@ -33,6 +34,5 @@ export default createCommand({
       required: true,
     },
   ],
-  // @ts-ignore
   handler,
 })

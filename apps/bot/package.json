@@ -13,6 +13,8 @@
   "scripts": {
     "start": "node ./build/app.js",
     "build": "vite build",
+    "types": "tsc -p tsconfig.lib.json",
+    "postbuild": "pnpm types",
     "dev": "nodemon --exec vite-node src/app.ts",
     "clean": "rimraf build",
     "prepublishOnly": "pnpm build"

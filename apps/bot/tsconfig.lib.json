@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "outDir": "./build"
+  },
+  "include": ["src"]
+}
