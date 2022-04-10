@@ -8,7 +8,7 @@ const pkg = JSON.parse(
 
 const input = await glob('src/**/!(*.d).(js|ts)')
 
-// load env vars for development
+// load env vars for bot development
 Object.assign(
   process.env,
   loadEnv('development', new URL('../../', import.meta.url).pathname, [

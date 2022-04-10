@@ -19,7 +19,7 @@ async function handler(interaction: CommandInteraction) {
 export default createCommand({
   name: 'giverole',
   description: 'Gives role to user',
-  enabledByDefault: false, // todo: constrain who can execute
+  enabledByDefault: false, // todo: restrict who can execute
   options: [
     {
       name: 'role',

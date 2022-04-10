@@ -19,6 +19,8 @@ function getRepositoryUrl(repository: string) {
       return 'https://github.com/aws-amplify/amplify-js'
     case 'docs':
       return 'https://github.com/aws-amplify/docs'
+    case 'studio':
+      return 'https://github.com/aws-amplify/admin-ui'
     default:
       return '🤢 something went wrong, repository not found'
   }
