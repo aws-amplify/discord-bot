@@ -1,4 +1,4 @@
-import { commands } from '@hey-amplify/discord'
+import { commands } from '@hey-amplify/bot'
 import { describe, expect, it } from 'vitest'
 
 const giverole = commands.get('giverole')

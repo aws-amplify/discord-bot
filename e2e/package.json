@@ -14,9 +14,7 @@
   "devDependencies": {
     "@discordjs/rest": "^0.3.0",
     "@hey-amplify/discord": "workspace:*",
-    "@hey-amplify/handler-commands": "workspace:*",
-    "@hey-amplify/handler-interact": "workspace:*",
-    "@hey-amplify/handler-webhook": "workspace:*",
+    "@hey-amplify/bot": "workspace:*",
     "@hey-amplify/tsconfig": "workspace:*",
     "discord-api-types": "^0.30.0",
     "discord.js": "^13.6.0",
