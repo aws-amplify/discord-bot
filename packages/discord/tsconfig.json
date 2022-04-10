@@ -6,5 +6,5 @@
     "noImplicitAny": false
   },
   "include": ["src"],
-  "exclude": ["build", "bin", "node_modules"]
+  "exclude": ["build", "node_modules"]
 }

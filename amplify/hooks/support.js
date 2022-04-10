@@ -17,7 +17,7 @@ export async function readJSON(path) {
 }
 
 export async function getProjectInfo() {
-  const { envName } = await readJSON(
+  const { envName, projectPath } = await readJSON(
     resolve(new URL('../.config/local-env-info.json', import.meta.url).pathname)
   )
   const teamProviderInfo = await readJSON(
@@ -30,6 +30,7 @@ export async function getProjectInfo() {
   const region = teamProviderInfo[envName].awscloudformation.Region
   return {
     projectName,
+    projectPath,
     envName,
     appId,
     region,
