@@ -1,5 +1,5 @@
 import * as fs from 'node:fs/promises'
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import glob from 'fast-glob'
 
 const pkg = JSON.parse(
@@ -9,8 +9,6 @@ const pkg = JSON.parse(
 const input = await glob('src/**/!(*.d).(js|ts)')
 
 export default defineConfig({
-  // envPrefix: 'DISCORD_',
-  envDir: '../../',
   build: {
     target: 'esnext',
     sourcemap: true,
@@ -18,7 +16,7 @@ export default defineConfig({
     ssr: true,
     lib: {
       entry: './src/index.ts',
-      name: 'cdk-construct',
+      name: 'support',
       formats: ['es'],
       fileName: (format) => `[name].js`,
     },
