@@ -1,5 +1,5 @@
-import { createCommand } from '../Command.js'
-import { createOption } from '../CommandOption.js'
+import { createCommand, createOption } from '@hey-amplify/discord'
+import type { CommandInteraction } from 'discord.js'
 
 const repository = createOption({
   name: 'Amplify Project',
@@ -33,8 +33,8 @@ export default createCommand({
   name: 'contribute',
   description: 'Learn how to contribute to an Amplify project',
   options: [repository],
-  handler: (context) => {
-    const [repository] = context.data.options
+  handler: (interaction: CommandInteraction) => {
+    const [{ value: repository }] = interaction.options.data
     const lines = [
       'Thanks for your interest in contributing! To learn how to get started visit the contributing guide:',
       getRepositoryContributeUrl(repository),
