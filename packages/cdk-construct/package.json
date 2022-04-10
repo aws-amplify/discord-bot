@@ -1,0 +1,35 @@
+{
+  "name": "@hey-amplify/cdk-construct",
+  "type": "module",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "decription": "",
+  "exports": {
+    ".": {
+      "import": "./build/index.js"
+    },
+    "./stack": {
+      "import": "./build/stack.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "pnpm build -- --watch",
+    "clean": "rimraf build",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@hey-amplify/discord": "workspace:*",
+    "aws-cdk-lib": "^2.20.0",
+    "constructs": "^10.0.110"
+  },
+  "devDependencies": {
+    "@hey-amplify/tsconfig": "workspace:*",
+    "fast-glob": "^3.2.11",
+    "rimraf": "^3.0.2",
+    "typescript": "next",
+    "vite": "^2.9.1",
+    "vitest": "^0.8.2"
+  }
+}
