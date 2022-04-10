@@ -1,0 +1,27 @@
+{
+  "name": "@hey-amplify/e2e",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "exports": {
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@discordjs/rest": "^0.3.0",
+    "@hey-amplify/discord": "workspace:*",
+    "@hey-amplify/handler-commands": "workspace:*",
+    "@hey-amplify/handler-interact": "workspace:*",
+    "@hey-amplify/handler-webhook": "workspace:*",
+    "@hey-amplify/tsconfig": "workspace:*",
+    "discord-api-types": "^0.30.0",
+    "discord.js": "^13.6.0",
+    "typescript": "next",
+    "vite": "^2.8.6",
+    "vitest": "^0.7.12"
+  }
+}
