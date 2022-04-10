@@ -1,10 +1,10 @@
 import * as path from 'node:path'
-import { App, Stack, StackProps } from 'aws-cdk-lib'
+import { Stack, StackProps } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import { DiscordBot } from './construct.js'
 
-class AutothreaderStack extends Stack {
+export class AutothreaderStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
@@ -62,6 +62,3 @@ class AutothreaderStack extends Stack {
     })
   }
 }
-
-const app = new App()
-new AutothreaderStack(app, 'AutothreaderStack')
