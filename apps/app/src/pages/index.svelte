@@ -1,83 +1,16 @@
 <script>
-  import {
-    Content,
-    Grid,
-    Row,
-    Column,
-    Button,
-    CodeSnippet,
-  } from 'carbon-components-svelte'
-  import * as store from '$lib/store'
-  import Command from '$lib/Command.svelte'
-
-  export let list
-  $: console.log({ list })
-
-  let syncData = {}
-  let isSyncing = false
-  async function syncCommands() {
-    isSyncing = true
-    let data
-    try {
-      const response = await fetch('/api/commands/sync', { method: 'POST' })
-      if (response.ok && response.status === 200) {
-        data = await response.json()
-      }
-    } catch (error) {
-      store.notifications.update(notifications => [
-        ...notifications,
-        {
-          kind: 'error',
-          title: 'Error syncing commands',
-          subtitle: error.message,
-          caption: Date.now().toLocaleString(),
-        },
-      ])
-      // throw new Error('Unable to fetch commands')
-      console.error('Unable to sync commands', error)
-    }
-    isSyncing = false
-    if (data) {
-      store.notifications.update(notifications => [
-        ...notifications,
-        {
-          kind: 'success',
-          title: 'Successfully synced commands',
-          subtitle: '',
-          caption: Date.now().toLocaleString(),
-        },
-      ])
-      syncData = data
-    }
-    return data
-  }
+  import { Content, Grid, Row, Column } from 'carbon-components-svelte'
 </script>
 
 <Content>
   <Grid noGutter>
     <Row>
       <Column>
-        <Button disabled="{isSyncing}" on:click="{syncCommands}">
-          Sync Commands
-        </Button>
-        <section>
-          <h2>Commands:</h2>
-          {#each list as command (command)}
-            {@const tags = [command.registration && 'Registered'].filter(
-              Boolean
-            )}
-            <Command {...command} tags="{tags}" />
-          {/each}
-        </section>
+        <!-- <h1>Hey, Amplify!</h1> -->
       </Column>
     </Row>
   </Grid>
 </Content>
 
 <style>
-  section {
-    display: grid;
-    grid-auto-flow: row;
-    grid-row-gap: var(--cds-spacing-05);
-  }
 </style>
