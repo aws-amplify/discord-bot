@@ -16,6 +16,7 @@
     "types": "tsc -p tsconfig.lib.json",
     "postbuild": "pnpm types",
     "dev": "nodemon --exec vite-node src/app.ts",
+    "dev:lib": "pnpm build -- --watch",
     "clean": "rimraf build",
     "prepublishOnly": "pnpm build"
   },

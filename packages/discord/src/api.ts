@@ -28,6 +28,7 @@ export class DiscordApi extends REST implements IDiscordApi {
       headers: {
         'Content-Type': 'application/json',
       },
+      passThroughBody: true,
     }
     if (payload) {
       options.body = JSON.stringify(payload)

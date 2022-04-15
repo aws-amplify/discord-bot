@@ -2,7 +2,7 @@ import { createCommand, createOption } from '@hey-amplify/discord'
 import type { CommandInteraction } from 'discord.js'
 
 const repository = createOption({
-  name: 'Amplify Project',
+  name: 'repository',
   description: 'The name of the AWS Amplify project to contribute to.',
   required: true,
   choices: ['android', 'cli', 'docs', 'flutter', 'ios', 'js', 'ui'],
