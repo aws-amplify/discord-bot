@@ -1,9 +1,8 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import autoprefixer from 'autoprefixer'
 import preprocess from 'svelte-preprocess'
 import adapter from '@sveltejs/adapter-node'
-import { optimizeCarbonImports } from 'carbon-components-svelte/preprocess/index.js'
+import { optimizeCarbonImports } from 'carbon-preprocess-svelte'
 import { loadEnv } from 'vite'
 // https://nodejs.org/api/esm.html#esm_no_json_module_loading
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
@@ -17,6 +16,7 @@ Object.assign(
   process.env,
   loadEnv('development', new URL('../../', import.meta.url).pathname, [
     'DISCORD_',
+    'GITHUB_',
   ])
 )
 
@@ -28,14 +28,7 @@ function relative(path) {
 const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
   // for more information about preprocessors
-  preprocess: [
-    optimizeCarbonImports(),
-    preprocess({
-      postcss: {
-        plugins: [autoprefixer()],
-      },
-    }),
-  ],
+  preprocess: [preprocess(), optimizeCarbonImports()],
 
   kit: {
     // By default, `npm run build` will create a standard Node app.
@@ -49,6 +42,9 @@ const config = {
     },
 
     vite: {
+      define: {
+        'import.meta.vitest': 'undefined',
+      },
       plugins: [],
       build: {
         target: 'es2022',

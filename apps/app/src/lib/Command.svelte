@@ -15,7 +15,7 @@
 
 <script lang="ts">
   import { Button, Tile, Tag } from 'carbon-components-svelte'
-  import { TrashCan16 } from 'carbon-icons-svelte'
+  import { TrashCan } from 'carbon-icons-svelte'
 
   /**
    * @type {(DELETE_STEP_INITIAL|DELETE_STEP_CONFIRM|DELETE_STEP_DELETING)}
@@ -86,7 +86,7 @@
             <Button
               kind="danger-tertiary"
               iconDescription="Delete"
-              icon="{TrashCan16}"
+              icon="{TrashCan}"
               on:click="{() => (deleteCommandStep = DELETE_STEP_CONFIRM)}"
             />
           {:else if deleteCommandStep === DELETE_STEP_CONFIRM}
