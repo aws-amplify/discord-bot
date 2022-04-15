@@ -8,9 +8,6 @@
     ".": {
       "import": "./build/index.js"
     },
-    "./stack": {
-      "import": "./build/stack.js"
-    },
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -20,16 +17,20 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "@hey-amplify/discord": "workspace:*",
-    "aws-cdk-lib": "^2.20.0",
-    "constructs": "^10.0.110"
+    "@hey-amplify/discord": "workspace:*"
   },
   "devDependencies": {
     "@hey-amplify/tsconfig": "workspace:*",
+    "aws-cdk-lib": "^2.20.0",
+    "constructs": "^10.0.110",
     "fast-glob": "^3.2.11",
     "rimraf": "^3.0.2",
     "typescript": "next",
     "vite": "^2.9.1",
     "vitest": "^0.8.2"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": "^2.20.0",
+    "constructs": "^10.0.110"
   }
 }

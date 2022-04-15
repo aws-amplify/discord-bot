@@ -1,0 +1,14 @@
+{
+  "name": "hey-amplify",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "vite build",
+    "dev": "pnpm build -- --watch"
+  },
+  "devDependencies": {
+    "@hey-amplify/cdk-construct": "workspace:*",
+    "@hey-amplify/tsconfig": "workspace:*",
+    "aws-cdk-lib": "^2.20.0",
+    "constructs": "^10.0.115"
+  }
+}
