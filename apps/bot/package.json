@@ -22,7 +22,8 @@
   },
   "dependencies": {
     "@hey-amplify/discord": "workspace:*",
-    "discord.js": "^13.6.0"
+    "discord.js": "^13.6.0",
+    "express": "^4.17.3"
   },
   "devDependencies": {
     "@hey-amplify/tsconfig": "workspace:*",
