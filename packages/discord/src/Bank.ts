@@ -1,45 +1,11 @@
 import * as path from 'node:path'
-import type {
-  RESTPostAPIApplicationCommandsJSONBody,
-  RESTPostAPIApplicationCommandsResult,
-} from 'discord-api-types/v10'
 import glob from 'fast-glob'
-import type { IDiscordCommand } from './Command.js'
+import { ApplicationCommandManager } from 'discord.js'
 import { DiscordCommand } from './Command.js'
-import { api, DiscordAPIRequestResponse } from './api.js'
+import { createDiscordApi, DiscordApi } from './api.js'
 import { generateResponse } from './support.js'
-
-const validCommandNameRegex = /^[\w-]{1,32}$/
-// TODO: filter on command name regex to prevent sync errors
-export function createStaticCommands(data) {
-  return Object.entries(data).map(
-    ([staticCommandName, staticCommandConfig]: [string, any]) => {
-      return {
-        config: {
-          name: staticCommandName,
-          ...staticCommandConfig,
-        },
-        handler: (context) => {
-          const { options } = context.data
-          let returnValue = staticCommandConfig.return
-          if (staticCommandConfig.options && options) {
-            for (const option of options) {
-              const { name, value } = option
-              const staticOption = staticCommandConfig.options.find(
-                (staticOption) => staticOption.name === name
-              )
-              const staticChoice = staticOption.choices.find(
-                (staticChoice) => staticChoice.value === value
-              )
-              returnValue = staticChoice?.return
-            }
-          }
-          return returnValue ?? 'Something went wrong.'
-        },
-      }
-    }
-  )
-}
+import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10'
+import type { CommandInteraction } from 'discord.js'
 
 export class DiscordCommandMap extends Map<string, DiscordCommand> {
   constructor(commands: DiscordCommand[]) {
@@ -49,21 +15,22 @@ export class DiscordCommandMap extends Map<string, DiscordCommand> {
 }
 
 export interface IDiscordCommandBank extends DiscordCommandMap {
-  // register(command: IDiscordCommand): Promise<DiscordAPIRequestResponse>
   handle(context): Promise<string>
   register(
     command: RESTPostAPIApplicationCommandsJSONBody,
     context: any
-  ): Promise<DiscordAPIRequestResponse>
-  unregister(commandId: any, { guildId }): Promise<DiscordAPIRequestResponse>
+  ): Promise<any>
+  unregister(commandId: any, { guildId }): Promise<any>
   list(): Promise<any>
-  sync(): Promise<DiscordAPIRequestResponse>
+  sync(): Promise<any>
 }
 
 export class DiscordCommandBank
   extends DiscordCommandMap
   implements IDiscordCommandBank
 {
+  private api = createDiscordApi()
+
   constructor(commands: DiscordCommand[]) {
     super(commands)
     // needed when extending native types
@@ -80,40 +47,33 @@ export class DiscordCommandBank
     }
     url += '/commands'
 
-    console.log(commandConfig)
-
     // RESTPostAPIApplicationCommandsResult
     // TODO: add whether command was added or updated based on status
-    return api.post(url, commandConfig)
+    return this.api.post(url as `/${string}`, commandConfig as any)
   }
 
-  public async unregister(
-    commandId,
-    { guildId }
-  ): Promise<DiscordAPIRequestResponse> {
+  public async unregister(commandId, { guildId }): Promise<any> {
     let url = `/applications/${process.env.DISCORD_APP_ID}`
     if (guildId) {
       url += `/guilds/${guildId}`
     }
     url += `/commands/${commandId}`
 
-    return api.delete(url)
+    return this.api.delete(url as `/${string}`)
   }
 
   public async sync() {
     const result = [] as any
     for (const command of this.values()) {
-      const registered = await this.register(
-        command.createRegistrationPayload()
-      )
-      if (registered.error) {
-        console.error(
-          `Error registering command ${command.name}:`,
-          registered.error
-        )
-      } else {
-        result.push(registered.data)
+      let registered
+      try {
+        registered = (await this.register(
+          command.createRegistrationPayload()
+        )) as any[]
+      } catch (error) {
+        console.error(`Error registering command ${command.name}:`, error)
       }
+      if (registered) result.push(registered)
     }
     if (!result.length) {
       throw new Error('No commands registered')
@@ -122,13 +82,14 @@ export class DiscordCommandBank
   }
 
   public async list() {
-    const registeredCommands = await api.get(
+    const registeredCommands = (await this.api.get(
       `/applications/${process.env.DISCORD_APP_ID}/commands`
-    )
+    )) as any[]
+
     const banked = Array.from(this.values())
     const commands = [] as any
     for (const command of banked) {
-      const registered = registeredCommands?.data?.find(
+      const registered = registeredCommands?.find(
         (c) => c.name === command.name
       )
       if (registered) {
@@ -139,18 +100,15 @@ export class DiscordCommandBank
     return commands
   }
 
-  public async handle({ context }) {
+  public async handle(interaction: CommandInteraction) {
     const somethingWentWrongResponse = '🤕 Something went wrong'
-    const command = this.get(context.data.name)
-    if (!command) throw new Error(`Invalid slash command: ${context.data.name}`)
-    console.log(
-      `Handling command "${command?.name}" for user ${context.member.user.id}`
-    )
+    const command = this.get(interaction.commandName)
+    if (!command)
+      throw new Error(`Invalid slash command: ${interaction.commandName}`)
 
     let commandResponse
     try {
-      // TODO: create better handler context
-      commandResponse = await command.handler(context)
+      commandResponse = await command.handler(interaction)
     } catch (error) {
       console.error(`Error executing command "${command?.name}"`, error)
     }
@@ -165,17 +123,25 @@ export class DiscordCommandBank
 }
 
 function createDiscordCommandBank(
-  commands: DiscordCommand[] | IDiscordCommand[] | any
+  commands: DiscordCommand[]
 ): DiscordCommandBank {
   return new DiscordCommandBank(commands)
 }
 
-export async function createBank() {
+export async function createBank(commandDirectories: string[] | string) {
   // TODO: add support for other command dirs
-  const commandsDirectory = new URL('commands', import.meta.url).pathname
-  const commandPaths = await glob(['!(_*|*.d).(js|ts)'], {
+  const builtinCommandsDirectory = new URL('commands', import.meta.url).pathname
+  const providedCommandDirectories = Array.isArray(commandDirectories)
+    ? commandDirectories
+    : [commandDirectories]
+  const commandGlobPattern = '!(_*|*.d).(js|ts)'
+  const commandPathsGlob = [
+    builtinCommandsDirectory,
+    providedCommandDirectories,
+  ].map((path) => `${path}/${commandGlobPattern}`)
+
+  const commandPaths = await glob(commandPathsGlob, {
     onlyFiles: true,
-    cwd: commandsDirectory,
     absolute: true,
   })
 
@@ -203,6 +169,3 @@ export async function createBank() {
 
   return createDiscordCommandBank(commands)
 }
-
-export const bank = await createBank()
-export const commands = bank

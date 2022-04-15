@@ -1,8 +1,8 @@
-import { ApplicationCommandOptionType } from 'discord-api-types/v10'
+import { ApplicationCommandOptionType } from 'discord-api-types/v9'
 import type {
   APIApplicationCommandOption,
   APIApplicationCommand,
-} from 'discord-api-types/v10'
+} from 'discord-api-types/v9'
 
 interface IDiscordCommandOptions {
   name: string

@@ -1,0 +1,38 @@
+{
+  "name": "@hey-amplify/bot",
+  "type": "module",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "decription": "",
+  "exports": {
+    ".": {
+      "import": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "start": "node ./build/app.js",
+    "build": "vite build",
+    "types": "tsc -p tsconfig.lib.json",
+    "postbuild": "pnpm types",
+    "dev": "nodemon --exec vite-node src/app.ts",
+    "dev:lib": "pnpm build -- --watch",
+    "clean": "rimraf build",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@hey-amplify/discord": "workspace:*",
+    "discord.js": "^13.6.0"
+  },
+  "devDependencies": {
+    "@hey-amplify/tsconfig": "workspace:*",
+    "dotenv": "^16.0.0",
+    "fast-glob": "^3.2.11",
+    "nodemon": "^2.0.15",
+    "rimraf": "^3.0.2",
+    "typescript": "next",
+    "vite": "^2.9.1",
+    "vite-node": "^0.8.2",
+    "vitest": "^0.8.2"
+  }
+}

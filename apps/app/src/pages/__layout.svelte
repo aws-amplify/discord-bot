@@ -1,8 +1,4 @@
 <script context="module">
-  import { Amplify } from 'aws-amplify'
-  import amplifyConfig from '@hey-amplify/aws-exports'
-
-  Amplify.configure(amplifyConfig)
 </script>
 
 <script>
@@ -66,27 +62,6 @@
       {/if}
     </HeaderUtilities>
   </Header>
-
-  <SideNav bind:isOpen="{isSideNavOpen}">
-    <SideNavItems>
-      <SideNavLink text="Link 1" />
-      <SideNavLink text="Link 2" />
-      <SideNavLink text="Link 3" />
-      <SideNavMenu text="Menu">
-        <SideNavMenuItem href="/" text="Link 1" />
-        <SideNavMenuItem href="/" text="Link 2" />
-        <SideNavMenuItem href="/" text="Link 3" />
-      </SideNavMenu>
-      <SideNavDivider />
-      <SideNavLink
-        text="GitHub Repository"
-        href="https://github.com/josefaidt/amplify-discord-bots"
-        icon="{Launch20}"
-        target="_blank"
-        rel="noopener noreferrer"
-      />
-    </SideNavItems>
-  </SideNav>
 
   {#if import.meta.env.DEV}
     <slot />

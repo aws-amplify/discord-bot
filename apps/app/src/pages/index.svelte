@@ -10,6 +10,9 @@
   import * as store from '$lib/store'
   import Command from '$lib/Command.svelte'
 
+  export let list
+  $: console.log({ list })
+
   let syncData = {}
   let isSyncing = false
   async function syncCommands() {
@@ -48,22 +51,6 @@
     }
     return data
   }
-
-  async function listCommands() {
-    let data
-    try {
-      const response = await fetch('/api/commands/list')
-      if (response.ok && response.status === 200) {
-        data = await response.json()
-        store.commands.set(data.data)
-      }
-    } catch (error) {
-      // throw new Error('Unable to fetch commands')
-      console.error('Unable to fetch commands', error)
-    }
-    console.log('list', data)
-    return data
-  }
 </script>
 
 <Content>
@@ -75,18 +62,12 @@
         </Button>
         <section>
           <h2>Commands:</h2>
-          {#await listCommands()}
-            <p>...getting commands</p>
-          {:then commands}
-            {#each commands as command (command)}
-              {@const tags = [command.registration && 'Registered'].filter(
-                Boolean
-              )}
-              <Command {...command} tags="{tags}" />
-            {/each}
-          {:catch error}
-            <p style="color: red">{error.message}</p>
-          {/await}
+          {#each list as command (command)}
+            {@const tags = [command.registration && 'Registered'].filter(
+              Boolean
+            )}
+            <Command {...command} tags="{tags}" />
+          {/each}
         </section>
       </Column>
     </Row>

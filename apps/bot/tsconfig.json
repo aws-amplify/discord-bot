@@ -4,8 +4,8 @@
     "rootDir": "src",
     "outDir": "build",
     "noImplicitAny": false,
-    "isolatedModules": false
+    "isolatedModules": true,
+    "types": ["vite/client"]
   },
-  "include": ["src"],
-  "exclude": ["build", "node_modules"]
+  "exclude": ["build", "bin", "node_modules"]
 }

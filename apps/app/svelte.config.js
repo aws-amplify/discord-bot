@@ -1,12 +1,10 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import autoprefixer from 'autoprefixer'
-import dotenv from 'dotenv'
 import preprocess from 'svelte-preprocess'
-import adapter from '@sveltejs/adapter-static'
-import ViteReload from 'vite-plugin-full-reload'
-import { DiscordBotLayerPlugin } from 'vite-plugin-discord-bot-layer'
+import adapter from '@sveltejs/adapter-node'
 import { optimizeCarbonImports } from 'carbon-components-svelte/preprocess/index.js'
+import { loadEnv } from 'vite'
 // https://nodejs.org/api/esm.html#esm_no_json_module_loading
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
 
@@ -14,9 +12,17 @@ const include = ['../../packages'].map(
   path => new URL(path + '/**/**/*.(js|ts)', import.meta.url).pathname
 )
 
-dotenv.config({
-  path: resolve('../../', '.env.local'),
-})
+// load env vars for development
+Object.assign(
+  process.env,
+  loadEnv('development', new URL('../../', import.meta.url).pathname, [
+    'DISCORD_',
+  ])
+)
+
+function relative(path) {
+  return new URL(path, import.meta.url).pathname
+}
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -38,16 +44,14 @@ const config = {
     adapter: adapter(),
 
     files: {
-      assets: resolve('public'),
-      routes: resolve('src/pages'),
+      assets: relative('public'),
+      routes: relative('src/pages'),
     },
 
     vite: {
-      plugins: [ViteReload(include), DiscordBotLayerPlugin()],
-      resolve: {
-        alias: {
-          './runtimeConfig': './runtimeConfig.browser',
-        },
+      plugins: [],
+      build: {
+        target: 'es2022',
       },
     },
   },
