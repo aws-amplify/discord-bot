@@ -1,5 +1,6 @@
 {
   "name": "@hey-amplify/root",
+  "type": "module",
   "version": "0.1.1",
   "license": "Apache-2.0",
   "private": true,
@@ -15,7 +16,6 @@
     "registry": "verdaccio --listen 4000 --config ./scripts/verdaccio.yaml"
   },
   "devDependencies": {
-    "@aws-sdk/client-ssm": "^3.54.1",
     "@hey-amplify/tsconfig": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
@@ -23,9 +23,7 @@
     "eslint": "7",
     "eslint-config-prettier": "^8.5.0",
     "prettier": "^2.6.0",
-    "turbo": "^1.1.9",
-    "typescript": "next",
-    "verdaccio": "^5.8.0"
+    "typescript": "^4.7.0-dev.20220420"
   },
   "prettier": {
     "tabWidth": 2,

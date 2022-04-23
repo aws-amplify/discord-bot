@@ -29,14 +29,14 @@ export async function getSecretsFromSSM() {
     })
     const { Parameters } = await client.send(command)
 
-    if (!Parameters.length) {
+    if (!Parameters?.length) {
       throw new Error('No secrets found')
     }
 
     return Parameters
   } catch (error) {
     console.error(error)
-    throw new Error(`Unable to get secrets: ${error.message}`)
+    throw new Error(`Unable to get secrets: ${(error as Error).message}`)
   }
 }
 
@@ -45,11 +45,17 @@ export async function getSecrets() {
   const result = {}
 
   for (const secret of secrets) {
-    const key = secret.Name.replace(PREFIX, '')
-    result[key] = secret.Value
+    const key = secret?.Name?.replace(PREFIX, '')
+    if (key) result[key] = secret.Value
   }
 
   return result
+}
+
+interface Parameters {
+  created: string[]
+  updated: string[]
+  unchanged: string[]
 }
 
 export async function createSecrets() {
@@ -59,7 +65,7 @@ export async function createSecrets() {
   const client = new SSMClient({ region: REGION })
 
   const secretsPrefix = PREFIX
-  const parameters = {
+  const parameters: Parameters = {
     created: [],
     updated: [],
     unchanged: [],
@@ -68,7 +74,7 @@ export async function createSecrets() {
   // TODO: delete unused variables as they're removed from .env?
   const secrets = Object.entries(loadSecrets())
   if (!secrets.length) process.exit(0)
-  for (let [key, value] of secrets) {
+  for (const [key, value] of secrets) {
     const Name = `${secretsPrefix}/${key}`
     const Tags = [{ Key: 'app-name', Value: PROJECT_NAME }]
 

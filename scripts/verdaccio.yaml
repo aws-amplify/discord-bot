@@ -1,7 +1,0 @@
-listen: 0.0.0.0:4000
-storage: ../.verdaccio
-packages:
-  '@hey-amplify/*':
-    access: $all
-    publish: $all
-logs: { type: stdout, format: pretty, level: http }

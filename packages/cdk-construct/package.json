@@ -28,7 +28,7 @@
     "@hey-amplify/tsconfig": "workspace:*",
     "fast-glob": "^3.2.11",
     "rimraf": "^3.0.2",
-    "typescript": "next",
+    "typescript": "^4.7.0-dev.20220420",
     "vite": "^2.9.1",
     "vitest": "^0.8.2"
   }

@@ -18,7 +18,7 @@
     "@hey-amplify/tsconfig": "workspace:*",
     "discord-api-types": "^0.30.0",
     "discord.js": "^13.6.0",
-    "typescript": "next",
+    "typescript": "^4.7.0-dev.20220420",
     "vite": "^2.8.6",
     "vitest": "^0.7.12"
   }
