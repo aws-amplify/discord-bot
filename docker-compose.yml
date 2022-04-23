@@ -9,8 +9,6 @@ services:
     container_name: ha
     build:
       context: ./apps/bot
-    depends_on:
-      - builder
     expose:
       - '3000'
     env_file:
