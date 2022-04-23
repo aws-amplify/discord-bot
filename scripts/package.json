@@ -1,0 +1,17 @@
+{
+  "name": "@hey-amplify/scripts",
+  "type": "module",
+  "version": "0.0.1",
+  "decription": "",
+  "bin": {
+    "scripts": "./index.js"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@hey-amplify/support": "workspace:*",
+    "command-line-args": "^5.2.1",
+    "command-line-commands": "^3.0.2",
+    "command-line-usage": "^6.1.3",
+    "picocolors": "^1.0.0"
+  }
+}
