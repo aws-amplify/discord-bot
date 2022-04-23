@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  builder:
+    image: builder
+    build:
+      context: .
+  bot:
+    image: bot
+    container_name: ha
+    build:
+      context: ./apps/bot
+    expose:
+      - '3000'
+    env_file:
+      - .env.local

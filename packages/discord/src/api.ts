@@ -20,8 +20,8 @@ export class DiscordApi extends REST implements IDiscordApi {
   private async _request(
     method: `${RequestMethod}`,
     url: string,
-    payload?: any
-  ): Promise<any> {
+    payload?: unknown
+  ): Promise<unknown> {
     const options: InternalRequest = {
       method: method as RequestMethod,
       fullRoute: url as `/${string}`,
@@ -36,19 +36,19 @@ export class DiscordApi extends REST implements IDiscordApi {
     return this.request(options)
   }
 
-  public get(url: string): Promise<any> {
+  public get(url: string): Promise<unknown> {
     return this._request('get', url)
   }
 
-  public post(url: string, payload?: any): Promise<any> {
+  public post(url: string, payload?: unknown): Promise<unknown> {
     return this._request('post', url, payload)
   }
 
-  public put(url: string, payload?: any): Promise<any> {
+  public put(url: string, payload?: unknown): Promise<unknown> {
     return this._request('put', url, payload)
   }
 
-  public delete(url: string, payload?: any): Promise<any> {
+  public delete(url: string, payload?: unknown): Promise<unknown> {
     return this._request('delete', url, payload)
   }
 }
