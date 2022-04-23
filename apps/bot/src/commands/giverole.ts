@@ -1,9 +1,9 @@
-import { createCommand, discord } from '@hey-amplify/discord'
+import { createCommand } from '@hey-amplify/discord'
 // import { GuildMemberRoleManager } from 'discord.js'
 import type { CommandInteraction } from 'discord.js'
 
 async function handler(interaction: CommandInteraction) {
-  const { message, options, user: caller } = interaction
+  // const { message, options, user: caller } = interaction
   // const { user } = Object.entries(options.data.member)
   // const { role, roleId } = Object.entries(options.data.role)
 

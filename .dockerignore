@@ -1,0 +1,11 @@
+node_modules
+**/node_modules
+cdk
+docs
+e2e
+amplify
+.vscode
+.verdaccio
+**/build
+.env*
+*.log

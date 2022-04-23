@@ -21,19 +21,18 @@
     "clean": "rimraf build"
   },
   "devDependencies": {
-    "@discordjs/rest": "^0.3.0",
     "@hey-amplify/tsconfig": "workspace:*",
     "discord.js": "^13.6.0",
     "rimraf": "^3.0.2",
-    "typescript": "next"
+    "typescript": "^4.7.0-dev.20220420"
   },
   "dependencies": {
+    "@discordjs/rest": "^0.4.1",
     "fast-glob": "^3.2.11",
-    "node-fetch": "^2.6.6",
-    "tweetnacl": "^1.0.3"
+    "node-fetch": "^3.2.3"
   },
   "peerDependencies": {
     "discord.js": "^13.6.0",
-    "@discordjs/rest": "^0.3.0"
+    "@discordjs/rest": "^0.4.1"
   }
 }
