@@ -19,7 +19,7 @@
   import { user, notifications } from '$lib/store'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
 
-  let theme = 'g100' as CarbonTheme
+  let theme: CarbonTheme = 'g100'
 
   let isSideNavOpen = false
   let isUserPanelOpen = false

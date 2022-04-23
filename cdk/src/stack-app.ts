@@ -1,7 +1,7 @@
 import * as path from 'node:path'
 import { StackProps } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
-import { HeyAmplifyStack } from '@hey-amplify/cdk-construct'
+import { HeyAmplifyStack } from './stack.js'
 
 const root = new URL('../../apps/app', import.meta.url).pathname
 

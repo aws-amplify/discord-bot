@@ -5,7 +5,6 @@
     "rootDir": "src",
     "outDir": "build",
     "noImplicitAny": false,
-    "isolatedModules": true,
-    "types": ["vite/client"]
+    "isolatedModules": true
   }
 }

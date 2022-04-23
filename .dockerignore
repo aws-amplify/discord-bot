@@ -1,11 +1,20 @@
 node_modules
 **/node_modules
+
+# ignore other packages in monorepo
 cdk
 docs
 e2e
 amplify
 .vscode
-.verdaccio
+
+# no builds
 **/build
+
+# env files and logs
 .env*
 *.log
+
+# docs, markdown
+*.md
+**/*.md

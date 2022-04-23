@@ -13,8 +13,6 @@
   "scripts": {
     "start": "node ./build/app.js",
     "build": "vite build",
-    "types": "tsc -p tsconfig.lib.json",
-    "postbuild": "pnpm types",
     "dev": "nodemon --exec vite-node src/app.ts",
     "dev:lib": "pnpm build -- --watch",
     "clean": "rimraf build",
@@ -27,13 +25,13 @@
   },
   "devDependencies": {
     "@hey-amplify/tsconfig": "workspace:*",
-    "dotenv": "^16.0.0",
     "fast-glob": "^3.2.11",
     "nodemon": "^2.0.15",
     "rimraf": "^3.0.2",
-    "typescript": "^4.7.0-dev.20220420",
-    "vite": "^2.9.1",
-    "vite-node": "^0.8.2",
-    "vitest": "^0.8.2"
+    "typescript": "^4.6.3",
+    "vite": "^2.9.5",
+    "vite-node": "^0.9.4",
+    "vite-plugin-dts": "^1.1.0",
+    "vitest": "^0.9.4"
   }
 }

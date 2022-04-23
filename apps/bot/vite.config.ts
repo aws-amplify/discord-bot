@@ -1,6 +1,7 @@
 import * as fs from 'node:fs/promises'
-import { defineConfig, loadEnv } from 'vite'
 import glob from 'fast-glob'
+import { defineConfig, loadEnv } from 'vite'
+import dts from 'vite-plugin-dts'
 
 const pkg = JSON.parse(
   await fs.readFile(new URL('package.json', import.meta.url).pathname, 'utf8')
@@ -41,5 +42,5 @@ export default defineConfig({
       },
     },
   },
-  plugins: [],
+  plugins: [dts()],
 })
