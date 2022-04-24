@@ -13,7 +13,7 @@
   "scripts": {
     "start": "node ./build/app.js",
     "build": "vite build",
-    "dev": "nodemon --exec vite-node src/app.ts",
+    "dev": "PORT=3001 nodemon --exec vite-node src/app.ts",
     "dev:lib": "pnpm build -- --watch",
     "clean": "rimraf build",
     "prepublishOnly": "pnpm build"

@@ -14,12 +14,10 @@ Object.assign(
   process.env,
   loadEnv('development', new URL('../../', import.meta.url).pathname, [
     'DISCORD_',
-    'BOT_',
   ])
 )
 
 export default defineConfig({
-  // envPrefix: 'DISCORD_',
   envDir: '../../',
   define: {
     'import.meta.vitest': 'undefined',

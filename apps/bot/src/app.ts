@@ -6,7 +6,7 @@ createBot()
 if (import.meta.env.DEV) {
   const app = express()
   const api = express.Router()
-  const PORT = process.env.BOT_PORT || 3000
+  const PORT = process.env.PORT || 3000
 
   app.use('*', (req, res, next) => {
     // TODO: auth
