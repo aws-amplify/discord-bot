@@ -2,11 +2,21 @@ version: '3.9'
 services:
   bot:
     image: bot
-    container_name: ha-local
+    container_name: bot-local
     build:
       context: .
       dockerfile: apps/bot/Dockerfile
     expose:
+      - '3000'
+    env_file:
+      - .env.local
+  app:
+    image: app
+    container_name: app-local
+    build:
+      context: .
+      dockerfile: apps/app/Dockerfile
+    ports:
       - '3000'
     env_file:
       - .env.local
