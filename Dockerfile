@@ -1,4 +1,4 @@
-FROM node:16 as builder
+FROM --platform=linux/amd64 node:16 as builder
 WORKDIR /usr/src
 # install pnpm
 RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm

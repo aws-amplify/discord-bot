@@ -1,8 +1,9 @@
-import { commands } from '@hey-amplify/bot'
+// import { commands } from '@hey-amplify/bot'
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function get() {
-  const list = await commands.list()
+  // const list = await commands.list()
+  const list = []
 
   if (!list) {
     return {

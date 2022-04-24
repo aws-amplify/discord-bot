@@ -1,11 +1,10 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@hey-amplify/tsconfig/base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "build",
     "noImplicitAny": false,
-    "isolatedModules": true,
-    "types": ["vite/client"]
-  },
-  "exclude": ["build", "bin", "node_modules"]
+    "isolatedModules": true
+  }
 }

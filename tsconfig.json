@@ -4,5 +4,5 @@
     "emitDeclarationOnly": false,
     "noEmit": true
   },
-  "exclude": ["node_modules", "amplify", "apps", "packages"]
+  "exclude": ["node_modules", "amplify", "apps", "packages", "cdk"]
 }
