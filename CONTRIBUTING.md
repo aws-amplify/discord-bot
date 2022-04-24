@@ -86,3 +86,14 @@ For the deployment we will work primarily in the [`cdk`](./cdk) directory, where
 2. ensure we are able to synthesize the stack: `pnpm cdk synth`
    1. alternatively we can synthesize an environment-specific stack: `pnpm cdk synth -c env=next`
 3. deploy the stack with `pnpm cdk deploy --all`
+
+### Typical Workflow
+
+Deploy for environment `next`
+
+1. `pnpm cdk synth -c env=next`
+2. `pnpm cdk deploy -c env=next --all`
+
+Destroy resources associated with environment `next`
+
+1. `pnpm cdk destroy -c env=next --all`
