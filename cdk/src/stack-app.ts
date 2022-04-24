@@ -1,12 +1,28 @@
-import * as path from 'node:path'
-import { StackProps } from 'aws-cdk-lib'
+import { Stack } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
-import { HeyAmplifyStack } from './stack.js'
+import { HeyAmplifyAppStackProps } from './stack'
+import { HeyAmplifyApp } from './construct'
 
-const root = new URL('../../apps/app', import.meta.url).pathname
+const root = new URL('../..', import.meta.url).pathname
 
-export class AppStack extends HeyAmplifyStack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+export class SvelteKitAppStack extends Stack {
+  constructor(scope: Construct, id: string, props: HeyAmplifyAppStackProps) {
     super(scope, id, props)
+
+    const { cluster } = props
+
+    const secrets = {
+      DISCORD_BOT_TOKEN: props.secrets.DISCORD_BOT_TOKEN,
+    }
+
+    new HeyAmplifyApp(this, 'app', {
+      cluster,
+      docker: {
+        name: 'app',
+        context: root,
+        dockerfile: 'apps/app/Dockerfile',
+      },
+      secrets,
+    })
   }
 }

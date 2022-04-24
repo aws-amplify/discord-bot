@@ -1,9 +1,8 @@
 import 'source-map-support/register.js'
 import * as cdk from 'aws-cdk-lib'
-import { BotStack } from './stack-bot.js'
-// import { AppStack } from './stack-app.js'
-
-// TODO: add common secrets type
+import { HeyAmplifyStack } from './stack'
+import { BotStack } from './stack-bot'
+import { SvelteKitAppStack } from './stack-app'
 
 const app = new cdk.App({
   context: {
@@ -12,17 +11,30 @@ const app = new cdk.App({
   },
 })
 
-new BotStack(app, 'BotStack', {
+const name = app.node.tryGetContext('name')
+const env = app.node.tryGetContext('env')
+
+const base = new HeyAmplifyStack(app, `${name}-${env}-stack`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
 })
 
-// TODO: implement app stack
-// new AppStack(app, 'AppStack', {
+new BotStack(app, `${name}-${env}-bot-stack`, {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+  secrets: base.secrets,
+  cluster: base.cluster,
+})
+
+// new SvelteKitAppStack(app, `${name}-${env}-sveltekit-stack`, {
 //   env: {
 //     account: process.env.CDK_DEFAULT_ACCOUNT,
 //     region: process.env.CDK_DEFAULT_REGION,
 //   },
+//   secrets: base.secrets,
+//   cluster: base.cluster,
 // })

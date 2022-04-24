@@ -75,5 +75,14 @@ Save and register the new command with `commands.sync()`
 Create secrets in SSM Parameter Store with the `scripts` helper! Rename `.env.sample` to `.env.next` and create secrets with the following command:
 
 ```bash
-pnpm scripts create-secrets --envName next
+pnpm scripts create-secrets -e next
 ```
+
+## Deployment
+
+For the deployment we will work primarily in the [`cdk`](./cdk) directory, where the [AWS CDK CLI](https://www.npmjs.com/package/aws-cdk) is installed locally to the package.
+
+1. if not already done, bootstrap the environment with `pnpm cdk bootstrap`
+2. ensure we are able to synthesize the stack: `pnpm cdk synth`
+   1. alternatively we can synthesize an environment-specific stack: `pnpm cdk synth -c env=next`
+3. deploy the stack with `pnpm cdk deploy --all`

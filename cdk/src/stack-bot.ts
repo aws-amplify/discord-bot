@@ -1,24 +1,24 @@
-import { StackProps } from 'aws-cdk-lib'
+import { Stack } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
-import { HeyAmplifyStack } from './stack.js'
-import { DiscordBot } from './construct-bot.js'
+import { HeyAmplifyAppStackProps } from './stack'
+import { HeyAmplifyApp } from './construct'
 
 const root = new URL('../..', import.meta.url).pathname
 
-interface BotStackProps extends StackProps {
-  //
-}
-
-export class BotStack extends HeyAmplifyStack {
-  constructor(scope: Construct, id: string, props: BotStackProps) {
+export class BotStack extends Stack {
+  constructor(scope: Construct, id: string, props: HeyAmplifyAppStackProps) {
     super(scope, id, props)
 
+    const { cluster } = props
+
     const secrets = {
-      DISCORD_BOT_TOKEN: this.secrets.DISCORD_BOT_TOKEN,
+      DISCORD_BOT_TOKEN: props.secrets.DISCORD_BOT_TOKEN,
     }
 
-    new DiscordBot(this, 'DiscordBot', {
+    new HeyAmplifyApp(this, 'bot', {
+      cluster,
       docker: {
+        name: 'bot',
         context: root,
         dockerfile: 'apps/bot/Dockerfile',
       },
