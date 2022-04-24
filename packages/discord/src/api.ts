@@ -1,103 +1,55 @@
-import fetch from 'node-fetch'
-import type { RequestInit } from 'node-fetch'
+import { REST } from '@discordjs/rest'
+import type {
+  RESTOptions,
+  InternalRequest,
+  RequestMethod,
+} from '@discordjs/rest'
 
-export type DiscordAPIRequestResponse = {
-  data: { [key: string]: any }
-  error: { name: string; message: string }
-  status: number
+export interface IDiscordApi extends REST {}
+
+export interface IDiscordApiProps extends Partial<RESTOptions> {
+  token: string
 }
 
-type DiscordAPIRequestPayload = {
-  [prop: string]: any
-}
-
-export interface IDiscordAPI {
-  // token?: string
-}
-
-export interface IDiscordAPIProps {
-  token?: string
-}
-
-export class DiscordApi implements IDiscordAPI {
-  private readonly baseURL = new URL('/api/v8', 'https://discordapp.com')
-  private token = process.env.DISCORD_BOT_TOKEN
-  private options: any = {
-    method: 'GET',
-    headers: {
-      Authorization: `Bot ${this.token}`,
-      'Content-Type': 'application/json',
-    },
+export class DiscordApi extends REST implements IDiscordApi {
+  constructor(props: IDiscordApiProps) {
+    super({ version: '10' })
+    this.setToken(props.token)
   }
 
-  constructor(props: IDiscordAPIProps) {
-    if (props.token) {
-      this.token = props.token
+  private async _request(
+    method: `${RequestMethod}`,
+    url: string,
+    payload?: unknown
+  ): Promise<unknown> {
+    const options: InternalRequest = {
+      method: method as RequestMethod,
+      fullRoute: url as `/${string}`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      passThroughBody: true,
     }
-  }
-
-  private request = async (
-    url: string,
-    payload?: DiscordAPIRequestPayload
-  ): Promise<DiscordAPIRequestResponse> => {
-    // patch for requesting with token when token env var not initially available
-    if (!this.token && process.env.DISCORD_BOT_TOKEN) {
-      this.token = process.env.DISCORD_BOT_TOKEN
-      this.options.headers.Authorization = `Bot ${this.token}`
+    if (payload) {
+      options.body = JSON.stringify(payload)
     }
-    if (payload) this.options.body = JSON.stringify(payload)
-    const apiPath = `${this.baseURL.pathname}${url}`
-    const fetchUrl = new URL(apiPath, this.baseURL)
-    const response = await fetch(fetchUrl.href, this.options)
-
-    let data
-    let error
-    const status = response.status
-
-    if (response.ok) {
-      try {
-        data = await response.json()
-      } catch (error) {
-        // not valid json body
-      }
-    } else {
-      error = await response.json()
-    }
-
-    // cleanup, is this needed? is there a better way to handle fetch options?
-    // ... should we just create options every time?
-    delete this.options.body
-
-    return { data, error, status }
+    return this.request(options)
   }
 
-  public get = async (url: string): Promise<DiscordAPIRequestResponse> => {
-    this.options.method = 'GET'
-    return this.request(url)
+  public get(url: string): Promise<unknown> {
+    return this._request('get', url)
   }
 
-  public post = async (
-    url: string,
-    payload?: DiscordAPIRequestPayload
-  ): Promise<DiscordAPIRequestResponse> => {
-    this.options.method = 'POST'
-    return this.request(url, payload)
+  public post(url: string, payload?: unknown): Promise<unknown> {
+    return this._request('post', url, payload)
   }
 
-  public put = async (
-    url: string,
-    payload?: DiscordAPIRequestPayload
-  ): Promise<DiscordAPIRequestResponse> => {
-    this.options.method = 'PUT'
-    return this.request(url, payload)
+  public put(url: string, payload?: unknown): Promise<unknown> {
+    return this._request('put', url, payload)
   }
 
-  public delete = async (
-    url: string,
-    payload?: DiscordAPIRequestPayload
-  ): Promise<DiscordAPIRequestResponse> => {
-    this.options.method = 'DELETE'
-    return this.request(url, payload)
+  public delete(url: string, payload?: unknown): Promise<unknown> {
+    return this._request('delete', url, payload)
   }
 }
 
@@ -106,6 +58,3 @@ export function createDiscordApi(
 ): DiscordApi {
   return new DiscordApi({ token })
 }
-
-export const createApi = createDiscordApi
-export const api = createDiscordApi()

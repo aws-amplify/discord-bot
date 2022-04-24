@@ -16,4 +16,4 @@ export async function readJSON(path) {
   return JSON.parse(content)
 }
 
-export * from './secrets'
+export * from './secrets.js'

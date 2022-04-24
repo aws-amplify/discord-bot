@@ -40,7 +40,7 @@ const { namedExport } = require('./my-module.cjs')
 
 ## Authoring Discord Commands
 
-To get started, let's create a new command file in `packages/discord/src/commands`: `hello.ts`
+To get started, let's create a new command file in `apps/bot/src/commands`: `hello.ts`
 
 ```ts
 import { createCommand } from '../Command.js'
@@ -67,3 +67,33 @@ export default createCommand({
 Save and register the new command with `commands.sync()`
 
 **NOTE**: allow about 30 minutes for commands to show in Discord
+
+## Creating Secrets
+
+**[scripts](./scripts)**
+
+Create secrets in SSM Parameter Store with the `scripts` helper! Rename `.env.sample` to `.env.next` and create secrets with the following command:
+
+```bash
+pnpm scripts create-secrets -e next
+```
+
+## Deployment
+
+For the deployment we will work primarily in the [`cdk`](./cdk) directory, where the [AWS CDK CLI](https://www.npmjs.com/package/aws-cdk) is installed locally to the package.
+
+1. if not already done, bootstrap the environment with `pnpm cdk bootstrap`
+2. ensure we are able to synthesize the stack: `pnpm cdk synth`
+   1. alternatively we can synthesize an environment-specific stack: `pnpm cdk synth -c env=next`
+3. deploy the stack with `pnpm cdk deploy --all`
+
+### Typical Workflow
+
+Deploy for environment `next`
+
+1. `pnpm cdk synth -c env=next`
+2. `pnpm cdk deploy -c env=next --all`
+
+Destroy resources associated with environment `next`
+
+1. `pnpm cdk destroy -c env=next --all`

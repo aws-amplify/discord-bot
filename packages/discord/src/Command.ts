@@ -2,7 +2,8 @@ import type {
   APIApplicationCommandOption,
   APIApplicationCommand,
   RESTPostAPIApplicationCommandsJSONBody,
-} from 'discord-api-types/v10'
+} from 'discord-api-types/v9'
+import type { CommandInteraction } from 'discord.js'
 
 export interface IDiscordCommandConfig {
   name: string
@@ -12,18 +13,19 @@ export interface IDiscordCommandConfig {
   enabledByDefault?: boolean
 }
 
-export interface IDiscordCommandContext {
-  [key: string]: any
+export type DiscordCommandHandler = (
+  interaction: CommandInteraction
+) => string | Promise<string>
+
+export type CreateDiscordCommandInput = IDiscordCommandConfig & {
+  handler: DiscordCommandHandler
 }
 
 export interface IDiscordCommand extends IDiscordCommandConfig {
-  handler: (
-    context: IDiscordCommandContext
-  ) => Promise<string | undefined> | (string | undefined)
+  handler: DiscordCommandHandler
   registration?: APIApplicationCommand
 }
 
-export type DiscordCommandContext = IDiscordCommandContext
 export type DiscordCommandConfig = IDiscordCommandConfig
 
 export class DiscordCommand implements IDiscordCommand {
@@ -36,6 +38,10 @@ export class DiscordCommand implements IDiscordCommand {
   public registration?: APIApplicationCommand
 
   constructor(props) {
+    const validCommandNameRegex = /^[\w-]{1,32}$/g
+    if (!validCommandNameRegex.test(props.name)) {
+      throw new Error(`Invalid Command name: ${props.name}`)
+    }
     this.name = props.name
     this.description = props.description
     this.usage = props.usage
@@ -44,9 +50,7 @@ export class DiscordCommand implements IDiscordCommand {
     this.enabledByDefault = props.enabledByDefault ?? true
   }
 
-  public readonly handler: (
-    context: IDiscordCommandContext
-  ) => Promise<string | undefined> | (string | undefined)
+  public readonly handler: DiscordCommandHandler
 
   public createRegistrationPayload(): RESTPostAPIApplicationCommandsJSONBody {
     const name = this.name
@@ -62,7 +66,9 @@ export class DiscordCommand implements IDiscordCommand {
   }
 }
 
-export function createDiscordCommand(props: IDiscordCommand): IDiscordCommand {
+export function createDiscordCommand(
+  props: CreateDiscordCommandInput
+): DiscordCommand {
   return new DiscordCommand(props)
 }
 

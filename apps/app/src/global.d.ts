@@ -6,3 +6,8 @@ interface ImportMetaEnv {
   VITE_NEXTAUTH_URL: string
   VITE_NEXTAUTH_SECRET: string
 }
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+  readonly vitest: boolean
+}

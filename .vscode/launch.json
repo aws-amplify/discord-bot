@@ -1,0 +1,11 @@
+{
+  "configurations": [
+    {
+      "name": "Launch via NPM",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["bot", "dev"],
+      "type": "node"
+    }
+  ]
+}
