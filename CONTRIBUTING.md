@@ -67,3 +67,13 @@ export default createCommand({
 Save and register the new command with `commands.sync()`
 
 **NOTE**: allow about 30 minutes for commands to show in Discord
+
+## Creating Secrets
+
+**[scripts](./scripts)**
+
+Create secrets in SSM Parameter Store with the `scripts` helper! Rename `.env.sample` to `.env.next` and create secrets with the following command:
+
+```bash
+pnpm scripts create-secrets --envName next
+```

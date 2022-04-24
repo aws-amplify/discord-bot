@@ -4,8 +4,10 @@
   "version": "0.0.1",
   "license": "Apache-2.0",
   "decription": "",
+  "types": "./build/index.d.ts",
   "exports": {
     ".": {
+      "types": "./build/index.d.ts",
       "import": "./build/index.js"
     },
     "./package.json": "./package.json"
