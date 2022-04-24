@@ -10,6 +10,7 @@
   "version": "0.0.1",
   "license": "Apache-2.0",
   "scripts": {
+    "start": "node build",
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",
     "package": "svelte-kit package",
