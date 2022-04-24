@@ -1,13 +1,13 @@
 {
   "name": "@hey-amplify/app",
   "private": true,
+  "type": "module",
+  "version": "0.0.1",
   "workspaces": {
     "nohoist": [
       "prettier*"
     ]
   },
-  "type": "module",
-  "version": "0.0.1",
   "license": "Apache-2.0",
   "scripts": {
     "start": "node build",

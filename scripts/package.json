@@ -1,7 +1,7 @@
 {
   "name": "@hey-amplify/scripts",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "decription": "",
   "bin": {
     "scripts": "./index.js"
