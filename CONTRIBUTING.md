@@ -97,3 +97,24 @@ Deploy for environment `next`
 Destroy resources associated with environment `next`
 
 1. `pnpm cdk destroy -c env=next --all`
+
+## Testing
+
+Run the test suite with `pnpm test`.
+
+### Unit Tests
+
+This project supports [in-source testing powered by Vitest](https://vitest.dev/guide/in-source.html). To get started, at the **end of the file** add the following:
+
+```ts
+// ... implementation
+
+if (import.meta.vitest) {
+  const { test } = import.meta.vitest
+  test.todo('my unit test')
+}
+```
+
+When `pnpm test` is run from the project root, the newly added test is executed alongside the e2e tests.
+
+<!-- TODO -->
