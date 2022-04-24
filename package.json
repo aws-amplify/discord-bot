@@ -12,7 +12,7 @@
     "build": "pnpm run build --filter ./packages --parallel",
     "dev": "pnpm run dev --filter ./packages --parallel",
     "push": "pnpm run deploy --filter ./cdk",
-    "test": "pnpm run test --filter ./e2e"
+    "test": "pnpm run e2e --filter ./e2e"
   },
   "devDependencies": {
     "@hey-amplify/support": "workspace:*",

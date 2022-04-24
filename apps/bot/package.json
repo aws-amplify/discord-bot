@@ -19,11 +19,11 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "@hey-amplify/discord": "workspace:*",
     "discord.js": "^13.6.0",
     "express": "^4.17.3"
   },
   "devDependencies": {
+    "@hey-amplify/discord": "workspace:*",
     "@hey-amplify/tsconfig": "workspace:*",
     "fast-glob": "^3.2.11",
     "nodemon": "^2.0.15",

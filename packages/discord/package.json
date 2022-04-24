@@ -24,7 +24,8 @@
     "@hey-amplify/tsconfig": "workspace:*",
     "discord.js": "^13.6.0",
     "rimraf": "^3.0.2",
-    "typescript": "^4.7.0-dev.20220420"
+    "typescript": "^4.7.0-dev.20220420",
+    "vitest": "^0.9.4"
   },
   "dependencies": {
     "@discordjs/rest": "^0.4.1",

@@ -21,6 +21,9 @@ Object.assign(
 export default defineConfig({
   // envPrefix: 'DISCORD_',
   envDir: '../../',
+  define: {
+    'import.meta.vitest': 'undefined',
+  },
   build: {
     target: 'esnext',
     sourcemap: true,
