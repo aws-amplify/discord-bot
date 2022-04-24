@@ -2,41 +2,13 @@
 
 Refer to the [readme guide](./README.md#development) to get set up for local development.
 
-[Discord API Documentation - Application (slash) Commands](https://discord.com/developers/docs/interactions/application-commands)
+## Repository Reference
 
-## Prerequisites
-
-- Node.js v16.x
-- pnpm v6.32.3
-
-## Package Overview
-
-### [@hey-amplify/app](./apps/app)
-
-The frontend is built using [Svelte-Kit](https://kit.svelte.dev) and [carbon-components-svelte](https://carbon-components-svelte.onrender.com/). It also includes a plugin for the Vite dev server to power the Discord bot. All requests routed through `/api` are handled by the plugin.
-
-reference: [vite-plugin-discord-bot-layer](./packages/vite-plugin-discord-bot-layer)
-
-Run `pnpm app dev` from the project root to get started!
-
-### [@hey-amplify/builder](./packages/builder) (deprecated)
-
-Builder is a build tool built on [esbuild](https://esbuild.github.io/). Instead of copying the same command and arguments to each individual package, this has been wrapped into a single tool for use with ESM packages. It uses a plugin to convert extensions on import from `.js` to `.cjs` due to [Node 16 ESM requiring file extensions](https://nodejs.org/docs/latest-v16.x/api/esm.html#mandatory-file-extensions):
-
-```js
-import { namedExport } from './my-module.js'
-```
-
-Turns into:
-
-```js
-const { namedExport } = require('./my-module.cjs')
-```
-
-#### Features
-
-- auto-resolves the entrypoint to either `./index.js` or `./src/*`
-- marks package dependencies as "external"
+- [`apps/`](./apps) - collection of apps that use the library packages in `packages/`
+- [`cdk/`](./cdk) - AWS CDK application to deploy apps
+- [`e2e/`](./e2e) - End-to-end test suite powered by [Vitest](https://vitest.dev/), supports in-source unit testing
+- [`packages/`](./packages) - collection of library packages, including Discord, support helpers, and a shared TypeScript configuration
+- [`scripts/`](./scripts) - small CLI helper for automating tasks
 
 ## Authoring Discord Commands
 
@@ -68,7 +40,7 @@ Save and register the new command with `commands.sync()`
 
 **NOTE**: allow about 30 minutes for commands to show in Discord
 
-## Creating Secrets
+## Creating Secrets in SSM
 
 **[scripts](./scripts)**
 
@@ -77,6 +49,8 @@ Create secrets in SSM Parameter Store with the `scripts` helper! Rename `.env.sa
 ```bash
 pnpm scripts create-secrets -e next
 ```
+
+**NOTE:** dotenv files are loaded using Vite's `loadEnv` and `local` dotenv files are not supported when creating secrets. We must be sure to pass a valid environment name such as `main` or `next`
 
 ## Deployment
 
@@ -97,3 +71,22 @@ Deploy for environment `next`
 Destroy resources associated with environment `next`
 
 1. `pnpm cdk destroy -c env=next --all`
+
+## Testing
+
+Run the test suite with `pnpm test`.
+
+### Unit Tests
+
+This project supports [in-source testing powered by Vitest](https://vitest.dev/guide/in-source.html). To get started, at the **end of the file** add the following:
+
+```ts
+// ... implementation
+
+if (import.meta.vitest) {
+  const { test } = import.meta.vitest
+  test.todo('my unit test')
+}
+```
+
+When `pnpm test` is run from the project root, the newly added test is executed alongside the e2e tests.

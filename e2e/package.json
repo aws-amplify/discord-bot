@@ -9,17 +9,19 @@
   },
   "scripts": {
     "test": "vitest",
+    "e2e": "vitest run",
     "coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "@discordjs/rest": "^0.3.0",
-    "@hey-amplify/discord": "workspace:*",
+    "@discordjs/rest": "^0.4.1",
     "@hey-amplify/bot": "workspace:*",
+    "@hey-amplify/discord": "workspace:*",
     "@hey-amplify/tsconfig": "workspace:*",
-    "discord-api-types": "^0.30.0",
+    "c8": "^7.11.2",
+    "discord-api-types": "^0.31.2",
     "discord.js": "^13.6.0",
-    "typescript": "^4.7.0-dev.20220420",
-    "vite": "^2.8.6",
-    "vitest": "^0.7.12"
+    "typescript": "^4.6.3",
+    "vite": "^2.9.5",
+    "vitest": "^0.9.4"
   }
 }

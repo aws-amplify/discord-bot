@@ -9,6 +9,10 @@ export default defineConfig({
     target: 'esnext',
   },
   test: {
+    includeSource: [
+      'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+      '../packages/**/src/**/*.{ts,js}',
+    ],
     setupFiles: ['tests/setup.ts'],
   },
 })
