@@ -2,7 +2,7 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  envPrefix: 'E2E_',
+  envPrefix: 'DISCORD_',
   envDir: '../',
   build: {
     // we're not actually building anything, but we need to set `target` to use `import.meta`

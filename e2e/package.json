@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "vitest",
-    "e2e": "vitest run",
+    "e2e": "vitest run --mode e2e",
     "coverage": "vitest run --coverage"
   },
   "devDependencies": {
