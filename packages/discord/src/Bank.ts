@@ -20,7 +20,10 @@ export interface IDiscordCommandBank extends DiscordCommandMap {
     command: RESTPostAPIApplicationCommandsJSONBody,
     context: any
   ): Promise<any>
-  unregister(commandId: any, { guildId }): Promise<any>
+  unregister(
+    commandId: string | number,
+    guildId?: string | number
+  ): Promise<any>
   list(): Promise<any>
   sync(): Promise<any>
 }
@@ -52,7 +55,10 @@ export class DiscordCommandBank
     return this.api.post(url as `/${string}`, commandConfig as any)
   }
 
-  public async unregister(commandId, { guildId }): Promise<any> {
+  public async unregister(
+    commandId: string | number,
+    guildId?: string | number
+  ): Promise<any> {
     let url = `/applications/${process.env.DISCORD_APP_ID}`
     if (guildId) {
       url += `/guilds/${guildId}`
@@ -85,17 +91,19 @@ export class DiscordCommandBank
     const registeredCommands = (await this.api.get(
       `/applications/${process.env.DISCORD_APP_ID}/commands`
     )) as any[]
-
     const banked = Array.from(this.values())
-    const commands = [] as any
-    for (const command of banked) {
-      const registered = registeredCommands?.find(
-        (c) => c.name === command.name
-      )
-      if (registered) {
-        command.registration = registered
+    const commands: any[] = banked
+    for (const registeredCommand of registeredCommands) {
+      const command = commands?.find((c) => c.name === registeredCommand.name)
+      if (command) {
+        command.registration = registeredCommand
+      } else {
+        commands.push({
+          name: registeredCommand.name,
+          description: registeredCommand.description,
+          registration: registeredCommand,
+        })
       }
-      commands.push(command)
     }
     return commands
   }

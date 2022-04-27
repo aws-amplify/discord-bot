@@ -31,7 +31,7 @@ export class DiscordApi extends REST implements IDiscordApi {
       passThroughBody: true,
     }
     if (payload) {
-      options.body = JSON.stringify(payload)
+      options.body = JSON.stringify(payload || {})
     }
     return this.request(options)
   }
