@@ -14,7 +14,10 @@ client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return
   const { commandName } = interaction
   const command = commands.get(commandName)
-  if (!command) return
+  if (!command) {
+    await interaction.reply(`Command not found 🤕`)
+    return
+  }
 
   console.log(
     `Handling command "${command?.name}" for ${interaction.user.username}#${interaction.user.discriminator}`
