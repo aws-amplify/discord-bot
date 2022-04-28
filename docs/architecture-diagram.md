@@ -3,35 +3,24 @@
 ```mermaid
 %%{init: {'theme':'base'}}%%
 flowchart LR
-    classDef container fill:orange;
-    classDef subgraph_padding fill:none,stroke:none
-
     user
     ssm[SSM Parameter Store]
     cloudwatch[CloudWatch]
 
     subgraph vpc["VPC<br/>"]
-    subgraph br1 [ ]
-
-        direction TB
-        style vpc fill:#d9e7d6;
-
+        %% style vpc fill:#d9e7d6;
+        direction LR
         subgraph ecs[ECS]
-        subgraph br2 [ ]
-
-            style ecs fill:#f7c7a0;
+            %% style ecs fill:#f7c7a0;
             direction LR
             subgraph Private Subnet
                 direction LR
-
-                cBot["Discord Bot (Fargate)"]
-                cApp["Frontend App (Fargate)"]
+                cBot["Discord Bot (Fargate)"]:::container
+                cApp["Frontend App (Fargate)"]:::container
                 efs["EFS Volume"]
 
                 cBot -->|SQLite| efs
-
-                class cBot container
-                class cApp container
+                cApp -->|SQLite| efs
             end
             subgraph Public Subnet
                 alb["Application Load Balancer"]
@@ -40,15 +29,13 @@ flowchart LR
             alb --> cBot
             alb --> cApp
         end
-        end
     end
-    end
-
-    class br1 subgraph_padding
-    class br2 subgraph_padding
 
     ssm -->|Feeds secrets to app| cBot
     ssm -->|Feeds secrets to app| cApp
     user --> alb
     ecs --> cloudwatch
+
+
+    classDef container fill:darkorange;
 ```
