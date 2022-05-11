@@ -1,19 +1,30 @@
 import { createCommand } from '@hey-amplify/discord'
-// import { GuildMemberRoleManager } from 'discord.js'
-import type { CommandInteraction } from 'discord.js'
+import type { Role, User } from 'discord.js'
 
-async function handler(interaction: CommandInteraction) {
-  // const { message, options, user: caller } = interaction
-  // const { user } = Object.entries(options.data.member)
-  // const { role, roleId } = Object.entries(options.data.role)
+async function handler(interaction) {
+  const { member: caller, guild } = interaction
+  const { role, user } = interaction.options.data.reduce(
+    (acc, current, index, source) => {
+      return {
+        ...acc,
+        [current.name]: current[current.name],
+      }
+    },
+    {}
+  ) as { role: Role; user: User }
 
-  // if (caller.id === user.id) {
-  //   return `This command does not support adding roles to yourself.`
-  // }
-  // console.log({ userId, roleId, guild_id, addRoleToUser })
-  // if (await discord.addRoleToUser({ guildId: guild_id, userId, roleId })) {
-  //   return `Successfully added role \`${role.name}\` to user.`
-  // }
+  if (user.bot) {
+    return 'This command does not support adding roles to bots.'
+  }
+
+  if (caller.id === user.id) {
+    return `This command does not support adding roles to yourself.`
+  }
+
+  if (guild.members.cache.get(user.id).roles.add(role)) {
+    return `Successfully added role \`${role.name}\` to ${user.username}#${user.discriminator}.`
+  }
+
   return '🤢 something went wrong'
 }
 
