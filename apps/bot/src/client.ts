@@ -25,7 +25,7 @@ client.once('ready', () => {
   console.log('Ready!')
 })
 
-client.on('message', async (message: Message) => {
+client.on('messageCreate', async (message: Message) => {
   // console.log('hello message', message, message.channel)
   // GuildChannelTypes.GUILD_TEXT
   if (
