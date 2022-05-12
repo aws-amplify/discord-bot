@@ -69,7 +69,8 @@ export class DiscordCommandBank
   }
 
   public async sync() {
-    const result = [] as any
+    const data = [] as any
+    const errors = [] as any
     for (const command of this.values()) {
       let registered
       try {
@@ -78,13 +79,14 @@ export class DiscordCommandBank
         )) as any[]
       } catch (error) {
         console.error(`Error registering command ${command.name}:`, error)
+        errors.push(error)
       }
-      if (registered) result.push(registered)
+      if (registered) data.push(registered)
     }
-    if (!result.length) {
+    if (!data.length) {
       throw new Error('No commands registered')
     }
-    return result
+    return { data, errors }
   }
 
   public async list() {
