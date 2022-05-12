@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "pnpm build -- --watch",
+    "dev": "pnpm build --watch",
     "clean": "rimraf build",
     "prepublishOnly": "pnpm build"
   },

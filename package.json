@@ -7,11 +7,11 @@
   "scripts": {
     "app": "pnpm --filter @hey-amplify/app",
     "bot": "pnpm --filter @hey-amplify/bot",
-    "apps": "pnpm run --filter ./apps --parallel",
-    "packages": "pnpm run --filter ./packages --parallel",
-    "build": "pnpm run build --filter ./packages --parallel",
-    "dev": "pnpm run dev --filter ./packages --parallel",
-    "test": "pnpm run e2e --filter ./e2e"
+    "apps": "pnpm --filter \"./apps/**\"",
+    "packages": "pnpm --filter \"./packages/**\"",
+    "build": "pnpm packages run build",
+    "dev": "pnpm packages run dev",
+    "test": "pnpm --filter ./e2e run e2e"
   },
   "devDependencies": {
     "@hey-amplify/scripts": "workspace:*",
@@ -53,5 +53,5 @@
       "@typescript-eslint"
     ]
   },
-  "packageManager": "pnpm@6.32.3"
+  "packageManager": "pnpm@7.0.1"
 }
