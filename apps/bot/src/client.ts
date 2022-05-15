@@ -40,10 +40,6 @@ client.on('messageCreate', async (message: Message) => {
     }
     const thread: ThreadChannel = await message.startThread(options)
 
-    // TODO: should we *not* rewrite the owner to be OP? how does this affect their ability to rediscover questions?
-    // thread.ownerId = message.author.id
-    console.log('message', message)
-
     // create Question in db
     try {
       await prisma.question.create({
