@@ -8,9 +8,8 @@
     "app": "pnpm --filter @hey-amplify/app",
     "bot": "pnpm --filter @hey-amplify/bot",
     "apps": "pnpm --filter \"./apps/**\"",
-    "packages": "pnpm --filter \"./packages/**\"",
-    "build": "pnpm packages run build",
-    "dev": "pnpm packages run dev",
+    "build": "pnpm -r run build",
+    "dev": "pnpm -r run build -w",
     "test": "pnpm --filter ./e2e run e2e"
   },
   "devDependencies": {

@@ -1,12 +1,13 @@
 import { Client, Intents, MessageEmbed } from 'discord.js'
 import { createBank } from '@hey-amplify/discord'
-import { PREFIXES } from './commands/thread'
 import type {
   Message,
   StartThreadOptions,
   ThreadChannel,
   CommandInteraction,
 } from 'discord.js'
+import { PREFIXES } from './commands/thread'
+import { prisma } from './db'
 
 export const client = new Client({
   intents: [
@@ -26,7 +27,6 @@ client.once('ready', () => {
 })
 
 client.on('messageCreate', async (message: Message) => {
-  // console.log('hello message', message, message.channel)
   // GuildChannelTypes.GUILD_TEXT
   if (
     !message.author.bot &&
@@ -41,7 +41,22 @@ client.on('messageCreate', async (message: Message) => {
     const thread: ThreadChannel = await message.startThread(options)
 
     // TODO: should we *not* rewrite the owner to be OP? how does this affect their ability to rediscover questions?
-    thread.ownerId = message.author.id
+    // thread.ownerId = message.author.id
+    console.log('message', message)
+
+    // create Question in db
+    try {
+      await prisma.question.create({
+        data: {
+          ownerId: message.author.id,
+          threadId: thread.id,
+          title: message.content,
+          createdAt: thread.createdAt as Date,
+        },
+      })
+    } catch (error) {
+      console.error('Unable to create Question in db', error)
+    }
 
     // optionally send a message to the thread
     const embed = new MessageEmbed()
@@ -71,6 +86,18 @@ client.on('interactionCreate', async (interaction) => {
   if (response) {
     await interaction.reply(response)
   }
+  return
+})
+
+client.on('rateLimit', (info) => {
+  console.log(
+    `Rate limit hit ${info.timeout ? info.timeout : 'Unknown timeout '}`
+  )
+})
+
+client.on('threadUpdate', async (thread) => {
+  console.log(thread)
+  console.log(`Thread ${thread.id} updated`)
 })
 
 export function createBot(token = process.env.DISCORD_BOT_TOKEN) {

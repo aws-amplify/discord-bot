@@ -16,7 +16,7 @@ export interface IDiscordCommandConfig {
 
 export type DiscordCommandHandler = (
   interaction: CommandInteraction
-) => string | Promise<string>
+) => string | undefined | Promise<string | undefined>
 
 export type CreateDiscordCommandInput = IDiscordCommandConfig & {
   handler: DiscordCommandHandler

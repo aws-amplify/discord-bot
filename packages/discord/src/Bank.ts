@@ -116,19 +116,15 @@ export class DiscordCommandBank
     if (!command)
       throw new Error(`Invalid slash command: ${interaction.commandName}`)
 
-    let commandResponse
+    let response
     try {
-      commandResponse = await command.handler(interaction)
+      response = await command.handler(interaction)
     } catch (error) {
       console.error(`Error executing command "${command?.name}"`, error)
+      response = somethingWentWrongResponse
     }
 
-    let toRespond = commandResponse ?? somethingWentWrongResponse
-    if (typeof toRespond === 'string') {
-      toRespond = generateResponse(toRespond)
-    }
-
-    return toRespond
+    return response
   }
 }
 

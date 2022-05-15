@@ -22,21 +22,23 @@
   },
   "dependencies": {
     "@discordjs/rest": "^0.4.1",
+    "@prisma/client": "^3.14.0",
     "discord-api-types": "^0.32.1",
-    "fast-glob": "^3.2.11",
-    "discord.js": "^13.6.0",
-    "express": "^4.17.3"
+    "discord.js": "^13.7.0",
+    "express": "^4.18.1",
+    "fast-glob": "^3.2.11"
   },
   "devDependencies": {
     "@hey-amplify/discord": "workspace:*",
     "@hey-amplify/tsconfig": "workspace:*",
     "fast-glob": "^3.2.11",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.16",
+    "prisma": "^3.14.0",
     "rimraf": "^3.0.2",
-    "typescript": "^4.6.3",
-    "vite": "^2.9.5",
-    "vite-node": "^0.9.4",
-    "vite-plugin-dts": "^1.1.0",
-    "vitest": "^0.9.4"
+    "typescript": "^4.6.4",
+    "vite": "^2.9.9",
+    "vite-node": "^0.12.6",
+    "vite-plugin-dts": "^1.1.1",
+    "vitest": "^0.12.6"
   }
 }
