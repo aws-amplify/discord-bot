@@ -15,7 +15,6 @@ async function handler(interaction) {
     where: { threadId: channel.id },
   })
 
-  // TODO: better thread checking
   if (!channel.isThread()) {
     return 'This command only works in public threads.'
   }
