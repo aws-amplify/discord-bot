@@ -94,7 +94,6 @@ client.on('rateLimit', (info) => {
 })
 
 client.on('threadUpdate', async (thread) => {
-  console.log(thread)
   console.log(`Thread ${thread.id} updated`)
 })
 
