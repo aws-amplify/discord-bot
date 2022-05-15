@@ -4,18 +4,19 @@ import type {
   RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord-api-types/v9'
 import type { CommandInteraction } from 'discord.js'
+import { DiscordCommandOption } from './CommandOption'
 
 export interface IDiscordCommandConfig {
   name: string
   description?: string
   usage?: string
-  options?: APIApplicationCommandOption[]
+  options?: APIApplicationCommandOption[] | DiscordCommandOption[]
   enabledByDefault?: boolean
 }
 
 export type DiscordCommandHandler = (
   interaction: CommandInteraction
-) => string | Promise<string>
+) => string | undefined | Promise<string | undefined>
 
 export type CreateDiscordCommandInput = IDiscordCommandConfig & {
   handler: DiscordCommandHandler

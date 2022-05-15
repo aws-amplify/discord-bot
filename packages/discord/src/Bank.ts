@@ -69,7 +69,8 @@ export class DiscordCommandBank
   }
 
   public async sync() {
-    const result = [] as any
+    const data = [] as any
+    const errors = [] as any
     for (const command of this.values()) {
       let registered
       try {
@@ -78,13 +79,14 @@ export class DiscordCommandBank
         )) as any[]
       } catch (error) {
         console.error(`Error registering command ${command.name}:`, error)
+        errors.push(error)
       }
-      if (registered) result.push(registered)
+      if (registered) data.push(registered)
     }
-    if (!result.length) {
+    if (!data.length) {
       throw new Error('No commands registered')
     }
-    return result
+    return { data, errors }
   }
 
   public async list() {
@@ -114,19 +116,15 @@ export class DiscordCommandBank
     if (!command)
       throw new Error(`Invalid slash command: ${interaction.commandName}`)
 
-    let commandResponse
+    let response
     try {
-      commandResponse = await command.handler(interaction)
+      response = await command.handler(interaction)
     } catch (error) {
       console.error(`Error executing command "${command?.name}"`, error)
+      response = somethingWentWrongResponse
     }
 
-    let toRespond = commandResponse ?? somethingWentWrongResponse
-    if (typeof toRespond === 'string') {
-      toRespond = generateResponse(toRespond)
-    }
-
-    return toRespond
+    return response
   }
 }
 

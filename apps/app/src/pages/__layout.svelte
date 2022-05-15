@@ -51,7 +51,7 @@
           </HeaderPanelLinks>
         </HeaderAction>
       {:else}
-        <Button aria-label="Login" href="/login">Login</Button>
+        <Button aria-label="Login" href="#">Login</Button>
       {/if}
     </HeaderUtilities>
   </Header>

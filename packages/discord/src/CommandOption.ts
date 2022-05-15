@@ -9,6 +9,7 @@ interface IDiscordCommandOptions {
   description?: string
   required?: boolean
   type?: any // TODO: type ApplicationCommandOptionType
+  options?: DiscordCommandOption[]
   choices?: any[] | undefined
 }
 
@@ -16,7 +17,8 @@ export class DiscordCommandOption implements IDiscordCommandOptions {
   public readonly name: string
   public readonly description: string
   public readonly required: boolean = false
-  public readonly type: any
+  public readonly type?: any
+  public readonly options?: DiscordCommandOption[] | undefined
   public readonly choices?: any[] | undefined
 
   constructor(props: IDiscordCommandOptions) {
@@ -24,6 +26,7 @@ export class DiscordCommandOption implements IDiscordCommandOptions {
     this.description = props.description || '[default description]'
     this.required = props.required ?? false
     this.type = props.type ?? ApplicationCommandOptionType.String
+    this.options = props.options
     if (Array.isArray(props.choices)) {
       this.choices = props.choices.map((choice) => ({
         name: choice,
