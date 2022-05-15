@@ -46,6 +46,7 @@ client.on('messageCreate', async (message: Message) => {
         data: {
           ownerId: message.author.id,
           threadId: thread.id,
+          channelName: message.channel.name,
           title: message.content,
           createdAt: thread.createdAt as Date,
         },

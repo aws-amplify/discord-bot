@@ -11,11 +11,12 @@ datasource db {
 }
 
 model Question {
-  id        Int      @id @default(autoincrement())
-  threadId  String   @unique
-  ownerId   String
-  createdAt DateTime
-  title     String
-  isSolved  Boolean  @default(false)
-  url       String?
+  id          Int      @id @default(autoincrement())
+  threadId    String   @unique
+  ownerId     String
+  channelName String
+  createdAt   DateTime
+  title       String
+  isSolved    Boolean  @default(false)
+  url         String?
 }
