@@ -49,6 +49,7 @@ client.on('messageCreate', async (message: Message) => {
           channelName: message.channel.name,
           title: message.content,
           createdAt: thread.createdAt as Date,
+          url: message.url,
         },
       })
     } catch (error) {
