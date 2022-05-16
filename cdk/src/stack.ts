@@ -2,11 +2,14 @@ import { Stack, StackProps, Tags } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
+import * as efs from 'aws-cdk-lib/aws-efs'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 
 export interface HeyAmplifyAppStackProps extends StackProps {
   secrets: Record<string, ssm.IParameter>
   cluster: ecs.Cluster
+  filesystem?: efs.FileSystem
+  filesystemMountPoint?: string
 }
 
 export class HeyAmplifyStack extends Stack {
@@ -17,6 +20,7 @@ export class HeyAmplifyStack extends Stack {
   public readonly secrets: Record<string, ssm.IParameter> = {}
   public readonly vpc: ec2.Vpc
   public readonly cluster: ecs.Cluster
+  public readonly filesystem: efs.FileSystem
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
@@ -43,6 +47,10 @@ export class HeyAmplifyStack extends Stack {
       vpc: this.vpc,
       containerInsights: true,
       enableFargateCapacityProviders: true,
+    })
+
+    this.filesystem = new efs.FileSystem(this, 'FileSystem', {
+      vpc: this.vpc,
     })
   }
 

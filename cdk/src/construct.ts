@@ -1,7 +1,9 @@
 import { Construct } from 'constructs'
+import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
+import type * as efs from 'aws-cdk-lib/aws-efs'
 
 interface DockerProps {
   name: string
@@ -19,6 +21,16 @@ export interface HeyAmplifyAppProps {
    * Asset path to the directory with the Dockerfile.
    */
   docker: DockerProps
+
+  /**
+   * Filesystem to be used for storing the application's data.
+   */
+  filesystem?: efs.FileSystem
+
+  /**
+   * Filesystem container mount point
+   */
+  filesystemMountPoint?: string
 
   /**
    * Discord Bot secrets
@@ -64,5 +76,38 @@ export class HeyAmplifyApp extends Construct {
         publicLoadBalancer: true,
       }
     )
+
+    if (props.filesystem && props.filesystemMountPoint) {
+      const volumeName = 'efs-volume'
+      const mountPath = props.filesystemMountPoint
+
+      this.service.taskDefinition.addVolume({
+        name: volumeName,
+        efsVolumeConfiguration: {
+          fileSystemId: props.filesystem.fileSystemId,
+        },
+      })
+
+      props.filesystem.grant(
+        this.service.taskDefinition.taskRole,
+        'elasticfilesystem:ClientRootAccess',
+        'elasticfilesystem:ClientWrite',
+        'elasticfilesystem:ClientMount',
+        'elasticfilesystem:DescribeMountTargets'
+      )
+
+      const container = this.service.taskDefinition.findContainer(
+        props.docker.name
+      ) as ecs.ContainerDefinition
+
+      container.addMountPoints({
+        containerPath: mountPath,
+        sourceVolume: volumeName,
+        readOnly: false,
+      })
+
+      const efsPort = ec2.Port.tcp(2049)
+      props.filesystem.connections.allowFrom(this.service.service, efsPort)
+    }
   }
 }
