@@ -28,6 +28,7 @@ new BotStack(app, `${name}-${env}-bot-stack`, {
   },
   secrets: base.secrets,
   cluster: base.cluster,
+  filesystem: base.filesystem,
 })
 
 // new SvelteKitAppStack(app, `${name}-${env}-sveltekit-stack`, {
