@@ -15,8 +15,13 @@ async function handler(interaction) {
     where: { threadId: channel.id },
   })
 
-  if (!channel.isThread()) {
-    return 'This command only works in public threads.'
+  if (!channel.isThread() || !record) {
+    const embed = new MessageEmbed()
+    embed.setColor('#ff9900')
+    embed.setDescription(
+      'This command only works in public threads within help channels.'
+    )
+    return { embeds: [embed] }
   }
 
   const args = interaction.options.data.reduce(
