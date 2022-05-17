@@ -1,33 +1,29 @@
-FROM --platform=linux/amd64 node:16-alpine as builder
+#syntax=docker/dockerfile:1.4
+FROM --platform=linux/amd64 node:16-alpine as base
 WORKDIR /usr/src
-# install curl
-RUN apk --no-cache add curl
-# install pnpm
-RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
-# RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store
+RUN npm install --global pnpm@7.1.0
 # pnpm fetch only requires lockfile, but we'll need to build workspaces
 COPY pnpm*.yaml ./
 RUN pnpm fetch
 # add project source to build
 ADD . .
 # install dependencies
-RUN pnpm install --offline
+RUN pnpm install --offline --frozen-lockfile
 # run build
-RUN pnpm run --filter ./packages --filter ./apps build
-# remove dev dependencies
-RUN pnpm install --offline --prod
+RUN pnpm --filter "./packages/**" --filter "./apps/bot" run build
+# remove dev dependencies (ignore scripts like "prepare")
+RUN pnpm install --offline --frozen-lockfile --prod --ignore-scripts
 
 # final bot image
 FROM --platform=linux/amd64 node:16-alpine
 WORKDIR /usr/src
-RUN apk --no-cache add curl
-RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
+RUN npm install --global pnpm@7.1.0
 
 # expose necessary env vars
 ENV DISCORD_BOT_TOKEN=""
+ENV PORT 3000
 
-COPY --from=builder /root/.pnpm-store /root/.pnpm-store
-COPY --from=builder /usr/src .
+COPY --from=base /usr/src .
 
 WORKDIR /usr/src/apps/bot
 
