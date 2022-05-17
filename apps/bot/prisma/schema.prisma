@@ -7,16 +7,18 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = "file:../db/dev.db"
 }
 
 model Question {
-  id          Int      @id @default(autoincrement())
-  threadId    String   @unique
-  ownerId     String
-  channelName String
-  createdAt   DateTime
-  title       String
-  isSolved    Boolean  @default(false)
-  url         String?
+  id                  Int      @id @default(autoincrement())
+  threadId            String   @unique
+  ownerId             String
+  channelName         String
+  createdAt           DateTime
+  updatedAt           DateTime @updatedAt
+  threadMetaUpdatedAt DateTime @default(now())
+  title               String
+  isSolved            Boolean  @default(false)
+  url                 String?
 }

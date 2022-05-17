@@ -65,6 +65,27 @@ client.on('messageCreate', async (message: Message) => {
     )
     thread.send({ embeds: [embed] })
   }
+
+  // capture thread updates in public "help" channels
+  if (
+    message.channel.type === 'GUILD_PUBLIC_THREAD' &&
+    !message.author.bot &&
+    (message.channel.parent?.name.startsWith('help-') ||
+      message.channel.parent?.name.endsWith('-help'))
+  ) {
+    await prisma.question.upsert({
+      where: { threadId: message.channel.id },
+      update: { threadMetaUpdatedAt: message.createdAt as Date },
+      create: {
+        ownerId: message.author.id,
+        threadId: message.channel.id,
+        channelName: message.channel.name,
+        title: message.content,
+        createdAt: message.createdAt as Date,
+        url: message.url,
+      },
+    })
+  }
 })
 
 client.on('interactionCreate', async (interaction) => {
