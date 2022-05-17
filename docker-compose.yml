@@ -8,6 +8,8 @@ services:
       dockerfile: apps/bot/Dockerfile
     expose:
       - '3000'
+    volumes:
+      - ./apps/bot/db:/usr/src/apps/bot/db
     env_file:
       - .env.local
   app:

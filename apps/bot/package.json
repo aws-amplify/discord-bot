@@ -18,6 +18,7 @@
     "dev": "PORT=3001 nodemon --exec vite-node src/app.ts",
     "dev:lib": "pnpm build --watch",
     "clean": "rimraf build",
+    "prepare": "prisma generate",
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
