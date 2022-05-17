@@ -42,7 +42,7 @@ client.on('messageCreate', async (message: Message) => {
 
     // create Question in db
     try {
-      await prisma.question.create({
+      const record = await prisma.question.create({
         data: {
           ownerId: message.author.id,
           threadId: thread.id,
@@ -52,6 +52,7 @@ client.on('messageCreate', async (message: Message) => {
           url: message.url,
         },
       })
+      console.info(`Created question ${record.id}`)
     } catch (error) {
       console.error('Unable to create Question in db', error)
     }
@@ -73,7 +74,7 @@ client.on('messageCreate', async (message: Message) => {
     (message.channel.parent?.name.startsWith('help-') ||
       message.channel.parent?.name.endsWith('-help'))
   ) {
-    await prisma.question.upsert({
+    const record = await prisma.question.upsert({
       where: { threadId: message.channel.id },
       update: { threadMetaUpdatedAt: message.createdAt as Date },
       create: {
@@ -85,6 +86,7 @@ client.on('messageCreate', async (message: Message) => {
         url: message.url,
       },
     })
+    console.info(`Created/updated question ${record.id}`)
   }
 })
 
