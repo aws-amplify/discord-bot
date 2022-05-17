@@ -15,8 +15,7 @@ Refer to the [readme guide](./README.md#development) to get set up for local dev
 To get started, let's create a new command file in `apps/bot/src/commands`: `hello.ts`
 
 ```ts
-import { createCommand } from '../Command.js'
-import { createOption } from '../CommandOption.js'
+import { createCommand, createOption } from '@hey-amplify/discord'
 
 const name = createOption({
   name: 'name',
@@ -50,7 +49,7 @@ Create secrets in SSM Parameter Store with the `scripts` helper! Rename `.env.sa
 pnpm scripts create-secrets -e next
 ```
 
-**NOTE:** dotenv files are loaded using Vite's `loadEnv` and `local` dotenv files are not supported when creating secrets. We must be sure to pass a valid environment name such as `main` or `next`
+**NOTE:** dotenv files are loaded using Vite's `loadEnv` and `local` dotenv files are not supported when creating secrets. Additionally, we must be sure to pass a valid environment name such as `main` or `next`
 
 ## Deployment
 
@@ -90,3 +89,10 @@ if (import.meta.vitest) {
 ```
 
 When `pnpm test` is run from the project root, the newly added test is executed alongside the e2e tests.
+
+## Docker
+
+Build individual apps using [`docker compose`](https://docs.docker.com/compose/):
+
+- `docker compose up bot --build`
+- `docker compose up app --build`
