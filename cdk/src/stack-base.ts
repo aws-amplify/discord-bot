@@ -5,7 +5,7 @@ import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as efs from 'aws-cdk-lib/aws-efs'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 
-export class HeyAmplifyStack extends Stack {
+export class BaseStack extends Stack {
   private readonly appName: string = this.node.tryGetContext('name')
   private readonly envName: string = this.node.tryGetContext('env')
 
