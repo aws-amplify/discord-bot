@@ -1,11 +1,12 @@
 # Contributing
 
-Refer to the [readme guide](./README.md#development) to get set up for local development.
+Refer to the [readme guide](./README.md#getting-started) to get started.
 
 ## Repository Reference
 
 - [`apps/`](./apps) - collection of apps that use the library packages in `packages/`
 - [`cdk/`](./cdk) - AWS CDK application to deploy apps
+- [`docs/`](./docs) - Documentation related to project including architecture diagrams
 - [`e2e/`](./e2e) - End-to-end test suite powered by [Vitest](https://vitest.dev/), supports in-source unit testing
 - [`packages/`](./packages) - collection of library packages, including Discord, support helpers, and a shared TypeScript configuration
 - [`scripts/`](./scripts) - small CLI helper for automating tasks
@@ -37,7 +38,7 @@ export default createCommand({
 
 Save and register the new command with `commands.sync()`
 
-**NOTE**: allow about 30 minutes for commands to show in Discord
+**NOTE:** refresh your Discord client and allow up to 30 minutes for commands to show in Discord
 
 ## Creating Secrets in SSM
 
