@@ -1,9 +1,8 @@
 import { Stack } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
-import { HeyAmplifyAppStackProps } from './stack'
 import { HeyAmplifyApp } from './construct'
-
-const root = new URL('../..', import.meta.url).pathname
+import { PROJECT_ROOT } from './constants'
+import type { HeyAmplifyAppStackProps } from './types'
 
 export class SvelteKitAppStack extends Stack {
   constructor(scope: Construct, id: string, props: HeyAmplifyAppStackProps) {
@@ -19,7 +18,7 @@ export class SvelteKitAppStack extends Stack {
       cluster,
       docker: {
         name: 'app',
-        context: root,
+        context: PROJECT_ROOT,
         dockerfile: 'apps/app/Dockerfile',
       },
       secrets,

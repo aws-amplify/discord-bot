@@ -28,8 +28,13 @@ export interface HeyAmplifyAppProps {
   filesystem?: efs.FileSystem
 
   /**
-   * Filesystem container mount point
+   * The security group of the file system.
    */
+  filesystemSecurityGroup?: ec2.ISecurityGroup
+ 
+   /**
+    * Filesystem container mount point
+    */
   filesystemMountPoint?: string
 
   /**
@@ -77,18 +82,19 @@ export class HeyAmplifyApp extends Construct {
       }
     )
 
-    if (props.filesystem && props.filesystemMountPoint) {
+    const { filesystem, filesystemMountPoint, filesystemSecurityGroup } = props
+    if (filesystem && filesystemMountPoint && filesystemSecurityGroup) {
       const volumeName = 'efs-volume'
-      const mountPath = props.filesystemMountPoint
+      const mountPath = filesystemMountPoint
 
       this.service.taskDefinition.addVolume({
         name: volumeName,
         efsVolumeConfiguration: {
-          fileSystemId: props.filesystem.fileSystemId,
+          fileSystemId: filesystem.fileSystemId,
         },
       })
 
-      props.filesystem.grant(
+      filesystem.grant(
         this.service.taskDefinition.taskRole,
         'elasticfilesystem:ClientRootAccess',
         'elasticfilesystem:ClientWrite',
@@ -107,7 +113,7 @@ export class HeyAmplifyApp extends Construct {
       })
 
       const efsPort = ec2.Port.tcp(2049)
-      props.filesystem.connections.allowFrom(this.service.service, efsPort)
+      filesystemSecurityGroup.connections.allowFrom(this.service.service, efsPort)
     }
   }
 }
