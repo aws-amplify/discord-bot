@@ -42,6 +42,7 @@ const config = {
     },
 
     vite: {
+      envDir: '../../',
       define: {
         'import.meta.vitest': 'undefined',
       },

@@ -1,4 +1,10 @@
 <script context="module">
+  /** * @type {import('@sveltejs/kit').Load} */
+  export async function load({ session }) {
+    return {
+      props: { user: session.user || false },
+    }
+  }
 </script>
 
 <script lang="ts">
@@ -14,10 +20,16 @@
     HeaderPanelLink,
     ToastNotification,
   } from 'carbon-components-svelte'
+  import Avatar from '$lib/Avatar.svelte'
   import { UserAvatarFilledAlt, SettingsAdjust } from 'carbon-icons-svelte'
   import 'carbon-components-svelte/css/all.css'
-  import { user, notifications } from '$lib/store'
+  import { user as userStore, notifications } from '$lib/store'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
+  import { SvelteComponentDev } from 'svelte/internal'
+
+  export let user
+
+  userStore.set(user)
 
   let theme: CarbonTheme = 'g100'
 
@@ -37,21 +49,21 @@
     </span>
 
     <HeaderUtilities>
-      {#if $user}
+      {#if $userStore}
         <HeaderGlobalAction aria-label="Settings" icon="{SettingsAdjust}" />
         <HeaderAction
           aria-label="User settings"
-          icon="{UserAvatarFilledAlt}"
-          closeIcon="{UserAvatarFilledAlt}"
           bind:isOpen="{isUserPanelOpen}"
+          transition="{{ duration: 200 }}"
         >
+          <Avatar slot="icon" userId="{user.id}" avatarHash="{user.avatar}" />
           <HeaderPanelLinks>
             <HeaderPanelLink href="/settings">Settings</HeaderPanelLink>
-            <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
+            <HeaderPanelLink href="/api/auth/logout">Logout</HeaderPanelLink>
           </HeaderPanelLinks>
         </HeaderAction>
       {:else}
-        <Button aria-label="Login" href="#">Login</Button>
+        <Button aria-label="Login" href="/api/auth/login">Login</Button>
       {/if}
     </HeaderUtilities>
   </Header>
