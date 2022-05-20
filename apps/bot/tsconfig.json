@@ -1,11 +1,11 @@
 {
   "extends": "@hey-amplify/tsconfig/base.json",
   "compilerOptions": {
-    "rootDir": "src",
     "outDir": "build",
     "noImplicitAny": false,
     "isolatedModules": true,
     "types": ["vite/client"]
   },
+  "include": ["src"],
   "exclude": ["build", "bin", "node_modules"]
 }

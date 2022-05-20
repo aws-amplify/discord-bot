@@ -18,8 +18,7 @@
     "strict": true,
     "target": "esnext",
     "sourceMap": false,
-    "inlineSourceMap": true,
-    "types": ["vitest/importMeta"]
+    "inlineSourceMap": true
   },
   "exclude": ["node_modules"]
 }
