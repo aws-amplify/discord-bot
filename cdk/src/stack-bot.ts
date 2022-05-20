@@ -8,7 +8,7 @@ export class BotStack extends Stack {
   constructor(scope: Construct, id: string, props: HeyAmplifyAppStackProps) {
     super(scope, id, props)
 
-    const { cluster, filesystem } = props
+    const { cluster, filesystem, filesystemSecurityGroup } = props
 
     const secrets = {
       DISCORD_BOT_TOKEN: props.secrets.DISCORD_BOT_TOKEN,
@@ -23,6 +23,7 @@ export class BotStack extends Stack {
       },
       secrets,
       filesystem,
+      filesystemSecurityGroup,
       filesystemMountPoint: '/usr/src/apps/bot/db',
     })
   }
