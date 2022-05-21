@@ -107,6 +107,13 @@ export class HeyAmplifyApp extends Construct {
         sourceVolume: volumeName,
         readOnly: false,
       })
+
+      const efsPort = ec2.Port.tcp(2049)
+      filesystem.connections.allowFrom(
+        cluster,
+        efsPort,
+        'access to EFS for sqlite'
+      )
     }
   }
 }

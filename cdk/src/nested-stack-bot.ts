@@ -5,6 +5,7 @@ import { PROJECT_ROOT } from './constants'
 import type { HeyAmplifyAppStackProps } from './types'
 
 export class BotStack extends NestedStack {
+  private readonly appName: string = this.node.tryGetContext('name')
   private readonly envName: string = this.node.tryGetContext('env')
 
   constructor(scope: Construct, id: string, props: HeyAmplifyAppStackProps) {
@@ -16,10 +17,10 @@ export class BotStack extends NestedStack {
       DISCORD_BOT_TOKEN: props.secrets.DISCORD_BOT_TOKEN,
     }
 
-    new HeyAmplifyApp(this, 'bot', {
+    new HeyAmplifyApp(this, `bot`, {
       cluster,
       docker: {
-        name: 'bot',
+        name: `${this.appName}-bot`,
         context: PROJECT_ROOT,
         dockerfile: 'apps/bot/Dockerfile',
         environment: {

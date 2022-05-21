@@ -14,6 +14,7 @@ Object.assign(
   process.env,
   loadEnv('development', new URL('../../', import.meta.url).pathname, [
     'DISCORD_',
+    'DATABASE_',
   ])
 )
 

@@ -1,7 +1,6 @@
 {
   "version": "0.1.0",
   "scripts": {
-    "dev": "pnpm build -- --watch",
     "synth": "cdk synth",
     "deploy": "cdk deploy"
   },

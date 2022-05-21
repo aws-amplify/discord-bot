@@ -1,10 +1,10 @@
 import 'source-map-support/register.js'
 import * as cdk from 'aws-cdk-lib'
-import { BaseStack } from './stack-base'
+import { RootStack } from './root-stack'
 
 const app = new cdk.App({
   context: {
-    name: 'hey-amplify',
+    name: 'heyamplify',
     env: 'default',
   },
 })
@@ -12,7 +12,7 @@ const app = new cdk.App({
 const name = app.node.tryGetContext('name')
 const env = app.node.tryGetContext('env')
 
-const base = new BaseStack(app, `${name}-base-stack-${env}`, {
+new RootStack(app, `${name}-${env}`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
