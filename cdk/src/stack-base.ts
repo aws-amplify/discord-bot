@@ -13,7 +13,6 @@ export class BaseStack extends Stack {
   public readonly vpc: ec2.Vpc
   public readonly cluster: ecs.Cluster
   public readonly filesystem: efs.FileSystem
-  public readonly filesystemSecurityGroup: ec2.ISecurityGroup
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
@@ -42,13 +41,16 @@ export class BaseStack extends Stack {
       enableFargateCapacityProviders: true,
     })
 
-    this.filesystemSecurityGroup = new ec2.SecurityGroup(this, 'FileSystemSecurityGroup', {
-      vpc: this.vpc,
-    })
     this.filesystem = new efs.FileSystem(this, 'FileSystem', {
       vpc: this.vpc,
-      securityGroup: this.filesystemSecurityGroup,
     })
+
+    const efsPort = ec2.Port.tcp(2049)
+    this.filesystem.connections.allowFrom(
+      this.cluster,
+      efsPort,
+      'access to EFS for sqlite'
+    )
   }
 
   /**

@@ -1,10 +1,10 @@
-import { Stack } from 'aws-cdk-lib'
+import { NestedStack } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import { HeyAmplifyApp } from './construct'
 import { PROJECT_ROOT } from './constants'
 import type { HeyAmplifyAppStackProps } from './types'
 
-export class SvelteKitAppStack extends Stack {
+export class SvelteKitAppStack extends NestedStack {
   constructor(scope: Construct, id: string, props: HeyAmplifyAppStackProps) {
     super(scope, id, props)
 

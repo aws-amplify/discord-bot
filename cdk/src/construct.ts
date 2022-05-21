@@ -9,6 +9,7 @@ interface DockerProps {
   name: string
   context: string
   dockerfile?: string
+  environment?: { [key: string]: string }
 }
 
 export interface HeyAmplifyAppProps {
@@ -28,13 +29,8 @@ export interface HeyAmplifyAppProps {
   filesystem?: efs.FileSystem
 
   /**
-   * The security group of the file system.
+   * Filesystem container mount point
    */
-  filesystemSecurityGroup?: ec2.ISecurityGroup
- 
-   /**
-    * Filesystem container mount point
-    */
   filesystemMountPoint?: string
 
   /**
@@ -54,7 +50,7 @@ export class HeyAmplifyApp extends Construct {
   constructor(scope: Construct, id: string, props: HeyAmplifyAppProps) {
     super(scope, id)
 
-    const { cluster } = props
+    const { cluster, filesystem, filesystemMountPoint, docker } = props
 
     const secrets = {}
     for (const [name, param] of Object.entries(props.secrets)) {
@@ -70,10 +66,11 @@ export class HeyAmplifyApp extends Construct {
         memoryLimitMiB: 512,
         desiredCount: 1,
         taskImageOptions: {
-          containerName: props.docker.name,
-          image: ecs.ContainerImage.fromAsset(props.docker.context, {
-            file: props.docker.dockerfile || 'Dockerfile',
+          containerName: docker.name,
+          image: ecs.ContainerImage.fromAsset(docker.context, {
+            file: docker.dockerfile || 'Dockerfile',
           }),
+          environment: docker.environment,
           enableLogging: true,
           secrets,
         },
@@ -82,8 +79,7 @@ export class HeyAmplifyApp extends Construct {
       }
     )
 
-    const { filesystem, filesystemMountPoint, filesystemSecurityGroup } = props
-    if (filesystem && filesystemMountPoint && filesystemSecurityGroup) {
+    if (filesystem && filesystemMountPoint) {
       const volumeName = 'efs-volume'
       const mountPath = filesystemMountPoint
 
@@ -111,9 +107,6 @@ export class HeyAmplifyApp extends Construct {
         sourceVolume: volumeName,
         readOnly: false,
       })
-
-      const efsPort = ec2.Port.tcp(2049)
-      filesystemSecurityGroup.connections.allowFrom(this.service.service, efsPort)
     }
   }
 }
