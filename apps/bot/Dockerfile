@@ -27,6 +27,7 @@ ENV DATABASE_URL="file:../db/data.db"
 COPY --from=base /usr/src .
 
 WORKDIR /usr/src/apps/bot
+# RUN npx prisma migrate deploy
 
 EXPOSE 3000
-CMD ["pnpm", "start"]
+CMD ["./scripts/start.sh"]

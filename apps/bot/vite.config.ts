@@ -8,15 +8,18 @@ const pkg = JSON.parse(
 )
 
 const input = await glob('src/**/!(*.d).(js|ts)')
+const isProduction = process.env.NODE_ENV === 'production'
 
-// load env vars for bot development
-Object.assign(
-  process.env,
-  loadEnv('development', new URL('../../', import.meta.url).pathname, [
-    'DISCORD_',
-    'DATABASE_',
-  ])
-)
+if (!isProduction) {
+  // load env vars for bot development
+  Object.assign(
+    process.env,
+    loadEnv('development', new URL('../../', import.meta.url).pathname, [
+      'DISCORD_',
+      'DATABASE_',
+    ])
+  )
+}
 
 export default defineConfig({
   envDir: '../../',

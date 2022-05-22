@@ -2,10 +2,10 @@ node_modules
 **/node_modules
 
 # ignore other packages in monorepo
-cdk
-docs
-e2e
-amplify
+./cdk
+./docs
+./e2e
+./scripts
 .vscode
 
 # no builds

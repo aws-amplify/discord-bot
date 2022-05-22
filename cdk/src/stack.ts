@@ -4,9 +4,10 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as efs from 'aws-cdk-lib/aws-efs'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
-import { BotStack } from './nested-stack-bot'
+import { HeyAmplifyApp } from './construct'
+import { PROJECT_ROOT } from './constants'
 
-export class RootStack extends Stack {
+export class HeyAmplifyStack extends Stack {
   private readonly appName: string = this.node.tryGetContext('name')
   private readonly envName: string = this.node.tryGetContext('env')
 
@@ -22,9 +23,12 @@ export class RootStack extends Stack {
       'DISCORD_BOT_TOKEN',
       'DISCORD_APP_ID',
       'DISCORD_PUBLIC_KEY',
-    ]
+    ] as const
+    // NOTE: this TypeScript trick is to say `secrets` should include key value pairs where the keys are one of the names in the array above
+    const secrets: Partial<
+      Record<typeof requiredSecrets[number], ssm.IParameter>
+    > = {}
 
-    const secrets = {}
     for (const secret of requiredSecrets) {
       secrets[secret] = this.getSecret(this, secret)
     }
@@ -47,12 +51,27 @@ export class RootStack extends Stack {
 
     const filesystem = new efs.FileSystem(this, 'filesystem', {
       vpc,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PUBLIC,
+        onePerAz: true,
+      },
     })
 
-    new BotStack(this, `bot-stack`, {
+    new HeyAmplifyApp(this, `bot`, {
       cluster,
+      docker: {
+        name: `${this.appName}-bot`,
+        context: PROJECT_ROOT,
+        dockerfile: 'apps/bot/Dockerfile',
+        environment: {
+          DATABASE_URL: `file:../db/${this.envName}.db`,
+        },
+      },
+      secrets: {
+        DISCORD_BOT_TOKEN: secrets.DISCORD_BOT_TOKEN as ssm.IParameter,
+      },
       filesystem,
-      secrets,
+      filesystemMountPoint: '/usr/src/apps/bot/db',
     })
   }
 
