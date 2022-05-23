@@ -26,11 +26,12 @@ importers:
       prettier: 2.6.2
       typescript: 4.6.4
 
-  apps/app:
+  apps/bot:
     specifiers:
       '@discordjs/rest': ^0.4.1
-      '@hey-amplify/bot': workspace:*
       '@hey-amplify/discord': workspace:*
+      '@hey-amplify/tsconfig': workspace:*
+      '@prisma/client': ^3.14.0
       '@sveltejs/adapter-node': 1.0.0-next.73
       '@sveltejs/kit': 1.0.0-next.320
       '@sveltejs/vite-plugin-svelte': ^1.0.0-next.41
@@ -40,30 +41,40 @@ importers:
       carbon-icons-svelte: ^11.0.1
       carbon-preprocess-svelte: ^0.9.0
       cookie: ^0.5.0
-      discord-api-types: ^0.31.2
-      discord.js: ^13.6.0
+      discord-api-types: ^0.32.1
+      discord.js: ^13.7.0
       eslint: ^8.14.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-svelte3: ^3.4.1
+      express: ^4.18.1
+      fast-glob: ^3.2.11
+      nodemon: ^2.0.16
       prettier: ^2.6.2
       prettier-plugin-svelte: ^2.7.0
+      prisma: ^3.14.0
+      rimraf: ^3.0.2
       svelte: 3.47.0
       svelte-check: ^2.7.0
       svelte-preprocess: ^4.10.6
       tslib: ^2.4.0
-      typescript: ~4.6.3
+      typescript: ^4.6.4
       uuid: ^8.3.2
-      vite: ^2.9.5
-      vitest: ^0.9.4
+      vite: ^2.9.9
+      vite-node: ^0.12.6
+      vite-plugin-dts: ^1.1.1
+      vitest: ^0.12.6
     dependencies:
       '@discordjs/rest': 0.4.1
-      '@hey-amplify/bot': link:../bot
+      '@prisma/client': 3.14.0_prisma@3.14.0
       cookie: 0.5.0
-      discord-api-types: 0.31.2
+      discord-api-types: 0.32.1
       discord.js: 13.7.0
+      express: 4.18.1
+      fast-glob: 3.2.11
       uuid: 8.3.2
     devDependencies:
       '@hey-amplify/discord': link:../../packages/discord
+      '@hey-amplify/tsconfig': link:../../packages/tsconfig
       '@sveltejs/adapter-node': 1.0.0-next.73
       '@sveltejs/kit': 1.0.0-next.320_svelte@3.47.0
       '@sveltejs/vite-plugin-svelte': 1.0.0-next.44_svelte@3.47.0+vite@2.9.9
@@ -75,47 +86,15 @@ importers:
       eslint: 8.15.0
       eslint-config-prettier: 8.5.0_eslint@8.15.0
       eslint-plugin-svelte3: 3.4.1_g2mf3raygervpfn3rbs2tu5lku
+      nodemon: 2.0.16
       prettier: 2.6.2
       prettier-plugin-svelte: 2.7.0_sqtt6dzjlskmywoml5ykunxlce
+      prisma: 3.14.0
+      rimraf: 3.0.2
       svelte: 3.47.0
       svelte-check: 2.7.1_svelte@3.47.0
       svelte-preprocess: 4.10.6_xnf64rhacgemelcurd3uaqi2ei
       tslib: 2.4.0
-      typescript: 4.6.4
-      vite: 2.9.9
-      vitest: 0.9.4
-
-  apps/bot:
-    specifiers:
-      '@discordjs/rest': ^0.4.1
-      '@hey-amplify/discord': workspace:*
-      '@hey-amplify/tsconfig': workspace:*
-      '@prisma/client': ^3.14.0
-      discord-api-types: ^0.32.1
-      discord.js: ^13.7.0
-      express: ^4.18.1
-      fast-glob: ^3.2.11
-      nodemon: ^2.0.16
-      prisma: ^3.14.0
-      rimraf: ^3.0.2
-      typescript: ^4.6.4
-      vite: ^2.9.9
-      vite-node: ^0.12.6
-      vite-plugin-dts: ^1.1.1
-      vitest: ^0.12.6
-    dependencies:
-      '@discordjs/rest': 0.4.1
-      '@prisma/client': 3.14.0_prisma@3.14.0
-      discord-api-types: 0.32.1
-      discord.js: 13.7.0
-      express: 4.18.1
-      fast-glob: 3.2.11
-    devDependencies:
-      '@hey-amplify/discord': link:../../packages/discord
-      '@hey-amplify/tsconfig': link:../../packages/tsconfig
-      nodemon: 2.0.16
-      prisma: 3.14.0
-      rimraf: 3.0.2
       typescript: 4.6.4
       vite: 2.9.9
       vite-node: 0.12.6
@@ -836,6 +815,10 @@ packages:
       tslib: 2.4.0
     dev: true
 
+  /@balena/dockerignore/1.0.2:
+    resolution: {integrity: sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q==}
+    dev: true
+
   /@bcoe/v8-coverage/0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
@@ -1510,13 +1493,27 @@ packages:
   /asynckit/0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
+  /at-least-node/1.0.0:
+    resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
+    engines: {node: '>= 4.0.0'}
+    dev: true
+
   /aws-cdk-lib/2.24.1_constructs@10.1.9:
     resolution: {integrity: sha512-xGeEX+9wPGppSiIUdf/JTLMmqMikGhlSi7bjijl3lwncZtySkdjX0j+W2A1fuKp0S8Yd2axkwVkltIMxzNH/gw==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       constructs: ^10.0.0
     dependencies:
+      '@balena/dockerignore': 1.0.2
+      case: 1.6.3
       constructs: 10.1.9
+      fs-extra: 9.1.0
+      ignore: 5.2.0
+      jsonschema: 1.4.1
+      minimatch: 3.1.2
+      punycode: 2.1.1
+      semver: 7.3.7
+      yaml: 1.10.2
     dev: true
     bundledDependencies:
       - '@balena/dockerignore'
@@ -1692,6 +1689,11 @@ packages:
       - stylus
       - sugarss
       - svelte
+    dev: true
+
+  /case/1.6.3:
+    resolution: {integrity: sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==}
+    engines: {node: '>= 0.8.0'}
     dev: true
 
   /chai/4.3.6:
@@ -2779,6 +2781,16 @@ packages:
       universalify: 0.1.2
     dev: true
 
+  /fs-extra/9.1.0:
+    resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
+    engines: {node: '>=10'}
+    dependencies:
+      at-least-node: 1.0.0
+      graceful-fs: 4.2.10
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: true
+
   /fs.realpath/1.0.0:
     resolution: {integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8=}
     dev: true
@@ -3282,6 +3294,10 @@ packages:
       universalify: 2.0.0
     optionalDependencies:
       graceful-fs: 4.2.10
+    dev: true
+
+  /jsonschema/1.4.1:
+    resolution: {integrity: sha512-S6cATIPVv1z0IlxdN+zUk5EPjkGCdnhN4wVSBlvoUO1tOLJootbo9CquNJmbIh4yikWHiUedhRYrNPn1arpEmQ==}
     dev: true
 
   /keyv/3.1.0:
@@ -4943,6 +4959,11 @@ packages:
 
   /yallist/4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+    dev: true
+
+  /yaml/1.10.2:
+    resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
+    engines: {node: '>= 6'}
     dev: true
 
   /yargs-parser/20.2.9:

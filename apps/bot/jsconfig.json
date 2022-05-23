@@ -3,7 +3,9 @@
     "baseUrl": ".",
     "paths": {
       "$lib": ["src/lib"],
-      "$lib/*": ["src/lib/*"]
+      "$lib/*": ["src/lib/*"],
+      "$discord": ["src/discord"],
+      "$discord/*": ["src/discord/*"]
     }
   },
   "include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.svelte"]

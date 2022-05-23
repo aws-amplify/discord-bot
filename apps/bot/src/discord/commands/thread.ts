@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js'
 import { createCommand, createOption } from '@hey-amplify/discord'
 import type { ThreadChannel } from 'discord.js'
-import { prisma } from '../db'
+import { prisma } from '../../db'
 
 export const PREFIXES = {
   solved: '✅ - ',
@@ -62,7 +62,7 @@ async function handler(interaction) {
 
     // check if thread has been renamed within 10 minutes
     const renames = messages.filter(
-      (m) => m.author.id === channel.ownerId && m.type === 'CHANNEL_NAME_CHANGE'
+      m => m.author.id === channel.ownerId && m.type === 'CHANNEL_NAME_CHANGE'
     )
     const lastRenameTimestamp = renames.first()?.createdTimestamp
     if (lastRenameTimestamp) {

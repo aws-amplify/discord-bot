@@ -38,7 +38,6 @@ const config = {
 
     files: {
       assets: relative('public'),
-      routes: relative('src/pages'),
     },
 
     vite: {

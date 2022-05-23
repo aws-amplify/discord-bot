@@ -1,5 +1,5 @@
 import express from 'express'
-import { createBot, client } from './client'
+import { createBot, client } from './discord/client'
 import { api } from './api'
 
 createBot()

@@ -1,5 +1,5 @@
 {
-  "extends": "@hey-amplify/tsconfig/base.json",
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "build",
