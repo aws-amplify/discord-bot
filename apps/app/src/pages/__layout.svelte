@@ -28,7 +28,6 @@
   import { SvelteComponentDev } from 'svelte/internal'
 
   export let user
-
   userStore.set(user)
 
   let theme: CarbonTheme = 'g100'
@@ -50,7 +49,6 @@
 
     <HeaderUtilities>
       {#if $userStore}
-        <HeaderGlobalAction aria-label="Settings" icon="{SettingsAdjust}" />
         <HeaderAction
           aria-label="User settings"
           bind:isOpen="{isUserPanelOpen}"
@@ -58,7 +56,9 @@
         >
           <Avatar slot="icon" userId="{user.id}" avatarHash="{user.avatar}" />
           <HeaderPanelLinks>
-            <HeaderPanelLink href="/settings">Settings</HeaderPanelLink>
+            {#if $userStore.isAdmin}
+              <HeaderPanelLink href="/admin">Administration</HeaderPanelLink>
+            {/if}
             <HeaderPanelLink href="/api/auth/logout">Logout</HeaderPanelLink>
           </HeaderPanelLinks>
         </HeaderAction>

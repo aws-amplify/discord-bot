@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:../db/dev.db"
+  url      = env("DATABASE_URL")
 }
 
 model Question {
@@ -21,4 +21,19 @@ model Question {
   title               String
   isSolved            Boolean  @default(false)
   url                 String?
+}
+
+model ConfigurationAdminRoles {
+  id              String         @id
+  Configuration   Configuration? @relation(fields: [configurationId], references: [id])
+  configurationId String?
+}
+
+model Configuration {
+  id         String                    @id @unique
+  name       String
+  createdAt  DateTime                  @default(now())
+  updatedAt  DateTime                  @updatedAt
+  adminRoles ConfigurationAdminRoles[]
+
 }
