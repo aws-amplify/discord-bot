@@ -12,13 +12,3 @@ services:
       - ./apps/bot/db:/usr/src/apps/bot/db
     env_file:
       - .env.local
-  app:
-    image: app
-    container_name: app-local
-    build:
-      context: .
-      dockerfile: apps/app/Dockerfile
-    ports:
-      - '3000'
-    env_file:
-      - .env.local
