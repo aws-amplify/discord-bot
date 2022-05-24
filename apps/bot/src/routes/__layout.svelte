@@ -1,6 +1,7 @@
 <script context="module">
   /** * @type {import('@sveltejs/kit').Load} */
   export async function load({ session }) {
+    console.log({ session })
     return {
       props: { user: session.user || false },
     }
@@ -54,16 +55,16 @@
           bind:isOpen="{isUserPanelOpen}"
           transition="{{ duration: 200 }}"
         >
-          <Avatar slot="icon" userId="{user.id}" avatarHash="{user.avatar}" />
+          <Avatar slot="icon" url="{user.image}" />
           <HeaderPanelLinks>
             {#if $userStore.isAdmin}
               <HeaderPanelLink href="/admin">Administration</HeaderPanelLink>
             {/if}
-            <HeaderPanelLink href="/api/auth/logout">Logout</HeaderPanelLink>
+            <HeaderPanelLink href="/api/auth/signout">Logout</HeaderPanelLink>
           </HeaderPanelLinks>
         </HeaderAction>
       {:else}
-        <Button aria-label="Login" href="/api/auth/login">Login</Button>
+        <Button aria-label="Login" href="/api/auth/signin">Login</Button>
       {/if}
     </HeaderUtilities>
   </Header>

@@ -1,71 +1,35 @@
-import cookie from 'cookie'
-import { RouteBases, Routes } from 'discord-api-types/v10'
-import { createDiscordApi } from '@hey-amplify/discord'
+import type { Session } from 'next-auth'
+import type { NextAuthOptions } from 'next-auth'
+import DiscordProvider from 'next-auth/providers/discord'
+import GithubProvider from 'next-auth/providers/github'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { createBot } from '$discord/client'
-import type { GetSession } from '@sveltejs/kit'
+import { getServerSession } from '$lib/next-auth'
+import { prisma } from '$lib/db'
 
 const client = await createBot()
 
-const api = createDiscordApi()
-const USER_URL = RouteBases.api + Routes.user()
-const HOST = import.meta.env.VITE_HOST
-
-async function fetchUserData(token) {
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  }
-  const res = await fetch(USER_URL, { headers })
-  const result = await res.json()
-  return result
+const nextAuthOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    DiscordProvider({
+      clientId: process.env.DISCORD_AUTH_CLIENT_ID,
+      clientSecret: process.env.DISCORD_AUTH_CLIENT_SECRET,
+    }),
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    }),
+  ],
 }
 
-/** @type {import('@sveltejs/kit').GetSession} */
-export async function getSession(event) {
-  const cookies = cookie.parse(event.request.headers.get('cookie') || '')
+export async function handle({ event, resolve }): Promise<Response> {
+  const session = await getServerSession(event.request, nextAuthOptions)
+  event.locals.session = session
 
-  /** @description Discord Access Token */
-  let token: string
+  return resolve(event)
+}
 
-  // if only refresh token is found, then access token has expired. perform a refresh on it.
-  if (cookies.discord_refresh_token && !cookies.discord_access_token) {
-    const discordRequest = await fetch(
-      `${HOST}/api/auth/refresh?code=${cookies.discord_refresh_token}`
-    )
-    const discordResponse = await discordRequest.json()
-
-    if (discordResponse.discord_access_token) {
-      token = discordResponse.discord_access_token
-    }
-  }
-
-  if (cookies.discord_access_token) {
-    token = cookies.discord_access_token
-  }
-
-  if (token) {
-    const user = await fetchUserData(token)
-
-    const botGuilds = await api.get(Routes.userGuilds())
-    const memberships = []
-    for (const guild of botGuilds as [{ id }]) {
-      const member = await api.get(Routes.guildMember(guild.id, user.id))
-      if (member) {
-        memberships.push(member)
-      }
-    }
-
-    user.memberships = memberships
-
-    if (user.id) {
-      return {
-        user,
-      }
-    }
-  }
-
-  // not authenticated, return empty user object
-  return {
-    user: false,
-  }
+export function getSession(event): Session {
+  return event.locals.session || {}
 }
