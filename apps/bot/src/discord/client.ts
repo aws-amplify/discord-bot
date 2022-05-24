@@ -7,7 +7,7 @@ import type {
   CommandInteraction,
 } from 'discord.js'
 import { PREFIXES } from './commands/thread'
-import { prisma } from '../db'
+import { prisma } from '$lib/db'
 
 export const client = new Client({
   intents: [

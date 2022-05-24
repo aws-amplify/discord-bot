@@ -1,4 +1,4 @@
-import { prisma } from '../../../db'
+import { prisma } from '$lib/db'
 
 export async function get(event) {
   const { guildId: id } = event.url.searchParams

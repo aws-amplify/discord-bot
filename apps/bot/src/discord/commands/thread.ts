@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js'
 import { createCommand, createOption } from '@hey-amplify/discord'
 import type { ThreadChannel } from 'discord.js'
-import { prisma } from '../../db'
+import { prisma } from '$lib/db'
 
 export const PREFIXES = {
   solved: '✅ - ',
