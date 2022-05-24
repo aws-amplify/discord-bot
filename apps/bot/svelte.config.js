@@ -7,10 +7,6 @@ import { loadEnv } from 'vite'
 // https://nodejs.org/api/esm.html#esm_no_json_module_loading
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
 
-const include = ['../../packages'].map(
-  path => new URL(path + '/**/**/*.(js|ts)', import.meta.url).pathname
-)
-
 // load env vars for development
 Object.assign(
   process.env,
@@ -22,6 +18,16 @@ Object.assign(
 
 function relative(path) {
   return new URL(path, import.meta.url).pathname
+}
+
+/** @type {import('vite').Plugin} */
+export function BotServerPlugin(options) {
+  return {
+    name: 'bot-server-plugin',
+    configureServer(server) {
+      //
+    },
+  }
 }
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -41,13 +47,27 @@ const config = {
     },
 
     vite: {
+      build: {
+        target: 'es2022',
+      },
       envDir: '../../',
       define: {
         'import.meta.vitest': 'undefined',
       },
       plugins: [],
-      build: {
-        target: 'es2022',
+      resolve: {
+        alias: {
+          $discord: relative('./src/discord'),
+        },
+      },
+      rollupOptions: {
+        input: 'src/server.ts',
+        external: Object.keys(pkg.dependencies),
+        output: {
+          inlineDynamicImports: false,
+          preserveModules: true,
+          preserveModulesRoot: 'src',
+        },
       },
     },
   },

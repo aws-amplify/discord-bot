@@ -18,6 +18,7 @@ export const client = new Client({
     Intents.FLAGS.GUILD_SCHEDULED_EVENTS,
   ],
 })
+
 export const commands = await createBank(
   new URL('./commands', import.meta.url).pathname
 )

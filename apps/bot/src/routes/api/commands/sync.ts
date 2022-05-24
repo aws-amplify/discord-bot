@@ -1,4 +1,4 @@
-import { commands } from '@hey-amplify/bot'
+import { commands } from '$discord/client'
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function post() {

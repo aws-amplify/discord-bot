@@ -1,7 +1,10 @@
 import cookie from 'cookie'
 import { RouteBases, Routes } from 'discord-api-types/v10'
 import { createDiscordApi } from '@hey-amplify/discord'
+import { createBot } from '$discord/client'
 import type { GetSession } from '@sveltejs/kit'
+
+const client = await createBot()
 
 const api = createDiscordApi()
 const USER_URL = RouteBases.api + Routes.user()
