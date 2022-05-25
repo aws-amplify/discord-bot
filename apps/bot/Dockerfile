@@ -22,10 +22,12 @@ RUN npm install --global pnpm@7.1.0
 # expose necessary env vars
 ENV DISCORD_BOT_TOKEN=""
 ENV PORT 3000
+ENV DATABASE_URL="file:../db/data.db"
 
 COPY --from=base /usr/src .
 
 WORKDIR /usr/src/apps/bot
+# RUN npx prisma migrate deploy
 
 EXPOSE 3000
-CMD ["pnpm", "start"]
+CMD ["./scripts/start.sh"]

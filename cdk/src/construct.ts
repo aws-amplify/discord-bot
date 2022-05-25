@@ -1,14 +1,16 @@
 import { Construct } from 'constructs'
-import * as ec2 from 'aws-cdk-lib/aws-ec2'
+import { Port } from 'aws-cdk-lib/aws-ec2'
+import * as iam from 'aws-cdk-lib/aws-iam'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
+import * as efs from 'aws-cdk-lib/aws-efs'
 import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
-import type * as efs from 'aws-cdk-lib/aws-efs'
 
 interface DockerProps {
   name: string
   context: string
   dockerfile?: string
+  environment?: { [key: string]: string }
 }
 
 export interface HeyAmplifyAppProps {
@@ -25,17 +27,12 @@ export interface HeyAmplifyAppProps {
   /**
    * Filesystem to be used for storing the application's data.
    */
-  filesystem?: efs.FileSystem
+  filesystem: efs.FileSystem
 
   /**
-   * The security group of the file system.
+   * Filesystem container mount point
    */
-  filesystemSecurityGroup?: ec2.ISecurityGroup
- 
-   /**
-    * Filesystem container mount point
-    */
-  filesystemMountPoint?: string
+  filesystemMountPoint: string
 
   /**
    * Discord Bot secrets
@@ -49,71 +46,76 @@ export interface HeyAmplifyAppProps {
 }
 
 export class HeyAmplifyApp extends Construct {
-  public readonly service: ecs_patterns.ApplicationLoadBalancedFargateService
+  // public readonly service: ecs_patterns.ApplicationLoadBalancedFargateService
 
   constructor(scope: Construct, id: string, props: HeyAmplifyAppProps) {
     super(scope, id)
 
-    const { cluster } = props
+    const { cluster, filesystem, filesystemMountPoint, docker } = props
 
     const secrets = {}
     for (const [name, param] of Object.entries(props.secrets)) {
       secrets[name] = ecs.Secret.fromSsmParameter(param)
     }
-
-    this.service = new ecs_patterns.ApplicationLoadBalancedFargateService(
-      this,
-      `fargate-service`,
-      {
-        cluster,
-        cpu: 256,
-        memoryLimitMiB: 512,
-        desiredCount: 1,
-        taskImageOptions: {
-          containerName: props.docker.name,
-          image: ecs.ContainerImage.fromAsset(props.docker.context, {
-            file: props.docker.dockerfile || 'Dockerfile',
-          }),
-          enableLogging: true,
-          secrets,
-        },
-        assignPublicIp: false,
-        publicLoadBalancer: true,
-      }
-    )
-
-    const { filesystem, filesystemMountPoint, filesystemSecurityGroup } = props
-    if (filesystem && filesystemMountPoint && filesystemSecurityGroup) {
-      const volumeName = 'efs-volume'
-      const mountPath = filesystemMountPoint
-
-      this.service.taskDefinition.addVolume({
-        name: volumeName,
-        efsVolumeConfiguration: {
-          fileSystemId: filesystem.fileSystemId,
-        },
-      })
-
-      filesystem.grant(
-        this.service.taskDefinition.taskRole,
-        'elasticfilesystem:ClientRootAccess',
-        'elasticfilesystem:ClientWrite',
-        'elasticfilesystem:ClientMount',
-        'elasticfilesystem:DescribeMountTargets'
+    const albFargateService =
+      new ecs_patterns.ApplicationLoadBalancedFargateService(
+        this,
+        `fargate-service`,
+        {
+          cluster,
+          cpu: 256,
+          memoryLimitMiB: 512,
+          desiredCount: 1,
+          taskImageOptions: {
+            containerName: docker.name,
+            image: ecs.ContainerImage.fromAsset(docker.context, {
+              file: docker.dockerfile || 'Dockerfile',
+            }),
+            environment: docker.environment,
+            enableLogging: true,
+            secrets,
+            containerPort: 3000,
+          },
+          assignPublicIp: false,
+          publicLoadBalancer: true,
+        }
       )
 
-      const container = this.service.taskDefinition.findContainer(
-        props.docker.name
-      ) as ecs.ContainerDefinition
+    albFargateService.targetGroup.setAttribute(
+      'deregistration_delay.timeout_seconds',
+      '30'
+    )
 
-      container.addMountPoints({
-        containerPath: mountPath,
-        sourceVolume: volumeName,
-        readOnly: false,
-      })
+    const volumeName = 'efs-volume'
+    albFargateService.service.taskDefinition.addVolume({
+      name: volumeName,
+      efsVolumeConfiguration: {
+        fileSystemId: filesystem.fileSystemId,
+      },
+    })
 
-      const efsPort = ec2.Port.tcp(2049)
-      filesystemSecurityGroup.connections.allowFrom(this.service.service, efsPort)
-    }
+    const container = albFargateService.service.taskDefinition.findContainer(
+      docker.name
+    ) as ecs.ContainerDefinition
+
+    container.addMountPoints({
+      containerPath: filesystemMountPoint,
+      sourceVolume: volumeName,
+      readOnly: false,
+    })
+
+    filesystem.grant(
+      container.taskDefinition.taskRole,
+      'elasticfilesystem:ClientRootAccess',
+      'elasticfilesystem:ClientWrite',
+      'elasticfilesystem:ClientMount',
+      'elasticfilesystem:DescribeMountTargets'
+    )
+
+    // allow inbound connections to the filesystem
+    filesystem.connections.allowDefaultPortFrom(albFargateService.service)
+
+    // allow outbound connections to the filesystem
+    albFargateService.service.connections.allowTo(filesystem, Port.tcp(2049))
   }
 }
