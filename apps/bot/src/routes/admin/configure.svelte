@@ -23,10 +23,8 @@
   const selectedServer = servers[0]?.id
 
   async function switchGuild(id) {
-    console.log({ id })
     const res = await fetch(`/admin/configure?id=${id}`)
     const data = await res.json()
-    console.log({ data })
   }
 
   async function onSubmit(event) {

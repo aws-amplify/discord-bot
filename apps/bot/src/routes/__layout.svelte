@@ -1,7 +1,6 @@
 <script context="module">
   /** * @type {import('@sveltejs/kit').Load} */
   export async function load({ session }) {
-    console.log({ session })
     return {
       props: { user: session.user || false },
     }
@@ -21,12 +20,12 @@
     HeaderPanelLink,
     ToastNotification,
   } from 'carbon-components-svelte'
-  import Avatar from '$lib/Avatar.svelte'
-  import { UserAvatarFilledAlt, SettingsAdjust } from 'carbon-icons-svelte'
   import 'carbon-components-svelte/css/all.css'
+  import Avatar from '$lib/Avatar.svelte'
+  import LoginButton from '$lib/LoginButton.svelte'
   import { user as userStore, notifications } from '$lib/store'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
-  import { SvelteComponentDev } from 'svelte/internal'
+  // import { signIn } from '$lib/auth'
 
   export let user
   userStore.set(user)
@@ -64,7 +63,8 @@
           </HeaderPanelLinks>
         </HeaderAction>
       {:else}
-        <Button aria-label="Login" href="/api/auth/signin">Login</Button>
+        <!-- <Button on:click="{() => signIn('discord')}">Signin</Button> -->
+        <LoginButton />
       {/if}
     </HeaderUtilities>
   </Header>

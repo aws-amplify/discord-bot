@@ -1,10 +1,42 @@
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { NextAuthHandler } from 'next-auth/core'
+import cookie from 'cookie'
+import getFormBody from './support/get-form-body'
+import { prisma } from '$lib/db'
+import DiscordProvider from 'next-auth/providers/discord'
+import GithubProvider from 'next-auth/providers/github'
 import type { RequestHandler } from '@sveltejs/kit'
 import type { IncomingRequest, NextAuthOptions, Session } from 'next-auth'
 import type { NextAuthAction } from 'next-auth/lib/types'
 import type { OutgoingResponse } from 'next-auth/core'
-import { NextAuthHandler } from 'next-auth/core'
-import cookie from 'cookie'
-import getFormBody from './support/get-form-body'
+
+export const options: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    DiscordProvider({
+      clientId: process.env.DISCORD_AUTH_CLIENT_ID,
+      clientSecret: process.env.DISCORD_AUTH_CLIENT_SECRET,
+    }),
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    }),
+  ],
+  // callbacks: {
+  //   async signIn({ user, account, profile, email, credentials }) {
+  //     return true
+  //   },
+  //   async redirect({ url, baseUrl }) {
+  //     return baseUrl
+  //   },
+  //   async session({ session, token, user }) {
+  //     return session
+  //   },
+  //   async jwt({ token, user, account, profile, isNewUser }) {
+  //     return token
+  //   },
+  // },
+}
 
 async function toSvelteKitResponse(
   request: Request,
@@ -66,11 +98,15 @@ async function SKNextAuthHandler(
     query: Object.fromEntries(url.searchParams),
     headers: request.headers,
     method: request.method,
-    cookies: cookie.parse(request.headers.get('cookie')),
+    // this is causing issues if browser does not have cookies
+    // cookies: cookie.parse(request.headers.get('cookie')),
     action: nextauth[0] as NextAuthAction,
     providerId: nextauth[1],
     error: nextauth[1],
   }
+
+  const cookies = request.headers.get('cookie')
+  if (cookies) req.cookies = cookie.parse(cookies)
 
   const response = await NextAuthHandler({
     req,
@@ -91,7 +127,7 @@ export async function getServerSession(
       host: import.meta.env.VITE_NEXTAUTH_URL,
       action: 'session',
       method: 'GET',
-      cookies: cookie.parse(request.headers.get('cookie')),
+      cookies: cookie.parse(request.headers.get('cookie') || ''),
       headers: request.headers,
     },
     options,
