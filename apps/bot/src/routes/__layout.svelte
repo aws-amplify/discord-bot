@@ -25,7 +25,6 @@
   import LoginButton from '$lib/LoginButton.svelte'
   import { user as userStore, notifications } from '$lib/store'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
-  // import { signIn } from '$lib/auth'
 
   export let user
   userStore.set(user)
@@ -63,7 +62,6 @@
           </HeaderPanelLinks>
         </HeaderAction>
       {:else}
-        <!-- <Button on:click="{() => signIn('discord')}">Signin</Button> -->
         <LoginButton />
       {/if}
     </HeaderUtilities>
@@ -81,6 +79,10 @@
 </Theme>
 
 <style>
+  :global(body) {
+    --cds-interactive-01: #5865f2;
+  }
+
   :global(.bx--content) {
     background: inherit;
   }
