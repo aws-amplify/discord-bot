@@ -22,7 +22,6 @@ export async function handle({ event, resolve }): Promise<Response> {
   const session = await getServerSession(event.request, options)
   event.locals.session = session
 
-  console.log(event.url.pathname)
   // protect API routes
   if (isApiRoute(event.url.pathname)) {
     if (!isApiAuthRoute(event.url.pathname)) {
