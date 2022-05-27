@@ -23,6 +23,7 @@
   import 'carbon-components-svelte/css/all.css'
   import Avatar from '$lib/Avatar.svelte'
   import LoginButton from '$lib/LoginButton.svelte'
+  import LogoutButton from '$lib/LogoutButton.svelte'
   import { user as userStore, notifications } from '$lib/store'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
 
@@ -62,7 +63,7 @@
           </HeaderPanelLinks>
         </HeaderAction>
       {:else}
-        <LoginButton />
+        <LoginButton provider="{'discord'}" />
       {/if}
     </HeaderUtilities>
   </Header>
@@ -80,7 +81,8 @@
 
 <style>
   :global(body) {
-    --cds-interactive-01: #5865f2;
+    /* --cds-interactive-01: #5865f2;
+    --cds-hover-primary: #7289da; */
   }
 
   :global(.bx--content) {

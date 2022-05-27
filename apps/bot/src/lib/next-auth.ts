@@ -22,6 +22,11 @@ export const options: NextAuthOptions = {
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
   ],
+  pages: {
+    // signIn: undefined,
+    // signOut: '/auth/signout',
+    error: '/auth/error', // Error code passed in query string as ?error=
+  },
   // callbacks: {
   //   async signIn({ user, account, profile, email, credentials }) {
   //     return true
