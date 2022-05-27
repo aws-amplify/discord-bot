@@ -10,14 +10,20 @@ import type { IncomingRequest, NextAuthOptions, Session } from 'next-auth'
 import type { NextAuthAction } from 'next-auth/lib/types'
 import type { OutgoingResponse } from 'next-auth/core'
 
+// TODO: can we get around this behavior for SSR builds?
+// @ts-expect-error
+const discord = DiscordProvider?.default || DiscordProvider
+// @ts-expect-error
+const github = GithubProvider?.default || GithubProvider
+
 export const options: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
+    discord({
       clientId: process.env.DISCORD_AUTH_CLIENT_ID,
       clientSecret: process.env.DISCORD_AUTH_CLIENT_SECRET,
     }),
-    GithubProvider({
+    github({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
