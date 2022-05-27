@@ -6,7 +6,7 @@
 
   export let provider: Provider
 
-  let redirect = window?.location?.href || import.meta.env.VITE_HOST
+  let redirect = global?.window?.location?.href || import.meta.env.VITE_HOST
 </script>
 
 <form

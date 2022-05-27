@@ -23,7 +23,7 @@ export const options: NextAuthOptions = {
     }),
   ],
   pages: {
-    // signIn: undefined,
+    signIn: '/',
     // signOut: '/auth/signout',
     error: '/auth/error', // Error code passed in query string as ?error=
   },

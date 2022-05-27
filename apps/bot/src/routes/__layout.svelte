@@ -21,6 +21,7 @@
     ToastNotification,
   } from 'carbon-components-svelte'
   import 'carbon-components-svelte/css/all.css'
+  import { afterNavigate } from '$app/navigation'
   import Avatar from '$lib/Avatar.svelte'
   import LoginButton from '$lib/LoginButton.svelte'
   import LogoutButton from '$lib/LogoutButton.svelte'
@@ -34,6 +35,10 @@
 
   let isSideNavOpen = false
   let isUserPanelOpen = false
+
+  afterNavigate(navigation => {
+    if (isUserPanelOpen) isUserPanelOpen = false
+  })
 </script>
 
 <Theme bind:theme>
@@ -59,7 +64,7 @@
             {#if $userStore.isAdmin}
               <HeaderPanelLink href="/admin">Administration</HeaderPanelLink>
             {/if}
-            <HeaderPanelLink href="/api/auth/signout">Logout</HeaderPanelLink>
+            <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
           </HeaderPanelLinks>
         </HeaderAction>
       {:else}
