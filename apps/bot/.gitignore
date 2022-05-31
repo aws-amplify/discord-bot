@@ -1,2 +1,5 @@
-node_modules
-db
+/node_modules
+/db
+/.svelte-kit
+/build
+/server

@@ -11,8 +11,7 @@ node_modules
 # no builds
 **/build
 
-# env files and logs
-.env*
+# no logs
 *.log
 
 # docs, markdown

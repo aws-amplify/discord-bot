@@ -5,7 +5,6 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "app": "pnpm --filter @hey-amplify/app",
     "bot": "pnpm --filter @hey-amplify/bot",
     "apps": "pnpm --filter \"./apps/**\"",
     "build": "pnpm -r run build",

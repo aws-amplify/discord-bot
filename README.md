@@ -1,6 +1,19 @@
-# hey-amplify
+# AWS Amplify Discord Bot: "hey-amplify"
 
-Welcome to hey-amplify! This repository contains the source code for the [AWS Amplify Discord Server](https://discord.gg/8RFCGKMfVM)'s bot!
+This repository contains the source code for the [AWS Amplify Discord Server](https://discord.gg/8RFCGKMfVM)'s bot!
+
+## Features
+
+- auto-threads "help" channels; if a channel follows the `<category>-help` naming convention messages will automatically get converted into threads
+  - thread data is tracked by title, original poster ID, and whether the thread is solved (`GET /api/questions`)
+- command: `/giverole` - accepts a ROLE and USER argument to grant a role (NOTE: this command is disabled by default for `@everyone`)
+- command: `/contribute` - accepts an Amplify project argument and returns the GitHub contribution URL
+- command: `/github` - accepts an Amplify project argument and returns the GitHub repository URL
+- command: `/thread` - command suite for thread owners
+  - `/thread rename <title>` - allows thread owners to rename their threads
+  - `/thread archive` - allows thread owners to optionally archive their thread
+  - `/thread solved` - allows thread owners to mark their question (thread) as "solved", which changes prepended `?` with ✅
+  - `/thread reopen` - allows thread owners to "reopen" their question (thread), which changes prepended ✅ with `?`
 
 ## Getting Started
 
@@ -13,9 +26,9 @@ Welcome to hey-amplify! This repository contains the source code for the [AWS Am
 2. `pnpm install`
 3. `pnpm build`
 4. Rename `.env.sample` to `.env.local` and [add necessary Discord environment values](#setting-up-a-discord-bot)
-5. Run the app with `pnpm app dev`
-6. Run the bot with `pnpm bot dev`
-7. Navigate to `http://localhost:3000/admin` and sync the commands (**NOTE**: allow about 30 minutes for commands to show in Discord)
+5. Run the bot with `pnpm bot dev`
+6. Navigate to `http://localhost:3000/admin` and sync the commands
+7. Refresh your Discord client and try out a command!
 
 ### Setting up a Discord Bot
 

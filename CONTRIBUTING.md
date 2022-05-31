@@ -38,7 +38,7 @@ export default createCommand({
 
 Save and register the new command with `commands.sync()`
 
-**NOTE:** refresh your Discord client and allow up to 30 minutes for commands to show in Discord
+**NOTE:** refresh your Discord client and optionally allow up to 30 minutes for commands to show in Discord
 
 ## Creating Secrets in SSM
 
@@ -59,18 +59,18 @@ For the deployment we will work primarily in the [`cdk`](./cdk) directory, where
 1. if not already done, bootstrap the environment with `pnpm cdk bootstrap`
 2. ensure we are able to synthesize the stack: `pnpm cdk synth`
    1. alternatively we can synthesize an environment-specific stack: `pnpm cdk synth -c env=next`
-3. deploy the stack with `pnpm cdk deploy --all`
+3. deploy the stack with `pnpm cdk deploy`
 
 ### Typical Workflow
 
 Deploy for environment `next`
 
 1. `pnpm cdk synth -c env=next`
-2. `pnpm cdk deploy -c env=next --all`
+2. `pnpm cdk deploy -c env=next`
 
 Destroy resources associated with environment `next`
 
-1. `pnpm cdk destroy -c env=next --all`
+1. `pnpm cdk destroy -c env=next`
 
 ## Testing
 
@@ -96,4 +96,3 @@ When `pnpm test` is run from the project root, the newly added test is executed 
 Build individual apps using [`docker compose`](https://docs.docker.com/compose/):
 
 - `docker compose up bot --build`
-- `docker compose up app --build`
