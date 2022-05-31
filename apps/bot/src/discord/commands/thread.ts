@@ -15,7 +15,7 @@ async function handler(interaction) {
     where: { threadId: channel.id },
   })
 
-  if (!channel.isThread() || !record) {
+  if (!channel.isThread()) {
     const embed = new MessageEmbed()
     embed.setColor('#ff9900')
     embed.setDescription(
