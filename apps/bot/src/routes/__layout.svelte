@@ -47,9 +47,9 @@
       <SkipToContent />
     </div>
 
-    <span slot="platform" class="ha--platform-name">
+    <span slot="platform" class="ha--platform--container">
       <img src="/logo.svg" alt="AWS Amplify Logo" />
-      AWS Amplify Discord Bot
+      <span class="ha--platform-name">AWS Amplify Discord Bot</span>
       <!-- <code>v{process.env.VERSION || ''}</code> -->
     </span>
 
@@ -118,11 +118,21 @@
     grid-gap: var(--cds-spacing-01);
   }
 
-  .ha--platform-name {
+  .ha--platform--container {
     display: grid;
     align-items: center;
     grid-auto-flow: column;
     column-gap: var(--cds-spacing-04);
+  }
+
+  .ha--platform-name {
+    display: none;
+  }
+
+  @media (min-width: 33rem) {
+    .ha--platform-name {
+      display: inline-block;
+    }
   }
 
   img {
