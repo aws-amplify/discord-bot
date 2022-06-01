@@ -3,7 +3,7 @@
   export async function load({ session }) {
     return {
       props: {
-        isLoggedIn: !!session.user,
+        isLoggedIn: !!session?.user,
       },
     }
   }
