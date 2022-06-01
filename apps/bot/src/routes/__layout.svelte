@@ -2,7 +2,7 @@
   /** * @type {import('@sveltejs/kit').Load} */
   export async function load({ session }) {
     return {
-      props: { user: session.user || false },
+      props: { user: session?.user || false },
     }
   }
 </script>
@@ -74,9 +74,7 @@
     </HeaderUtilities>
   </Header>
 
-  {#if import.meta.env.DEV}
-    <slot />
-  {/if}
+  <slot />
 
   <div class="ha--notification--container">
     {#each $notifications as notification}
