@@ -74,9 +74,7 @@
     </HeaderUtilities>
   </Header>
 
-  {#if import.meta.env.DEV}
-    <slot />
-  {/if}
+  <slot />
 
   <div class="ha--notification--container">
     {#each $notifications as notification}
