@@ -44,9 +44,14 @@ export function createSecretKey(
 export function loadSecrets(
   envName = '_local',
   envDir: string = process.cwd(),
-  envPrefix: string | string[] = 'DISCORD_'
+  envPrefix: string | string[] = ['DISCORD_', 'VITE_']
 ): Record<string, string> {
-  const prefixes = Array.isArray(envPrefix) ? envPrefix : [envPrefix]
+  let prefixes = envPrefix
+  if (prefixes) {
+    prefixes = Array.isArray(envPrefix)
+      ? (envPrefix as string[])
+      : [envPrefix as string]
+  }
   return loadEnv(envName, envDir, prefixes)
 }
 

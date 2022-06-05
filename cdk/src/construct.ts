@@ -76,7 +76,7 @@ export class HeyAmplifyApp extends Construct {
             secrets,
             containerPort: 3000,
           },
-          assignPublicIp: false,
+          assignPublicIp: true,
           publicLoadBalancer: true,
         }
       )

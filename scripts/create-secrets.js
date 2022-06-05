@@ -8,12 +8,12 @@ export const description = 'Create secrets in SSM from local dotenv files'
 export const options = [
   { name: 'help', alias: 'h', type: Boolean },
   {
-    name: 'appName',
+    name: 'app',
     alias: 'n',
     type: String,
     defaultValue: 'hey-amplify',
   },
-  { name: 'envName', alias: 'e', type: String },
+  { name: 'env', alias: 'e', type: String },
   // { name: 'dry-run', alias: 'd', type: Boolean },
 ]
 
@@ -34,8 +34,8 @@ export async function handler(args) {
     return
   }
 
-  if (!args.envName) {
-    console.error(c.red('ERROR: envName is required'))
+  if (!args.env) {
+    console.error(c.red('ERROR: env is required'))
     console.log(usage)
     return
   }
@@ -44,8 +44,8 @@ export async function handler(args) {
   let parameters
   try {
     parameters = await createSecrets({
-      appName: args.appName,
-      envName: args.envName,
+      appName: args.app,
+      envName: args.env,
     })
   } catch (error) {
     throw new Error('Failed to create secrets: ' + error.message)
