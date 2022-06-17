@@ -1,4 +1,4 @@
-import { commands } from '$discord/client'
+import { commands } from './../../discord/client'
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function get() {
