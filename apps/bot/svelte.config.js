@@ -13,6 +13,7 @@ Object.assign(
   loadEnv('development', new URL('../../', import.meta.url).pathname, [
     'DISCORD_',
     'GITHUB_',
+    'DATABASE_',
   ])
 )
 
@@ -61,7 +62,6 @@ const config = {
         },
       },
       rollupOptions: {
-        input: 'src/server.ts',
         external: Object.keys(pkg.dependencies),
         output: {
           inlineDynamicImports: false,

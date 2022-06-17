@@ -7,6 +7,7 @@
     "paths": {
       "$lib": ["src/lib"],
       "$lib/*": ["src/lib/*"],
+      "$discord": ["src/discord"],
       "$discord/*": ["src/discord/*"]
     }
   }
