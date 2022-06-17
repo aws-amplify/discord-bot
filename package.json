@@ -7,7 +7,8 @@
   "scripts": {
     "bot": "pnpm --filter @hey-amplify/bot",
     "apps": "pnpm --filter \"./apps/**\"",
-    "build": "pnpm -r run build",
+    "packages": "pnpm --filter \"./packages/**\"",
+    "build": "pnpm packages run build && pnpm apps run build",
     "dev": "pnpm -r run build -w",
     "test": "pnpm --filter ./e2e run e2e"
   },
