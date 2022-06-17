@@ -7,14 +7,22 @@ import { loadEnv } from 'vite'
 // https://nodejs.org/api/esm.html#esm_no_json_module_loading
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
 
-// load env vars for development
-Object.assign(
-  process.env,
-  loadEnv('development', new URL('../../', import.meta.url).pathname, [
-    'DISCORD_',
-    'GITHUB_',
-  ])
-)
+/**
+ * Load's environment variables for development
+ * by default Vite's `loadEnv` will only load variables prefixed with "VITE_"
+ */
+function loadEnvVars() {
+  Object.assign(
+    process.env,
+    loadEnv('development', new URL('../../', import.meta.url).pathname, [
+      'DISCORD_',
+      'GITHUB_',
+      'DATABASE_',
+    ])
+  )
+}
+
+loadEnvVars()
 
 function relative(path) {
   return new URL(path, import.meta.url).pathname
@@ -61,7 +69,6 @@ const config = {
         },
       },
       rollupOptions: {
-        input: 'src/server.ts',
         external: Object.keys(pkg.dependencies),
         output: {
           inlineDynamicImports: false,
