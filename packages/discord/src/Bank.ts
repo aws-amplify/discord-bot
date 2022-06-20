@@ -136,7 +136,9 @@ function createDiscordCommandBank(
 
 export async function createBank(commandDirectories: string[] | string) {
   // TODO: add support for other command dirs
-  const builtinCommandsDirectory = new URL('commands', import.meta.url).pathname
+  const builtinCommandsDirectory = decodeURI(
+    new URL('commands', import.meta.url).pathname
+  )
   const providedCommandDirectories = Array.isArray(commandDirectories)
     ? commandDirectories
     : [commandDirectories]

@@ -20,7 +20,7 @@ export const client = new Client({
 })
 
 export const commands = await createBank(
-  new URL('./commands', import.meta.url).pathname
+  decodeURI(new URL('./commands', import.meta.url).pathname)
 )
 
 client.once('ready', () => {
@@ -91,7 +91,7 @@ client.on('messageCreate', async (message: Message) => {
   }
 })
 
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return
   const { commandName } = interaction
   const command = commands.get(commandName)
@@ -111,13 +111,13 @@ client.on('interactionCreate', async interaction => {
   return
 })
 
-client.on('rateLimit', info => {
+client.on('rateLimit', (info) => {
   console.log(
     `Rate limit hit ${info.timeout ? info.timeout : 'Unknown timeout '}`
   )
 })
 
-client.on('threadUpdate', async thread => {
+client.on('threadUpdate', async (thread) => {
   console.log(`Thread ${thread.id} updated`)
 })
 
