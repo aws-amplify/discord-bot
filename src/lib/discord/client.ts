@@ -1,5 +1,5 @@
 import { Client, Intents, MessageEmbed } from 'discord.js'
-import { createBank } from '@hey-amplify/discord'
+import { createBank } from '$discord'
 import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
 import { PREFIXES } from './commands/thread'
 import { prisma } from '$lib/db'

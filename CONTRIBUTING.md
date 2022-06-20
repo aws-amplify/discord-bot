@@ -15,7 +15,7 @@ Refer to the [readme guide](./README.md#getting-started) to get started.
 To get started, let's create a new command file in `src/lib/discord/commands`: `hello.ts`
 
 ```ts
-import { createCommand, createOption } from '@hey-amplify/discord'
+import { createCommand, createOption } from '$discord'
 
 const name = createOption({
   name: 'name',
