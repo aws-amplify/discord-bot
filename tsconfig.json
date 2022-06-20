@@ -1,8 +1,14 @@
 {
-  "extends": "@hey-amplify/tsconfig/base.json",
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-    "emitDeclarationOnly": false,
-    "noEmit": true
-  },
-  "exclude": ["node_modules", "amplify", "apps", "packages", "cdk"]
+    "target": "es2022",
+    "module": "es2022",
+    "moduleResolution": "node",
+    "paths": {
+      "$lib": ["src/lib"],
+      "$lib/*": ["src/lib/*"],
+      "$discord": ["src/lib/discord"],
+      "$discord/*": ["src/lib/discord/*"]
+    }
+  }
 }

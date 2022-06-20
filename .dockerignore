@@ -19,4 +19,4 @@ node_modules
 **/*.md
 
 # ignore local db
-apps/bot/db
+db
