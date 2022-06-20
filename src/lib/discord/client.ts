@@ -1,11 +1,6 @@
 import { Client, Intents, MessageEmbed } from 'discord.js'
 import { createBank } from '@hey-amplify/discord'
-import type {
-  Message,
-  StartThreadOptions,
-  ThreadChannel,
-  CommandInteraction,
-} from 'discord.js'
+import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
 import { PREFIXES } from './commands/thread'
 import { prisma } from '$lib/db'
 
@@ -91,7 +86,7 @@ client.on('messageCreate', async (message: Message) => {
   }
 })
 
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return
   const { commandName } = interaction
   const command = commands.get(commandName)
@@ -111,13 +106,13 @@ client.on('interactionCreate', async interaction => {
   return
 })
 
-client.on('rateLimit', info => {
+client.on('rateLimit', (info) => {
   console.log(
     `Rate limit hit ${info.timeout ? info.timeout : 'Unknown timeout '}`
   )
 })
 
-client.on('threadUpdate', async thread => {
+client.on('threadUpdate', async (thread) => {
   console.log(`Thread ${thread.id} updated`)
 })
 
