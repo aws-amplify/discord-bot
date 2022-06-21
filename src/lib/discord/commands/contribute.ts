@@ -1,4 +1,4 @@
-import { createCommand, createOption } from '@hey-amplify/discord'
+import { createCommand, createOption } from '$discord'
 import type { CommandInteraction } from 'discord.js'
 
 const repository = createOption({

@@ -1,9 +1,7 @@
 import * as path from 'node:path'
 import glob from 'fast-glob'
-import { ApplicationCommandManager } from 'discord.js'
-import { DiscordCommand } from './Command.js'
-import { createDiscordApi, DiscordApi } from './api.js'
-import { generateResponse } from './support.js'
+import { DiscordCommand } from './Command'
+import { createDiscordApi } from './api'
 import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10'
 import type { CommandInteraction } from 'discord.js'
 

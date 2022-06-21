@@ -2,10 +2,11 @@ node_modules
 **/node_modules
 
 # ignore other packages in monorepo
-./cdk
-./docs
-./e2e
-./scripts
+/cdk
+/docs
+/tests
+/scripts
+!/scripts/start.sh
 .vscode
 
 # no builds
@@ -19,4 +20,4 @@ node_modules
 **/*.md
 
 # ignore local db
-db
+/db

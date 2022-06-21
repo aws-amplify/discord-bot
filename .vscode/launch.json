@@ -4,7 +4,7 @@
       "name": "Launch via NPM",
       "request": "launch",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["bot", "dev"],
+      "runtimeArgs": ["dev"],
       "type": "node"
     }
   ]

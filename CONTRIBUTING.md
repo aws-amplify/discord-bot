@@ -15,7 +15,7 @@ Refer to the [readme guide](./README.md#getting-started) to get started.
 To get started, let's create a new command file in `src/lib/discord/commands`: `hello.ts`
 
 ```ts
-import { createCommand, createOption } from '@hey-amplify/discord'
+import { createCommand, createOption } from '$discord'
 
 const name = createOption({
   name: 'name',
@@ -95,3 +95,18 @@ When `pnpm test` is run from the project root, the newly added test is executed 
 Build individual apps using [`docker compose`](https://docs.docker.com/compose/):
 
 - `docker compose up bot --build`
+
+Build manually with:
+
+```shell
+docker build -t bot .
+```
+
+Run manually with:
+
+```shell
+docker run --rm \
+  --name bot-local
+  -p 3000:3000 \
+  bot
+```
