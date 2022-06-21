@@ -5,10 +5,10 @@ services:
     container_name: bot-local
     build:
       context: .
-      dockerfile: apps/bot/Dockerfile
-    expose:
+      dockerfile: Dockerfile
+    ports:
       - '3000'
     volumes:
-      - ./apps/bot/db:/usr/src/apps/bot/db
+      - ./db:/usr/src/db
     env_file:
-      - .env.local
+      - .env

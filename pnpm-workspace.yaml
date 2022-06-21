@@ -1,6 +1,5 @@
 packages:
   - 'packages/*'
-  - 'apps/*'
   - 'e2e'
   - 'cdk'
   - 'scripts'

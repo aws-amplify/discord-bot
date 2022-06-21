@@ -1,28 +1,67 @@
 {
-  "name": "@hey-amplify/root",
+  "name": "@aws-amplify/discord-bot",
   "type": "module",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "bot": "pnpm --filter @hey-amplify/bot",
-    "apps": "pnpm --filter \"./apps/**\"",
     "packages": "pnpm --filter \"./packages/**\"",
-    "build": "pnpm packages run build && pnpm apps run build",
-    "dev": "pnpm -r run build -w",
-    "test": "pnpm --filter ./e2e run e2e"
+    "start": "node build",
+    "dev": "svelte-kit dev",
+    "dev:lib": "pnpm -r run build -w",
+    "build": "svelte-kit build",
+    "build:lib": "pnpm packages run build",
+    "package": "svelte-kit package",
+    "preview": "svelte-kit preview",
+    "clean": "rimraf build",
+    "prepare": "prisma generate",
+    "pretest": "pnpm package",
+    "test": "vitest",
+    "e2e": "vitest run --mode e2e",
+    "coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@discordjs/rest": "^0.4.1",
+    "@next-auth/prisma-adapter": "^1.0.3",
+    "@prisma/client": "^3.14.0",
+    "cookie": "^0.5.0",
+    "discord-api-types": "^0.33.0",
+    "discord.js": "^13.7.0",
+    "express": "^4.18.1",
+    "fast-glob": "^3.2.11",
+    "next-auth": "^4.3.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@hey-amplify/scripts": "workspace:*",
     "@hey-amplify/support": "workspace:*",
     "@hey-amplify/tsconfig": "workspace:*",
-    "@typescript-eslint/eslint-plugin": "^5.20.0",
-    "@typescript-eslint/parser": "^5.20.0",
-    "eslint": "8.14.0",
+    "@sveltejs/adapter-node": "1.0.0-next.76",
+    "@sveltejs/kit": "1.0.0-next.345",
+    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.41",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "carbon-components-svelte": "^0.64.2",
+    "carbon-icons-svelte": "^11.0.1",
+    "carbon-preprocess-svelte": "^0.9.0",
+    "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-svelte3": "^4.0.0",
+    "jsdom": "^20.0.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.6.2",
-    "typescript": "^4.6.3"
+    "prettier-plugin-svelte": "^2.7.0",
+    "prisma": "^3.14.0",
+    "rimraf": "^3.0.2",
+    "svelte": "3.48.0",
+    "svelte-check": "^2.7.1",
+    "svelte-preprocess": "^4.10.6",
+    "svelte2tsx": "^0.5.10",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.2",
+    "vite": "^2.9.9",
+    "vite-node": "^0.12.9",
+    "vitest": "^0.12.9"
   },
   "prettier": {
     "tabWidth": 2,
@@ -30,7 +69,14 @@
     "singleQuote": true,
     "printWidth": 80,
     "useTabs": false,
-    "semi": false
+    "semi": false,
+    "svelteSortOrder": "scripts-markup-styles",
+    "svelteStrictMode": true,
+    "svelteBracketNewLine": true,
+    "svelteAllowShorthand": false,
+    "plugins": [
+      "./node_modules/prettier-plugin-svelte"
+    ]
   },
   "eslintConfig": {
     "root": true,
@@ -49,8 +95,28 @@
       "node": true
     },
     "plugins": [
+      "svelte3",
       "@typescript-eslint"
+    ],
+    "ignorePatterns": [
+      "*.cjs"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "*.svelte"
+        ],
+        "processor": "svelte3/svelte3"
+      }
     ]
   },
-  "packageManager": "pnpm@7.1.0"
+  "packageManager": "pnpm@7.1.0",
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "react",
+        "react-dom"
+      ]
+    }
+  }
 }
