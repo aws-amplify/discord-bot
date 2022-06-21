@@ -62,7 +62,7 @@ export class HeyAmplifyStack extends Stack {
       docker: {
         name: `${this.appName}-bot`,
         context: PROJECT_ROOT,
-        dockerfile: 'apps/bot/Dockerfile',
+        dockerfile: 'Dockerfile',
         environment: {
           DATABASE_URL: `file:../db/${this.envName}.db`,
         },
@@ -71,7 +71,7 @@ export class HeyAmplifyStack extends Stack {
         DISCORD_BOT_TOKEN: secrets.DISCORD_BOT_TOKEN as ssm.IParameter,
       },
       filesystem,
-      filesystemMountPoint: '/usr/src/apps/bot/db',
+      filesystemMountPoint: '/usr/src/db',
     })
   }
 
