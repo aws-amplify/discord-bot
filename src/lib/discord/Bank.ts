@@ -126,7 +126,7 @@ export class DiscordCommandBank
   }
 }
 
-function createDiscordCommandBank(
+export function createDiscordCommandBank(
   commands: DiscordCommand[]
 ): DiscordCommandBank {
   return new DiscordCommandBank(commands)
