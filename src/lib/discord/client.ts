@@ -1,8 +1,12 @@
 import { Client, Intents, MessageEmbed } from 'discord.js'
-import { createBank } from '$discord'
+import { createDiscordCommandBank } from '$discord'
 import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
-import { PREFIXES } from './commands/thread'
 import { prisma } from '$lib/db'
+// manually import the commands
+import giverole from './commands/giverole'
+import contribute from './commands/contribute'
+import thread, { PREFIXES } from './commands/thread'
+import github from './commands/github'
 
 export const client = new Client({
   intents: [
@@ -14,9 +18,13 @@ export const client = new Client({
   ],
 })
 
-export const commands = await createBank(
-  decodeURI(new URL('./commands', import.meta.url).pathname)
-)
+// instead of using `createBank` helper to create command bank from a directory path, create it manually with the imported commands
+export const commands = createDiscordCommandBank([
+  giverole,
+  contribute,
+  thread,
+  github,
+])
 
 client.once('ready', () => {
   console.log('Ready!')
@@ -89,6 +97,7 @@ client.on('messageCreate', async (message: Message) => {
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return
   const { commandName } = interaction
+  console.log('Handling interaction for command', commandName)
   const command = commands.get(commandName)
   if (!command) {
     await interaction.reply(`Command not found 🤕`)
