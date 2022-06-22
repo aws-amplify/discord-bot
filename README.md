@@ -23,12 +23,11 @@ This repository contains the source code for the [AWS Amplify Discord Server](ht
 - pnpm v6.32.3
 
 1. `gh repo fork aws-amplify/discord-bot`
-2. `pnpm install`
+2. `pnpm run setup`
 3. Rename `.env.sample` to `.env` and [add necessary Discord environment values](#setting-up-a-discord-bot)
-4. Build packages with `pnpm build:lib`
-5. Run the bot with `pnpm dev`
-6. Navigate to `http://localhost:3000/admin` and sync the commands
-7. Refresh your Discord client and try out a command!
+4. Run the bot with `pnpm dev`
+5. Navigate to `http://localhost:3000/admin` and sync the commands
+6. Refresh your Discord client and try out a command!
 
 ### Setting up a Discord Bot
 
