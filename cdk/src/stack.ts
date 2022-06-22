@@ -6,6 +6,7 @@ import * as efs from 'aws-cdk-lib/aws-efs'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import { HeyAmplifyApp } from './construct'
 import { PROJECT_ROOT } from './constants'
+import { getSvelteKitEnvironmentVariables } from './support'
 
 export class HeyAmplifyStack extends Stack {
   private readonly appName: string = this.node.tryGetContext('name')
@@ -23,9 +24,6 @@ export class HeyAmplifyStack extends Stack {
       'DISCORD_AUTH_CLIENT_ID',
       'DISCORD_AUTH_CLIENT_SECRET',
       'DISCORD_AUTH_REDIRECT_URI',
-      'VITE_HOST',
-      'VITE_NEXTAUTH_URL',
-      'VITE_NEXTAUTH_SECRET',
     ] as const
     // NOTE: this TypeScript trick is to say `secrets` should include key value pairs where the keys are one of the names in the array above
     const secrets: Partial<
@@ -68,6 +66,7 @@ export class HeyAmplifyStack extends Stack {
         dockerfile: 'Dockerfile',
         environment: {
           DATABASE_URL: `file:../db/${this.envName}.db`,
+          ...getSvelteKitEnvironmentVariables(this.envName),
         },
       },
       secrets,
