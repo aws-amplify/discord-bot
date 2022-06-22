@@ -16,6 +16,7 @@
     "preview": "svelte-kit preview",
     "prepare": "prisma generate",
     "pretest": "pnpm package",
+    "setup": "pnpm install && pnpm build:lib",
     "test": "vitest",
     "e2e": "vitest run --mode e2e",
     "coverage": "vitest run --coverage"
