@@ -1,5 +1,5 @@
 import { Client, Intents, MessageEmbed } from 'discord.js'
-import { createDiscordCommandBank } from '$discord'
+import { createDiscordCommandBank } from './../discord'
 import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
 import { prisma } from '$lib/db'
 // manually import the commands

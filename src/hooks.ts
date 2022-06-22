@@ -1,4 +1,4 @@
-import { createBot } from './discord/client'
+import { createBot } from './lib/discord/client'
 import { getServerSession, options } from '$lib/next-auth'
 import type { RequestHandler } from '@sveltejs/kit'
 import type { Session } from 'next-auth'
