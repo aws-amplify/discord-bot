@@ -1,9 +1,11 @@
 import { createBot } from '$discord/client'
 import { getServerSession, options } from '$lib/next-auth'
-import type { RequestHandler } from '@sveltejs/kit'
 import type { Session } from 'next-auth'
 
-const client = await createBot()
+// only load the bot if we're in development (on first request to the server), otherwise the bot will be loaded onto the Node/Express server
+if (import.meta.env.DEV) {
+  await createBot()
+}
 
 function isApiRoute(pathname: URL['pathname']) {
   return pathname.startsWith('/api')

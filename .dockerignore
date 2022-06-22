@@ -5,7 +5,7 @@ node_modules
 /cdk
 /docs
 /tests
-/scripts
+/scripts/**
 !/scripts/start.sh
 .vscode
 
