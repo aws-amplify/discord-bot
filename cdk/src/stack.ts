@@ -12,9 +12,6 @@ export class HeyAmplifyStack extends Stack {
   private readonly envName: string = this.node.tryGetContext('env')
 
   public readonly secrets: Record<string, ssm.IParameter> = {}
-  // public readonly vpc: ec2.Vpc
-  // public readonly cluster: ecs.Cluster
-  // public readonly filesystem: efs.FileSystem
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
@@ -23,6 +20,12 @@ export class HeyAmplifyStack extends Stack {
       'DISCORD_BOT_TOKEN',
       'DISCORD_APP_ID',
       'DISCORD_PUBLIC_KEY',
+      'DISCORD_AUTH_CLIENT_ID',
+      'DISCORD_AUTH_CLIENT_SECRET',
+      'DISCORD_AUTH_REDIRECT_URI',
+      'VITE_HOST',
+      'VITE_NEXTAUTH_URL',
+      'VITE_NEXTAUTH_SECRET',
     ] as const
     // NOTE: this TypeScript trick is to say `secrets` should include key value pairs where the keys are one of the names in the array above
     const secrets: Partial<
@@ -67,9 +70,7 @@ export class HeyAmplifyStack extends Stack {
           DATABASE_URL: `file:../db/${this.envName}.db`,
         },
       },
-      secrets: {
-        DISCORD_BOT_TOKEN: secrets.DISCORD_BOT_TOKEN as ssm.IParameter,
-      },
+      secrets,
       filesystem,
       filesystemMountPoint: '/usr/src/db',
     })

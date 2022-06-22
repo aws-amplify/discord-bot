@@ -1,6 +1,6 @@
 import { Construct } from 'constructs'
 import { Port } from 'aws-cdk-lib/aws-ec2'
-import * as iam from 'aws-cdk-lib/aws-iam'
+import * as cdk from 'aws-cdk-lib'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as efs from 'aws-cdk-lib/aws-efs'
 import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns'
@@ -40,8 +40,8 @@ export interface HeyAmplifyAppProps {
    * Discord bots can be managed in the {@link https://discord.com/developers/applications Developer Portal}.
    */
   secrets: {
-    DISCORD_BOT_TOKEN: ssm.IParameter
-    // [name: string]: ssm.IParameter
+    // DISCORD_BOT_TOKEN: ssm.IParameter
+    [name: string]: ssm.IParameter
   }
 }
 
@@ -85,6 +85,15 @@ export class HeyAmplifyApp extends Construct {
       'deregistration_delay.timeout_seconds',
       '30'
     )
+
+    albFargateService.targetGroup.configureHealthCheck({
+      path: '/healthcheck',
+      interval: cdk.Duration.seconds(5),
+      healthyHttpCodes: '200',
+      healthyThresholdCount: 2,
+      unhealthyThresholdCount: 3,
+      timeout: cdk.Duration.seconds(4),
+    })
 
     const volumeName = 'efs-volume'
     albFargateService.service.taskDefinition.addVolume({

@@ -27,7 +27,7 @@ export const commands = createDiscordCommandBank([
 ])
 
 client.once('ready', () => {
-  console.log('Ready!')
+  console.log('Bot Ready!')
 })
 
 client.on('messageCreate', async (message: Message) => {
