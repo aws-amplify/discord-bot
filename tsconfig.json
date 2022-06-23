@@ -1,14 +1,12 @@
 {
   "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-    "target": "es2022",
-    "module": "es2022",
-    "moduleResolution": "node",
     "paths": {
       "$lib": ["src/lib"],
       "$lib/*": ["src/lib/*"],
       "$discord": ["src/lib/discord"],
       "$discord/*": ["src/lib/discord/*"]
-    }
+    },
+    "types": ["vitest/importMeta"]
   }
 }

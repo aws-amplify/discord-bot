@@ -1,6 +1,5 @@
 export * from './api'
 export * from './Bank'
-export * from './client'
 export * from './Command'
 export * from './CommandOption'
 export * from './CommandOptionChoice'
