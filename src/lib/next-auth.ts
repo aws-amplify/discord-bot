@@ -60,11 +60,11 @@ async function toSvelteKitResponse(
     headers: {},
   }
 
-  headers?.forEach(header => {
+  headers?.forEach((header) => {
     response.headers[header.key] = header.value
   })
 
-  response.headers['set-cookie'] = cookies?.map(item => {
+  response.headers['set-cookie'] = cookies?.map((item) => {
     return cookie.serialize(item.name, item.value, item.options)
   })
 
@@ -102,7 +102,7 @@ async function SKNextAuthHandler(
   } catch {
     // no formData passed
   }
-  options.secret = import.meta.env.VITE_NEXTAUTH_SECRET
+  options.secret = process.env.NEXTAUTH_SECRET
   const req: IncomingRequest = {
     host: import.meta.env.VITE_NEXTAUTH_URL,
     body,
@@ -131,7 +131,7 @@ export async function getServerSession(
   request: Request,
   options: NextAuthOptions
 ): Promise<Session | null> {
-  options.secret = import.meta.env.VITE_NEXTAUTH_SECRET
+  options.secret = process.env.NEXTAUTH_SECRET
 
   const session = await NextAuthHandler<Session>({
     req: {
@@ -156,6 +156,6 @@ export default (
   get: (req) => Promise<unknown>
   post: (req) => Promise<unknown>
 } => ({
-  get: req => SKNextAuthHandler(req, options),
-  post: req => SKNextAuthHandler(req, options),
+  get: (req) => SKNextAuthHandler(req, options),
+  post: (req) => SKNextAuthHandler(req, options),
 })

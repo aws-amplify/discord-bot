@@ -22,6 +22,7 @@ export function loadEnvVars() {
       'DISCORD_',
       'GITHUB_',
       'DATABASE_',
+      'NEXTAUTH_',
     ])
   )
 }
