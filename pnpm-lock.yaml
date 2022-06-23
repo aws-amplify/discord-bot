@@ -90,6 +90,7 @@ importers:
       constructs: ^10.0.123
       source-map-support: ^0.5.21
       typescript: ^4.6.3
+      vite: ^2.9.12
       vite-node: ^0.9.4
     devDependencies:
       '@hey-amplify/tsconfig': link:../packages/tsconfig
@@ -99,6 +100,7 @@ importers:
       constructs: 10.1.9
       source-map-support: 0.5.21
       typescript: 4.6.4
+      vite: 2.9.12
       vite-node: 0.9.4
 
   packages/support:
@@ -3945,11 +3947,35 @@ packages:
       minimist: 1.2.6
       mlly: 0.5.2
       pathe: 0.2.0
-      vite: 2.9.9
+      vite: 2.9.12
     transitivePeerDependencies:
       - less
       - sass
       - stylus
+    dev: true
+
+  /vite/2.9.12:
+    resolution: {integrity: sha512-suxC36dQo9Rq1qMB2qiRorNJtJAdxguu5TMvBHOc/F370KvqAe9t48vYp+/TbPKRNrMh/J55tOUmkuIqstZaew==}
+    engines: {node: '>=12.2.0'}
+    hasBin: true
+    peerDependencies:
+      less: '*'
+      sass: '*'
+      stylus: '*'
+    peerDependenciesMeta:
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+    dependencies:
+      esbuild: 0.14.39
+      postcss: 8.4.13
+      resolve: 1.22.0
+      rollup: 2.73.0
+    optionalDependencies:
+      fsevents: 2.3.2
     dev: true
 
   /vite/2.9.9:

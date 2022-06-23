@@ -17,7 +17,6 @@ RUN pnpm run build:lib && pnpm run build
 RUN pnpm install --offline --frozen-lockfile --prod --ignore-scripts
 
 # expose necessary env vars
-ENV DISCORD_BOT_TOKEN=""
 ENV PORT=3000
 ENV DATABASE_URL="file:../db/data.db"
 
