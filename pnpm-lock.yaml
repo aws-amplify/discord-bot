@@ -90,6 +90,7 @@ importers:
       constructs: ^10.0.123
       source-map-support: ^0.5.21
       typescript: ^4.6.3
+      uuid: ^8.3.2
       vite: ^2.9.12
       vite-node: ^0.9.4
     devDependencies:
@@ -100,6 +101,7 @@ importers:
       constructs: 10.1.9
       source-map-support: 0.5.21
       typescript: 4.6.4
+      uuid: 8.3.2
       vite: 2.9.12
       vite-node: 0.9.4
 

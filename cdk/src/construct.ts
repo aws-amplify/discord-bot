@@ -1,10 +1,15 @@
 import { Construct } from 'constructs'
 import { Port } from 'aws-cdk-lib/aws-ec2'
 import * as cdk from 'aws-cdk-lib'
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
-import * as efs from 'aws-cdk-lib/aws-efs'
 import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns'
+import * as efs from 'aws-cdk-lib/aws-efs'
+import * as elb from 'aws-cdk-lib/aws-elasticloadbalancingv2'
+import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
+import { v4 as uuid } from 'uuid'
+import { ListenerAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 
 interface DockerProps {
   name: string
@@ -46,8 +51,6 @@ export interface HeyAmplifyAppProps {
 }
 
 export class HeyAmplifyApp extends Construct {
-  // public readonly service: ecs_patterns.ApplicationLoadBalancedFargateService
-
   constructor(scope: Construct, id: string, props: HeyAmplifyAppProps) {
     super(scope, id)
 
@@ -57,6 +60,7 @@ export class HeyAmplifyApp extends Construct {
     for (const [name, param] of Object.entries(props.secrets)) {
       secrets[name] = ecs.Secret.fromSsmParameter(param)
     }
+
     const albFargateService =
       new ecs_patterns.ApplicationLoadBalancedFargateService(
         this,
@@ -76,8 +80,8 @@ export class HeyAmplifyApp extends Construct {
             secrets,
             containerPort: 3000,
           },
-          assignPublicIp: true,
-          publicLoadBalancer: true,
+          publicLoadBalancer: true, // needed for bridge to CF
+          protocol: elb.ApplicationProtocol.HTTP, // needed to force HTTP for bridge to CF (Origin Protocol Policy is defaulting to HTTPS although cert is not configured and ALB is not listening on port 443)
         }
       )
 
@@ -107,12 +111,14 @@ export class HeyAmplifyApp extends Construct {
       docker.name
     ) as ecs.ContainerDefinition
 
+    // mount the filesystem
     container.addMountPoints({
       containerPath: filesystemMountPoint,
       sourceVolume: volumeName,
       readOnly: false,
     })
 
+    // grant access to the filesystem
     filesystem.grant(
       container.taskDefinition.taskRole,
       'elasticfilesystem:ClientRootAccess',
@@ -126,5 +132,46 @@ export class HeyAmplifyApp extends Construct {
 
     // allow outbound connections to the filesystem
     albFargateService.service.connections.allowTo(filesystem, Port.tcp(2049))
+
+    const xAmzSecurityTokenHeaderName = 'X-HeyAmplify-Security-Token'
+    const xAmzSecurityTokenHeaderValue = uuid()
+
+    // set up CloudFront
+    new cloudfront.Distribution(this, 'app-dist', {
+      defaultBehavior: {
+        origin: new origins.LoadBalancerV2Origin(
+          albFargateService.loadBalancer,
+          {
+            customHeaders: {
+              // send the X-HeyAmplify-Security-Token header to the ALB
+              [xAmzSecurityTokenHeaderName]: xAmzSecurityTokenHeaderValue,
+            },
+          }
+        ),
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+        // TODO: cache policy?
+      },
+    })
+
+    for (const listener of albFargateService.loadBalancer.listeners) {
+      // create listener rule for Security headers
+      new elb.ApplicationListenerRule(this, 'SecurityListenerRule', {
+        listener,
+        priority: 1,
+        conditions: [
+          // verify the X-HeyAmplify-Security-Token header is set and valid
+          elb.ListenerCondition.httpHeader(xAmzSecurityTokenHeaderName, [
+            xAmzSecurityTokenHeaderValue,
+          ]),
+        ],
+        targetGroups: [albFargateService.targetGroup],
+      })
+      // modify default action to send 403
+      listener.addAction('default', {
+        action: ListenerAction.fixedResponse(403, {
+          messageBody: 'Forbidden',
+        }),
+      })
+    }
   }
 }
