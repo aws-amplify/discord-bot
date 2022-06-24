@@ -81,7 +81,6 @@ export class HeyAmplifyApp extends Construct {
             containerPort: 3000,
           },
           publicLoadBalancer: true, // needed for bridge to CF
-          protocol: elb.ApplicationProtocol.HTTP, // needed to force HTTP for bridge to CF (Origin Protocol Policy is defaulting to HTTPS although cert is not configured and ALB is not listening on port 443)
         }
       )
 
@@ -146,6 +145,7 @@ export class HeyAmplifyApp extends Construct {
               // send the X-HeyAmplify-Security-Token header to the ALB
               [xAmzSecurityTokenHeaderName]: xAmzSecurityTokenHeaderValue,
             },
+            protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
           }
         ),
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
