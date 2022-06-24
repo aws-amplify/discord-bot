@@ -10,6 +10,10 @@ Refer to the [readme guide](./README.md#getting-started) to get started.
 - [`packages/`](./packages) - collection of library packages, including Discord, support helpers, and a shared TypeScript configuration
 - [`scripts/`](./scripts) - small CLI helper for automating tasks
 
+## Architecture Reference
+
+![Architecture diagram](./docs/architecture-diagram-0.5.1.png)
+
 ## Authoring Discord Commands
 
 To get started, let's create a new command file in `src/lib/discord/commands`: `hello.ts`
