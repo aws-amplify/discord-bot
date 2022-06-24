@@ -18,7 +18,7 @@ const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
 export function loadEnvVars() {
   Object.assign(
     process.env,
-    loadEnv('development', new URL('.', import.meta.url).pathname, [
+    loadEnv('development', decodeURI (new URL('.', import.meta.url).pathname), [
       'DISCORD_',
       'GITHUB_',
       'DATABASE_',

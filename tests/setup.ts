@@ -12,7 +12,6 @@ const client = new Discord.Client({
 if (!process.env.DISCORD_BOT_TOKEN) {
   throw new Error('Bot token not available')
 }
-
 // const template = client.fetchGuildTemplate(GUILD_TEMPLATE)
 
 // template.createGuild()

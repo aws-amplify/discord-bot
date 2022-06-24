@@ -3,6 +3,7 @@ import { defineConfig } from 'vitest/config'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { loadEnvVars } from './svelte.config.js'
 
+loadEnvVars()
 export default defineConfig(({ mode }) => {
   // only load environment variables when testing locally
   // e2e tests should be run with pre-defined environment variables
