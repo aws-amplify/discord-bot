@@ -1,4 +1,4 @@
-import { createBot } from '$discord/client'
+import { createBot } from './lib/discord/client'
 // @ts-expect-error this file is externalized for build
 import { handler } from './handler.js'
 import express from 'express'

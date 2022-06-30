@@ -126,6 +126,5 @@ client.on('threadUpdate', async (thread) => {
 })
 
 export function createBot(token = process.env.DISCORD_BOT_TOKEN) {
-  console.log(process.env);
   return client.login(token)
 }
