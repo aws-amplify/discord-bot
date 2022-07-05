@@ -53,7 +53,6 @@ export async function post({ request }) {
     method: 'POST',
     body: JSON.stringify(message),
   })
-  console.log("after")
 
   if (!res.ok) {
     console.log('error')
