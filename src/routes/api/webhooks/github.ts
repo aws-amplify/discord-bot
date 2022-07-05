@@ -1,6 +1,5 @@
 import * as crypto from 'crypto'
 import { MessageEmbed } from 'discord.js'
-import fetch from "node-fetch";
 
 function createReleaseMessage(payload) {
   let embed = new MessageEmbed()
@@ -11,17 +10,17 @@ function createReleaseMessage(payload) {
   embed.setAuthor({
     name: payload.release.author.login,
     url: payload.release.author.html_url,
-    iconURL: payload.release.author.icon_url
+    iconURL: payload.release.author.icon_url,
   })
   return {
-    content: "New Release!",
+    content: 'New Release!',
     tts: false,
     embeds: [embed],
   }
 }
 
 // https://gist.github.com/stigok/57d075c1cf2a609cb758898c0b202428
-function verifyGithubWebhookEvent(payloadbody, signature256) {
+function verifyGithubWebhookEvent(payloadbody, signature256: string) {
   const token = process.env.GITHUB_WEBHOOK_SECRET
   const sig = Buffer.from(signature256 || '', 'utf8')
   const hmac = crypto.createHmac('sha256', token)
@@ -36,7 +35,7 @@ function verifyGithubWebhookEvent(payloadbody, signature256) {
 }
 
 export async function post({ request }) {
-  let payload 
+  let payload
   if (!import.meta.vitest) {
     const sig256 = request.headers.get('x-hub-signature-256')
     payload = await request.json()
@@ -54,6 +53,7 @@ export async function post({ request }) {
     method: 'POST',
     body: JSON.stringify(message),
   })
+  console.log("after")
 
   if (!res.ok) {
     console.log('error')
@@ -295,8 +295,23 @@ if (import.meta.vitest) {
         type: 'User',
         site_admin: false,
       },
-    }
+    },
   }
-  verifyGithubWebhookEvent(mocked.body, mocked.headers['X-Hub-Signature-256'])
-  post({ request: mocked })
+  test('verify webhook', () => {
+    expect(
+      verifyGithubWebhookEvent(
+        mocked.body,
+        mocked.headers['X-Hub-Signature-256']
+      )
+    ).toBeTruthy()
+  })
+
+  test('post request', async () => {
+    await expect(post({ request: mocked })).resolves.toEqual({
+      status: 204,
+      headers: {
+        location: `https://discordapp.com/api/channels/${process.env.WEBHOOK_RELEASE_CHANNEL_ID}/messages`,
+      },
+    })
+  })
 }
