@@ -65,7 +65,6 @@ export async function post({ request }) {
 }
 
 if (import.meta.vitest) {
-  const { api } = await import('../_discord')
   const { it, describe } = import.meta.vitest
 
   // in test, we only want to confirm the routes sends a message
