@@ -1,6 +1,5 @@
-import * as crypto from 'crypto'
+import * as crypto from 'node:crypto'
 import { MessageEmbed } from 'discord.js'
-//import fetch from "node-fetch";
 
 // https://gist.github.com/stigok/57d075c1cf2a609cb758898c0b202428
 function verifyGithubWebhookEvent(request) {
@@ -26,10 +25,10 @@ function createReleaseMessage(payload) {
   embed.setAuthor({
     name: payload.release.author.login,
     url: payload.release.author.html_url,
-    iconURL: payload.release.author.icon_url
+    iconURL: payload.release.author.icon_url,
   })
   return {
-    content: "New Release!",
+    content: 'New Release!',
     tts: false,
     embeds: [embed],
   }
@@ -52,25 +51,27 @@ export async function post({ request }) {
     body: JSON.stringify(message),
   })
 
-  if (!res.ok) {
-    console.log('error')
-    console.log(res.statusText)
+  // if response is not okay or if Discord did not return a 204
+  // https://discord.com/developers/docs/topics/opcodes-and-status-codes#http
+  if (!res.ok || res.status !== 204) {
     return {
       status: 400,
     }
   } else {
-    console.log('all good')
     return {
-      status: 204,
-      headers: {
-        location: `https://discordapp.com/api/channels/${process.env.WEBHOOK_RELEASE_CHANNEL_ID}/messages`,
-      },
+      status: 200,
     }
   }
 }
 
 if (import.meta.vitest) {
-  const { test, it, describe } = import.meta.vitest
+  const { api } = await import('../_discord')
+  const { it, describe } = import.meta.vitest
+
+  // in test, we only want to confirm the routes sends a message
+  const createRequest = (payload) => ({
+    json: () => new Promise((resolve) => resolve(payload.body)),
+  })
 
   const mocked = {
     headers: {
@@ -294,6 +295,10 @@ if (import.meta.vitest) {
       },
     },
   }
-  verifyGithubWebhookEvent(mocked)
-  post({ request: mocked })
+
+  describe('GitHub -> Discord webhook', () => {
+    it('sends', async () => {
+      await post({ request: createRequest(mocked) })
+    })
+  })
 }
