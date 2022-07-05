@@ -65,7 +65,7 @@ export async function post({ request }) {
 }
 
 if (import.meta.vitest) {
-  const { it, describe } = import.meta.vitest
+  const { it, describe, expect } = import.meta.vitest
 
   // in test, we only want to confirm the routes sends a message
   const createRequest = (payload) => ({
@@ -297,7 +297,8 @@ if (import.meta.vitest) {
 
   describe('GitHub -> Discord webhook', () => {
     it('sends', async () => {
-      await post({ request: createRequest(mocked) })
+      const response = await post({ request: createRequest(mocked) })
+      expect(response.status).toBe(200)
     })
   })
 }
