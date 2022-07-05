@@ -21,12 +21,12 @@ function createReleaseMessage(payload) {
 }
 
 // https://gist.github.com/stigok/57d075c1cf2a609cb758898c0b202428
-function verifyGithubWebhookEvent(request) {
+function verifyGithubWebhookEvent(payloadbody, signature256) {
   const token = process.env.GITHUB_WEBHOOK_SECRET
-  const sig = Buffer.from(request.headers['X-Hub-Signature-256'] || '', 'utf8')
+  const sig = Buffer.from(signature256 || '', 'utf8')
   const hmac = crypto.createHmac('sha256', token)
   const digest = Buffer.from(
-    'sha256' + '=' + hmac.update(JSON.stringify(request.body)).digest('hex'),
+    'sha256' + '=' + hmac.update(JSON.stringify(payloadbody)).digest('hex'),
     'utf8'
   )
   if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
@@ -38,8 +38,9 @@ function verifyGithubWebhookEvent(request) {
 export async function post({ request }) {
   let payload 
   if (!import.meta.vitest) {
-    verifyGithubWebhookEvent(request)
+    const sig256 = request.headers.get('x-hub-signature-256')
     payload = await request.json()
+    verifyGithubWebhookEvent(payload, sig256)
   } else {
     payload = request.body
   }
@@ -73,7 +74,6 @@ export async function post({ request }) {
 
 if (import.meta.vitest) {
   const { test, it, describe } = import.meta.vitest
-
   const mocked = {
     headers: {
       'X-Hub-Signature-256':
@@ -297,6 +297,6 @@ if (import.meta.vitest) {
       },
     }
   }
-  verifyGithubWebhookEvent(mocked)
+  verifyGithubWebhookEvent(mocked.body, mocked.headers['X-Hub-Signature-256'])
   post({ request: mocked })
 }
