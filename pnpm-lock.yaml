@@ -96,6 +96,7 @@ importers:
       constructs: ^10.0.123
       source-map-support: ^0.5.21
       typescript: ^4.6.3
+      uuid: ^8.3.2
       vite: ^2.9.12
       vite-node: ^0.9.4
     devDependencies:
@@ -105,8 +106,9 @@ importers:
       aws-cdk-lib: 2.30.0_constructs@10.1.43
       constructs: 10.1.43
       source-map-support: 0.5.21
-      typescript: 4.7.4
-      vite: 2.9.13
+      typescript: 4.6.4
+      uuid: 8.3.2
+      vite: 2.9.12
       vite-node: 0.9.4
 
   packages/support:
