@@ -1,21 +1,6 @@
 import * as crypto from 'node:crypto'
 import { MessageEmbed } from 'discord.js'
 
-// https://gist.github.com/stigok/57d075c1cf2a609cb758898c0b202428
-function verifyGithubWebhookEvent(request) {
-  const token = process.env.GITHUB_WEBHOOK_SECRET
-  const sig = Buffer.from(request.headers['X-Hub-Signature-256'] || '', 'utf8')
-  const hmac = crypto.createHmac('sha256', token)
-  const digest = Buffer.from(
-    'sha256' + '=' + hmac.update(JSON.stringify(request.body)).digest('hex'),
-    'utf8'
-  )
-  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
-    return false
-  }
-  return true
-}
-
 function createReleaseMessage(payload) {
   let embed = new MessageEmbed()
   embed.setTitle(`[${payload.repository.full_name}] ${payload.release.name}`)
@@ -34,12 +19,29 @@ function createReleaseMessage(payload) {
   }
 }
 
+// https://gist.github.com/stigok/57d075c1cf2a609cb758898c0b202428
+function verifyGithubWebhookEvent(payloadbody, signature256: string) {
+  const token = process.env.GITHUB_WEBHOOK_SECRET
+  const sig = Buffer.from(signature256 || '', 'utf8')
+  const hmac = crypto.createHmac('sha256', token)
+  const digest = Buffer.from(
+    'sha256' + '=' + hmac.update(JSON.stringify(payloadbody)).digest('hex'),
+    'utf8'
+  )
+  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
+    throw new Error('Invalid webhook event')
+  }
+  return true
+}
+
 export async function post({ request }) {
   const payload = await request.json()
 
   if (!import.meta.vitest) {
-    verifyGithubWebhookEvent(request)
+    const sig256 = request.headers.get('x-hub-signature-256')
+    verifyGithubWebhookEvent(payload, sig256)
   }
+
   const message = createReleaseMessage(payload)
 
   const res = await fetch(process.env.DISCORD_WEBHOOK_URL_RELEASES, {
@@ -65,7 +67,7 @@ export async function post({ request }) {
 }
 
 if (import.meta.vitest) {
-  const { it, describe, expect } = import.meta.vitest
+  const { it, describe, expect, test } = import.meta.vitest
 
   // in test, we only want to confirm the routes sends a message
   const createRequest = (payload) => ({
@@ -75,20 +77,21 @@ if (import.meta.vitest) {
   const mocked = {
     headers: {
       'X-Hub-Signature-256':
-        'sha256=3d4019b400380d783ff22c92a849dc2e0e3d403666516480f7a5ea9cd952b5b1',
+        'sha256=a3207940a5a2451261c95ccfb2c993bd06c2a9f8d8894b536e6b78f1f7a94482',
       'X-GitHub-Event': 'release',
+      'Content-Type': 'application/json',
     },
     body: {
       action: 'published',
       release: {
-        url: 'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/70988400',
+        url: 'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/71007317',
         assets_url:
-          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/70988400/assets',
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/71007317/assets',
         upload_url:
-          'https://uploads.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/70988400/assets{?name,label}',
+          'https://uploads.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/71007317/assets{?name,label}',
         html_url:
-          'https://github.com/esauerbo1/Amplify-Bot-Testing/releases/tag/tag',
-        id: 70988400,
+          'https://github.com/esauerbo1/Amplify-Bot-Testing/releases/tag/update',
+        id: 71007317,
         author: {
           login: 'esauerbo1',
           id: 107655607,
@@ -113,20 +116,20 @@ if (import.meta.vitest) {
           type: 'User',
           site_admin: false,
         },
-        node_id: 'RE_kwDOHipEIc4EOzJw',
-        tag_name: 'tag',
+        node_id: 'RE_kwDOHipEIc4EO3xV',
+        tag_name: 'update',
         target_commitish: 'main',
-        name: 'New Release',
+        name: 'Second Release',
         draft: false,
         prerelease: false,
         created_at: '2022-06-22T22:59:54Z',
-        published_at: '2022-06-30T14:58:04Z',
+        published_at: '2022-06-30T18:15:00Z',
         assets: [],
         tarball_url:
-          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/tarball/tag',
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/tarball/update',
         zipball_url:
-          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/zipball/tag',
-        body: 'This is a new release!\r\n\r\n- Here is a bullet point\r\n\r\n@esauerbo1 \r\n\r\n#1 ',
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/zipball/update',
+        body: 'This is another release.\r\n\r\nTagging someone\r\n@esauerbo1 \r\n\r\n\r\nLink to pr\r\n#1 ',
         mentions_count: 1,
       },
       repository: {
@@ -237,13 +240,13 @@ if (import.meta.vitest) {
           'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/deployments',
         created_at: '2022-06-22T03:37:37Z',
         updated_at: '2022-06-22T03:37:37Z',
-        pushed_at: '2022-06-30T14:58:04Z',
+        pushed_at: '2022-06-30T18:15:00Z',
         git_url: 'git://github.com/esauerbo1/Amplify-Bot-Testing.git',
         ssh_url: 'git@github.com:esauerbo1/Amplify-Bot-Testing.git',
         clone_url: 'https://github.com/esauerbo1/Amplify-Bot-Testing.git',
         svn_url: 'https://github.com/esauerbo1/Amplify-Bot-Testing',
         homepage: null,
-        size: 1,
+        size: 2,
         stargazers_count: 0,
         watchers_count: 0,
         language: null,
@@ -295,10 +298,29 @@ if (import.meta.vitest) {
     },
   }
 
+  // remove if unnecessary
   describe('GitHub -> Discord webhook', () => {
     it('sends', async () => {
       const response = await post({ request: createRequest(mocked) })
       expect(response.status).toBe(200)
+    })
+  })
+
+  test('verify webhook', () => {
+    expect(
+      verifyGithubWebhookEvent(
+        mocked.body,
+        mocked.headers['X-Hub-Signature-256']
+      )
+    ).toBeTruthy()
+  })
+
+  test('post request', async () => {
+    await expect(post({ request: mocked })).resolves.toEqual({
+      status: 204,
+      headers: {
+        location: `https://discordapp.com/api/channels/${process.env.WEBHOOK_RELEASE_CHANNEL_ID}/messages`,
+      },
     })
   })
 }

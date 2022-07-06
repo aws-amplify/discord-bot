@@ -1,7 +1,6 @@
 // TODO: set up mocked Discord stack with API
 import * as Discord from 'discord.js'
 import type { IntentsString } from 'discord.js'
-import '../ImportMeta'
 
 // aws-amplify Discord server template
 const GUILD_TEMPLATE = 'https://discord.new/vmyFvRYDtUsn'
