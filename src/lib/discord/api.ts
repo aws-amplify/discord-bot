@@ -33,8 +33,6 @@ export class DiscordApi extends REST implements IDiscordApi {
     if (payload) {
       options.body = JSON.stringify(payload || {})
     }
-    console.log("\noptions")
-    console.log(options)
     return this.request(options)
   }
 
@@ -43,10 +41,6 @@ export class DiscordApi extends REST implements IDiscordApi {
   }
 
   public post(url: string, payload?: unknown): Promise<unknown> {
-    console.log("url")
-    console.log(url)
-    console.log("\npayload")
-    console.log(payload)
     return this._request('post', url, payload)
   }
 

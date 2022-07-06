@@ -298,15 +298,7 @@ if (import.meta.vitest) {
     },
   }
 
-  // remove if unnecessary
-  describe('GitHub -> Discord webhook', () => {
-    it('sends', async () => {
-      const response = await post({ request: createRequest(mocked) })
-      expect(response.status).toBe(200)
-    })
-  })
-
-  test('verify webhook', () => {
+  test('Verify webhook', () => {
     expect(
       verifyGithubWebhookEvent(
         mocked.body,
@@ -315,12 +307,10 @@ if (import.meta.vitest) {
     ).toBeTruthy()
   })
 
-  test('post request', async () => {
-    await expect(post({ request: mocked })).resolves.toEqual({
-      status: 204,
-      headers: {
-        location: `https://discordapp.com/api/channels/${process.env.WEBHOOK_RELEASE_CHANNEL_ID}/messages`,
-      },
+  describe('GitHub -> Discord webhook', () => {
+    it('sends', async () => {
+      const response = await post({ request: createRequest(mocked) })
+      expect(response.status).toBe(200)
     })
   })
 }
