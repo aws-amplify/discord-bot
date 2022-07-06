@@ -1,9 +1,6 @@
 // TODO: set up mocked Discord stack with API
 import * as Discord from 'discord.js'
 import type { IntentsString } from 'discord.js'
-import { fetch }  from 'cross-fetch'
-
-global.fetch = fetch;
 
 // aws-amplify Discord server template
 const GUILD_TEMPLATE = 'https://discord.new/vmyFvRYDtUsn'
@@ -15,6 +12,7 @@ const client = new Discord.Client({
 if (!process.env.DISCORD_BOT_TOKEN) {
   throw new Error('Bot token not available')
 }
+
 // const template = client.fetchGuildTemplate(GUILD_TEMPLATE)
 
 // template.createGuild()

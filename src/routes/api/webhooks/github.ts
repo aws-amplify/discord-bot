@@ -1,4 +1,4 @@
-import * as crypto from 'crypto'
+import * as crypto from 'node:crypto'
 import { MessageEmbed } from 'discord.js'
 
 function createReleaseMessage(payload) {
@@ -35,17 +35,16 @@ function verifyGithubWebhookEvent(payloadbody, signature256: string) {
 }
 
 export async function post({ request }) {
-  let payload
+  const payload = await request.json()
+
   if (!import.meta.vitest) {
     const sig256 = request.headers.get('x-hub-signature-256')
-    payload = await request.json()
     verifyGithubWebhookEvent(payload, sig256)
-  } else {
-    payload = request.body
   }
+
   const message = createReleaseMessage(payload)
 
-  let res = await fetch(process.env.DISCORD_WEBHOOK_URL_RELEASES, {
+  const res = await fetch(process.env.DISCORD_WEBHOOK_URL_RELEASES, {
     headers: {
       Authorization: `bot ${process.env.DISCORD_BOT_TOKEN}`,
       'Content-Type': 'application/json',
@@ -54,25 +53,27 @@ export async function post({ request }) {
     body: JSON.stringify(message),
   })
 
-  if (!res.ok) {
-    console.log('error')
-    console.log(res.statusText)
+  // if response is not okay or if Discord did not return a 204
+  // https://discord.com/developers/docs/topics/opcodes-and-status-codes#http
+  if (!res.ok || res.status !== 204) {
     return {
       status: 400,
     }
   } else {
-    console.log('all good')
     return {
-      status: 204,
-      headers: {
-        location: `https://discordapp.com/api/channels/${process.env.WEBHOOK_RELEASE_CHANNEL_ID}/messages`,
-      },
+      status: 200,
     }
   }
 }
 
 if (import.meta.vitest) {
-  const { test, it, describe } = import.meta.vitest
+  const { it, describe, expect, test } = import.meta.vitest
+
+  // in test, we only want to confirm the routes sends a message
+  const createRequest = (payload) => ({
+    json: () => new Promise((resolve) => resolve(payload.body)),
+  })
+
   const mocked = {
     headers: {
       'X-Hub-Signature-256':
@@ -296,6 +297,15 @@ if (import.meta.vitest) {
       },
     },
   }
+
+  // remove if unnecessary
+  describe('GitHub -> Discord webhook', () => {
+    it('sends', async () => {
+      const response = await post({ request: createRequest(mocked) })
+      expect(response.status).toBe(200)
+    })
+  })
+
   test('verify webhook', () => {
     expect(
       verifyGithubWebhookEvent(

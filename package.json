@@ -27,7 +27,6 @@
     "@next-auth/prisma-adapter": "^1.0.3",
     "@prisma/client": "^3.14.0",
     "cookie": "^0.5.0",
-    "cross-fetch": "^3.1.5",
     "discord-api-types": "^0.33.0",
     "discord.js": "^13.7.0",
     "express": "^4.18.1",
