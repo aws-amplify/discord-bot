@@ -1,7 +1,7 @@
 import { createCommand } from '$discord'
-import type { Role, User } from 'discord.js'
+import type { Role, User, InteractionReplyOptions } from 'discord.js'
 
-async function handler(interaction) {
+async function handler(interaction): Promise<InteractionReplyOptions | string> {
   const { member: caller, guild } = interaction
   const { role, user } = interaction.options.data.reduce(
     (acc, current, index, source) => {

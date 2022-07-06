@@ -3,8 +3,8 @@ import type {
   APIApplicationCommand,
   RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord-api-types/v9'
-import type { CommandInteraction } from 'discord.js'
-import { DiscordCommandOption } from './CommandOption'
+import type { CommandInteraction, InteractionReplyOptions } from 'discord.js'
+import type { DiscordCommandOption } from './CommandOption'
 
 export interface IDiscordCommandConfig {
   name: string
@@ -16,7 +16,11 @@ export interface IDiscordCommandConfig {
 
 export type DiscordCommandHandler = (
   interaction: CommandInteraction
-) => string | undefined | Promise<string | undefined>
+) =>
+  | string
+  | undefined
+  | InteractionReplyOptions
+  | Promise<string | undefined | InteractionReplyOptions>
 
 export type CreateDiscordCommandInput = IDiscordCommandConfig & {
   handler: DiscordCommandHandler
