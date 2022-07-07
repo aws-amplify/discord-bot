@@ -8,7 +8,7 @@ function createReleaseMessage(payload) {
   embed.setDescription(payload.release.body)
   embed.setURL(payload.release.html_url)
   embed.setAuthor({
-    name: payload.release.author.login,
+    name: payload.release.repository.name,
     url: payload.release.author.html_url,
     iconURL: payload.release.author.icon_url,
   })
