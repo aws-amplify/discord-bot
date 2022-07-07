@@ -1,5 +1,5 @@
 import { createCommand, createOption } from '$discord'
-import type { CommandInteraction } from 'discord.js'
+import type { CommandInteraction, InteractionReplyOptions } from 'discord.js'
 
 const repository = createOption({
   name: 'repository',
@@ -30,7 +30,9 @@ const command = createCommand({
   name: 'github',
   description: 'Gives link to GitHub repository',
   options: [repository],
-  handler: (interaction: CommandInteraction) => {
+  handler: (
+    interaction: CommandInteraction
+  ): InteractionReplyOptions | string => {
     const [{ value: repository }] = interaction.options.data
     return getRepositoryUrl(repository as string)
   },
