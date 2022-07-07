@@ -1,4 +1,4 @@
-import { createCommand } from './../../discord'
+import { createCommand } from '$discord'
 import type { Role, User } from 'discord.js'
 
 async function handler(interaction) {

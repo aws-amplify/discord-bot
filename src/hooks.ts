@@ -1,4 +1,4 @@
-import { createBot } from './lib/discord/client'
+import { createBot } from '$discord/client'
 import { getServerSession, options } from '$lib/next-auth'
 import type { Session } from 'next-auth'
 
