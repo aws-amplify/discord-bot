@@ -10,7 +10,7 @@ function createReleaseMessage(payload) {
   embed.setAuthor({
     name: payload.release.repository.name,
     url: payload.release.author.html_url,
-    iconURL: payload.release.author.icon_url,
+    iconURL: payload.release.author.avatar_url,
   })
   return {
     content: 'New Release!',
