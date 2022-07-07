@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { loadEnv } from 'vite'
 
 /**
@@ -5,5 +6,7 @@ import { loadEnv } from 'vite'
  * by default Vite's `loadEnv` will only load variables prefixed with "VITE_"
  */
 export function getSvelteKitEnvironmentVariables(env: string) {
-  return loadEnv(env, new URL('../..', import.meta.url).pathname, ['VITE_'])
+  return loadEnv(env, fileURLToPath(new URL('../..', import.meta.url)), [
+    'VITE_',
+  ])
 }
