@@ -5,8 +5,6 @@ import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig, loadEnv } from 'vite'
 import type { UserConfig } from 'vitest/config'
 
-const isProd = process.env.NODE_ENV === 'production'
-
 function relative(path) {
   return fileURLToPath(new URL(path, import.meta.url))
 }
@@ -63,7 +61,7 @@ const server: UserConfig = {
       entry: './src/server.ts',
       name: 'server',
       formats: ['es'],
-      fileName: (format) => `[name].js`,
+      fileName: () => `[name].js`,
     },
     rollupOptions: {
       // externalize dependencies and "./handler.js" for build
@@ -85,9 +83,9 @@ const server: UserConfig = {
   },
 }
 
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ mode }) => {
   // rely on Vite to load public env vars (i.e. prefixed with VITE_)
-  if (!isProd) loadEnvVars()
+  loadEnvVars()
 
   let config = app
   if (mode === 'server') {
