@@ -1,7 +1,7 @@
 import { Client, Intents, MessageEmbed } from 'discord.js'
 import { createDiscordCommandBank } from '$discord'
 import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
-import { prisma } from '../../lib/db'
+import { prisma } from '$lib/db'
 // manually import the commands
 import giverole from './commands/giverole'
 import contribute from './commands/contribute'
