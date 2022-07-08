@@ -138,6 +138,7 @@ export class HeyAmplifyApp extends Construct {
     // set up CloudFront
     new cloudfront.Distribution(this, 'app-dist', {
       defaultBehavior: {
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         origin: new origins.LoadBalancerV2Origin(
           albFargateService.loadBalancer,
           {
