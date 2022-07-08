@@ -23,7 +23,6 @@ export class HeyAmplifyStack extends Stack {
       'DISCORD_PUBLIC_KEY',
       'DISCORD_AUTH_CLIENT_ID',
       'DISCORD_AUTH_CLIENT_SECRET',
-      'DISCORD_AUTH_REDIRECT_URI',
       'NEXTAUTH_SECRET',
     ] as const
     // NOTE: this TypeScript trick is to say `secrets` should include key value pairs where the keys are one of the names in the array above
