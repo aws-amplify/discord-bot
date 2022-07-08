@@ -1,19 +1,58 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'vite'
+import { sveltekit } from '@sveltejs/kit/vite'
+import { defineConfig, loadEnv } from 'vite'
+import type { UserConfig } from 'vitest/config'
+
+const isProd = process.env.NODE_ENV === 'production'
 
 function relative(path) {
   return fileURLToPath(new URL(path, import.meta.url))
 }
 
+/**
+ * Load's environment variables for development
+ * by default Vite's `loadEnv` will only load variables prefixed with "VITE_"
+ */
+export function loadEnvVars() {
+  Object.assign(
+    process.env,
+    loadEnv('development', relative('.'), [
+      'DISCORD_',
+      'GITHUB_',
+      'DATABASE_',
+      'NEXTAUTH_',
+    ])
+  )
+}
+
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
 
 /**
- * Configuration for building our server with Vite.
- * Leverages same codebase as frontend with aliases
+ * Configuration to build the SvelteKit project.
  */
-export default defineConfig({
+const app: UserConfig = {
+  build: {
+    target: 'es2022',
+  },
+  envDir: '.',
+  define: {
+    'import.meta.vitest': 'undefined',
+  },
+  plugins: [sveltekit()],
+  resolve: {
+    alias: {
+      $discord: relative('./src/lib/discord'),
+    },
+  },
+}
+
+/**
+ * Configuration to build the server
+ */
+const server: UserConfig = {
+  mode: 'production',
   build: {
     target: 'es2022',
     outDir: 'build',
@@ -44,4 +83,21 @@ export default defineConfig({
       $discord: relative('./src/lib/discord'),
     },
   },
+}
+
+export default defineConfig(({ command, mode }) => {
+  // rely on Vite to load public env vars (i.e. prefixed with VITE_)
+  if (!isProd) loadEnvVars()
+
+  let config = app
+  if (mode === 'server') {
+    config = server
+  }
+  config.test = {
+    globals: true,
+    environment: 'jsdom',
+    includeSource: ['src/**/*.{js,ts,svelte}'],
+    setupFiles: ['tests/setup.ts'],
+  }
+  return config
 })
