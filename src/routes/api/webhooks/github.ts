@@ -590,47 +590,55 @@ if (import.meta.vitest) {
     },
   }
 
-  // testing for success
-  test('Successful webhook verification', () => {
-    expect(
-      verifyGithubWebhookEvent(
-        mocked.body,
-        mocked.headers['X-Hub-Signature-256']
-      )
-    ).toBeTruthy()
-  })
+  describe('Failed Github -> Discord webhook', () => {
+    test('verification', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          mockedBad.body,
+          mockedBad.headers['X-Hub-Signature-256']
+        )
+      ).toEqual({ status: 400 })
+    })
 
-  describe('GitHub -> Discord webhook', () => {
-    it('sends', async () => {
+    test('verification 2', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          mockedBad.body,
+          mockedBad.headers['X-Hub-Signature-256']
+        )
+      ).toEqual({ status: 400 })
+    })
+
+    test('verification 3', () => {
+      expect(verifyGithubWebhookEvent({}, '')).toEqual({ status: 400 })
+    })
+
+    test('verification 4', () => {
+      expect(verifyGithubWebhookEvent(null, null)).toEqual({ status: 400 })
+    })
+
+    test('send', async () => {
+      const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
+      process.env.DISCORD_WEBHOOK_URL_RELEASES = 'https://discordapp.com/api/webhooks/'
       const response = await post({ request: createRequest(mocked) })
-      expect(response.status).toBe(200)
+      expect(response.status).toBe(400)
+      process.env.DISCORD_WEBHOOK_URL_RELEASES = url
     })
   })
 
-  // testing for failure
-  test('Failed webhook verification', () => {
-    expect(
-      verifyGithubWebhookEvent(
-        mockedBad.body,
-        mockedBad.headers['X-Hub-Signature-256']
-      )
-    ).toEqual({ status: 400 })
-  })
+  describe('Successful GitHub -> Discord webhook', () => {
+    test('sends', async () => {
+      const response = await post({ request: createRequest(mocked) })
+      expect(response.status).toBe(200)
+    })
 
-  test('Failed webhook verification 2', () => {
-    expect(
-      verifyGithubWebhookEvent(
-        mockedBad.body,
-        mockedBad.headers['X-Hub-Signature-256']
-      )
-    ).toEqual({ status: 400 })
-  })
-
-  test('Failed webhook verification 3', () => {
-    expect(verifyGithubWebhookEvent({}, '')).toEqual({ status: 400 })
-  })
-
-  test('Failed webhook verification 4', () => {
-    expect(verifyGithubWebhookEvent(null, null)).toEqual({ status: 400 })
+    test('webhook verification', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          mocked.body,
+          mocked.headers['X-Hub-Signature-256']
+        )
+      ).toBeTruthy()
+    })
   })
 }
