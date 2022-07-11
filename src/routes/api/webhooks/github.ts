@@ -618,7 +618,7 @@ if (import.meta.vitest) {
 
     test('send', async () => {
       const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
-      process.env.DISCORD_WEBHOOK_URL_RELEASES = 'https://discordapp.com/api/webhooks/'
+      process.env.DISCORD_WEBHOOK_URL_RELEASES = 'https://discordapp.com/api/webhooks/bad'
       const response = await post({ request: createRequest(mocked) })
       expect(response.status).toBe(400)
       process.env.DISCORD_WEBHOOK_URL_RELEASES = url
