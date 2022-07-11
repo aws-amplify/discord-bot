@@ -87,7 +87,7 @@ export async function getSecrets(
   const result = {}
 
   for (const secret of secrets) {
-    const key = secret?.Name?.replace(PREFIX, '')
+    const key = secret?.Name?.replace(`${prefix}/`, '')
     if (key) result[key] = secret.Value
   }
 
