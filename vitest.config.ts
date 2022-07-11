@@ -14,13 +14,14 @@ export default defineConfig(({ mode }) => {
       alias: {
         $lib: resolve('src/lib'),
         $discord: resolve('src/lib/discord'),
+        $output: resolve('./.svelte-kit/output'),
       },
     },
     test: {
       globals: true,
       environment: 'jsdom',
       includeSource: ['src/**/*.{js,ts}'],
-      setupFiles: ['tests/setup.ts'],
+      setupFiles: ['tests/setup/svelte-kit-routes.ts'],
     },
   }
 })
