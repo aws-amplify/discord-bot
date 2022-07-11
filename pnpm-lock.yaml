@@ -1,5 +1,10 @@
 lockfileVersion: 5.4
 
+patchedDependencies:
+  '@aws-sdk/util-user-agent-node@3.118.0':
+    hash: xeygernt54zzmj7inzabdooblq
+    path: patches/@aws-sdk__util-user-agent-node@3.118.0.patch
+
 importers:
 
   .:
@@ -83,22 +88,24 @@ importers:
 
   cdk:
     specifiers:
+      '@hey-amplify/support': workspace:*
       '@hey-amplify/tsconfig': workspace:*
       '@types/node': 17.0.25
-      aws-cdk: ^2.24.1
-      aws-cdk-lib: ^2.21.1
-      constructs: ^10.0.123
+      aws-cdk: 2.24.1
+      aws-cdk-lib: 2.21.1
+      constructs: 10.0.123
       source-map-support: ^0.5.21
       typescript: ^4.6.3
       uuid: ^8.3.2
       vite: ^2.9.12
       vite-node: ^0.9.4
     devDependencies:
+      '@hey-amplify/support': link:../packages/support
       '@hey-amplify/tsconfig': link:../packages/tsconfig
       '@types/node': 17.0.25
       aws-cdk: 2.24.1
-      aws-cdk-lib: 2.24.1_constructs@10.1.9
-      constructs: 10.1.9
+      aws-cdk-lib: 2.21.1_constructs@10.0.123
+      constructs: 10.0.123
       source-map-support: 0.5.21
       typescript: 4.6.4
       uuid: 8.3.2
@@ -1279,15 +1286,15 @@ packages:
     engines: {node: '>= 4.0.0'}
     dev: true
 
-  /aws-cdk-lib/2.24.1_constructs@10.1.9:
-    resolution: {integrity: sha512-xGeEX+9wPGppSiIUdf/JTLMmqMikGhlSi7bjijl3lwncZtySkdjX0j+W2A1fuKp0S8Yd2axkwVkltIMxzNH/gw==}
+  /aws-cdk-lib/2.21.1_constructs@10.0.123:
+    resolution: {integrity: sha512-dhJUZ50EfhV67Pq7oED3rwyg3eKebxR7LTHQXf52YAxmBSKkE2L6hPAshCyaP49uv4QmyAW14T41o+aVSgyHHw==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       constructs: ^10.0.0
     dependencies:
       '@balena/dockerignore': 1.0.2
       case: 1.6.3
-      constructs: 10.1.9
+      constructs: 10.0.123
       fs-extra: 9.1.0
       ignore: 5.2.0
       jsonschema: 1.4.1
@@ -1537,9 +1544,9 @@ packages:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
     dev: true
 
-  /constructs/10.1.9:
-    resolution: {integrity: sha512-Dyzw+/xQ6BKLhNyHlekh+0SgS7GB39uqUGrF9bf4aTkW9jhrc6V5duzlec5qR6n2/w9DAfLU4OgMy+vO/cvufA==}
-    engines: {node: '>= 14.17.0'}
+  /constructs/10.0.123:
+    resolution: {integrity: sha512-PPw30hgbBLN4VAEqVjni4EtKziMT4/b+5WivsgXZi+U3U1jef/1oYLxV/LC3KDofrgb+1qDbg609ff4L2kSQ1w==}
+    engines: {node: '>= 12.7.0'}
     dev: true
 
   /content-disposition/0.5.4:

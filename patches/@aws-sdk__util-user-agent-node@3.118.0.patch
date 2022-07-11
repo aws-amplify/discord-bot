@@ -1,0 +1,33 @@
+diff --git a/dist-es/index.js b/dist-es/index.mjs
+similarity index 97%
+rename from dist-es/index.js
+rename to dist-es/index.mjs
+index 6bc581180e42245fbd62e11e2d924735b5f1936e..590b8f425ea9d51ab19f5c2c2071b5b373964a58 100644
+--- a/dist-es/index.js
++++ b/dist-es/index.mjs
+@@ -2,7 +2,7 @@ import { __awaiter, __generator, __read, __spreadArray } from "tslib";
+ import { loadConfig } from "@aws-sdk/node-config-provider";
+ import { platform, release } from "os";
+ import { env, versions } from "process";
+-import { isCrtAvailable } from "./is-crt-available";
++import { isCrtAvailable } from "./is-crt-available.mjs";
+ export var UA_APP_ID_ENV_NAME = "AWS_SDK_UA_APP_ID";
+ export var UA_APP_ID_INI_NAME = "sdk-ua-app-id";
+ export var defaultUserAgent = function (_a) {
+diff --git a/dist-es/is-crt-available.js b/dist-es/is-crt-available.mjs
+similarity index 100%
+rename from dist-es/is-crt-available.js
+rename to dist-es/is-crt-available.mjs
+diff --git a/package.json b/package.json
+index 6593af3e515e8479dc2a4c630c47f2d6a8477427..3cb12d0fe8eac1634da286b1e59b2b3a6a01698d 100644
+--- a/package.json
++++ b/package.json
+@@ -11,7 +11,7 @@
+     "test": "jest"
+   },
+   "main": "./dist-cjs/index.js",
+-  "module": "./dist-es/index.js",
++  "module": "./dist-es/index.mjs",
+   "types": "./dist-types/index.d.ts",
+   "author": {
+     "name": "AWS SDK for JavaScript Team",
