@@ -21,11 +21,7 @@ function createReleaseMessage(payload) {
 
 // https://gist.github.com/stigok/57d075c1cf2a609cb758898c0b202428
 function verifyGithubWebhookEvent(payloadbody, signature256: string) {
-  if (!signature256) {
-    return {
-      status: 400,
-    }
-  }
+  if (!signature256) return false
   const token = process.env.GITHUB_WEBHOOK_SECRET
   const sig = Buffer.from(signature256 || '', 'utf8')
   const hmac = crypto.createHmac('sha256', token)
@@ -33,11 +29,9 @@ function verifyGithubWebhookEvent(payloadbody, signature256: string) {
     'sha256' + '=' + hmac.update(JSON.stringify(payloadbody)).digest('hex'),
     'utf8'
   )
-  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig)) {
-    return {
-      status: 400,
-    }
-  }
+  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig))
+    return false
+
   return true
 }
 
@@ -46,7 +40,9 @@ export async function post({ request }) {
 
   if (!import.meta.vitest) {
     const sig256 = request.headers.get('x-hub-signature-256')
-    verifyGithubWebhookEvent(payload, sig256)
+    if (!verifyGithubWebhookEvent(payload, sig256)) {
+      return { status: 400 }
+    }
   }
 
   const message = createReleaseMessage(payload)
@@ -596,7 +592,7 @@ if (import.meta.vitest) {
           mockedBad.body,
           mockedBad.headers['X-Hub-Signature-256']
         )
-      ).toEqual({ status: 400 })
+      ).toEqual(false)
     })
 
     test('verification 2', () => {
@@ -605,20 +601,21 @@ if (import.meta.vitest) {
           mockedBad.body,
           mockedBad.headers['X-Hub-Signature-256']
         )
-      ).toEqual({ status: 400 })
+      ).toEqual(false)
     })
 
     test('verification 3', () => {
-      expect(verifyGithubWebhookEvent({}, '')).toEqual({ status: 400 })
+      expect(verifyGithubWebhookEvent({}, '')).toEqual(false)
     })
 
     test('verification 4', () => {
-      expect(verifyGithubWebhookEvent(null, null)).toEqual({ status: 400 })
+      expect(verifyGithubWebhookEvent(null, null)).toEqual(false)
     })
 
     test('send', async () => {
       const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
-      process.env.DISCORD_WEBHOOK_URL_RELEASES = 'https://discordapp.com/api/webhooks/bad'
+      process.env.DISCORD_WEBHOOK_URL_RELEASES =
+        'https://discordapp.com/api/webhooks/bad'
       const response = await post({ request: createRequest(mocked) })
       expect(response.status).toBe(400)
       process.env.DISCORD_WEBHOOK_URL_RELEASES = url
