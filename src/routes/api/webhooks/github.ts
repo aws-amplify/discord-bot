@@ -53,7 +53,6 @@ export async function post({ request }) {
 
   const res = await fetch(process.env.DISCORD_WEBHOOK_URL_RELEASES, {
     headers: {
-      Authorization: `bot ${process.env.DISCORD_BOT_TOKEN}`,
       'Content-Type': 'application/json',
     },
     method: 'POST',
