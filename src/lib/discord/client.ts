@@ -1,7 +1,7 @@
 import { Client, Intents, MessageEmbed } from 'discord.js'
-import { createDiscordCommandBank } from './../discord'
+import { createDiscordCommandBank } from '$discord'
 import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
-import { prisma } from '../../lib/db'
+import { prisma } from '$lib/db'
 // manually import the commands
 import giverole from './commands/giverole'
 import contribute from './commands/contribute'
@@ -126,6 +126,5 @@ client.on('threadUpdate', async (thread) => {
 })
 
 export function createBot(token = process.env.DISCORD_BOT_TOKEN) {
-  console.log(process.env);
   return client.login(token)
 }

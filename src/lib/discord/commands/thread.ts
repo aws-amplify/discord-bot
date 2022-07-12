@@ -1,14 +1,14 @@
 import { MessageEmbed } from 'discord.js'
-import { createCommand, createOption } from './../../discord'
-import type { ThreadChannel } from 'discord.js'
-import { prisma } from './../../db'
+import { createCommand, createOption } from '$discord'
+import type { InteractionReplyOptions, ThreadChannel } from 'discord.js'
+import { prisma } from '$lib/db'
 
 export const PREFIXES = {
   solved: '✅ - ',
   open: '﹖ - ',
 }
 
-async function handler(interaction) {
+async function handler(interaction): Promise<InteractionReplyOptions | string> {
   const channel = interaction.channel as ThreadChannel
   const messages = await channel.messages.fetch()
   const record = await prisma.question.findUnique({

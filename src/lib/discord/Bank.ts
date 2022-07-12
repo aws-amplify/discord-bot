@@ -1,4 +1,5 @@
 import * as path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import glob from 'fast-glob'
 import { DiscordCommand } from './Command'
 import { createDiscordApi } from './api'
@@ -134,8 +135,8 @@ export function createDiscordCommandBank(
 
 export async function createBank(commandDirectories: string[] | string) {
   // TODO: add support for other command dirs
-  const builtinCommandsDirectory = decodeURI(
-    new URL('commands', import.meta.url).pathname
+  const builtinCommandsDirectory = fileURLToPath(
+    new URL('commands', import.meta.url)
   )
   const providedCommandDirectories = Array.isArray(commandDirectories)
     ? commandDirectories

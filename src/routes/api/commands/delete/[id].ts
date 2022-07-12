@@ -1,4 +1,4 @@
-import { commands } from './../../../../lib/discord/client'
+import { commands } from '$discord/client'
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function del({ request, params }) {

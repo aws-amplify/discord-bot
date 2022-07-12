@@ -1,15 +1,19 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import adapter from '@sveltejs/adapter-node'
 import glob from 'fast-glob'
 import preprocess from 'svelte-preprocess'
 import { optimizeCarbonImports } from 'carbon-preprocess-svelte'
 import { loadEnv } from 'vite'
 
-// glob all ts files in src/ directory
-const input = await glob('src/(discord)/**/!(*.d).ts')
 // https://nodejs.org/api/esm.html#esm_no_json_module_loading
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
+const isProd = process.env.NODE_ENV === 'production'
+
+function relative(path) {
+  return fileURLToPath(new URL(path, import.meta.url))
+}
 
 /**
  * Load's environment variables for development
@@ -18,7 +22,7 @@ const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
 export function loadEnvVars() {
   Object.assign(
     process.env,
-    loadEnv('development', decodeURI(new URL('.', import.meta.url).pathname), [
+    loadEnv('development', relative('.'), [
       'DISCORD_',
       'GITHUB_',
       'DATABASE_',
@@ -27,11 +31,8 @@ export function loadEnvVars() {
   )
 }
 
-loadEnvVars()
-
-function relative(path) {
-  return new URL(path, import.meta.url).pathname
-}
+// rely on Vite to load public env vars (i.e. prefixed with VITE_)
+if (!isProd) loadEnvVars()
 
 /** @type {import('vite').Plugin} */
 export function BotServerPlugin(options) {
