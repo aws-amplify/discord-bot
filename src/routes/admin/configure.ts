@@ -14,7 +14,7 @@ export async function get(event) {
   const roles = await api.get(Routes.guildRoles(guildId))
 
   const configResponse = await fetch(
-    `${import.meta.env.VITE_API_HOST}/api/admin/configure?guildId=${guildId}`
+    `${import.meta.env.VITE_HOST}/api/admin/configure?guildId=${guildId}`
   )
   const config = await configResponse.json()
 
