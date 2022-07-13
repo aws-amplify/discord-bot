@@ -1,9 +1,10 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 
 function relative(path) {
-  return new URL(path, import.meta.url).pathname
+  return fileURLToPath(new URL(path, import.meta.url))
 }
 
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
