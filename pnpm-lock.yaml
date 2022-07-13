@@ -32,8 +32,6 @@ importers:
       prettier: ^2.6.2
       prettier-plugin-svelte: ^2.7.0
       prisma: ^3.14.0
-      raw-body: ^2.5.1
-      secure-compare: ^3.0.1
       svelte: 3.48.0
       svelte-check: ^2.7.1
       svelte-preprocess: ^4.10.6
@@ -55,8 +53,6 @@ importers:
       express: 4.18.1
       fast-glob: 3.2.11
       next-auth: 4.3.4
-      raw-body: 2.5.1
-      secure-compare: 3.0.1
       uuid: 8.3.2
     devDependencies:
       '@hey-amplify/scripts': link:scripts
@@ -106,9 +102,9 @@ importers:
       aws-cdk-lib: 2.30.0_constructs@10.1.43
       constructs: 10.1.43
       source-map-support: 0.5.21
-      typescript: 4.6.4
+      typescript: 4.7.4
       uuid: 8.3.2
-      vite: 2.9.12
+      vite: 2.9.13
       vite-node: 0.9.4
 
   packages/support:
@@ -3231,10 +3227,6 @@ packages:
     dependencies:
       xmlchars: 2.2.0
     dev: true
-
-  /secure-compare/3.0.1:
-    resolution: {integrity: sha512-AckIIV90rPDcBcglUwXPF3kg0P0qmPsPXAj6BBEENQE1p5yA1xfmDJzfi1Tappj37Pv2mVbKpL3Z1T+Nn7k1Qw==}
-    dev: false
 
   /semver/7.3.7:
     resolution: {integrity: sha512-QlYTucUYOews+WeEujDoEGziz4K6c47V/Bd+LjSSYcA94p+DmINdf7ncaUinThfvZyu13lN9OY1XDxt8C0Tw0g==}
