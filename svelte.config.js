@@ -1,5 +1,4 @@
 import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import adapter from '@sveltejs/adapter-node'
 import preprocess from 'svelte-preprocess'
 import { optimizeCarbonImports } from 'carbon-preprocess-svelte'
