@@ -155,6 +155,10 @@ export class HeyAmplifyApp extends Construct {
       certificate: subdomain?.certificate ? subdomain.certificate : undefined,
       defaultBehavior: {
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: new cloudfront.CachePolicy(this, 'CachePolicy', {
+          queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+          cookieBehavior: cloudfront.CacheCookieBehavior.all(),
+        }),
         origin: new origins.LoadBalancerV2Origin(
           albFargateService.loadBalancer,
           {

@@ -9,8 +9,6 @@
 
 <script lang="ts">
   import {
-    Button,
-    ButtonSet,
     Content,
     Grid,
     Row,
@@ -20,8 +18,10 @@
     Link,
     Search,
   } from 'carbon-components-svelte'
-  import { match } from 'fuzzy'
+  import fuzzy from 'fuzzy'
   import type { Question } from '@prisma/client'
+
+  const { match } = fuzzy
 
   export let questions: Question[]
   let filtered: Question[] = questions
