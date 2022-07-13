@@ -1,11 +1,19 @@
-# create database file if it does not exist
+# SQLite uses a file URL, remove "file:" prefix from DATABASE_URL
+DATABASE_FILE_PATH=${DATABASE_URL#*file:}
 cd prisma
-if [ ! -f "$DATABASE_URL" ]
+if [ ! -f "${DATABASE_FILE_PATH}" ]
 then
-  pnpm dlx prisma db push
+  # create database file if it does not exist
+  echo 'Database does not exist, pushing schema...'
+  pnpm prisma db push
 else 
+  echo "Database already exists, migrating..."
   # run prisma migration on sqlite *.db file in EFS
-  pnpm dlx prisma migrate deploy
+  pnpm prisma migrate deploy
+  # if [ $? -eq 1 ]; then
+  #   echo "Migration failed, attempting to resolve"
+  #   pnpm prisma migrate resolve
+  # fi
 fi
 cd -
 

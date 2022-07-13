@@ -5,8 +5,12 @@ import getFormBody from './support/get-form-body'
 import { prisma } from '$lib/db'
 import DiscordProvider from 'next-auth/providers/discord'
 import GithubProvider from 'next-auth/providers/github'
-import type { IncomingRequest, NextAuthOptions, Session } from 'next-auth'
-import type { NextAuthAction } from 'next-auth/lib/types'
+import type {
+  IncomingRequest,
+  NextAuthOptions,
+  NextAuthAction,
+  Session,
+} from 'next-auth'
 import type { OutgoingResponse } from 'next-auth/core'
 
 // TODO: can we get around this behavior for SSR builds?
@@ -17,6 +21,7 @@ const github = GithubProvider?.default || GithubProvider
 
 export const options: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  debug: import.meta.env.DEV,
   providers: [
     discord({
       clientId: process.env.DISCORD_AUTH_CLIENT_ID,
@@ -28,24 +33,8 @@ export const options: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: '/',
-    // signOut: '/auth/signout',
     error: '/auth/error', // Error code passed in query string as ?error=
   },
-  // callbacks: {
-  //   async signIn({ user, account, profile, email, credentials }) {
-  //     return true
-  //   },
-  //   async redirect({ url, baseUrl }) {
-  //     return baseUrl
-  //   },
-  //   async session({ session, token, user }) {
-  //     return session
-  //   },
-  //   async jwt({ token, user, account, profile, isNewUser }) {
-  //     return token
-  //   },
-  // },
 }
 
 async function toSvelteKitResponse(
