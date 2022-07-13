@@ -9,16 +9,15 @@ RUN pnpm fetch
 ADD . .
 # install dependencies
 RUN pnpm install --offline --frozen-lockfile
-# generate prisma client
-# RUN pnpm prisma generate
+# expose arguments for VITE environment variables
+ARG VITE_NEXTAUTH_URL=http://localhost:3000
+ARG DATABASE_URL="file:../db/data.db"
+# expose necessary env vars
+ENV PORT=3000
 # run build
 RUN pnpm run build:lib && pnpm run build
 # install production dependencies
 RUN pnpm install --offline --frozen-lockfile --prod --ignore-scripts
-
-# expose necessary env vars
-ENV PORT=3000
-ENV DATABASE_URL="file:../db/data.db"
 
 EXPOSE 3000
 CMD ["./scripts/start.sh"]
