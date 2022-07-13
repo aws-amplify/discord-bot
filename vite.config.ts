@@ -95,7 +95,7 @@ export default defineConfig(({ mode }) => {
     globals: true,
     environment: 'jsdom',
     includeSource: ['src/**/*.{js,ts,svelte}'],
-    setupFiles: ['tests/setup.ts'],
+    setupFiles: ['tests/setup/svelte-kit-routes.ts'],
   }
   return config
 })
