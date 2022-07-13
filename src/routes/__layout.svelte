@@ -41,7 +41,7 @@
     </span>
 
     <HeaderUtilities>
-      {#if $session}
+      {#if $session.expires}
         <HeaderAction
           aria-label="User settings"
           bind:isOpen="{isUserPanelOpen}"
@@ -49,9 +49,6 @@
         >
           <Avatar slot="icon" url="{$session.user.image}" />
           <HeaderPanelLinks>
-            {#if $userStore.isAdmin}
-              <HeaderPanelLink href="/admin">Administration</HeaderPanelLink>
-            {/if}
             <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
           </HeaderPanelLinks>
         </HeaderAction>
