@@ -1,0 +1,10 @@
+.bx--content {
+  background-color: var(--cds-ui-background);
+  padding: 2rem;
+}
+
+@media (max-width: 33rem) {
+  .bx--content {
+    padding: 2rem 1rem;
+  }
+}
