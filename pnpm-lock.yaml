@@ -1,5 +1,10 @@
 lockfileVersion: 5.4
 
+patchedDependencies:
+  '@aws-sdk/util-user-agent-node@3.118.0':
+    hash: xeygernt54zzmj7inzabdooblq
+    path: patches/@aws-sdk__util-user-agent-node@3.118.0.patch
+
 importers:
 
   .:
@@ -32,8 +37,6 @@ importers:
       prettier: ^2.6.2
       prettier-plugin-svelte: ^2.7.0
       prisma: ^3.14.0
-      raw-body: ^2.5.1
-      secure-compare: ^3.0.1
       svelte: 3.48.0
       svelte-check: ^2.7.1
       svelte-preprocess: ^4.10.6
@@ -55,8 +58,6 @@ importers:
       express: 4.18.1
       fast-glob: 3.2.11
       next-auth: 4.3.4
-      raw-body: 2.5.1
-      secure-compare: 3.0.1
       uuid: 8.3.2
     devDependencies:
       '@hey-amplify/scripts': link:scripts
@@ -89,26 +90,28 @@ importers:
 
   cdk:
     specifiers:
+      '@hey-amplify/support': workspace:*
       '@hey-amplify/tsconfig': workspace:*
       '@types/node': 17.0.25
-      aws-cdk: ^2.24.1
-      aws-cdk-lib: ^2.21.1
-      constructs: ^10.0.123
+      aws-cdk: 2.24.1
+      aws-cdk-lib: 2.21.1
+      constructs: 10.0.123
       source-map-support: ^0.5.21
       typescript: ^4.6.3
       uuid: ^8.3.2
       vite: ^2.9.12
       vite-node: ^0.9.4
     devDependencies:
+      '@hey-amplify/support': link:../packages/support
       '@hey-amplify/tsconfig': link:../packages/tsconfig
       '@types/node': 17.0.25
-      aws-cdk: 2.30.0
-      aws-cdk-lib: 2.30.0_constructs@10.1.43
-      constructs: 10.1.43
+      aws-cdk: 2.24.1
+      aws-cdk-lib: 2.21.1_constructs@10.0.123
+      constructs: 10.0.123
       source-map-support: 0.5.21
-      typescript: 4.6.4
+      typescript: 4.7.4
       uuid: 8.3.2
-      vite: 2.9.12
+      vite: 2.9.13
       vite-node: 0.9.4
 
   packages/support:
@@ -239,7 +242,7 @@ packages:
       '@aws-sdk/util-defaults-mode-browser': 3.110.0
       '@aws-sdk/util-defaults-mode-node': 3.110.0
       '@aws-sdk/util-user-agent-browser': 3.110.0
-      '@aws-sdk/util-user-agent-node': 3.118.0
+      '@aws-sdk/util-user-agent-node': 3.118.0_xeygernt54zzmj7inzabdooblq
       '@aws-sdk/util-utf8-browser': 3.109.0
       '@aws-sdk/util-utf8-node': 3.109.0
       '@aws-sdk/util-waiter': 3.118.1
@@ -280,7 +283,7 @@ packages:
       '@aws-sdk/util-defaults-mode-browser': 3.110.0
       '@aws-sdk/util-defaults-mode-node': 3.110.0
       '@aws-sdk/util-user-agent-browser': 3.110.0
-      '@aws-sdk/util-user-agent-node': 3.118.0
+      '@aws-sdk/util-user-agent-node': 3.118.0_xeygernt54zzmj7inzabdooblq
       '@aws-sdk/util-utf8-browser': 3.109.0
       '@aws-sdk/util-utf8-node': 3.109.0
       tslib: 2.4.0
@@ -322,7 +325,7 @@ packages:
       '@aws-sdk/util-defaults-mode-browser': 3.110.0
       '@aws-sdk/util-defaults-mode-node': 3.110.0
       '@aws-sdk/util-user-agent-browser': 3.110.0
-      '@aws-sdk/util-user-agent-node': 3.118.0
+      '@aws-sdk/util-user-agent-node': 3.118.0_xeygernt54zzmj7inzabdooblq
       '@aws-sdk/util-utf8-browser': 3.109.0
       '@aws-sdk/util-utf8-node': 3.109.0
       entities: 2.2.0
@@ -755,7 +758,7 @@ packages:
       tslib: 2.4.0
     dev: true
 
-  /@aws-sdk/util-user-agent-node/3.118.0:
+  /@aws-sdk/util-user-agent-node/3.118.0_xeygernt54zzmj7inzabdooblq:
     resolution: {integrity: sha512-7j21HNumxMkeUpgoMX8o3y66k+qMSEkCPCMGnoiiMtgfWX9SY0S/fLwR1nDBw8HI3NthRXfgWdAXUu8K3Kjp6g==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -768,6 +771,7 @@ packages:
       '@aws-sdk/types': 3.110.0
       tslib: 2.4.0
     dev: true
+    patched: true
 
   /@aws-sdk/util-utf8-browser/3.109.0:
     resolution: {integrity: sha512-FmcGSz0v7Bqpl1SE8G1Gc0CtDpug+rvqNCG/szn86JApD/f5x8oByjbEiAyTU2ZH2VevUntx6EW68ulHyH+x+w==}
@@ -1316,15 +1320,15 @@ packages:
     engines: {node: '>= 4.0.0'}
     dev: true
 
-  /aws-cdk-lib/2.30.0_constructs@10.1.43:
-    resolution: {integrity: sha512-e9KKwRF4vPzPpOXPq8dtzUdn6j2tmTrrSZmQu2tOiZni0eB1vhiOVwaxc/8aEUrz8wUZ8t2gEitYdJmtm/GWhQ==}
+  /aws-cdk-lib/2.21.1_constructs@10.0.123:
+    resolution: {integrity: sha512-dhJUZ50EfhV67Pq7oED3rwyg3eKebxR7LTHQXf52YAxmBSKkE2L6hPAshCyaP49uv4QmyAW14T41o+aVSgyHHw==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       constructs: ^10.0.0
     dependencies:
       '@balena/dockerignore': 1.0.2
       case: 1.6.3
-      constructs: 10.1.43
+      constructs: 10.0.123
       fs-extra: 9.1.0
       ignore: 5.2.0
       jsonschema: 1.4.1
@@ -1344,8 +1348,8 @@ packages:
       - semver
       - yaml
 
-  /aws-cdk/2.30.0:
-    resolution: {integrity: sha512-kt2Xm7UvLhlqhLsPrzOVjr10moRfMiIsbmY7TteE4YBntG7zZD3Ec2EBSWjOhszNEDLv2MYQYFOpGDKkjy45MA==}
+  /aws-cdk/2.24.1:
+    resolution: {integrity: sha512-fDcJW7tLbqsCvWB3eZY6glRrjRE45VqLT+JuKz3C2jIe6qXkwV8dBwYXElwY/tTCh/hDlpWtCNMRdhmrdE25GQ==}
     engines: {node: '>= 14.15.0'}
     hasBin: true
     optionalDependencies:
@@ -1574,9 +1578,9 @@ packages:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
     dev: true
 
-  /constructs/10.1.43:
-    resolution: {integrity: sha512-I7CEsYPmcsTpmf+tT3DZq5klCzk2d0Gb6X67P5XxYq0an4+JiWrf8/LCIHV3xqOhnGLAbM/aGZ3bigUNTWeliA==}
-    engines: {node: '>= 14.17.0'}
+  /constructs/10.0.123:
+    resolution: {integrity: sha512-PPw30hgbBLN4VAEqVjni4EtKziMT4/b+5WivsgXZi+U3U1jef/1oYLxV/LC3KDofrgb+1qDbg609ff4L2kSQ1w==}
+    engines: {node: '>= 12.7.0'}
     dev: true
 
   /content-disposition/0.5.4:
@@ -3231,10 +3235,6 @@ packages:
     dependencies:
       xmlchars: 2.2.0
     dev: true
-
-  /secure-compare/3.0.1:
-    resolution: {integrity: sha512-AckIIV90rPDcBcglUwXPF3kg0P0qmPsPXAj6BBEENQE1p5yA1xfmDJzfi1Tappj37Pv2mVbKpL3Z1T+Nn7k1Qw==}
-    dev: false
 
   /semver/7.3.7:
     resolution: {integrity: sha512-QlYTucUYOews+WeEujDoEGziz4K6c47V/Bd+LjSSYcA94p+DmINdf7ncaUinThfvZyu13lN9OY1XDxt8C0Tw0g==}

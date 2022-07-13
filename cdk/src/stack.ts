@@ -4,9 +4,15 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as efs from 'aws-cdk-lib/aws-efs'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
-import { HeyAmplifyApp } from './construct'
+import { HeyAmplifyApp } from './components/hey-amplify-app'
 import { PROJECT_ROOT } from './constants'
 import { getSvelteKitEnvironmentVariables } from './support'
+import { AmplifyAwsSubdomain } from './components/amplify-aws-subdomain'
+import type { AmplifyAwsSubdomainProps } from './components/amplify-aws-subdomain'
+
+type HeyAmplifyStackProps = Partial<StackProps> & {
+  subdomain: AmplifyAwsSubdomainProps | undefined
+}
 
 export class HeyAmplifyStack extends Stack {
   private readonly appName: string = this.node.tryGetContext('name')
@@ -14,7 +20,7 @@ export class HeyAmplifyStack extends Stack {
 
   public readonly secrets: Record<string, ssm.IParameter> = {}
 
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: HeyAmplifyStackProps) {
     super(scope, id, props)
 
     const requiredSecrets = [
@@ -70,6 +76,9 @@ export class HeyAmplifyStack extends Stack {
         },
       },
       secrets,
+      subdomain: props.subdomain
+        ? new AmplifyAwsSubdomain(this, 'subdomain', props.subdomain)
+        : undefined,
       filesystem,
       filesystemMountPoint: '/usr/src/db',
     })
