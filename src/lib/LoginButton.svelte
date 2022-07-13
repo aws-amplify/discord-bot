@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Button } from 'carbon-components-svelte'
+  import Login from 'carbon-icons-svelte/lib/Login.svelte'
   import { getCsrfToken } from './auth'
 
   type Provider = 'discord' | 'github'
@@ -9,15 +10,12 @@
   let redirect = global?.window?.location?.href || import.meta.env.VITE_HOST
 </script>
 
-<form
-  action="{`${import.meta.env.VITE_NEXTAUTH_URL}/api/auth/signin/${provider}`}"
-  method="POST"
->
+<form action="{`/api/auth/signin/${provider}`}" method="POST">
   {#await getCsrfToken() then csrfToken}
     <input type="hidden" name="csrfToken" value="{csrfToken}" />
   {/await}
   <input type="hidden" name="callbackUrl" value="{redirect}" />
-  <Button type="submit">
+  <Button type="submit" icon="{Login}">
     <slot>Login</slot>
   </Button>
 </form>

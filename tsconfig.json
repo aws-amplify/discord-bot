@@ -1,12 +1,18 @@
 {
   "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "paths": {
       "$lib": ["src/lib"],
       "$lib/*": ["src/lib/*"],
       "$discord": ["src/lib/discord"],
       "$discord/*": ["src/lib/discord/*"]
     },
-    "types": ["vitest/importMeta"]
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true
   }
 }

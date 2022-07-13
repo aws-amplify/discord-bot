@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '3000'
+      - '3000:3000'
     volumes:
       - ./db:/usr/src/db
     env_file:

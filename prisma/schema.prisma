@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Question {
-  id                  Int      @id @default(autoincrement())
+  id                  String   @id @default(cuid())
   threadId            String   @unique
   ownerId             String
   channelName         String
@@ -30,6 +30,7 @@ model ConfigurationAdminRoles {
 }
 
 model Configuration {
+  // ID of Discord server
   id         String                    @id @unique
   name       String
   createdAt  DateTime                  @default(now())

@@ -7,9 +7,11 @@ import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns'
 import * as efs from 'aws-cdk-lib/aws-efs'
 import * as elb from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
+import * as route53 from 'aws-cdk-lib/aws-route53'
+import * as route53Targets from 'aws-cdk-lib/aws-route53-targets'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import { v4 as uuid } from 'uuid'
-import { ListenerAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2'
+import type { AmplifyAwsSubdomain } from './amplify-aws-subdomain'
 
 interface DockerProps {
   name: string
@@ -48,13 +50,22 @@ export interface HeyAmplifyAppProps {
     // DISCORD_BOT_TOKEN: ssm.IParameter
     [name: string]: ssm.IParameter
   }
+
+  /**
+   * Amplify AWS Subdomain (if exists)
+   */
+  subdomain: AmplifyAwsSubdomain | undefined
 }
 
 export class HeyAmplifyApp extends Construct {
+  private readonly appName: string = this.node.tryGetContext('name')
+  private readonly envName: string = this.node.tryGetContext('env')
+
   constructor(scope: Construct, id: string, props: HeyAmplifyAppProps) {
     super(scope, id)
 
-    const { cluster, filesystem, filesystemMountPoint, docker } = props
+    const { cluster, filesystem, filesystemMountPoint, docker, subdomain } =
+      props
 
     const secrets = {}
     for (const [name, param] of Object.entries(props.secrets)) {
@@ -74,6 +85,8 @@ export class HeyAmplifyApp extends Construct {
             containerName: docker.name,
             image: ecs.ContainerImage.fromAsset(docker.context, {
               file: docker.dockerfile || 'Dockerfile',
+              // https://github.com/aws/aws-cdk/issues/14395
+              buildArgs: docker.environment,
             }),
             environment: docker.environment,
             enableLogging: true,
@@ -136,8 +149,12 @@ export class HeyAmplifyApp extends Construct {
     const xAmzSecurityTokenHeaderValue = uuid()
 
     // set up CloudFront
-    new cloudfront.Distribution(this, 'app-dist', {
+    const distribution = new cloudfront.Distribution(this, 'Distribution', {
+      // domainNames and certificate needed for amplify.aws subdomain (connected to a Route53 hosted zone)
+      domainNames: subdomain?.domainNames ? subdomain.domainNames : undefined,
+      certificate: subdomain?.certificate ? subdomain.certificate : undefined,
       defaultBehavior: {
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         origin: new origins.LoadBalancerV2Origin(
           albFargateService.loadBalancer,
           {
@@ -152,6 +169,17 @@ export class HeyAmplifyApp extends Construct {
         // TODO: cache policy?
       },
     })
+
+    // set up DNS record for the CloudFront distribution if subdomain exists
+    if (subdomain) {
+      new route53.ARecord(this, 'AliasRecord', {
+        target: route53.RecordTarget.fromAlias(
+          new route53Targets.CloudFrontTarget(distribution)
+        ),
+        zone: subdomain.hostedZone,
+        recordName: this.envName,
+      })
+    }
 
     for (const listener of albFargateService.loadBalancer.listeners) {
       // create listener rule for Security headers
@@ -168,7 +196,7 @@ export class HeyAmplifyApp extends Construct {
       })
       // modify default action to send 403
       listener.addAction('default', {
-        action: ListenerAction.fixedResponse(403, {
+        action: elb.ListenerAction.fixedResponse(403, {
           messageBody: 'Forbidden',
         }),
       })

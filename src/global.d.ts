@@ -1,4 +1,5 @@
 /// <reference types="@sveltejs/kit" />
+/// <reference types="vitest/importMeta" />
 /// <reference types="vitest/globals" />
 
 interface ImportMetaEnv {
@@ -9,5 +10,4 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv
-  readonly vitest?: typeof import('vitest')
 }
