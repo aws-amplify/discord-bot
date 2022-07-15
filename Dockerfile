@@ -11,7 +11,7 @@ ADD . .
 RUN pnpm install --offline --frozen-lockfile
 # expose arguments for VITE environment variables
 ARG VITE_NEXTAUTH_URL=http://localhost:3000
-ARG DATABASE_URL="file:../db/data.db"
+ARG DATABASE_URL="file:/data/sqlite.db"
 # expose necessary env vars
 ENV PORT=3000
 # run build

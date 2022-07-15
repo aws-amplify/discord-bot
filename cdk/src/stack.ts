@@ -46,54 +46,44 @@ export class HeyAmplifyStack extends Stack {
     Tags.of(this).add('app:name', this.appName)
     Tags.of(this).add('app:env', this.envName)
 
-    const vpc = new ec2.Vpc(this, `vpc`, {
+    const vpc = new ec2.Vpc(this, `Vpc`, {
       maxAzs: 2,
       vpcName: `${this.appName} VPC`,
-      // subnetConfiguration: [
-      //   {
-      //     name: 'public',
-      //     subnetType: ec2.SubnetType.PUBLIC,
-      //   },
-      //   {
-      //     name: 'isolated',
-      //     subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
-      //   },
-      // ],
     })
 
-    const cluster = new ecs.Cluster(this, `fargate-cluster`, {
+    const cluster = new ecs.Cluster(this, `Cluster`, {
       vpc,
       containerInsights: true,
       enableFargateCapacityProviders: true,
     })
 
-    const filesystem = new efs.FileSystem(this, 'filesystem', {
+    const filesystem = new efs.FileSystem(this, 'Filesystem', {
       vpc,
     })
 
     let subdomain: AmplifyAwsSubdomain | undefined
     if (props.subdomain) {
-      subdomain = new AmplifyAwsSubdomain(this, 'subdomain', props.subdomain)
+      subdomain = new AmplifyAwsSubdomain(this, 'Subdomain', props.subdomain)
     }
 
-    new HeyAmplifyApp(this, `bot`, {
+    new HeyAmplifyApp(this, `Bot`, {
       cluster,
       docker: {
         name: `${this.appName}-bot`,
         context: PROJECT_ROOT,
         dockerfile: 'Dockerfile',
         environment: {
-          DATABASE_URL: `file:../db/${this.envName}.db`,
+          DATABASE_URL: `file:/data/${this.envName}.db`,
           ...getSvelteKitEnvironmentVariables(this.envName),
         },
       },
       secrets,
       subdomain,
       filesystem,
-      filesystemMountPoint: '/usr/src/db',
+      filesystemMountPoint: '/data',
     })
 
-    new SupportBox(this, 'support-box', {
+    new SupportBox(this, 'SupportBox', {
       filesystem,
       subdomain,
       vpc,

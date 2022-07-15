@@ -5,8 +5,6 @@ node_modules
 /cdk
 /docs
 /tests
-/scripts/**
-!/scripts/start.sh
 .vscode
 
 # no builds
@@ -16,11 +14,10 @@ node_modules
 *.log
 
 # docs, markdown
-*.md
 **/*.md
 
 # ignore local db
-/db
+**/*.db
 
 # ignore env files
 .env*
