@@ -50,10 +50,8 @@
           <Avatar slot="icon" url="{$session.user.image}" />
           <HeaderPanelLinks>
             <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
-            {#if !$userStore.github}
-              <HeaderPanelLink href="/profile/link"
-                >Link Github Account</HeaderPanelLink
-              >
+            {#if !$session.user.github}
+              <HeaderPanelLink href="/profile/link">Link Github Account</HeaderPanelLink>
             {:else}
               <p class="header-text">Github Account Linked</p>
             {/if}

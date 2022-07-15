@@ -35,6 +35,22 @@ export const options: NextAuthOptions = {
   pages: {
     error: '/auth/error', // Error code passed in query string as ?error=
   },
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      return baseUrl
+    },
+    // take same stuff that;s taken out of discord
+
+    // verify if session gets checked again after they sign in with github, if not do this in sign in
+    async session({ session, user }) {
+      // check if session is true 
+      // check if they have discord account 
+      const userAccounts = await prisma.account.findMany({ where: { userId: user.id }})
+      const storedUserGitHub = userAccounts.length === 2 && userAccounts.filter(account => account.provider === 'github')
+      if (storedUserGitHub) session.user.github = true
+      return session
+    },
+  },
 }
 
 async function toSvelteKitResponse(

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Content } from 'carbon-components-svelte'
-  import { user } from '$lib/store'
+  import { session } from '$app/stores'
   import LoginButton from '$lib/LoginButton.svelte'
   import { onMount } from 'svelte'
 
@@ -17,7 +17,7 @@
 
   onMount(() => {
     console.log('on mount')
-    if ($user) {
+    if ($session.user) {
       // push user through GitHub auth
       console.log('github login')
       formGitHub.requestSubmit()
@@ -29,7 +29,7 @@
   })
 </script>
 
-{#if $user && $user.github}
+{#if $session.user && $session.user.github}
   <Content>
     <p>
       Thanks for linking your GitHub account! It is now safe to close this page
