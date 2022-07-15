@@ -1,8 +1,9 @@
-import { Stack, StackProps, Tags } from 'aws-cdk-lib'
+import { Stack, StackProps, Tags, RemovalPolicy } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as efs from 'aws-cdk-lib/aws-efs'
+import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import { HeyAmplifyApp } from './components/hey-amplify-app'
 import { PROJECT_ROOT } from './constants'
@@ -48,7 +49,7 @@ export class HeyAmplifyStack extends Stack {
 
     const vpc = new ec2.Vpc(this, `Vpc`, {
       maxAzs: 2,
-      vpcName: `${this.appName} VPC`,
+      vpcName: `vpc-${this.appName}-${this.envName}`,
     })
 
     const cluster = new ecs.Cluster(this, `Cluster`, {
@@ -66,7 +67,16 @@ export class HeyAmplifyStack extends Stack {
       subdomain = new AmplifyAwsSubdomain(this, 'Subdomain', props.subdomain)
     }
 
+    // create bucket for SQLite backups with Litestream
+    const bucket = new s3.Bucket(this, 'Bucket', {
+      bucketName: `${this.appName}-${this.envName}-bucket`,
+      // if env is destroyed, empty & remove bucket
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    })
+
     new HeyAmplifyApp(this, `Bot`, {
+      bucket,
       cluster,
       docker: {
         name: `${this.appName}-bot`,
@@ -84,6 +94,7 @@ export class HeyAmplifyStack extends Stack {
     })
 
     new SupportBox(this, 'SupportBox', {
+      bucket,
       filesystem,
       subdomain,
       vpc,

@@ -11,6 +11,7 @@ import * as route53 from 'aws-cdk-lib/aws-route53'
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import { v4 as uuid } from 'uuid'
+import type * as s3 from 'aws-cdk-lib/aws-s3'
 import type { AmplifyAwsSubdomain } from './amplify-aws-subdomain'
 
 interface DockerProps {
@@ -21,6 +22,11 @@ interface DockerProps {
 }
 
 export interface HeyAmplifyAppProps {
+  /**
+   * S3 bucket to store SQLite backups
+   */
+  bucket?: s3.Bucket
+
   /**
    * ECS Cluster the Application Load Balanced Fargate Service will be deployed to.
    */
@@ -64,8 +70,14 @@ export class HeyAmplifyApp extends Construct {
   constructor(scope: Construct, id: string, props: HeyAmplifyAppProps) {
     super(scope, id)
 
-    const { cluster, filesystem, filesystemMountPoint, docker, subdomain } =
-      props
+    const {
+      bucket,
+      cluster,
+      filesystem,
+      filesystemMountPoint,
+      docker,
+      subdomain,
+    } = props
 
     const secrets = {}
     for (const [name, param] of Object.entries(props.secrets)) {
@@ -206,6 +218,34 @@ export class HeyAmplifyApp extends Construct {
 
       new cdk.CfnOutput(this, 'HeyAmplifyAppURL', {
         value: record.domainName,
+      })
+    }
+
+    if (docker.environment?.DATABASE_URL && bucket) {
+      // create backup infrastructure, Litestream sidecar
+      const litestreamContainer =
+        albFargateService.service.taskDefinition.addContainer('db-backup', {
+          image: ecs.ContainerImage.fromRegistry('litestream/litestream'),
+          environment: {
+            BUCKET_NAME: bucket.bucketName,
+          },
+          logging: new ecs.AwsLogDriver({
+            streamPrefix: 'backup',
+          }),
+          command: [
+            'replicate',
+            `${docker.environment.DATABASE_URL.replace('file:', '')}`,
+            `s3://${bucket.bucketName}/backups`,
+          ],
+        })
+
+      bucket.grantReadWrite(albFargateService.service.taskDefinition.taskRole)
+
+      // mount the filesystem
+      litestreamContainer.addMountPoints({
+        containerPath: filesystemMountPoint,
+        sourceVolume: volumeName,
+        readOnly: false,
       })
     }
   }

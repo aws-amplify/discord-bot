@@ -1,21 +1,26 @@
-import { Stack } from 'aws-cdk-lib'
+import { Stack, Tags } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import * as cdk from 'aws-cdk-lib'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as iam from 'aws-cdk-lib/aws-iam'
 import * as route53 from 'aws-cdk-lib/aws-route53'
-import * as s3 from 'aws-cdk-lib/aws-s3'
+import type * as s3 from 'aws-cdk-lib/aws-s3'
 import type * as efs from 'aws-cdk-lib/aws-efs'
 import type { AmplifyAwsSubdomain } from './amplify-aws-subdomain'
 
 export interface SupportBoxProps {
   /**
-   * Filesystem to be used for storing the application's data.
+   * bucket for ec2 access, used for manually restoring backups of SQLite
+   */
+  bucket: s3.Bucket
+
+  /**
+   * Filesystem to be used for storing the mounting to ec2 instance
    */
   filesystem: efs.FileSystem
 
   /**
-   * Subdomain (if exists)
+   * Subdomain (if exists) establishes `support` subdomain
    */
   subdomain: AmplifyAwsSubdomain | undefined
 
@@ -29,15 +34,16 @@ export interface SupportBoxProps {
  * The support box is used for accessing filesystem and performing manual database migrations
  */
 export class SupportBox extends Construct {
-  private readonly appName: string = this.node.tryGetContext('app')
+  private readonly appName: string = this.node.tryGetContext('name')
   private readonly envName: string = this.node.tryGetContext('env')
-
-  public readonly bucket: s3.Bucket
 
   constructor(scope: Construct, id: string, props: SupportBoxProps) {
     super(scope, id)
 
-    const { filesystem, subdomain, vpc } = props
+    const { bucket, filesystem, subdomain, vpc } = props
+
+    Tags.of(this).add('app:name', this.appName)
+    Tags.of(this).add('app:env', this.envName)
 
     const role = new iam.Role(this, 'SupportBoxRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
@@ -65,7 +71,7 @@ export class SupportBox extends Construct {
         subnetType: ec2.SubnetType.PUBLIC,
       },
       role,
-      instanceName: 'support-box',
+      instanceName: `support-box-${this.envName}`,
       instanceType: ec2.InstanceType.of(
         // t2.micro has free tier usage in aws
         ec2.InstanceClass.T2,
@@ -104,11 +110,6 @@ export class SupportBox extends Construct {
       ...scriptSetupNode
     )
 
-    // create bucket for SQLite backups with Litestream
-    const bucket = new s3.Bucket(this, 'SupportBucket', {
-      bucketName: `${this.appName}-${this.envName}-bucket`,
-    })
-    this.bucket = bucket
     bucket.grantReadWrite(instance.role)
 
     // set up DNS record for the CloudFront distribution if subdomain exists
@@ -122,6 +123,11 @@ export class SupportBox extends Construct {
       // outputs public IP of the instance
       new cdk.CfnOutput(this, 'DomainOutput', {
         value: record.domainName,
+      })
+    } else {
+      // outputs public IP of the instance
+      new cdk.CfnOutput(this, 'IPOutput', {
+        value: instance.instancePublicIp,
       })
     }
   }
