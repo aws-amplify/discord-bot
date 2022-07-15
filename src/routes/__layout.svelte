@@ -14,7 +14,7 @@
   import { afterNavigate } from '$app/navigation'
   import Avatar from '$lib/Avatar.svelte'
   import LoginButton from '$lib/LoginButton.svelte'
-  import { user as userStore, notifications } from '$lib/store'
+  import { notifications } from '$lib/store'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
   import '../app.css'
 
@@ -80,6 +80,23 @@
     line-height: var(--cds-display-01-line-height);
     margin-bottom: var(--cds-layout-01);
   }
+  
+  :global(.bx--header-panel--expanded) {
+    height: min-content;
+    padding-bottom: var(--cds-spacing-08);
+  }
+  
+  .header-text {
+    font-size: var(--cds-productive-heading-01-font-size, 0.875rem);
+    line-height: var(--cds-productive-heading-01-line-height, 1.28572);
+    letter-spacing: var(--cds-productive-heading-01-letter-spacing, 0.16px);
+    display: block;
+    height: var(--cds-spacing-07, 2rem);
+    padding: 0.375rem var(--cds-spacing-05, 1rem);
+    color: #c6c6c6;
+    text-decoration: none;
+  }
+
 
   div.ha--notification--container {
     position: fixed;
