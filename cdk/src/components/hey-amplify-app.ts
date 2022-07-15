@@ -75,7 +75,7 @@ export class HeyAmplifyApp extends Construct {
     const albFargateService =
       new ecs_patterns.ApplicationLoadBalancedFargateService(
         this,
-        `fargate-service`,
+        `AlbFargateService`,
         {
           cluster,
           cpu: 256,
@@ -149,7 +149,7 @@ export class HeyAmplifyApp extends Construct {
     const xAmzSecurityTokenHeaderValue = uuid()
 
     // set up CloudFront
-    const distribution = new cloudfront.Distribution(this, 'Distribution', {
+    const distribution = new cloudfront.Distribution(this, 'CFDistribution', {
       // domainNames and certificate needed for amplify.aws subdomain (connected to a Route53 hosted zone)
       domainNames: subdomain?.domainNames ? subdomain.domainNames : undefined,
       certificate: subdomain?.certificate ? subdomain.certificate : undefined,
@@ -196,7 +196,7 @@ export class HeyAmplifyApp extends Construct {
 
     // set up DNS record for the CloudFront distribution if subdomain exists
     if (subdomain) {
-      const record = new route53.ARecord(this, 'AliasRecord', {
+      const record = new route53.ARecord(this, 'AliasRecordApp', {
         target: route53.RecordTarget.fromAlias(
           new route53Targets.CloudFrontTarget(distribution)
         ),
