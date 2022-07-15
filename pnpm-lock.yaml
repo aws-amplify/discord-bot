@@ -56,7 +56,7 @@ importers:
       prisma: 3.15.2
       uuid: 8.3.2
     devDependencies:
-      '@hey-amplify/scripts': link:scripts
+      '@hey-amplify/scripts': link:packages/scripts
       '@hey-amplify/support': link:packages/support
       '@hey-amplify/tsconfig': link:packages/tsconfig
       '@sveltejs/adapter-node': 1.0.0-next.79
@@ -107,6 +107,20 @@ importers:
       vite: 2.9.14
       vite-node: 0.9.4
 
+  packages/scripts:
+    specifiers:
+      '@hey-amplify/support': workspace:*
+      command-line-args: ^5.2.1
+      command-line-commands: ^3.0.2
+      command-line-usage: ^6.1.3
+      picocolors: ^1.0.0
+    dependencies:
+      '@hey-amplify/support': link:../support
+      command-line-args: 5.2.1
+      command-line-commands: 3.0.2
+      command-line-usage: 6.1.3
+      picocolors: 1.0.0
+
   packages/support:
     specifiers:
       '@aws-sdk/client-ssm': ^3.76.0
@@ -129,20 +143,6 @@ importers:
 
   packages/tsconfig:
     specifiers: {}
-
-  scripts:
-    specifiers:
-      '@hey-amplify/support': workspace:*
-      command-line-args: ^5.2.1
-      command-line-commands: ^3.0.2
-      command-line-usage: ^6.1.3
-      picocolors: ^1.0.0
-    dependencies:
-      '@hey-amplify/support': link:../packages/support
-      command-line-args: 5.2.1
-      command-line-commands: 3.0.2
-      command-line-usage: 6.1.3
-      picocolors: 1.0.0
 
 packages:
 
