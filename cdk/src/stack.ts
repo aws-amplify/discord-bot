@@ -8,6 +8,7 @@ import { HeyAmplifyApp } from './components/hey-amplify-app'
 import { PROJECT_ROOT } from './constants'
 import { getSvelteKitEnvironmentVariables } from './support'
 import { AmplifyAwsSubdomain } from './components/amplify-aws-subdomain'
+import { SupportBox } from './components/support-box'
 import type { AmplifyAwsSubdomainProps } from './components/amplify-aws-subdomain'
 
 type HeyAmplifyStackProps = Partial<StackProps> & {
@@ -48,6 +49,16 @@ export class HeyAmplifyStack extends Stack {
     const vpc = new ec2.Vpc(this, `vpc`, {
       maxAzs: 2,
       vpcName: `${this.appName} VPC`,
+      // subnetConfiguration: [
+      //   {
+      //     name: 'public',
+      //     subnetType: ec2.SubnetType.PUBLIC,
+      //   },
+      //   {
+      //     name: 'isolated',
+      //     subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+      //   },
+      // ],
     })
 
     const cluster = new ecs.Cluster(this, `fargate-cluster`, {
@@ -58,11 +69,12 @@ export class HeyAmplifyStack extends Stack {
 
     const filesystem = new efs.FileSystem(this, 'filesystem', {
       vpc,
-      vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC,
-        onePerAz: true,
-      },
     })
+
+    let subdomain: AmplifyAwsSubdomain | undefined
+    if (props.subdomain) {
+      subdomain = new AmplifyAwsSubdomain(this, 'subdomain', props.subdomain)
+    }
 
     new HeyAmplifyApp(this, `bot`, {
       cluster,
@@ -76,11 +88,15 @@ export class HeyAmplifyStack extends Stack {
         },
       },
       secrets,
-      subdomain: props.subdomain
-        ? new AmplifyAwsSubdomain(this, 'subdomain', props.subdomain)
-        : undefined,
+      subdomain,
       filesystem,
       filesystemMountPoint: '/usr/src/db',
+    })
+
+    new SupportBox(this, 'support-box', {
+      filesystem,
+      subdomain,
+      vpc,
     })
   }
 

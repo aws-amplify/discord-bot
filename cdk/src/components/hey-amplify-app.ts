@@ -170,20 +170,8 @@ export class HeyAmplifyApp extends Construct {
           }
         ),
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-        // TODO: cache policy?
       },
     })
-
-    // set up DNS record for the CloudFront distribution if subdomain exists
-    if (subdomain) {
-      new route53.ARecord(this, 'AliasRecord', {
-        target: route53.RecordTarget.fromAlias(
-          new route53Targets.CloudFrontTarget(distribution)
-        ),
-        zone: subdomain.hostedZone,
-        recordName: this.envName,
-      })
-    }
 
     for (const listener of albFargateService.loadBalancer.listeners) {
       // create listener rule for Security headers
@@ -203,6 +191,21 @@ export class HeyAmplifyApp extends Construct {
         action: elb.ListenerAction.fixedResponse(403, {
           messageBody: 'Forbidden',
         }),
+      })
+    }
+
+    // set up DNS record for the CloudFront distribution if subdomain exists
+    if (subdomain) {
+      const record = new route53.ARecord(this, 'AliasRecord', {
+        target: route53.RecordTarget.fromAlias(
+          new route53Targets.CloudFrontTarget(distribution)
+        ),
+        zone: subdomain.hostedZone,
+        recordName: this.envName,
+      })
+
+      new cdk.CfnOutput(this, 'HeyAmplifyAppURL', {
+        value: record.domainName,
       })
     }
   }
