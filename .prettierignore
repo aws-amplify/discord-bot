@@ -1,4 +1,11 @@
-.svelte-kit/**
-static/**
-build/**
-node_modules/**
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+
+# project-specific files
+pnpm-lock.yaml
+cdk/cdk.out

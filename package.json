@@ -12,6 +12,8 @@
     "build": "vite build && pnpm build:server",
     "build:lib": "pnpm packages run build",
     "build:server": "vite build --mode server",
+    "check": "prettier --check .",
+    "lint": "eslint **/*.{js,ts,svelte}",
     "prepare": "prisma generate",
     "pretest": "pnpm package",
     "setup": "pnpm install && pnpm build:lib",
@@ -35,6 +37,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
     "@hey-amplify/scripts": "workspace:*",
     "@hey-amplify/support": "workspace:*",
     "@hey-amplify/tsconfig": "workspace:*",
@@ -50,6 +54,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-svelte3": "^4.0.0",
     "jsdom": "^20.0.0",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.6.2",
     "prettier-plugin-svelte": "^2.7.0",
     "svelte": "3.49.0",
@@ -69,7 +74,6 @@
     "semi": false,
     "svelteSortOrder": "scripts-markup-styles",
     "svelteStrictMode": true,
-    "svelteBracketNewLine": true,
     "svelteAllowShorthand": false,
     "plugins": [
       "./node_modules/prettier-plugin-svelte"
@@ -96,7 +100,9 @@
       "@typescript-eslint"
     ],
     "ignorePatterns": [
-      "*.cjs"
+      "*.cjs",
+      "cdk/cdk.out/",
+      "build/"
     ],
     "overrides": [
       {
@@ -116,6 +122,49 @@
       "ignoreMissing": [
         "react",
         "react-dom"
+      ]
+    }
+  },
+  "lint-staged": {
+    "*.(ts|js|svelte)": [
+      "prettier --list-different",
+      "eslint"
+    ],
+    "*.(md|yaml|graphql)": "prettier --list-different"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "header-max-length": [
+        2,
+        "always",
+        72
+      ],
+      "body-max-line-length": [
+        2,
+        "always",
+        80
+      ],
+      "scope-case": [
+        0,
+        "always",
+        "lower-case"
+      ],
+      "type-enum": [
+        2,
+        "always",
+        [
+          "build",
+          "ci",
+          "chore",
+          "docs",
+          "feat",
+          "fix",
+          "test",
+          "style"
+        ]
       ]
     }
   }

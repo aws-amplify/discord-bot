@@ -14,6 +14,14 @@ Refer to the [readme guide](./README.md#getting-started) to get started.
 
 ![Architecture diagram](./docs/architecture-diagram-0.5.1.png)
 
+## Git Hooks
+
+It is recommended to use the provided git hooks to save time by verifying your changes before filing a pull request.
+
+```bash
+git config core.hookspath .git-hooks
+```
+
 ## Authoring Discord Commands
 
 To get started, let's create a new command file in `src/lib/discord/commands`: `hello.ts`
