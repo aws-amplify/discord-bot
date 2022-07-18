@@ -11,6 +11,10 @@ function isApiRoute(pathname: URL['pathname']) {
   return pathname.startsWith('/api')
 }
 
+function isApiWebhookRoute(pathname: URL['pathname']) {
+  return pathname.startsWith('/api/webhook')
+}
+
 function isApiAuthRoute(pathname: URL['pathname']) {
   return pathname.startsWith('/api/auth')
 }
@@ -26,8 +30,11 @@ export async function handle({ event, resolve }): Promise<Response> {
 
   // protect API routes
   if (isApiRoute(event.url.pathname)) {
-    if (!isApiAuthRoute(event.url.pathname)) {
-      if (!session.user) {
+    if (
+      !isApiAuthRoute(event.url.pathname) ||
+      !isApiWebhookRoute(event.url.pathname)
+    ) {
+      if (!session?.user) {
         return new Response('Unauthorized', { status: 401 })
       }
       if (isApiAdminRoute(event.url.pathname) && !session.user.isAdmin) {
