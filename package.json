@@ -12,6 +12,8 @@
     "build": "vite build && pnpm build:server",
     "build:lib": "pnpm packages run build",
     "build:server": "vite build --mode server",
+    "check": "prettier --check .",
+    "lint": "eslint **/*.{js,ts,svelte}",
     "prepare": "prisma generate",
     "pretest": "pnpm package",
     "setup": "pnpm install && pnpm build:lib",
@@ -50,6 +52,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-svelte3": "^4.0.0",
     "jsdom": "^20.0.0",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.6.2",
     "prettier-plugin-svelte": "^2.7.0",
     "svelte": "3.49.0",
@@ -69,7 +72,6 @@
     "semi": false,
     "svelteSortOrder": "scripts-markup-styles",
     "svelteStrictMode": true,
-    "svelteBracketNewLine": true,
     "svelteAllowShorthand": false,
     "plugins": [
       "./node_modules/prettier-plugin-svelte"
@@ -96,7 +98,9 @@
       "@typescript-eslint"
     ],
     "ignorePatterns": [
-      "*.cjs"
+      "*.cjs",
+      "cdk/cdk.out/",
+      "build/"
     ],
     "overrides": [
       {
@@ -118,5 +122,12 @@
         "react-dom"
       ]
     }
+  },
+  "lint-staged": {
+    "*.(ts|js|svelte)": [
+      "prettier --list-different",
+      "eslint"
+    ],
+    "*.(md|yaml|graphql)": "prettier --list-different"
   }
 }
