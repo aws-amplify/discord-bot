@@ -1,13 +1,15 @@
-import { Stack, StackProps, Tags } from 'aws-cdk-lib'
+import { Stack, StackProps, Tags, RemovalPolicy } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as efs from 'aws-cdk-lib/aws-efs'
+import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import { HeyAmplifyApp } from './components/hey-amplify-app'
 import { PROJECT_ROOT } from './constants'
 import { getSvelteKitEnvironmentVariables } from './support'
 import { AmplifyAwsSubdomain } from './components/amplify-aws-subdomain'
+import { SupportBox } from './components/support-box'
 import type { AmplifyAwsSubdomainProps } from './components/amplify-aws-subdomain'
 
 type HeyAmplifyStackProps = Partial<StackProps> & {
@@ -45,42 +47,58 @@ export class HeyAmplifyStack extends Stack {
     Tags.of(this).add('app:name', this.appName)
     Tags.of(this).add('app:env', this.envName)
 
-    const vpc = new ec2.Vpc(this, `vpc`, {
+    const vpc = new ec2.Vpc(this, `Vpc`, {
       maxAzs: 2,
-      vpcName: `${this.appName} VPC`,
+      vpcName: `vpc-${this.appName}-${this.envName}`,
     })
 
-    const cluster = new ecs.Cluster(this, `fargate-cluster`, {
+    const cluster = new ecs.Cluster(this, `Cluster`, {
       vpc,
       containerInsights: true,
       enableFargateCapacityProviders: true,
     })
 
-    const filesystem = new efs.FileSystem(this, 'filesystem', {
+    const filesystem = new efs.FileSystem(this, 'Filesystem', {
       vpc,
-      vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC,
-        onePerAz: true,
-      },
     })
 
-    new HeyAmplifyApp(this, `bot`, {
+    let subdomain: AmplifyAwsSubdomain | undefined
+    if (props.subdomain) {
+      subdomain = new AmplifyAwsSubdomain(this, 'Subdomain', props.subdomain)
+    }
+
+    // create bucket for SQLite backups with Litestream
+    const bucket = new s3.Bucket(this, 'Bucket', {
+      bucketName: `${this.appName}-${this.envName}-bucket`,
+      // if env is destroyed, empty & remove bucket
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    })
+
+    const filesystemMountPoint = '/data'
+    new HeyAmplifyApp(this, `Bot`, {
+      bucket,
       cluster,
       docker: {
         name: `${this.appName}-bot`,
         context: PROJECT_ROOT,
         dockerfile: 'Dockerfile',
         environment: {
-          DATABASE_URL: `file:../db/${this.envName}.db`,
+          DATABASE_URL: `file:${filesystemMountPoint}/${this.envName}.db`,
           ...getSvelteKitEnvironmentVariables(this.envName),
         },
       },
       secrets,
-      subdomain: props.subdomain
-        ? new AmplifyAwsSubdomain(this, 'subdomain', props.subdomain)
-        : undefined,
+      subdomain,
       filesystem,
-      filesystemMountPoint: '/usr/src/db',
+      filesystemMountPoint,
+    })
+
+    new SupportBox(this, 'SupportBox', {
+      bucket,
+      filesystem,
+      subdomain,
+      vpc,
     })
   }
 

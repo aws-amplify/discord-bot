@@ -12,8 +12,6 @@
     "build": "vite build && pnpm build:server",
     "build:lib": "pnpm packages run build",
     "build:server": "vite build --mode server",
-    "package": "svelte-kit package",
-    "preview": "svelte-kit preview",
     "prepare": "prisma generate",
     "pretest": "pnpm package",
     "setup": "pnpm install && pnpm build:lib",

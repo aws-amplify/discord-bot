@@ -8,8 +8,6 @@ node_modules
 
 notes.md
 
-/db
+/prisma/data
 /.svelte-kit
 /build
-/server
-/package

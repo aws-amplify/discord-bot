@@ -9,6 +9,8 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - ./db:/usr/src/db
+      - ./prisma/data:/data
     env_file:
       - .env
+    environment:
+      - DATABASE_URL=file:/data/local.db
