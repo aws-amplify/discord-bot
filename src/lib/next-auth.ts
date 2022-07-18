@@ -12,7 +12,7 @@ import type {
   Session,
 } from 'next-auth'
 import type { OutgoingResponse } from 'next-auth/core'
-import { fetchGuild, fetchGuildUser } from './github/apply-roles'
+import { appplyRoles, fetchGuild, fetchGuildUser } from './github/apply-roles'
 
 // TODO: can we get around this behavior for SSR builds?
 // @ts-expect-error
@@ -52,11 +52,11 @@ export const options: NextAuthOptions = {
         userAccounts.length === 2 &&
         userAccounts.filter((account) => account.provider === 'github')
           .length === 1
-      const discUserId = userAccounts.filter(
-        (account) => account.provider === 'discord'
-      )[0].providerAccountId
 
-      if (storedUserGitHub) session.user.github = true
+      if (storedUserGitHub) {
+        session.user.github = true
+      //  apply-roles()
+      }
       return session
     },
   },

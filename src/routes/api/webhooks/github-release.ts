@@ -58,7 +58,7 @@ export async function post({ request }) {
   // if response is not okay or if Discord did not return a 204
   // https://discord.com/developers/docs/topics/opcodes-and-status-codes#http
   if (!res.ok ) {
-    if (res.body) console.log(await res.json())
+    if (res.body) console.log(res.body)
     return {
       status: 400,
     }
