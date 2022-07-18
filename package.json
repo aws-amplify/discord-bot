@@ -37,6 +37,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
     "@hey-amplify/scripts": "workspace:*",
     "@hey-amplify/support": "workspace:*",
     "@hey-amplify/tsconfig": "workspace:*",
@@ -129,5 +131,41 @@
       "eslint"
     ],
     "*.(md|yaml|graphql)": "prettier --list-different"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "header-max-length": [
+        2,
+        "always",
+        72
+      ],
+      "body-max-line-length": [
+        2,
+        "always",
+        80
+      ],
+      "scope-case": [
+        0,
+        "always",
+        "lower-case"
+      ],
+      "type-enum": [
+        2,
+        "always",
+        [
+          "build",
+          "ci",
+          "chore",
+          "docs",
+          "feat",
+          "fix",
+          "test",
+          "style"
+        ]
+      ]
+    }
   }
 }
