@@ -75,6 +75,7 @@ export class HeyAmplifyStack extends Stack {
       autoDeleteObjects: true,
     })
 
+    const filesystemMountPoint = '/data'
     new HeyAmplifyApp(this, `Bot`, {
       bucket,
       cluster,
@@ -83,14 +84,14 @@ export class HeyAmplifyStack extends Stack {
         context: PROJECT_ROOT,
         dockerfile: 'Dockerfile',
         environment: {
-          DATABASE_URL: `file:/data/${this.envName}.db`,
+          DATABASE_URL: `file:${filesystemMountPoint}/${this.envName}.db`,
           ...getSvelteKitEnvironmentVariables(this.envName),
         },
       },
       secrets,
       subdomain,
       filesystem,
-      filesystemMountPoint: '/data',
+      filesystemMountPoint,
     })
 
     new SupportBox(this, 'SupportBox', {

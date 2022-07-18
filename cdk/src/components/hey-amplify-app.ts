@@ -221,7 +221,8 @@ export class HeyAmplifyApp extends Construct {
       })
     }
 
-    if (docker.environment?.DATABASE_URL && bucket) {
+    // if DATABASE_URL is a SQLite database, create a backup solution
+    if (docker.environment?.DATABASE_URL?.startsWith('file:') && bucket) {
       // create backup infrastructure, Litestream sidecar
       const litestreamContainer =
         albFargateService.service.taskDefinition.addContainer('db-backup', {
