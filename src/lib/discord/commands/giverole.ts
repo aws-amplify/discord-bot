@@ -3,6 +3,7 @@ import type { Role, User, InteractionReplyOptions } from 'discord.js'
 
 async function handler(interaction): Promise<InteractionReplyOptions | string> {
   const { member: caller, guild } = interaction
+  
   const { role, user } = interaction.options.data.reduce(
     (acc, current, index, source) => {
       return {
@@ -16,6 +17,7 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
   if (user.bot) {
     return 'This command does not support adding roles to bots.'
   }
+  console.log(guild.members.cache.get(user.id))
 
   if (caller.id === user.id) {
     return `This command does not support adding roles to yourself.`

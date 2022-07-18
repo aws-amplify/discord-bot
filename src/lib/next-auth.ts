@@ -12,6 +12,7 @@ import type {
   Session,
 } from 'next-auth'
 import type { OutgoingResponse } from 'next-auth/core'
+import { fetchGuild, fetchGuildUser } from './github/apply-roles'
 
 // TODO: can we get around this behavior for SSR builds?
 // @ts-expect-error
@@ -36,17 +37,25 @@ export const options: NextAuthOptions = {
     error: '/auth/error', // Error code passed in query string as ?error=
   },
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      return baseUrl
+    async redirect({ url }) {
+      return url
     },
-    // take same stuff that;s taken out of discord
 
     // verify if session gets checked again after they sign in with github, if not do this in sign in
     async session({ session, user }) {
-      // check if session is true 
-      // check if they have discord account 
-      const userAccounts = await prisma.account.findMany({ where: { userId: user.id }})
-      const storedUserGitHub = userAccounts.length === 2 && userAccounts.filter(account => account.provider === 'github')
+      if (!session || !user) return session
+
+      const userAccounts = await prisma.account.findMany({
+        where: { userId: user.id },
+      })
+      const storedUserGitHub =
+        userAccounts.length === 2 &&
+        userAccounts.filter((account) => account.provider === 'github')
+          .length === 1
+      const discUserId = userAccounts.filter(
+        (account) => account.provider === 'discord'
+      )[0].providerAccountId
+
       if (storedUserGitHub) session.user.github = true
       return session
     },
