@@ -20,9 +20,10 @@ export async function isContributor(accessToken, repos, userId) {
           repo: amplifyRepo,
         }
       )
-      const filtered = data.filter((contributor) => contributor.id == userId)
-      if (filtered.length >= 1) {
-        const user = filtered[0]
+     // should be faster than filtering 
+     const index = data.findIndex(contributor => contributor.id == userId)
+      if (index !== -1) {
+        const user = data[index]
         return {
           status: 200,
           body: { user: user, repo: amplifyRepo },
@@ -329,7 +330,7 @@ if (import.meta.vitest) {
     },
   }
   const userId = 'cl4n0kjqd0006iqtda15yzzcw'
-  const accessToken = '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'
+  const accessToken = process.env.GITHUB_ACCESS_TOKEN
   const ghUserId = '107655607'
   const guildMemberId = '985985131271585833'
 
