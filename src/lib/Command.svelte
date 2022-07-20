@@ -42,11 +42,11 @@
 
   const id = registration?.id
 
-  async function onDeleteCommand(event) {
+  async function onDeleteCommand() {
     deleteCommandStep = DELETE_STEP_DELETING
     let data
     try {
-      const response = await fetch(`/api/commands/delete/${id}`, {
+      const response = await fetch(`/api/admin/commands/delete/${id}`, {
         method: 'DELETE',
         body: JSON.stringify({ id }),
       })

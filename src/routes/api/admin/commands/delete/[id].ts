@@ -1,7 +1,7 @@
 import { commands } from '$discord/client'
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
-export async function del({ request, params }) {
+export async function del({ request }) {
   const body = await request.json()
   const unregistered = await commands.unregister(body.id)
 

@@ -93,7 +93,7 @@
       "sourceType": "module"
     },
     "env": {
-      "browser": false,
+      "browser": true,
       "node": true
     },
     "plugins": [

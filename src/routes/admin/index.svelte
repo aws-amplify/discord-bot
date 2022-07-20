@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { Content, Grid, Row, Column, Button } from 'carbon-components-svelte'
   import * as store from '$lib/store'
   import Command from '$lib/Command.svelte'
@@ -10,7 +10,9 @@
     isSyncing = true
     let data
     try {
-      const response = await fetch('/api/commands/sync', { method: 'POST' })
+      const response = await fetch('/api/admin/commands/sync', {
+        method: 'POST',
+      })
       if (response.ok && response.status === 200) {
         data = await response.json()
       }
