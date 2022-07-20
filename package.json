@@ -1,7 +1,7 @@
 {
   "name": "@aws-amplify/discord-bot",
   "type": "module",
-  "version": "0.7.0",
+  "version": "0.7.2",
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
@@ -131,7 +131,7 @@
       "prettier --list-different",
       "eslint"
     ],
-    "*.(md|yaml|graphql)": "prettier --list-different"
+    "*.(md|yaml|graphql,json)": "prettier --list-different"
   },
   "commitlint": {
     "extends": [
@@ -164,7 +164,8 @@
           "feat",
           "fix",
           "test",
-          "style"
+          "style",
+          "release"
         ]
       ]
     }
