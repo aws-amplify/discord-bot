@@ -31,7 +31,7 @@ export async function handle({ event, resolve }): Promise<Response> {
   // protect API routes
   if (isApiRoute(event.url.pathname)) {
     if (
-      !isApiAuthRoute(event.url.pathname) ||
+      !isApiAuthRoute(event.url.pathname) &&
       !isApiWebhookRoute(event.url.pathname)
     ) {
       if (!session?.user) {
