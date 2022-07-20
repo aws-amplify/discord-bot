@@ -44,6 +44,7 @@
     "@hey-amplify/tsconfig": "workspace:*",
     "@sveltejs/adapter-node": "1.0.0-next.79",
     "@sveltejs/kit": "1.0.0-next.366",
+    "@types/cookie": "^0.5.1",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.26.0",
     "@vitest/ui": "^0.17.1",
