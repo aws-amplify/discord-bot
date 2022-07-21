@@ -32,6 +32,8 @@ export class HeyAmplifyStack extends Stack {
       'DISCORD_AUTH_CLIENT_ID',
       'DISCORD_AUTH_CLIENT_SECRET',
       'NEXTAUTH_SECRET',
+      'GITHUB_WEBHOOK_SECRET',
+      'DISCORD_WEBHOOK_URL_RELEASES',
     ] as const
     // NOTE: this TypeScript trick is to say `secrets` should include key value pairs where the keys are one of the names in the array above
     const secrets: Partial<

@@ -16,6 +16,7 @@ importers:
       '@prisma/client': ^3.14.0
       '@sveltejs/adapter-node': 1.0.0-next.79
       '@sveltejs/kit': 1.0.0-next.366
+      '@types/cookie': ^0.5.1
       '@typescript-eslint/eslint-plugin': ^5.26.0
       '@typescript-eslint/parser': ^5.26.0
       '@vitest/ui': ^0.17.1
@@ -68,6 +69,7 @@ importers:
       '@hey-amplify/tsconfig': link:packages/tsconfig
       '@sveltejs/adapter-node': 1.0.0-next.79
       '@sveltejs/kit': 1.0.0-next.366_svelte@3.49.0+vite@2.9.14
+      '@types/cookie': 0.5.1
       '@typescript-eslint/eslint-plugin': 5.30.5_6zdoc3rn4mpiddqwhppni2mnnm
       '@typescript-eslint/parser': 5.30.5_4x5o4skxv6sl53vpwefgt23khm
       '@vitest/ui': 0.17.1
@@ -1360,6 +1362,10 @@ packages:
 
   /@types/chai/4.3.1:
     resolution: {integrity: sha512-/zPMqDkzSZ8t3VtxOa4KPq7uzzW978M9Tvh+j7GHKuo6k6GTLxPJ4J5gE5cjfJ26pnXst0N5Hax8Sr0T2Mi9zQ==}
+    dev: true
+
+  /@types/cookie/0.5.1:
+    resolution: {integrity: sha512-COUnqfB2+ckwXXSFInsFdOAWQzCCx+a5hq2ruyj+Vjund94RJQd4LG2u9hnvJrTgunKAaax7ancBYlDrNYxA0g==}
     dev: true
 
   /@types/json-schema/7.0.11:
