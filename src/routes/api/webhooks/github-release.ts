@@ -569,59 +569,60 @@ if (import.meta.vitest) {
     },
   }
 
-  describe('Failed Github -> Discord webhook', () => {
-    test('verification', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
-          mockedBad.body,
-          mockedBad.headers['X-Hub-Signature-256']
-        )
-      ).toEqual(false)
-    })
+  // describe('Failed Github -> Discord webhook', () => {
+  //   test('verification', () => {
+  //     expect(
+  //       verifyGithubWebhookEvent(
+  //         process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
+  //         mockedBad.body,
+  //         mockedBad.headers['X-Hub-Signature-256']
+  //       )
+  //     ).toEqual(false)
+  //   })
 
-    test('verification 2', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
-          mockedBad.body,
-          mockedBad.headers['X-Hub-Signature-256']
-        )
-      ).toEqual(false)
-    })
+  //   test('verification 2', () => {
+  //     expect(
+  //       verifyGithubWebhookEvent(
+  //         process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
+  //         mockedBad.body,
+  //         mockedBad.headers['X-Hub-Signature-256']
+  //       )
+  //     ).toEqual(false)
+  //   })
 
-    test('verification 3', () => {
-      expect(verifyGithubWebhookEvent(process.env.GITHUB_RELEASES_WEBHOOK_SECRET, {}, '')).toEqual(false)
-    })
+  //   test('verification 3', () => {
+  //     expect(verifyGithubWebhookEvent(process.env.GITHUB_RELEASES_WEBHOOK_SECRET, {}, '')).toEqual(false)
+  //   })
 
-    test('verification 4', () => {
-      expect(verifyGithubWebhookEvent(process.env.GITHUB_RELEASES_WEBHOOK_SECRET, null, null)).toEqual(false)
-    })
+  //   test('verification 4', () => {
+  //     expect(verifyGithubWebhookEvent(process.env.GITHUB_RELEASES_WEBHOOK_SECRET, null, null)).toEqual(false)
+  //   })
 
-    test('send', async () => {
-      const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
-      process.env.DISCORD_WEBHOOK_URL_RELEASES =
-        'https://discordapp.com/api/webhooks/bad'
-      const response = await post({ request: createRequest(mocked) })
-      expect(response.status).toBe(400)
-      process.env.DISCORD_WEBHOOK_URL_RELEASES = url
-    })
-  })
+  //   test('send', async () => {
+  //     const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
+  //     process.env.DISCORD_WEBHOOK_URL_RELEASES =
+  //       'https://discordapp.com/api/webhooks/bad'
+  //     const response = await post({ request: createRequest(mocked) })
+  //     expect(response.status).toBe(400)
+  //     process.env.DISCORD_WEBHOOK_URL_RELEASES = url
+  //   })
+  // })
 
-  describe('Successful GitHub -> Discord webhook', () => {
-    test('sends', async () => {
-      const response = await post({ request: createRequest(mocked) })
-      expect(response.status).toBe(200)
-    })
+  // describe('Successful GitHub -> Discord webhook', () => {
+  //   test('sends', async () => {
+  //     const response = await post({ request: createRequest(mocked) })
+  //     expect(response.status).toBe(200)
+  //   })
 
-    test('webhook verification', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
-          mocked.body,
-          mocked.headers['X-Hub-Signature-256']
-        )
-      ).toBeTruthy()
-    })
-  })
+  //   test('webhook verification', () => {
+  //     expect(
+  //       verifyGithubWebhookEvent(
+  //         process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
+  //         mocked.body,
+  //         mocked.headers['X-Hub-Signature-256']
+  //       )
+  //     ).toBeTruthy()
+  //   })
+  // })
+  test.todo('/github-release')
 }

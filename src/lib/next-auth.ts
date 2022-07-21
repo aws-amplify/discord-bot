@@ -12,7 +12,7 @@ import type {
   Session,
 } from 'next-auth'
 import type { OutgoingResponse } from 'next-auth/core'
-import { appplyRoles, fetchGuild, fetchGuildUser } from './github/apply-roles'
+import { appplyRoles } from './github/apply-roles'
 
 // TODO: can we get around this behavior for SSR builds?
 // @ts-expect-error
