@@ -91,11 +91,19 @@ export default defineConfig(({ mode }) => {
   if (mode === 'server') {
     config = server
   }
+  // apply general test config
   config.test = {
     globals: true,
     environment: 'jsdom',
     includeSource: ['src/**/*.{js,ts,svelte}'],
     setupFiles: ['tests/setup/svelte-kit-routes.ts'],
+  }
+  if (mode === 'e2e') {
+    // apply e2e config
+    config.test = {
+      globals: true,
+      include: ['tests/e2e/**/*.ts'],
+    }
   }
   return config
 })
