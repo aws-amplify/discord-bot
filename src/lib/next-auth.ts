@@ -53,10 +53,7 @@ export const options: NextAuthOptions = {
         userAccounts.filter((account) => account.provider === 'github')
           .length === 1
 
-      if (storedUserGitHub) {
-        session.user.github = true
-      //  apply-roles()
-      }
+      if (storedUserGitHub) session.user.github = true
       return session
     },
   },

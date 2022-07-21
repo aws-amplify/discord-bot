@@ -1,5 +1,5 @@
-import * as crypto from 'node:crypto'
 import { MessageEmbed } from 'discord.js'
+import { verifyGithubWebhookEvent } from './_verifyWebhook'
 
 function createReleaseMessage(payload) {
   let embed = new MessageEmbed()
@@ -17,22 +17,6 @@ function createReleaseMessage(payload) {
     tts: false,
     embeds: [embed],
   }
-}
-
-// https://gist.github.com/stigok/57d075c1cf2a609cb758898c0b202428
-function verifyGithubWebhookEvent(payloadbody, signature256: string) {
-  if (!signature256) return false
-  const token = process.env.GITHUB_WEBHOOK_SECRET
-  const sig = Buffer.from(signature256 || '', 'utf8')
-  const hmac = crypto.createHmac('sha256', token)
-  const digest = Buffer.from(
-    'sha256' + '=' + hmac.update(JSON.stringify(payloadbody)).digest('hex'),
-    'utf8'
-  )
-  if (sig.length !== digest.length || !crypto.timingSafeEqual(digest, sig))
-    return false
-
-  return true
 }
 
 export async function post({ request }) {
@@ -589,6 +573,7 @@ if (import.meta.vitest) {
     test('verification', () => {
       expect(
         verifyGithubWebhookEvent(
+          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
           mockedBad.body,
           mockedBad.headers['X-Hub-Signature-256']
         )
@@ -598,6 +583,7 @@ if (import.meta.vitest) {
     test('verification 2', () => {
       expect(
         verifyGithubWebhookEvent(
+          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
           mockedBad.body,
           mockedBad.headers['X-Hub-Signature-256']
         )
@@ -605,11 +591,11 @@ if (import.meta.vitest) {
     })
 
     test('verification 3', () => {
-      expect(verifyGithubWebhookEvent({}, '')).toEqual(false)
+      expect(verifyGithubWebhookEvent(process.env.GITHUB_RELEASES_WEBHOOK_SECRET, {}, '')).toEqual(false)
     })
 
     test('verification 4', () => {
-      expect(verifyGithubWebhookEvent(null, null)).toEqual(false)
+      expect(verifyGithubWebhookEvent(process.env.GITHUB_RELEASES_WEBHOOK_SECRET, null, null)).toEqual(false)
     })
 
     test('send', async () => {
@@ -631,6 +617,7 @@ if (import.meta.vitest) {
     test('webhook verification', () => {
       expect(
         verifyGithubWebhookEvent(
+          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
           mocked.body,
           mocked.headers['X-Hub-Signature-256']
         )
