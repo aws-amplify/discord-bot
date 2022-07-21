@@ -4,8 +4,16 @@ import { installPolyfills } from '@sveltejs/kit/node/polyfills'
 import glob from 'fast-glob'
 import request from 'supertest'
 import { beforeAll } from 'vitest'
+import { seed } from '../seed'
 import type { Server } from 'node:http'
 import type { Session } from 'next-auth'
+
+try {
+  // seed database
+  await seed()
+} catch (error) {
+  console.log(error)
+}
 
 let app: Express.Application
 const session: Session = {
