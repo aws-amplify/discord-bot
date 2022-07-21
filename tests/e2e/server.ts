@@ -102,3 +102,20 @@ describe('Admin Routes', () => {
     })
   })
 })
+
+describe('webhooks', () => {
+  describe('POST /api/webhooks/github-release', () => {
+    it('should not return 401', async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-release')
+        .send({})
+      expect(response.status).not.toBe(401)
+    })
+    it('should return 403 without auth header', async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-release')
+        .send({})
+      expect(response.status).toBe(403)
+    })
+  })
+})
