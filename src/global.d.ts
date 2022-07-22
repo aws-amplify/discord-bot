@@ -1,11 +1,10 @@
-/// <reference types="@sveltejs/kit" />
 /// <reference types="vitest/importMeta" />
 /// <reference types="vitest/globals" />
+/// <reference types="cypress" />
 
 interface ImportMetaEnv {
-  DISCORD_APP_ID: string
-  DISCORD_REDIRECT_URI: string
   VITE_HOST: string
+  VITE_NEXTAUTH_URL: string
 }
 
 interface ImportMeta {

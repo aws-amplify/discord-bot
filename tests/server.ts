@@ -1,19 +1,12 @@
+// @vitest-environment node
 import { resolve } from 'node:path'
 import { EOL } from 'node:os'
 import { installPolyfills } from '@sveltejs/kit/node/polyfills'
 import glob from 'fast-glob'
 import request from 'supertest'
 import { beforeAll } from 'vitest'
-import { seed } from '../seed'
 import type { Server } from 'node:http'
 import type { Session } from 'next-auth'
-
-try {
-  // seed database
-  await seed()
-} catch (error) {
-  console.log(error)
-}
 
 let app: Express.Application
 const session: Session = {
@@ -24,7 +17,7 @@ const session: Session = {
 beforeAll(async () => {
   installPolyfills() // we're in Node, so we need to polyfill `fetch` and `Request` etc
   try {
-    const build = await import('../../build/server')
+    const build = await import('../build/server')
     // instead of adding a condition to open the server in the source code, we'll just close it here.
     // TODO: instead of "supertest", should we make actual requests to the server?
     ;(build.server as Server).close()
@@ -37,7 +30,6 @@ beforeAll(async () => {
 })
 
 const ROUTES_PATH = resolve('src/routes')
-
 const routes = await glob('**/*.(js|ts)', {
   absolute: true,
   cwd: ROUTES_PATH,

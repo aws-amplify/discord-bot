@@ -21,3 +21,9 @@ export async function seed() {
     },
   })
 }
+
+try {
+  await seed()
+} catch (error) {
+  throw new Error(`Unable to seed database: ${error.message}`)
+}
