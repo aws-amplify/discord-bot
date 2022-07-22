@@ -37,6 +37,12 @@ export const options: NextAuthOptions = {
     error: '/auth/error', // Error code passed in query string as ?error=
   },
   callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      appplyRoles(user.id)
+      console.log(account)
+      console.log(profile)
+      return true
+    },
     async redirect({ url }) {
       return url
     },
@@ -53,7 +59,7 @@ export const options: NextAuthOptions = {
         userAccounts.filter((account) => account.provider === 'github')
           .length === 1
 
-      if (storedUserGitHub) session.user.github = true
+     // if (storedUserGitHub) session.user.github = true
       return session
     },
   },

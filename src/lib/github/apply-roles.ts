@@ -195,72 +195,6 @@ export async function appplyRoles(userId: string) {
 if (import.meta.vitest) {
   const { describe, expect, test, beforeAll } = import.meta.vitest
   let repos: []
-
-  const guildMember = {
-    avatar: null,
-    communication_disabled_until: null,
-    flags: 0,
-    is_pending: false,
-    joined_at: '2022-06-13T19:27:41.326000+00:00',
-    nick: null,
-    pending: false,
-    premium_since: null,
-    roles: ['985988852894298155', '985988852894298158'],
-    user: {
-      id: '985985131271585833',
-      username: 'esauerbo',
-      avatar: null,
-      avatar_decoration: null,
-      discriminator: '3835',
-      public_flags: 0,
-    },
-    mute: false,
-    deaf: false,
-  }
-  const ghOrg = {
-    url: 'https://api.github.com/orgs/aws-amplify/memberships/esauerbo1',
-    state: 'active',
-    role: 'member',
-    organization_url: 'https://api.github.com/orgs/aws-amplify',
-    user: {
-      login: 'esauerbo1',
-      id: 107655607,
-      node_id: 'U_kgDOBmqxtw',
-      avatar_url: 'https://avatars.githubusercontent.com/u/107655607?v=4',
-      gravatar_id: '',
-      url: 'https://api.github.com/users/esauerbo1',
-      html_url: 'https://github.com/esauerbo1',
-      followers_url: 'https://api.github.com/users/esauerbo1/followers',
-      following_url:
-        'https://api.github.com/users/esauerbo1/following{/other_user}',
-      gists_url: 'https://api.github.com/users/esauerbo1/gists{/gist_id}',
-      starred_url:
-        'https://api.github.com/users/esauerbo1/starred{/owner}{/repo}',
-      subscriptions_url: 'https://api.github.com/users/esauerbo1/subscriptions',
-      organizations_url: 'https://api.github.com/users/esauerbo1/orgs',
-      repos_url: 'https://api.github.com/users/esauerbo1/repos',
-      events_url: 'https://api.github.com/users/esauerbo1/events{/privacy}',
-      received_events_url:
-        'https://api.github.com/users/esauerbo1/received_events',
-      type: 'User',
-      site_admin: false,
-    },
-    organization: {
-      login: 'aws-amplify',
-      id: 41077760,
-      node_id: 'MDEyOk9yZ2FuaXphdGlvbjQxMDc3NzYw',
-      url: 'https://api.github.com/orgs/aws-amplify',
-      repos_url: 'https://api.github.com/orgs/aws-amplify/repos',
-      events_url: 'https://api.github.com/orgs/aws-amplify/events',
-      hooks_url: 'https://api.github.com/orgs/aws-amplify/hooks',
-      issues_url: 'https://api.github.com/orgs/aws-amplify/issues',
-      members_url: 'https://api.github.com/orgs/aws-amplify/members{/member}',
-      public_members_url:
-        'https://api.github.com/orgs/aws-amplify/public_members{/member}',
-      avatar_url: 'https://avatars.githubusercontent.com/u/41077760?v=4',
-      description: '',
-    },
-  }
   const userId = 'cl4n0kjqd0006iqtda15yzzcw'
   const ghUserId = '107655607'
   const guildMemberId = '985985131271585833'
@@ -271,223 +205,222 @@ if (import.meta.vitest) {
     (account) => account.provider === 'github'
   )[0].access_token
 
-  // beforeAll(async () => {
-  //   await addRole(
-  //     process.env.DISCORD_STAFF_ROLE_ID,
-  //     process.env.DISCORD_GUILD_ID,
-  //     guildMemberId
-  //   )
-  //   await addRole(
-  //     process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-  //     process.env.DISCORD_GUILD_ID,
-  //     guildMemberId
-  //   )
-  //   repos = await fetchOrgRepos(accessToken)
-  // })
+  beforeAll(async () => {
+    await addRole(
+      process.env.DISCORD_STAFF_ROLE_ID,
+      process.env.DISCORD_GUILD_ID,
+      guildMemberId
+    )
+    await addRole(
+      process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
+      process.env.DISCORD_GUILD_ID,
+      guildMemberId
+    )
+    repos = await fetchOrgRepos(accessToken)
+  })
 
-  // describe('Successful adding and removal of roles', () => {
-  //   test('Fetch guild user roles', async () => {
-  //     const roles = await fetchDiscordUserRoles(guildMemberId)
-  //     expect(roles).toHaveLength(2)
-  //   })
-  //   test('Fetch org repos', async () => {
-  //     const response = await fetchOrgRepos(accessToken)
-  //     expect(response).toEqual(repos)
-  //   })
-  //   test('Is org member', async () => {
-  //     const response = await isOrgMember(accessToken)
-  //     expect(response).toBeTruthy()
-  //   })
-  //   test('Is org contributor', async () => {
-  //     const response = await isContributor(accessToken, repos, ghUserId)
-  //     expect(response).toBe(true)
-  //   }, 20000)
-  //   test('Remove staff role', async () => {
-  //     const response = await removeRole(
-  //       process.env.DISCORD_STAFF_ROLE_ID,
-  //       process.env.DISCORD_GUILD_ID,
-  //       guildMemberId
-  //     )
-  //     expect(response).toBeTruthy()
-  //     const roles = await fetchDiscordUserRoles(guildMemberId)
-  //     expect(roles).not.toContain(process.env.DISCORD_STAFF_ROLE_ID)
-  //   })
-  //   test('Add staff role', async () => {
-  //     const response = await addRole(
-  //       process.env.DISCORD_STAFF_ROLE_ID,
-  //       process.env.DISCORD_GUILD_ID,
-  //       guildMemberId
-  //     )
-  //     expect(response).toBeTruthy()
-  //     const roles = await fetchDiscordUserRoles(guildMemberId)
-  //     expect(roles).toContain(process.env.DISCORD_STAFF_ROLE_ID)
-  //   })
-  //   test('Remove contributor role', async () => {
-  //     const response = await removeRole(
-  //       process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-  //       process.env.DISCORD_GUILD_ID,
-  //       guildMemberId
-  //     )
-  //     expect(response).toBeTruthy()
-  //     const roles = await fetchDiscordUserRoles(guildMemberId)
-  //     expect(roles).not.toContain(process.env.DISCORD_CONTRIBUTOR_ROLE_ID)
-  //   })
-  //   test('Add contributor role', async () => {
-  //     const response = await addRole(
-  //       process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-  //       process.env.DISCORD_GUILD_ID,
-  //       guildMemberId
-  //     )
-  //     expect(response).toBeTruthy()
-  //     const roles = await fetchDiscordUserRoles(guildMemberId)
-  //     expect(roles).toContain(process.env.DISCORD_CONTRIBUTOR_ROLE_ID)
-  //   })
-  // })
+  describe('Successful adding and removal of roles', () => {
+    test('Fetch guild user roles', async () => {
+      const roles = await fetchDiscordUserRoles(guildMemberId)
+      expect(roles).toHaveLength(2)
+    })
+    test('Fetch org repos', async () => {
+      const response = await fetchOrgRepos(accessToken)
+      expect(response).toEqual(repos)
+    })
+    test('Is org member', async () => {
+      const response = await isOrgMember(accessToken)
+      expect(response).toBeTruthy()
+    })
+    test('Is org contributor', async () => {
+      const response = await isContributor(accessToken, repos, ghUserId)
+      expect(response).toBe(true)
+    }, 20000)
+    test('Remove staff role', async () => {
+      const response = await removeRole(
+        process.env.DISCORD_STAFF_ROLE_ID,
+        process.env.DISCORD_GUILD_ID,
+        guildMemberId
+      )
+      expect(response).toBeTruthy()
+      const roles = await fetchDiscordUserRoles(guildMemberId)
+      expect(roles).not.toContain(process.env.DISCORD_STAFF_ROLE_ID)
+    })
+    test('Add staff role', async () => {
+      const response = await addRole(
+        process.env.DISCORD_STAFF_ROLE_ID,
+        process.env.DISCORD_GUILD_ID,
+        guildMemberId
+      )
+      expect(response).toBeTruthy()
+      const roles = await fetchDiscordUserRoles(guildMemberId)
+      expect(roles).toContain(process.env.DISCORD_STAFF_ROLE_ID)
+    })
+    test('Remove contributor role', async () => {
+      const response = await removeRole(
+        process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
+        process.env.DISCORD_GUILD_ID,
+        guildMemberId
+      )
+      expect(response).toBeTruthy()
+      const roles = await fetchDiscordUserRoles(guildMemberId)
+      expect(roles).not.toContain(process.env.DISCORD_CONTRIBUTOR_ROLE_ID)
+    })
+    test('Add contributor role', async () => {
+      const response = await addRole(
+        process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
+        process.env.DISCORD_GUILD_ID,
+        guildMemberId
+      )
+      expect(response).toBeTruthy()
+      const roles = await fetchDiscordUserRoles(guildMemberId)
+      expect(roles).toContain(process.env.DISCORD_CONTRIBUTOR_ROLE_ID)
+    })
+  })
 
-  // describe('Failed adding and removal of roles', () => {
-  //   test('Fetch guild user roles unknown user id', async () => {
-  //     const response = await fetchDiscordUserRoles(`bad${guildMemberId}`)
-  //     expect(response).toBe(false)
-  //   })
+  describe('Failed adding and removal of roles', () => {
+    test('Fetch guild user roles unknown user id', async () => {
+      const response = await fetchDiscordUserRoles(`bad${guildMemberId}`)
+      expect(response).toBe(false)
+    })
 
-  //   test('Fetch guild user bad bot token', async () => {
-  //     const botToken = process.env.DISCORD_BOT_TOKEN
-  //     process.env.DISCORD_BOT_TOKEN = `bad${botToken}`
-  //     const response = await fetchDiscordUserRoles(guildMemberId)
-  //     expect(response).toBe(false)
-  //     process.env.DISCORD_BOT_TOKEN = botToken
-  //   })
+    test('Fetch guild user bad bot token', async () => {
+      const botToken = process.env.DISCORD_BOT_TOKEN
+      process.env.DISCORD_BOT_TOKEN = `bad${botToken}`
+      const response = await fetchDiscordUserRoles(guildMemberId)
+      expect(response).toBe(false)
+      process.env.DISCORD_BOT_TOKEN = botToken
+    })
 
-  //   test('Fetch org repos bad access token', async () => {
-  //     const response = await fetchOrgRepos(`b${accessToken}ad`)
-  //     expect(response).toBe(false)
-  //   })
+    test('Fetch org repos bad access token', async () => {
+      const response = await fetchOrgRepos(`b${accessToken}ad`)
+      expect(response).toBe(false)
+    })
 
-  //   test('Fetch org repos unknown org', async () => {
-  //     const orgLogin = process.env.GITHUB_ORG_LOGIN
-  //     process.env.GITHUB_ORG_LOGIN = `${orgLogin}bad`
-  //     const response = await fetchOrgRepos(accessToken)
-  //     process.env.GITHUB_ORG_LOGIN = orgLogin
-  //     expect(response).toBe(false)
-  //   })
+    test('Fetch org repos unknown org', async () => {
+      const orgLogin = process.env.GITHUB_ORG_LOGIN
+      process.env.GITHUB_ORG_LOGIN = `${orgLogin}bad`
+      const response = await fetchOrgRepos(accessToken)
+      process.env.GITHUB_ORG_LOGIN = orgLogin
+      expect(response).toBe(false)
+    })
 
-  //   test('Is org member bad access token', async () => {
-  //     const response = await isOrgMember(`bad${accessToken}`)
-  //     expect(response).toBe(false)
-  //   })
+    test('Is org member bad access token', async () => {
+      const response = await isOrgMember(`bad${accessToken}`)
+      expect(response).toBe(false)
+    })
 
-  //   test('Is org member unknown org', async () => {
-  //     const orgLogin = process.env.GITHUB_ORG_LOGIN
-  //     process.env.GITHUB_ORG_LOGIN = `bad${orgLogin}`
-  //     const response = await isOrgMember(accessToken)
-  //     process.env.GITHUB_ORG_LOGIN = orgLogin
-  //     expect(response).toBe(false)
-  //   })
+    test('Is org member unknown org', async () => {
+      const orgLogin = process.env.GITHUB_ORG_LOGIN
+      process.env.GITHUB_ORG_LOGIN = `bad${orgLogin}`
+      const response = await isOrgMember(accessToken)
+      process.env.GITHUB_ORG_LOGIN = orgLogin
+      expect(response).toBe(false)
+    })
 
-  //   test('Remove role from unknown user', async () => {
-  //     const response = await removeRole(
-  //       process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-  //       process.env.DISCORD_GUILD_ID,
-  //       `1${guildMemberId}`
-  //     )
-  //     expect(response).toBe(false)
-  //   })
+    test('Remove role from unknown user', async () => {
+      const response = await removeRole(
+        process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
+        process.env.DISCORD_GUILD_ID,
+        `1${guildMemberId}`
+      )
+      expect(response).toBe(false)
+    })
 
-  //   test('Add role to unknown user', async () => {
-  //     const response = await addRole(
-  //       process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-  //       process.env.DISCORD_GUILD_ID,
-  //       `1${guildMemberId}`
-  //     )
-  //     expect(response).toBe(false)
-  //   })
+    test('Add role to unknown user', async () => {
+      const response = await addRole(
+        process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
+        process.env.DISCORD_GUILD_ID,
+        `1${guildMemberId}`
+      )
+      expect(response).toBe(false)
+    })
 
-  //   test('Add unknown role', async () => {
-  //     const response = await addRole(
-  //       `1${process.env.DISCORD_CONTRIBUTOR_ROLE_ID}`,
-  //       process.env.DISCORD_GUILD_ID,
-  //       guildMemberId
-  //     )
-  //     expect(response).toBe(false)
-  //   })
+    test('Add unknown role', async () => {
+      const response = await addRole(
+        `1${process.env.DISCORD_CONTRIBUTOR_ROLE_ID}`,
+        process.env.DISCORD_GUILD_ID,
+        guildMemberId
+      )
+      expect(response).toBe(false)
+    })
 
-  //   test('Add role in unknown guild', async () => {
-  //     const response = await addRole(
-  //       process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-  //       `123${process.env.DISCORD_GUILD_ID}`,
-  //       guildMemberId
-  //     )
-  //     expect(response).toBe(false)
-  //   })
+    test('Add role in unknown guild', async () => {
+      const response = await addRole(
+        process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
+        `123${process.env.DISCORD_GUILD_ID}`,
+        guildMemberId
+      )
+      expect(response).toBe(false)
+    })
 
-  //   test('Is org contributor wrong repos', async () => {
-  //     const filtered = repos.filter((repo) => !(repo.name === 'discord-bot'))
-  //     const response = await isContributor(accessToken, filtered, ghUserId)
-  //     expect(response).toBe(false)
-  //   }, 20000)
+    test('Is org contributor wrong repos', async () => {
+      const filtered = repos.filter((repo) => !(repo.name === 'discord-bot'))
+      const response = await isContributor(accessToken, filtered, ghUserId)
+      expect(response).toBe(false)
+    }, 20000)
 
-  //   test('Is org contributor bad user id', async () => {
-  //     const response = await isContributor(accessToken, repos, `bad${ghUserId}`)
-  //     expect(response).toBe(false)
-  //   }, 20000)
-  // })
+    test('Is org contributor bad user id', async () => {
+      const response = await isContributor(accessToken, repos, `bad${ghUserId}`)
+      expect(response).toBe(false)
+    }, 20000)
+  })
 
-  // describe('Test full pipeline success', async () => {
-  //   test('Add and remove roles', async () => {
-  //     await removeRole(
-  //       process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-  //       process.env.DISCORD_GUILD_ID,
-  //       guildMemberId
-  //     )
-  //     await removeRole(
-  //       process.env.DISCORD_STAFF_ROLE_ID,
-  //       process.env.DISCORD_GUILD_ID,
-  //       guildMemberId
-  //     )
-  //   })
+  describe('Test full pipeline success', async () => {
+    test('Add and remove roles', async () => {
+      await removeRole(
+        process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
+        process.env.DISCORD_GUILD_ID,
+        guildMemberId
+      )
+      await removeRole(
+        process.env.DISCORD_STAFF_ROLE_ID,
+        process.env.DISCORD_GUILD_ID,
+        guildMemberId
+      )
+    })
 
-  //   test('Applying roles full pipeline', async () => {
-  //     const response = await appplyRoles(userId)
-  //     expect(response).toBeTruthy()
-  //   }, 10000)
-  // })
+    test('Applying roles full pipeline', async () => {
+      const response = await appplyRoles(userId)
+      expect(response).toBeTruthy()
+    }, 10000)
+  })
 
-  // describe('Test full pipeline failure', async () => {
-  //   test('Add and remove roles', async () => {
-  //     await removeRole(
-  //       process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-  //       process.env.DISCORD_GUILD_ID,
-  //       guildMemberId
-  //     )
-  //     await removeRole(
-  //       process.env.DISCORD_STAFF_ROLE_ID,
-  //       process.env.DISCORD_GUILD_ID,
-  //       guildMemberId
-  //     )
-  //   })
+  describe('Test full pipeline failure', async () => {
+    test('Add and remove roles', async () => {
+      await removeRole(
+        process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
+        process.env.DISCORD_GUILD_ID,
+        guildMemberId
+      )
+      await removeRole(
+        process.env.DISCORD_STAFF_ROLE_ID,
+        process.env.DISCORD_GUILD_ID,
+        guildMemberId
+      )
+    })
 
-  //   test('Applying roles full pipeline bad user id', async () => {
-  //     const response = await appplyRoles('baduserid')
-  //     expect(response).toBe(false)
-  //   }, 10000)
+    test('Applying roles full pipeline bad user id', async () => {
+      const response = await appplyRoles('baduserid')
+      expect(response).toBe(false)
+    }, 10000)
 
-  //   // this returns true, do we need to check for errors here?
-  //   test('Applying roles full pipeline bad org login', async () => {
-  //     const orgLogin = process.env.GITHUB_ORG_LOGIN
-  //     process.env.GITHUB_ORG_LOGIN = "somethingthatdoesn'texist123"
-  //     const response = await appplyRoles(userId)
-  //    expect(response).toBe(true)
-  //     process.env.GITHUB_ORG_LOGIN = orgLogin 
-  //   }, 10000)
+    // this returns true, do we need to check for errors here?
+    test('Applying roles full pipeline bad org login', async () => {
+      const orgLogin = process.env.GITHUB_ORG_LOGIN
+      process.env.GITHUB_ORG_LOGIN = "somethingthatdoesn'texist123"
+      const response = await appplyRoles(userId)
+     expect(response).toBe(true)
+      process.env.GITHUB_ORG_LOGIN = orgLogin 
+    }, 10000)
 
-  //   test('Applying roles full pipeline bad guild id', async () => {
-  //     const orgLogin = process.env.DISCORD_GUILD_ID
-  //     process.env.DISCORD_GUILD_ID = "somethingthatdoesn'texist123"
-  //     const response = await appplyRoles(userId)
-  //     expect(response).toBe(false)
-  //     process.env.GITHUB_ORG_LOGIN = orgLogin 
-  //   }, 10000)
-  // })
+    test('Applying roles full pipeline bad guild id', async () => {
+      const orgLogin = process.env.DISCORD_GUILD_ID
+      process.env.DISCORD_GUILD_ID = "somethingthatdoesn'texist123"
+      const response = await appplyRoles(userId)
+      expect(response).toBe(false)
+      process.env.GITHUB_ORG_LOGIN = orgLogin 
+    }, 10000)
+  })
 
-  test.todo('/apply-roles')
 }

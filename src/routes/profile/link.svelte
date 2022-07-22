@@ -37,5 +37,5 @@
   </Content>
 {:else}
   <LoginButton bind:this={formDiscord} provider="discord" />
-  <LoginButton bind:this="{formGitHub}" provider="github" />
+  <LoginButton bind:this={formGitHub} provider="github" />
 {/if}

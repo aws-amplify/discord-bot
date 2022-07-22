@@ -24,7 +24,13 @@ export async function post({ request }) {
 
   if (!import.meta.vitest) {
     const sig256 = request.headers.get('x-hub-signature-256')
-    if (!verifyGithubWebhookEvent(payload, sig256)) {
+    if (
+      !verifyGithubWebhookEvent(
+        process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
+        payload,
+        sig256
+      )
+    ) {
       return { status: 403 }
     }
   }
@@ -41,7 +47,7 @@ export async function post({ request }) {
 
   // if response is not okay or if Discord did not return a 204
   // https://discord.com/developers/docs/topics/opcodes-and-status-codes#http
-  if (!res.ok ) {
+  if (!res.ok) {
     if (res.body) console.log(res.body)
     return {
       status: 400,
@@ -54,7 +60,7 @@ export async function post({ request }) {
 }
 
 if (import.meta.vitest) {
-  const { it, describe, expect, test } = import.meta.vitest
+  const { describe, expect, it } = import.meta.vitest
 
   // in test, we only want to confirm the routes sends a message
   const createRequest = (payload) => ({
@@ -569,60 +575,54 @@ if (import.meta.vitest) {
     },
   }
 
-  // describe('Failed Github -> Discord webhook', () => {
-  //   test('verification', () => {
-  //     expect(
-  //       verifyGithubWebhookEvent(
-  //         process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
-  //         mockedBad.body,
-  //         mockedBad.headers['X-Hub-Signature-256']
-  //       )
-  //     ).toEqual(false)
-  //   })
+  describe('Webhook verification', () => {
+    it('should return true', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
+          mocked.body,
+          mocked.headers['X-Hub-Signature-256']
+        )
+      ).toBeTruthy()
+    })
+    it('should return false', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
+          mockedBad.body,
+          mockedBad.headers['X-Hub-Signature-256']
+        )
+      ).toEqual(false)
+    })
 
-  //   test('verification 2', () => {
-  //     expect(
-  //       verifyGithubWebhookEvent(
-  //         process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
-  //         mockedBad.body,
-  //         mockedBad.headers['X-Hub-Signature-256']
-  //       )
-  //     ).toEqual(false)
-  //   })
+    it('should return false', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
+          mockedBad.body,
+          mockedBad.headers['X-Hub-Signature-256']
+        )
+      ).toEqual(false)
+    })
 
-  //   test('verification 3', () => {
-  //     expect(verifyGithubWebhookEvent(process.env.GITHUB_RELEASES_WEBHOOK_SECRET, {}, '')).toEqual(false)
-  //   })
+    it('should return false', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
+          {},
+          ''
+        )
+      ).toEqual(false)
+    })
 
-  //   test('verification 4', () => {
-  //     expect(verifyGithubWebhookEvent(process.env.GITHUB_RELEASES_WEBHOOK_SECRET, null, null)).toEqual(false)
-  //   })
-
-  //   test('send', async () => {
-  //     const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
-  //     process.env.DISCORD_WEBHOOK_URL_RELEASES =
-  //       'https://discordapp.com/api/webhooks/bad'
-  //     const response = await post({ request: createRequest(mocked) })
-  //     expect(response.status).toBe(400)
-  //     process.env.DISCORD_WEBHOOK_URL_RELEASES = url
-  //   })
-  // })
-
-  // describe('Successful GitHub -> Discord webhook', () => {
-  //   test('sends', async () => {
-  //     const response = await post({ request: createRequest(mocked) })
-  //     expect(response.status).toBe(200)
-  //   })
-
-  //   test('webhook verification', () => {
-  //     expect(
-  //       verifyGithubWebhookEvent(
-  //         process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
-  //         mocked.body,
-  //         mocked.headers['X-Hub-Signature-256']
-  //       )
-  //     ).toBeTruthy()
-  //   })
-  // })
-  test.todo('/github-release')
+    it('should return false', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
+          null,
+          null
+        )
+      ).toEqual(false)
+    })
+  })
 }

@@ -93,7 +93,7 @@ export default defineConfig(({ mode }) => {
     globals: true,
     environment: 'jsdom',
     includeSource: ['src/**/*.{js,ts,svelte}'],
-    setupFiles: ['tests/setup/svelte-kit-routes.ts'],
+    setupFiles: ['tests/setup/svelte-kit-routes.ts', 'tests/setup/seed.ts'],
   }
   if (mode === 'e2e') {
     loadEnvVars(mode)

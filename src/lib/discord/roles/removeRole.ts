@@ -4,6 +4,7 @@ export async function removeRole(
   guildId: string | undefined,
   userId: string
 ) {
+  console.log(guildId)
   const res = await fetch(
     `https://discord.com/api/guilds/${guildId}/members/${userId}/roles/${roleId}`,
     {
