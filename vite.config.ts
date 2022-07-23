@@ -13,10 +13,10 @@ function relative(path) {
  * Load's environment variables for development
  * by default Vite's `loadEnv` will only load variables prefixed with "VITE_"
  */
-export function loadEnvVars() {
+export function loadEnvVars(mode = 'development') {
   Object.assign(
     process.env,
-    loadEnv('development', relative('.'), [
+    loadEnv(mode, relative('.'), [
       'DISCORD_',
       'GITHUB_',
       'DATABASE_',
@@ -84,18 +84,25 @@ const server: UserConfig = {
 }
 
 export default defineConfig(({ mode }) => {
-  // rely on Vite to load public env vars (i.e. prefixed with VITE_)
-  loadEnvVars()
-
   let config = app
   if (mode === 'server') {
     config = server
   }
+  // apply general test config
   config.test = {
     globals: true,
     environment: 'jsdom',
+    include: ['tests/**/*.ts'],
+    exclude: ['tests/setup/**/*.ts'],
     includeSource: ['src/**/*.{js,ts,svelte}'],
     setupFiles: ['tests/setup/svelte-kit-routes.ts'],
+  }
+  // `vitest` sets mode to test, load local environment variables for test
+  if (mode === 'test') {
+    loadEnvVars(mode)
+  } else {
+    // rely on Vite to load public env vars (i.e. prefixed with VITE_)
+    loadEnvVars()
   }
   return config
 })
