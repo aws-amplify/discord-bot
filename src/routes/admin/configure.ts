@@ -1,27 +1,34 @@
 import { Routes } from 'discord-api-types/v10'
+import { get as read } from 'svelte/store'
+import { guild as store } from '$lib/store'
+import { prisma } from '$lib/db'
 import { api } from '../api/_discord'
 
 /**
  * @type {import('@sveltejs/kit').RequestHandler}
  */
-export async function get(event) {
-  const id = event.url.searchParams.get('id')
-  const guilds = await api.get(Routes.userGuilds())
+export async function get({ locals }) {
+  const id = read(store)
 
-  const guildId = id || guilds[0].id
+  const guild = await api.get(Routes.guild(id))
+  const roles = await api.get(Routes.guildRoles(id))
 
-  const guild = await api.get(Routes.guild(guildId))
-  const roles = await api.get(Routes.guildRoles(guildId))
+  const config = await prisma.configuration.findUnique({
+    where: { id },
+    include: {
+      roles: true,
+    },
+  })
 
-  const configResponse = await fetch(
-    `${import.meta.env.VITE_HOST}/api/admin/configure?guildId=${guildId}`
-  )
-  const config = await configResponse.json()
+  if (!locals.session?.user?.isGuildOwner && !config) {
+    return {
+      status: 403,
+    }
+  }
 
   return {
     body: {
       configure: {
-        guilds,
         guild,
         roles,
         config,
