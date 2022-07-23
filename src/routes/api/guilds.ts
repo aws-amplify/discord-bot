@@ -9,8 +9,11 @@ export async function get({ locals }) {
 
   const guilds = []
   for (const guild of botGuilds) {
-    if (await api.get(Routes.guildMember(guild.id, locals.session.user.id))) {
+    try {
+      await api.get(Routes.guildMember(guild.id, locals.session.user.id))
       guilds.push(guild)
+    } catch (error) {
+      // user is not a member of this guild
     }
   }
 
