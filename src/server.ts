@@ -3,7 +3,8 @@ import { createBot } from '$discord/client'
 import { handler } from './handler.js'
 import express from 'express'
 
-const app = express()
+// export for e2e tests
+export const app = express()
 const PORT = process.env.PORT || 3000
 
 // add a route that lives separately from the SvelteKit app
@@ -14,7 +15,8 @@ app.get('/healthcheck', (req, res) => {
 // let SvelteKit handle everything else, including serving prerendered pages and static assets
 app.use(handler)
 
-app.listen(PORT, () => {
+// export instance of server for e2e tests
+export const server = app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)
   createBot()
 })
