@@ -3,6 +3,7 @@ import { prisma } from '$lib/db'
 import { getUserAccess } from '$discord/guild'
 import { getServerSession, options } from '$lib/next-auth'
 import type { Session as NextAuthSession } from 'next-auth'
+import type { Handle, GetSession } from '@sveltejs/kit'
 
 // only load the bot if we're in development (on first request to the server), otherwise the bot will be loaded onto the Node/Express server
 if (import.meta.env.DEV) {
@@ -25,12 +26,14 @@ function isApiAdminRoute(pathname: URL['pathname']) {
   return pathname.startsWith('/api/admin')
 }
 
-/** @type {RequestHandler} */
-export async function handle({ event, resolve }): Promise<Response> {
+export const handle: Handle = async function handle({
+  event,
+  resolve,
+}): Promise<Response> {
   const session = await getServerSession(event.request, options)
-  event.locals.session = session
 
   if (session?.user) {
+    event.locals.session = session
     const user = await prisma.user.findUnique({
       where: {
         id: session.user.id,
@@ -48,8 +51,8 @@ export async function handle({ event, resolve }): Promise<Response> {
     })
 
     const discordUserId = user.accounts[0].providerAccountId
-    event.locals.session.user = {
-      ...event.locals.session.user,
+    session.user = {
+      ...session.user,
       ...(await getUserAccess(discordUserId)),
       id: discordUserId,
     }
@@ -76,6 +79,8 @@ export async function handle({ event, resolve }): Promise<Response> {
 
 export type Session = NextAuthSession & {}
 
-export async function getSession(event): Promise<Session> {
+export const getSession: GetSession = async function getSession(
+  event
+): Promise<App.Session> {
   return event.locals.session
 }
