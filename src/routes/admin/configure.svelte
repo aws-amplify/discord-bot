@@ -2,7 +2,6 @@
   import {
     Checkbox,
     Content,
-    Dropdown,
     Grid,
     Row,
     Column,
@@ -10,39 +9,33 @@
     Form,
     FormGroup,
   } from 'carbon-components-svelte'
-  import * as store from '$lib/store'
+  import { get } from 'svelte/store'
+  import { guild, notifications } from '$lib/store'
 
   export let configure
 
   $: roles = configure.roles.sort((a, b) => b.position - a.position)
-
-  const servers = configure.guilds.map(guild => ({
-    id: guild.id,
-    text: guild.name,
-  }))
-  const selectedServer = servers[0]?.id
-
-  async function switchGuild(id) {
-    const res = await fetch(`/admin/configure?id=${id}`)
-    const data = await res.json()
-  }
 
   async function onSubmit(event) {
     event.preventDefault()
     const form = event.target
     const selectedAdminRoles = Array.from(
       form.adminRoles.querySelectorAll(':checked')
-    ).map(node => node.id)
+    ).map((node) => node.value)
+    const selectedStaffRoles = Array.from(
+      form.staffRoles.querySelectorAll(':checked')
+    ).map((node) => node.value)
 
     const body = {
-      id: selectedServer,
+      id: get(guild),
       name: configure.guild.name,
       adminRoles: selectedAdminRoles,
+      staffRoles: selectedStaffRoles,
     }
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_HOST}/api/admin/configure`,
+        `${import.meta.env.VITE_HOST}/api/admin/configure`,
         {
           method: 'POST',
           headers: {
@@ -53,16 +46,20 @@
       )
       const data = await res.json()
       if (data?.id) {
-        store.notifications.add({
+        notifications.add({
           kind: 'success',
-          title: 'Successfully updated configuration',
+          title: `Successfully ${
+            configure.config?.id ? 'updated' : 'created'
+          } configuration`,
           subtitle: '',
         })
       }
     } catch (error) {
-      store.notifications.add({
+      notifications.add({
         kind: 'error',
-        title: 'Error updating configuration',
+        title: `Error ${
+          configure.config?.id ? 'updating' : 'creating'
+        } configuration`,
         subtitle: error.message,
       })
     }
@@ -76,24 +73,35 @@
         <section>
           <h2>Configure</h2>
           <!-- <pre><code>{JSON.stringify(guilds, null, 2)}</code></pre> -->
-          <Dropdown
-            titleText="Discord Servers"
-            selectedId="{selectedServer}"
-            items="{servers}"
-            on:select="{switchGuild}"
-          />
           <Form on:submit="{onSubmit}">
-            <FormGroup id="adminRoles" legendText="Admin Roles">
-              {#each roles as role}
-                <Checkbox
-                  id="{role.id}"
-                  labelText="{role.name}"
-                  checked="{configure.config?.adminRoles?.find(
-                    r => r.id === role.id
-                  ) || false}"
-                />
-              {/each}
-            </FormGroup>
+            <div class="ha--configure-roles">
+              <FormGroup id="adminRoles" legendText="Admin Roles">
+                {#each roles as role}
+                  <Checkbox
+                    id="{`admin-${role.id}`}"
+                    labelText="{role.name}"
+                    checked="{configure.config?.roles?.find(
+                      (r) =>
+                        r.discordRoleId === role.id && r.accessType === 'ADMIN'
+                    ) || false}"
+                    value="{role.id}"
+                  />
+                {/each}
+              </FormGroup>
+              <FormGroup id="staffRoles" legendText="Staff Roles">
+                {#each roles as role}
+                  <Checkbox
+                    id="{`staff-${role.id}`}"
+                    labelText="{role.name}"
+                    checked="{configure.config?.roles?.find(
+                      (r) =>
+                        r.discordRoleId === role.id && r.accessType === 'STAFF'
+                    ) || false}"
+                    value="{role.id}"
+                  />
+                {/each}
+              </FormGroup>
+            </div>
             <Button type="submit">
               {configure.config?.id ? 'Update' : 'Create'} Configuration
             </Button>
@@ -109,5 +117,17 @@
     display: grid;
     grid-auto-flow: row;
     grid-row-gap: var(--cds-spacing-05);
+  }
+
+  .ha--configure-roles {
+    display: grid;
+    grid-auto-flow: row;
+    grid-row-gap: var(--cds-spacing-05);
+  }
+
+  @media (min-width: 33rem) {
+    .ha--configure-roles {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 </style>

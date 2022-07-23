@@ -5,7 +5,7 @@ export async function get(event) {
   const config = await prisma.configuration.findUnique({
     where: { id },
     include: {
-      adminRoles: true,
+      roles: true,
     },
   })
 
@@ -21,32 +21,40 @@ export async function get(event) {
   }
 }
 
-export async function post(event) {
-  const { id, name, adminRoles } = event.request.body
+export async function post({ request }) {
+  const { id, name, adminRoles, staffRoles } = await request.json()
   const record = await prisma.configuration.findUnique({
     where: { id },
     include: {
-      adminRoles: true,
+      roles: true,
     },
   })
 
   if (record) {
-    const adminRolesToDisconnect = record.adminRoles.filter(
-      r => !adminRoles.includes(r.id)
+    const adminRolesToDisconnect = record.roles.filter(
+      (r) => !adminRoles.includes(r.id) && r.accessType === 'ADMIN'
     )
-    await prisma.configuration.update({
-      where: { id },
-      data: {
-        adminRoles: {
-          disconnect: adminRolesToDisconnect.map(({ id }) => ({ id })),
+    const staffRolesToDisconnect = record.roles.filter(
+      (r) => !staffRoles.includes(r.id) && r.accessType === 'STAFF'
+    )
+    const rolesToDisconnect = [
+      ...adminRolesToDisconnect,
+      ...staffRolesToDisconnect,
+    ]
+    // delete old roles
+    await prisma.role.deleteMany({
+      where: {
+        id: {
+          in: rolesToDisconnect.map(({ id }) => id),
         },
-      },
-      include: {
-        adminRoles: true,
       },
     })
   }
 
+  const rolesToCreateOrUpdate = [
+    ...adminRoles.map((id) => ({ discordRoleId: id, accessType: 'ADMIN' })),
+    ...staffRoles.map((id) => ({ discordRoleId: id, accessType: 'STAFF' })),
+  ]
   const config = await prisma.configuration.upsert({
     where: {
       id,
@@ -54,20 +62,17 @@ export async function post(event) {
     create: {
       id,
       name,
-      adminRoles: {
-        create: adminRoles.map(id => ({ id })),
+      roles: {
+        create: rolesToCreateOrUpdate,
       },
     },
     update: {
-      adminRoles: {
-        connectOrCreate: adminRoles.map(id => ({
-          where: { id },
-          create: { id },
-        })),
+      roles: {
+        create: rolesToCreateOrUpdate,
       },
     },
     include: {
-      adminRoles: true,
+      roles: true,
     },
   })
 
