@@ -43,7 +43,7 @@
   let isSideNavOpen = false
   let isUserPanelOpen = false
 
-  afterNavigate((navigation) => {
+  afterNavigate(() => {
     if (isUserPanelOpen) isUserPanelOpen = false
   })
 </script>
@@ -62,7 +62,9 @@
 
     <HeaderUtilities>
       {#if $session?.user}
-        <!-- <GuildSwitcher guilds="{guilds}" /> -->
+        <!-- {#if guilds.length > 1}
+          <GuildSwitcher guilds="{guilds}" />
+        {/if} -->
         <HeaderAction
           aria-label="User settings"
           bind:isOpen="{isUserPanelOpen}"
