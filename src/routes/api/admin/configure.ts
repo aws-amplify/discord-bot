@@ -1,26 +1,5 @@
 import { prisma } from '$lib/db'
 
-export async function get(event) {
-  const { guildId: id } = event.url.searchParams
-  const config = await prisma.configuration.findUnique({
-    where: { id },
-    include: {
-      roles: true,
-    },
-  })
-
-  if (!config) {
-    return {
-      status: 500,
-    }
-  }
-
-  return {
-    status: 200,
-    body: config,
-  }
-}
-
 export async function post({ request }) {
   const { id, name, adminRoles, staffRoles } = await request.json()
   const record = await prisma.configuration.findUnique({
