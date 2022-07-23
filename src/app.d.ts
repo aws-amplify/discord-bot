@@ -8,17 +8,21 @@ interface User extends NextAuth.User {
   isStaff: boolean
 }
 
+interface AppSession extends NextAuth.Session {
+  user: User
+}
+
 // See https://kit.svelte.dev/docs/typescript
 // for information about these interfaces
 declare global {
   namespace App {
-    interface Locals {}
+    interface Locals {
+      session: AppSession
+    }
 
     interface Platform {}
 
-    interface Session extends NextAuth.Session {
-      user: User
-    }
+    interface Session extends AppSession {}
 
     interface Stuff {}
   }
