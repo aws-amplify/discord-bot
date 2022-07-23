@@ -8,7 +8,7 @@
 </script>
 
 <div class="ha--guild-switcher">
-  <Dropdown selectedId="{selected}" items="{guilds}" let:item>
+  <Dropdown bind:selectedId="{selected}" items="{guilds}" let:item>
     <div>
       <!-- TODO: add server avatar -->
       <span>{item.text}</span>
