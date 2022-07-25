@@ -7,6 +7,13 @@ import type { APIGuild, APIGuildMember } from 'discord-api-types/v10'
 
 export async function getUserAccess(guildMemberId: string) {
   const guildId = read(store)
+  if (!guildId) {
+    return {
+      isGuildOwner: false,
+      isAdmin: false,
+      isStaff: false,
+    }
+  }
   const guild = (await api.get(Routes.guild(guildId))) as APIGuild
   const guildMember = (await api.get(
     Routes.guildMember(guildId, guildMemberId)
@@ -29,7 +36,7 @@ export async function getUserAccess(guildMemberId: string) {
     },
   })
 
-  if (!isGuildOwner && !config) {
+  if (!config) {
     return {
       isGuildOwner,
       isAdmin: isGuildOwner,
