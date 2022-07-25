@@ -8,7 +8,8 @@ import { api } from '../api/_discord'
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function get({ locals }) {
   const commands = await bank.list()
-  const id = read(store)
+  // const id = read(store)
+  const id = import.meta.env.VITE_DISCORD_GUILD_ID
 
   const guild = await api.get(Routes.guild(id))
   const roles = await api.get(Routes.guildRoles(id))

@@ -6,7 +6,8 @@ import { api } from './index'
 import type { APIGuild, APIGuildMember } from 'discord-api-types/v10'
 
 export async function getUserAccess(guildMemberId: string) {
-  const guildId = read(store)
+  // const guildId =
+  const guildId = import.meta.env.VITE_DISCORD_GUILD_ID
   if (!guildId) {
     return {
       isGuildOwner: false,

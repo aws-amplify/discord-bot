@@ -1,3 +1,4 @@
+import { get as read } from 'svelte/store'
 import { guild as store } from '$lib/store'
 import { api } from './_discord'
 import { Routes } from 'discord-api-types/v10'
@@ -17,8 +18,10 @@ export async function get({ locals }) {
     }
   }
 
-  if (guilds.length) {
-    store.set(guilds[0].id)
+  // const defaultGuildId = read(store)
+  const defaultGuildId = import.meta.env.VITE_DISCORD_GUILD_ID
+  if (guilds.length && defaultGuildId) {
+    store.set(guilds.find(({ id }) => id === defaultGuildId))
   }
 
   return {
