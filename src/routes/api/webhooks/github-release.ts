@@ -632,21 +632,21 @@ if (import.meta.vitest) {
         expect(response.status).toBe(400)
       })
     })
+  })
 
-    describe('Successful GitHub -> Discord webhook', () => {
-      test('sends', async () => {
-        const response = await post({ request: createRequest(mocked) })
-        expect(response.status).toBe(200)
-      })
+  describe('Successful GitHub -> Discord webhook', () => {
+    test('sends', async () => {
+      const response = await post({ request: createRequest(mocked) })
+      expect(response.status).toBe(200)
+    })
 
-      test('webhook verification', () => {
-        expect(
-          verifyGithubWebhookEvent(
-            mocked.body,
-            mocked.headers['X-Hub-Signature-256']
-          )
-        ).toBeTruthy()
-      })
+    test('webhook verification', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          mocked.body,
+          mocked.headers['X-Hub-Signature-256']
+        )
+      ).toBeTruthy()
     })
   })
 }
