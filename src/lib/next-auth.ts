@@ -14,9 +14,9 @@ import type {
 import type { OutgoingResponse } from 'next-auth/core'
 
 // TODO: can we get around this behavior for SSR builds?
-// @ts-expect-error
+// @ts-expect-error import is exported on .default during SSR
 const discord = DiscordProvider?.default || DiscordProvider
-// @ts-expect-error
+// @ts-expect-error import is exported on .default during SSR
 const github = GithubProvider?.default || GithubProvider
 
 const adapter = PrismaAdapter(prisma)
