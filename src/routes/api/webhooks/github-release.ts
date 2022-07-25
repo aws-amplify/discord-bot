@@ -70,7 +70,7 @@ export async function post({ request }) {
 }
 
 if (import.meta.vitest) {
-  const { afterEach, beforeEach, describe, expect, test, vi } = import.meta
+  const { it, describe, expect, test, vi, beforeEach, afterAll } = import.meta
     .vitest
 
   // in test, we only want to confirm the routes sends a message
@@ -586,51 +586,48 @@ if (import.meta.vitest) {
     },
   }
 
-  describe('GitHub -> Discord Webhook', () => {
-    const env = process.env
+  const env = process.env
+  beforeEach(() => {
+    vi.resetModules()
+    process.env = { ...env }
+  })
 
-    beforeEach(() => {
-      vi.resetModules()
-      process.env = { ...env }
+  afterAll(() => {
+    process.env = env
+  })
+
+  describe('Failed Github -> Discord webhook', () => {
+    test('verification', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          mockedBad.body,
+          mockedBad.headers['X-Hub-Signature-256']
+        )
+      ).toEqual(false)
     })
 
-    afterEach(() => {
-      process.env = env
+    test('verification 2', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          mockedBad.body,
+          mockedBad.headers['X-Hub-Signature-256']
+        )
+      ).toEqual(false)
     })
 
-    describe('Failed Github -> Discord webhook', () => {
-      test('verification', () => {
-        expect(
-          verifyGithubWebhookEvent(
-            mockedBad.body,
-            mockedBad.headers['X-Hub-Signature-256']
-          )
-        ).toEqual(false)
-      })
+    test('verification 3', () => {
+      expect(verifyGithubWebhookEvent({}, '')).toEqual(false)
+    })
 
-      test('verification 2', () => {
-        expect(
-          verifyGithubWebhookEvent(
-            mockedBad.body,
-            mockedBad.headers['X-Hub-Signature-256']
-          )
-        ).toEqual(false)
-      })
+    test('verification 4', () => {
+      expect(verifyGithubWebhookEvent(null, null)).toEqual(false)
+    })
 
-      test('verification 3', () => {
-        expect(verifyGithubWebhookEvent({}, '')).toEqual(false)
-      })
-
-      test('verification 4', () => {
-        expect(verifyGithubWebhookEvent(null, null)).toEqual(false)
-      })
-
-      test('send', async () => {
-        process.env.DISCORD_WEBHOOK_URL_RELEASES =
-          'https://discordapp.com/api/webhooks/bad'
-        const response = await post({ request: createRequest(mocked) })
-        expect(response.status).toBe(400)
-      })
+    test('send', async () => {
+      process.env.DISCORD_WEBHOOK_URL_RELEASES =
+        'https://discordapp.com/api/webhooks/bad'
+      const response = await post({ request: createRequest(mocked) })
+      expect(response.status).toBe(400)
     })
   })
 
