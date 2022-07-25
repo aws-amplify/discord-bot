@@ -15,11 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: ci
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_URL: 'file:data/test.db'
       GITHUB_WEBHOOK_SECRET: ${{ secrets.GH_WEBHOOK_SECRET }}
       DISCORD_WEBHOOK_URL_RELEASES: ${{ secrets.DISCORD_WEBHOOK_URL_RELEASES }}
       VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
-      VITE_NEXTAUTH_URL: ${{ secrets.VITE_NEXTAUTH_URL }}
+      VITE_NEXTAUTH_URL: 'http://localhost:3000'
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2.2.2
