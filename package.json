@@ -13,7 +13,7 @@
     "build:lib": "pnpm packages run build",
     "build:server": "vite build --mode server",
     "check": "prettier --check .",
-    "lint": "eslint **/*.{js,ts,svelte}",
+    "lint": "eslint .",
     "prepare": "prisma generate",
     "setup": "pnpm install && pnpm build:lib && pnpm setup-test",
     "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push",
