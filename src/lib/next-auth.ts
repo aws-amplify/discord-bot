@@ -145,7 +145,9 @@ export async function getServerSession(
 
   const { body } = session
 
-  if (body && Object.keys(body).length) return body as App.Session
+  if (body && Object.keys(body).length) {
+    return body as App.Session
+  }
   return null
 }
 
