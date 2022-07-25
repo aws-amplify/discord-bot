@@ -74,9 +74,6 @@
           <HeaderPanelLinks>
             {#if $session.user.isAdmin}
               <HeaderPanelLink href="/admin">Admin</HeaderPanelLink>
-              <HeaderPanelLink href="/admin/configure"
-                >Configure</HeaderPanelLink
-              >
             {/if}
             <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
           </HeaderPanelLinks>
