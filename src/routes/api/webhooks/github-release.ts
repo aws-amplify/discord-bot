@@ -70,8 +70,7 @@ export async function post({ request }) {
 }
 
 if (import.meta.vitest) {
-  const { it, describe, expect, test, vi, beforeEach, afterAll } = import.meta
-    .vitest
+  const { it, describe, expect, test } = import.meta.vitest
 
   // in test, we only want to confirm the routes sends a message
   const createRequest = (payload) => ({
@@ -586,16 +585,6 @@ if (import.meta.vitest) {
     },
   }
 
-  const env = process.env
-  beforeEach(() => {
-    vi.resetModules()
-    process.env = { ...env }
-  })
-
-  afterAll(() => {
-    process.env = env
-  })
-
   describe('Failed Github -> Discord webhook', () => {
     test('verification', () => {
       expect(
@@ -624,10 +613,12 @@ if (import.meta.vitest) {
     })
 
     test('send', async () => {
+      const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
       process.env.DISCORD_WEBHOOK_URL_RELEASES =
         'https://discordapp.com/api/webhooks/bad'
       const response = await post({ request: createRequest(mocked) })
       expect(response.status).toBe(400)
+      process.env.DISCORD_WEBHOOK_URL_RELEASES = url
     })
   })
 
