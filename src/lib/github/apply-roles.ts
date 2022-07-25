@@ -30,15 +30,18 @@ async function fetchDiscordUserRoles(discUserId: string) {
 // returns true if the user is a member of that org
 // false otherwise or if error
 // (uses access token to determine current user)
-async function isOrgMember(accessToken) {
+async function isOrgMember(accessToken: string, ghUserId: string) {
   const octokit = new Octokit({
     auth: `token ${accessToken}`,
   })
   try {
-    await octokit.request('GET /user/memberships/orgs/{org}', {
+    const { data } = await octokit.request('GET /orgs/{org}/members/', {
       org: process.env.GITHUB_ORG_LOGIN,
     })
-    return true
+    const index = data.findIndex(
+      (contributor) => contributor.id === Number(ghUserId)
+    )
+    if (index !== -1) return true
   } catch (err) {
     console.error(
       `Failed to find org member in ${process.env.GITHUB_ORG_LOGIN}: ${err.response.data.message}`
@@ -105,35 +108,26 @@ export async function isContributor(
 }
 
 // driver code that checks github membership/contribution status and applies roles
-export async function appplyRoles(userId: string) {
+export async function appplyRoles(userId: string, ghUserId: string, accessToken: string) {
   let staffResponse = true
   let contributorResponse = true
-  let accessToken, ghUserId, discUserId
-
+  let discUserId
   const userAccounts = await prisma.account.findMany({
     where: { userId: userId },
   })
    
-  if(userAccounts.length === 2) {
-    accessToken = userAccounts.filter(
-      (account) => account.provider === 'github'
-    )[0].access_token
-    ghUserId = userAccounts.filter(
-      (account) => account.provider === 'github'
-    )[0].providerAccountId
+  if(userAccounts.length >= 1) {
     discUserId = userAccounts.filter(
-      (account) => account.provider === 'discord'
+      (acct) => acct.provider === 'discord'
     )[0].providerAccountId
-  } else {
-    return false
   }
 
+  if (!accessToken || !ghUserId || !discUserId) return false
   // user's current Discord roles
   const userRoles = await fetchDiscordUserRoles(discUserId)
+  if(!userRoles) return false
 
-  if (!accessToken || !ghUserId || !discUserId || !userRoles) return false
-
-  const isGitHubOrgMember = await isOrgMember(accessToken)
+  const isGitHubOrgMember = await isOrgMember(accessToken, ghUserId)
 
   // user is member of amplify org
   // and user DOESN'T already have staff role -> apply staff role
@@ -169,7 +163,6 @@ export async function appplyRoles(userId: string) {
       userIsContributor &&
       !(process.env.DISCORD_CONTRIBUTOR_ROLE_ID in userRoles)
     ) {
-      console.log("adding contributor role")
       contributorResponse = await addRole(
         process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
         process.env.DISCORD_GUILD_ID,
@@ -180,7 +173,6 @@ export async function appplyRoles(userId: string) {
       !userIsContributor &&
       process.env.DISCORD_CONTRIBUTOR_ROLE_ID in userRoles
     ) {
-      console.log("removing contributor role")
       contributorResponse = await removeRole(
         process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
         process.env.DISCORD_GUILD_ID,
@@ -229,7 +221,7 @@ if (import.meta.vitest) {
       expect(response).toEqual(repos)
     })
     test('Is org member', async () => {
-      const response = await isOrgMember(accessToken)
+      const response = await isOrgMember(accessToken, ghUserId)
       expect(response).toBeTruthy()
     })
     test('Is org contributor', async () => {
@@ -306,14 +298,14 @@ if (import.meta.vitest) {
     })
 
     test('Is org member bad access token', async () => {
-      const response = await isOrgMember(`bad${accessToken}`)
+      const response = await isOrgMember(`bad${accessToken}`, ghUserId)
       expect(response).toBe(false)
     })
 
     test('Is org member unknown org', async () => {
       const orgLogin = process.env.GITHUB_ORG_LOGIN
       process.env.GITHUB_ORG_LOGIN = `bad${orgLogin}`
-      const response = await isOrgMember(accessToken)
+      const response = await isOrgMember(accessToken, ghUserId)
       process.env.GITHUB_ORG_LOGIN = orgLogin
       expect(response).toBe(false)
     })

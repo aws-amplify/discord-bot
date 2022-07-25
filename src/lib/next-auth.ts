@@ -13,6 +13,8 @@ import type {
 } from 'next-auth'
 import type { OutgoingResponse } from 'next-auth/core'
 import { appplyRoles } from './github/apply-roles'
+import { signIn } from './auth'
+import { user } from './store'
 
 // TODO: can we get around this behavior for SSR builds?
 // @ts-expect-error
@@ -22,7 +24,7 @@ const github = GithubProvider?.default || GithubProvider
 
 export const options: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
-  debug: import.meta.env.DEV,
+//  debug: import.meta.env.DEV,
   providers: [
     discord({
       clientId: process.env.DISCORD_AUTH_CLIENT_ID,
@@ -37,17 +39,16 @@ export const options: NextAuthOptions = {
     error: '/auth/error', // Error code passed in query string as ?error=
   },
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      appplyRoles(user.id)
+    async signIn({user, account}) {
+      console.log("\nsignin")
+      console.log(user)
       console.log(account)
-      console.log(profile)
       return true
     },
-    async redirect({ url }) {
-      return url
+    async redirect({ url, baseUrl }) {
+      return baseUrl
     },
 
-    // verify if session gets checked again after they sign in with github, if not do this in sign in
     async session({ session, user }) {
       if (!session || !user) return session
 
@@ -58,11 +59,21 @@ export const options: NextAuthOptions = {
         userAccounts.length === 2 &&
         userAccounts.filter((account) => account.provider === 'github')
           .length === 1
-
-     // if (storedUserGitHub) session.user.github = true
+      if (storedUserGitHub) session.user.github = true
       return session
     },
   },
+  events: {
+    async signIn({ user, account }) {
+      console.log("\nEVENT")
+      console.log(user)
+      console.log(account)
+      // if user signed into github apply discord roles
+      if (account?.provider === 'github' && account?.providerAccountId && account?.access_token && user?.id) {
+        await appplyRoles(user.id, account.providerAccountId, account.access_token)
+      } 
+    }
+  }
 }
 
 async function toSvelteKitResponse(

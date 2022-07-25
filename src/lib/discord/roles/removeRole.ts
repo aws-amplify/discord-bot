@@ -21,6 +21,7 @@ export async function removeRole(
     )
     return false
   } else {
+    console.log(`Successfully removed role ${roleId} from user ${userId}`)
     return true
   }
 }

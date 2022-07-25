@@ -20,6 +20,7 @@ export async function addRole(
     )
     return false
   } else {
+    console.log(`Successfully added role ${roleId} to user ${userId}`)
     return true
   }
 }
