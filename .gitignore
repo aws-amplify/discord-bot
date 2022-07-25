@@ -5,6 +5,7 @@ node_modules
 .env
 .env.*
 !.env.sample
+cypress.env.json
 
 notes.md
 

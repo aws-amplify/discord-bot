@@ -9,3 +9,4 @@ type UserStore = RESTGetAPICurrentUserResult & {
 }
 
 export const user: Writable<UserStore> = writable()
+export const guild = writable(import.meta.env.VITE_DISCORD_GUILD_ID)
