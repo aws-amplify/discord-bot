@@ -1,6 +1,6 @@
 import { createBot } from '$discord/client'
 import { prisma } from '$lib/db'
-import { getUserAccess } from '$discord/guild'
+import { getUserAccess } from '$discord/get-user-access'
 import { getServerSession, options } from '$lib/next-auth'
 import type { Session as NextAuthSession } from 'next-auth'
 import type { Handle, GetSession } from '@sveltejs/kit'
@@ -51,9 +51,15 @@ export const handle: Handle = async function handle({
     })
 
     const discordUserId = user.accounts[0].providerAccountId
+    let access
+    try {
+      access = await getUserAccess(discordUserId)
+    } catch (error) {
+      console.error('Error getting access', error)
+    }
     session.user = {
       ...session.user,
-      ...(await getUserAccess(discordUserId)),
+      ...(access || {}),
       id: discordUserId,
     }
   }
