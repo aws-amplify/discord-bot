@@ -16,11 +16,7 @@ jobs:
     environment: ci
     env:
       DATABASE_URL: 'file:data/test.db'
-      GITHUB_WEBHOOK_SECRET: ${{ secrets.GH_WEBHOOK_SECRET }}
-      DISCORD_WEBHOOK_URL_RELEASES: ${{ secrets.DISCORD_WEBHOOK_URL_RELEASES }}
-      VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
       VITE_NEXTAUTH_URL: 'http://localhost:3000'
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2.2.2
@@ -31,5 +27,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm build
+        env:
+          VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
       - run: pnpm setup-test
       - run: pnpm test
+        env:
+          GITHUB_WEBHOOK_SECRET: ${{ secrets.GH_WEBHOOK_SECRET }}
+          DISCORD_WEBHOOK_URL_RELEASES: ${{ secrets.DISCORD_WEBHOOK_URL_RELEASES }}
+          VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
