@@ -47,6 +47,19 @@ export async function post({ request }) {
 
   const message = createReleaseMessage(payload)
 
+  if (!process.env.DISCORD_WEBHOOK_URL_RELEASES) {
+    return {
+      status: 400,
+      body: {
+        errors: [
+          {
+            message: 'Discord release webhook URL not set',
+          },
+        ],
+      },
+    }
+  }
+
   const res = await fetch(process.env.DISCORD_WEBHOOK_URL_RELEASES, {
     headers: {
       'Content-Type': 'application/json',
