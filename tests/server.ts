@@ -78,15 +78,6 @@ describe('Admin Routes', () => {
       expect(response.headers.location).toBe('/restricted')
     })
   })
-  describe('GET /admin/configure', () => {
-    it('should redirect to /restricted', async () => {
-      const response = await request(app)
-        .get('/admin/configure')
-        .query('guildId=123')
-      expect(response.status).toBe(302)
-      expect(response.headers.location).toBe('/restricted')
-    })
-  })
   describe('POST /api/admin/commands/sync', () => {
     it('should return 401', async () => {
       const response = await request(app).post('/api/admin/commands/sync')
