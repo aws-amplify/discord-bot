@@ -61,11 +61,11 @@ export async function post({ request }) {
   }
 }
 
-export async function del(event) {
-  const { body } = event
+export async function del({ request }) {
+  const { id } = await request.json()
   return {
     body: await prisma.configuration.delete({
-      where: { id: body.id },
+      where: { id },
     }),
   }
 }
