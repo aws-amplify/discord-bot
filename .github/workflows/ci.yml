@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write # used to remove label
+      contents: read
     # We run CI only if the event is a:
     #   1) pull request not from a fork (ie. internal PR), or
     #   2) pull request from a fork (ie. external PR) that was added "action: run-ci" label
