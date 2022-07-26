@@ -2,7 +2,7 @@ import * as crypto from 'node:crypto'
 import { MessageEmbed } from 'discord.js'
 
 function createReleaseMessage(payload) {
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
   embed.setTitle(`[${payload.repository.full_name}] ${payload.release.name}`)
   embed.setColor('#ff9900')
   embed.setDescription(payload.release.body)
@@ -61,7 +61,7 @@ export async function post({ request }) {
 
   // if response is not okay or if Discord did not return a 204
   // https://discord.com/developers/docs/topics/opcodes-and-status-codes#http
-  if (!res.ok ) {
+  if (!res.ok) {
     if (res.body) console.log(await res.json())
     return {
       status: 400,
