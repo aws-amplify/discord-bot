@@ -104,7 +104,7 @@ describe('webhooks', () => {
       expect(response.status).toBe(403)
     })
 
-    it('bad url: should return 400', async () => {
+    it('should return 400 if webhook URL is bad', async () => {
       const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
       process.env.DISCORD_WEBHOOK_URL_RELEASES =
         'https://discordapp.com/api/webhooks/bad'
@@ -116,7 +116,7 @@ describe('webhooks', () => {
       process.env.DISCORD_WEBHOOK_URL_RELEASES = url
     })
 
-    it('should return 201', async () => {
+    it('should return 201 if everything is correct', async () => {
       const response = await request(app)
       .post('/api/webhooks/github-release')
       .send(mockedReleased.body)
@@ -124,7 +124,7 @@ describe('webhooks', () => {
       expect(response.status).toBe(201)
     })
 
-    it('should return 204', async () => {
+    it(`should return 204 is event action isn not 'released'`, async () => {
       const response = await request(app)
       .post('/api/webhooks/github-release')
       .send(mockedCreated.body)
@@ -132,7 +132,7 @@ describe('webhooks', () => {
       expect(response.status).toBe(204)
     })
 
-    it('should return 204', async () => {
+    it(`should return 204 is event action isn not 'released'`, async () => {
       const response = await request(app)
       .post('/api/webhooks/github-release')
       .send(mockedPublished.body)
@@ -140,7 +140,7 @@ describe('webhooks', () => {
       expect(response.status).toBe(204)
     })
 
-    it('should return 204', async () => {
+    it(`should return 204 is event action isn not 'released'`, async () => {
       const response = await request(app)
       .post('/api/webhooks/github-release')
       .send(mockedPreReleased.body)

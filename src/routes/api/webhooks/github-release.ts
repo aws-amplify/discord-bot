@@ -585,7 +585,7 @@ if (import.meta.vitest) {
   }
 
   describe('Webhook verification', () => {
-    it('should return true', () => {
+    it('should return true if everything is correct', () => {
       expect(
         verifyGithubWebhookEvent(
           mocked.body,
@@ -594,7 +594,7 @@ if (import.meta.vitest) {
       ).toBeTruthy()
     })
     
-    it('should return false', () => {
+    it('should return false with a jumbled payload', () => {
       expect(
         verifyGithubWebhookEvent(
           mockedBad.body,
@@ -603,20 +603,11 @@ if (import.meta.vitest) {
       ).toEqual(false)
     })
 
-    test('should return false', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          mockedBad.body,
-          mockedBad.headers['X-Hub-Signature-256']
-        )
-      ).toEqual(false)
-    })
-
-    test('should return false', () => {
+    test('should return false with empty payload and header', () => {
       expect(verifyGithubWebhookEvent({}, '')).toEqual(false)
     })
 
-    test('should return false', () => {
+    test('should return false with null payload and header is null', () => {
       expect(verifyGithubWebhookEvent(null, null)).toEqual(false)
     })
   })
