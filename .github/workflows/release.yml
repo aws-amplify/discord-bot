@@ -1,0 +1,43 @@
+name: release
+on:
+  release:
+    types:
+      - prereleased
+      - released
+env:
+  AWS_REGION: us-east-1
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: release
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: pnpm/action-setup@v2.2.2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: release-next-synth
+        run: pnpm --filter ./cdk run synth --context env=next
+      - name: release-next-deploy
+        run: pnpm --filter ./cdk run deploy --context env=next --require-approval never
+        timeout-minutes: 30 # to compensate for container healthcheck failures
+      - name: release-main-synth
+        if: github.event.action == 'released'
+        run: pnpm --filter ./cdk run synth --context env=main
+      - name: release-main-deploy
+        if: github.event.action == 'released'
+        run: pnpm --filter ./cdk run deploy --context env=main --require-approval never
+        timeout-minutes: 30 # to compensate for container healthcheck failures
