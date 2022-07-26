@@ -124,7 +124,7 @@ describe('webhooks', () => {
       expect(response.status).toBe(201)
     })
 
-    it(`should return 204 is event action isn not 'released'`, async () => {
+    it(`should return 204 is event action is not 'released'`, async () => {
       const response = await request(app)
       .post('/api/webhooks/github-release')
       .send(mockedCreated.body)
@@ -132,7 +132,7 @@ describe('webhooks', () => {
       expect(response.status).toBe(204)
     })
 
-    it(`should return 204 is event action isn not 'released'`, async () => {
+    it(`should return 204 is event action is not 'released'`, async () => {
       const response = await request(app)
       .post('/api/webhooks/github-release')
       .send(mockedPublished.body)
@@ -140,7 +140,7 @@ describe('webhooks', () => {
       expect(response.status).toBe(204)
     })
 
-    it(`should return 204 is event action isn not 'released'`, async () => {
+    it(`should return 204 is event action is not 'released'`, async () => {
       const response = await request(app)
       .post('/api/webhooks/github-release')
       .send(mockedPreReleased.body)
