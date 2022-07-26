@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: remove label, if applicable
         if: always() && github.event.label.name == 'run-ci'
-        uses: actions/github-script@6
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
