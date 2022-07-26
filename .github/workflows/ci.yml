@@ -12,8 +12,6 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
   cancel-in-progress: true
-env:
-  LABEL_NAME: 'action: run-ci'
 permissions:
   pull-requests: write # used to remove label
   # other permissions are defaulted to "none"
@@ -25,16 +23,16 @@ jobs:
     #   2) pull request from a fork (ie. external PR) that was added "action: run-ci" label
     if: |
       (github.event.pull_request.head.repo.full_name == github.repository) ||
-      (github.event.action == 'labeled' && github.event.label.name == ${{ env.LABEL_NAME }})
+      (github.event.action == 'labeled' && github.event.label.name == 'run-ci')
     steps:
       - name: remove label, if applicable
-        if: always() && github.event.label.name == ${{ env.LABEL_NAME }}
+        if: always() && github.event.label.name == 'run-ci'
         uses: actions/github-script@6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { issue: { number: issue_number }, repo: { owner, repo } } = context;
-            const label = ${{ env.LABEL_NAME }};
+            const label = 'run-ci';
             github.issues.removeLabel({ owner, repo, issue_number, name: label });
   ci:
     runs-on: ubuntu-latest
