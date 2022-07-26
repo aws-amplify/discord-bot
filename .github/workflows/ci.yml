@@ -33,7 +33,7 @@ jobs:
           script: |
             const { issue: { number: issue_number }, repo: { owner, repo } } = context;
             const label = 'run-ci';
-            github.issues.removeLabel({ owner, repo, issue_number, name: label });
+            github.rest.issues.removeLabel({ owner, repo, issue_number, name: label });
   ci:
     runs-on: ubuntu-latest
     needs: verify-run
