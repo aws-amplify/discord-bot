@@ -7,6 +7,8 @@ import request from 'supertest'
 import { beforeAll } from 'vitest'
 import type { Server } from 'node:http'
 import type { Session } from 'next-auth'
+import { it } from 'vitest'
+import { mockedPublished, mockedCreated, mockedPreReleased, mockedReleased } from './mock/github-webhook'
 
 let app: Express.Application
 const session: Session = {
@@ -94,11 +96,57 @@ describe('webhooks', () => {
         .send({})
       expect(response.status).not.toBe(401)
     })
+
     it('should return 403 without auth header', async () => {
       const response = await request(app)
         .post('/api/webhooks/github-release')
         .send({})
       expect(response.status).toBe(403)
     })
+
+    it('should return 400 if webhook URL is bad', async () => {
+      const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
+      process.env.DISCORD_WEBHOOK_URL_RELEASES =
+        'https://discordapp.com/api/webhooks/bad'
+      const response = await request(app)
+        .post('/api/webhooks/github-release')
+        .send(mockedReleased.body)
+        .set(mockedReleased.headers)
+      expect(response.status).toBe(400)
+      process.env.DISCORD_WEBHOOK_URL_RELEASES = url
+    })
+
+    it('should return 201 if everything is correct', async () => {
+      const response = await request(app)
+      .post('/api/webhooks/github-release')
+      .send(mockedReleased.body)
+      .set(mockedReleased.headers)
+      expect(response.status).toBe(201)
+    })
+
+    it(`should return 204 is event action is not 'released'`, async () => {
+      const response = await request(app)
+      .post('/api/webhooks/github-release')
+      .send(mockedCreated.body)
+      .set(mockedCreated.headers)
+      expect(response.status).toBe(204)
+    })
+
+    it(`should return 204 is event action is not 'released'`, async () => {
+      const response = await request(app)
+      .post('/api/webhooks/github-release')
+      .send(mockedPublished.body)
+      .set(mockedPublished.headers)
+      expect(response.status).toBe(204)
+    })
+
+    it(`should return 204 is event action is not 'released'`, async () => {
+      const response = await request(app)
+      .post('/api/webhooks/github-release')
+      .send(mockedPreReleased.body)
+      .set(mockedPreReleased.headers)
+      expect(response.status).toBe(204)
+    })
+
   })
 })
