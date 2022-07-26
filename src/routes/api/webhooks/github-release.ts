@@ -22,7 +22,7 @@ function createReleaseMessage(payload) {
 // https://gist.github.com/stigok/57d075c1cf2a609cb758898c0b202428
 function verifyGithubWebhookEvent(payloadbody, signature256: string) {
   if (!signature256) return false
-  const token = process.env.GITHUB_RELEASES_WEBHOOK_SECRET
+  const token = process.env.GITHUB_WEBHOOK_SECRET
   const sig = Buffer.from(signature256 || '', 'utf8')
   const hmac = crypto.createHmac('sha256', token)
   const digest = Buffer.from(
