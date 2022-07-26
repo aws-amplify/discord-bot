@@ -10,9 +10,31 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
   cancel-in-progress: true
 
+env:
+  LABEL_NAME: 'action: run-ci'
+
 jobs:
+  verify-run:
+    runs-on: ubuntu-latest
+    # We run CI only if the event is a:
+    #   1) pull request not from a fork (ie. internal PR), or
+    #   2) pull request from a fork (ie. external PR) that was added "action: run-ci" label
+    if: |
+      (github.event.pull_request.head.repo.full_name == github.repository) ||
+      (github.event.action == 'labeled' && github.event.label.name == ${{ env.LABEL_NAME }})
+    steps:
+      - name: remove label, if applicable
+        if: always() && github.event.label.name == ${{ env.LABEL_NAME }}
+        uses: actions/github-script@6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo } } = context;
+            const label = ${{ env.LABEL_NAME }};
+            github.issues.removeLabel({ owner, repo, issue_number, name: label });
   ci:
     runs-on: ubuntu-latest
+    needs: verify-run
     environment: ci
     env:
       DATABASE_URL: 'file:data/test.db'
