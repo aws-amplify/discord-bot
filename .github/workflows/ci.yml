@@ -4,15 +4,15 @@ on:
     branches:
       - main
   pull_request:
-
 # cancel in-progress runs on new commits to same PR (gitub.event.number)
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
   cancel-in-progress: true
-
 env:
   LABEL_NAME: 'action: run-ci'
-
+permissions:
+  pull-requests: write # used to remove label
+  # other permissions are defaulted to "none"
 jobs:
   verify-run:
     runs-on: ubuntu-latest
