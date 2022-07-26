@@ -2,15 +2,27 @@
 /// <reference types="@sveltejs/kit" />
 import type * as NextAuth from 'next-auth'
 
+interface User extends NextAuth.User {
+  id: string
+  isAdmin: boolean
+  isStaff: boolean
+}
+
+interface AppSession extends NextAuth.Session {
+  user: User
+}
+
 // See https://kit.svelte.dev/docs/typescript
 // for information about these interfaces
 declare global {
   namespace App {
-    interface Locals {}
+    interface Locals {
+      session: AppSession
+    }
 
     interface Platform {}
 
-    interface Session extends NextAuth.Session {}
+    interface Session extends AppSession {}
 
     interface Stuff {}
   }

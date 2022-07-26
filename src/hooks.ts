@@ -1,6 +1,8 @@
 import { createBot } from '$discord/client'
+import { prisma } from '$lib/db'
+import { getUserAccess } from '$discord/get-user-access'
 import { getServerSession, options } from '$lib/next-auth'
-import type { Session } from 'next-auth'
+import type { Handle, GetSession } from '@sveltejs/kit'
 
 // only load the bot if we're in development (on first request to the server), otherwise the bot will be loaded onto the Node/Express server
 if (import.meta.env.DEV) {
@@ -12,7 +14,7 @@ function isApiRoute(pathname: URL['pathname']) {
 }
 
 function isApiWebhookRoute(pathname: URL['pathname']) {
-  return pathname.startsWith('/api/webhook')
+  return pathname.startsWith('/api/webhooks')
 }
 
 function isApiAuthRoute(pathname: URL['pathname']) {
@@ -23,10 +25,43 @@ function isApiAdminRoute(pathname: URL['pathname']) {
   return pathname.startsWith('/api/admin')
 }
 
-/** @type {RequestHandler} */
-export async function handle({ event, resolve }): Promise<Response> {
+export const handle: Handle = async function handle({
+  event,
+  resolve,
+}): Promise<Response> {
   const session = await getServerSession(event.request, options)
-  event.locals.session = session
+
+  if (session?.user) {
+    event.locals.session = session
+    const user = await prisma.user.findUnique({
+      where: {
+        id: session.user.id,
+      },
+      select: {
+        accounts: {
+          where: {
+            provider: 'discord',
+          },
+          select: {
+            providerAccountId: true,
+          },
+        },
+      },
+    })
+
+    const discordUserId = user.accounts[0].providerAccountId
+    let access
+    try {
+      access = await getUserAccess(discordUserId)
+    } catch (error) {
+      console.error('Error getting access', error)
+    }
+    session.user = {
+      ...session.user,
+      ...(access || {}),
+      id: discordUserId,
+    }
+  }
 
   // protect API routes
   if (isApiRoute(event.url.pathname)) {
@@ -47,6 +82,8 @@ export async function handle({ event, resolve }): Promise<Response> {
   return response
 }
 
-export function getSession(event): Session {
-  return event.locals.session || {}
+export const getSession: GetSession = async function getSession(
+  event
+): Promise<App.Session> {
+  return event.locals.session
 }

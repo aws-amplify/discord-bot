@@ -2,6 +2,7 @@
   /** @type {import('@sveltejs/kit').Load} */
   export async function load({ session }) {
     return {
+      status: session?.user ? 403 : 401,
       props: {},
     }
   }

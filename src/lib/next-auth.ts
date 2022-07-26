@@ -1,31 +1,31 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
-import { readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
-import { NextAuthHandler } from 'next-auth/core'
 import cookie from 'cookie'
-import getFormBody from './support/get-form-body'
-import { prisma } from '$lib/db'
+import { NextAuthHandler } from 'next-auth/core'
 import DiscordProvider from 'next-auth/providers/discord'
 import GithubProvider from 'next-auth/providers/github'
+import { prisma } from '$lib/db'
+import getFormBody from './support/get-form-body'
 import type {
   IncomingRequest,
   NextAuthOptions,
   NextAuthAction,
-  Session,
+  // App.Session,
 } from 'next-auth'
 import type { OutgoingResponse } from 'next-auth/core'
 import { appplyRoles } from './github/apply-roles'
 import { createAppAuth } from '@octokit/auth-app'
 
 // TODO: can we get around this behavior for SSR builds?
-// @ts-expect-error
+// @ts-expect-error import is exported on .default during SSR
 const discord = DiscordProvider?.default || DiscordProvider
-// @ts-expect-error
+// @ts-expect-error import is exported on .default during SSR
 const github = GithubProvider?.default || GithubProvider
 
+const adapter = PrismaAdapter(prisma)
+
 export const options: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
-  //  debug: import.meta.env.DEV,
+  adapter,
+  // debug: import.meta.env.DEV,
   providers: [
     discord({
       clientId: process.env.DISCORD_AUTH_CLIENT_ID,
@@ -171,10 +171,10 @@ async function SKNextAuthHandler(
 export async function getServerSession(
   request: Request,
   options: NextAuthOptions
-): Promise<Session | null> {
+): Promise<App.Session | null> {
   options.secret = process.env.NEXTAUTH_SECRET
 
-  const session = await NextAuthHandler<Session>({
+  const session = await NextAuthHandler<App.Session>({
     req: {
       host: import.meta.env.VITE_NEXTAUTH_URL,
       action: 'session',
@@ -187,7 +187,9 @@ export async function getServerSession(
 
   const { body } = session
 
-  if (body && Object.keys(body).length) return body as Session
+  if (body && Object.keys(body).length) {
+    return body as App.Session
+  }
   return null
 }
 

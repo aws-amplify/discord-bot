@@ -92,16 +92,14 @@ export default defineConfig(({ mode }) => {
   config.test = {
     globals: true,
     environment: 'jsdom',
+    include: ['tests/**/*.ts'],
+    exclude: ['tests/setup/**/*.ts', 'tests/mock/**/*.ts'],
     includeSource: ['src/**/*.{js,ts,svelte}'],
     setupFiles: ['tests/setup/svelte-kit-routes.ts', 'tests/setup/seed.ts'],
   }
-  if (mode === 'e2e') {
+  // `vitest` sets mode to test, load local environment variables for test
+  if (mode === 'test') {
     loadEnvVars(mode)
-    // apply e2e config
-    config.test = {
-      globals: true,
-      include: ['tests/e2e/**/*.ts'],
-    }
   } else {
     // rely on Vite to load public env vars (i.e. prefixed with VITE_)
     loadEnvVars()

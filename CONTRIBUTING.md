@@ -85,7 +85,9 @@ Destroy resources associated with environment `next`
 
 ## Testing
 
-Run the end-to-end tests with `pnpm test`. This will launch Vite in `e2e` mode, which will load secrets from `.env.e2e` if it exists. In a CI setting it is recommended to use a separate set of secrets unique to the end-to-end test flow.
+Run the tests with `pnpm test`. This will launch Vite in `test` mode, which will load secrets from `.env.test` if it exists. In a CI setting it is recommended to use a separate set of secrets unique to the test flow.
+
+You can also launch a UI for the tests with [`pnpm vitest --ui`](https://vitest.dev/guide/ui.html#vitest-ui)
 
 ### Unit Tests
 

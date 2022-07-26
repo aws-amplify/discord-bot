@@ -5,6 +5,8 @@ import type {
   RequestMethod,
 } from '@discordjs/rest'
 
+// we'll want to eventually expand this interface with more options specific to our DX
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IDiscordApi extends REST {}
 
 export interface IDiscordApiProps extends Partial<RESTOptions> {

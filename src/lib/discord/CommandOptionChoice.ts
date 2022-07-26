@@ -1,5 +1,7 @@
 import type { APIApplicationCommandOptionChoice } from 'discord-api-types/v9'
 
+// we'll want to eventually expand this interface with more options specific to our DX
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IDiscordCommandOptionChoiceOptions
   extends APIApplicationCommandOptionChoice {}
 

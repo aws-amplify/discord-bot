@@ -1,7 +1,7 @@
 {
   "name": "@aws-amplify/discord-bot",
   "type": "module",
-  "version": "0.7.2",
+  "version": "0.7.4",
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
@@ -13,12 +13,11 @@
     "build:lib": "pnpm packages run build",
     "build:server": "vite build --mode server",
     "check": "prettier --check .",
-    "lint": "eslint **/*.{js,ts,svelte}",
+    "lint": "eslint .",
     "prepare": "prisma generate",
-    "setup": "pnpm install && pnpm build:lib",
+    "setup": "pnpm install && pnpm build:lib && pnpm setup-test",
     "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push",
     "test": "vitest",
-    "e2e": "vitest run --mode e2e",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
@@ -121,6 +120,9 @@
     ],
     "settings": {
       "svelte3/typescript": true
+    },
+    "rules": {
+      "@typescript-eslint/prefer-ts-expect-error": "warn"
     }
   },
   "packageManager": "pnpm@7.1.0",

@@ -2,7 +2,7 @@ import { MessageEmbed } from 'discord.js'
 import { verifyGithubWebhookEvent } from './_verifyWebhook'
 
 function createReleaseMessage(payload) {
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
   embed.setTitle(`[${payload.repository.full_name}] ${payload.release.name}`)
   embed.setColor('#ff9900')
   embed.setDescription(payload.release.body)
@@ -35,6 +35,10 @@ export async function post({ request }) {
     }
   }
 
+  if (payload.action !== 'released') {
+    return { status: 204 }
+  }
+
   const message = createReleaseMessage(payload)
 
   const res = await fetch(process.env.DISCORD_WEBHOOK_URL_RELEASES, {
@@ -48,24 +52,19 @@ export async function post({ request }) {
   // if response is not okay or if Discord did not return a 204
   // https://discord.com/developers/docs/topics/opcodes-and-status-codes#http
   if (!res.ok) {
-    if (res.body) console.log(res.body)
+    if (res.body) console.log(await res.json())
     return {
       status: 400,
     }
   } else {
     return {
-      status: 200,
+      status: 201,
     }
   }
 }
 
 if (import.meta.vitest) {
-  const { describe, expect, it } = import.meta.vitest
-
-  // in test, we only want to confirm the routes sends a message
-  const createRequest = (payload) => ({
-    json: () => new Promise((resolve) => resolve(payload.body)),
-  })
+  const { it, describe, expect } = import.meta.vitest
 
   const mocked = {
     headers: {
@@ -576,7 +575,7 @@ if (import.meta.vitest) {
   }
 
   describe('Webhook verification', () => {
-    it('should return true', () => {
+    it('should return true if everything is correct', () => {
       expect(
         verifyGithubWebhookEvent(
           process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
@@ -585,7 +584,8 @@ if (import.meta.vitest) {
         )
       ).toBeTruthy()
     })
-    it('should return false', () => {
+
+    it('should return false with a jumbled payload', () => {
       expect(
         verifyGithubWebhookEvent(
           process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
@@ -595,17 +595,7 @@ if (import.meta.vitest) {
       ).toEqual(false)
     })
 
-    it('should return false', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
-          mockedBad.body,
-          mockedBad.headers['X-Hub-Signature-256']
-        )
-      ).toEqual(false)
-    })
-
-    it('should return false', () => {
+    test('should return false with empty payload and header', () => {
       expect(
         verifyGithubWebhookEvent(
           process.env.GITHUB_RELEASES_WEBHOOK_SECRET,
@@ -615,7 +605,7 @@ if (import.meta.vitest) {
       ).toEqual(false)
     })
 
-    it('should return false', () => {
+    test('should return false with null payload and header is null', () => {
       expect(
         verifyGithubWebhookEvent(
           process.env.GITHUB_RELEASES_WEBHOOK_SECRET,

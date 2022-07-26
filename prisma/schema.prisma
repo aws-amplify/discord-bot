@@ -12,32 +12,67 @@ datasource db {
 
 model Question {
   id                  String   @id @default(cuid())
+  createdAt           DateTime
+  updatedAt           DateTime @updatedAt
   threadId            String   @unique
   ownerId             String
   channelName         String
-  createdAt           DateTime
-  updatedAt           DateTime @updatedAt
   threadMetaUpdatedAt DateTime @default(now())
   title               String
   isSolved            Boolean  @default(false)
   url                 String?
+  answer              Answer?
+  answerId            String?  @unique
 }
 
-model ConfigurationAdminRoles {
-  id              String         @id
+model Answer {
+  id         String   @id @default(cuid())
+  createdAt  DateTime
+  updatedAt  DateTime @updatedAt
+  questionId String   @unique // Question.id
+  ownerId    String // Discord member that answered the question
+  content    String
+  question   Question @relation(fields: [questionId], references: [id])
+}
+
+// SQLite does not support enums, https://github.com/prisma/prisma/issues/2219
+// enum ConfigurationRoleAccessType {
+//   ADMIN
+//   STAFF
+// }
+
+model Role {
+  id              String         @id @default(cuid())
+  discordRoleId   String
+  accessType      String
   Configuration   Configuration? @relation(fields: [configurationId], references: [id])
   configurationId String?
 }
 
+// Configuration of each Discord server for the frontend access controls
 model Configuration {
   // ID of Discord server
-  id         String                    @id @unique
-  name       String
-  createdAt  DateTime                  @default(now())
-  updatedAt  DateTime                  @updatedAt
-  adminRoles ConfigurationAdminRoles[]
+  id                 String   @id @unique
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  name               String
+  roles              Role[]
+  githubOrganization String?
+  // "default" server configuration for the instance, in our case this will be the "AWS Amplify" Discord server. This will be the default choice for the server switcher
+  // isDefaultServer    Boolean                   @default(false)
 }
 
+// general audit log
+model AuditLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  action    String
+  data      String
+}
+
+// next-auth
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -58,6 +93,7 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+// next-auth
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -66,6 +102,7 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// next-auth
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -74,8 +111,10 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  // custom props to be added below
 }
 
+// next-auth
 model VerificationToken {
   identifier String
   token      String   @unique

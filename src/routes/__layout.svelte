@@ -1,3 +1,20 @@
+<script lang="ts" context="module">
+  import type { Load } from '@sveltejs/kit'
+
+  export const load: Load = async ({ session, fetch }) => {
+    if (session) {
+      return {
+        props: {
+          guilds: await (await fetch('/api/guilds')).json(),
+        },
+      }
+    }
+    return {
+      props: {},
+    }
+  }
+</script>
+
 <script lang="ts">
   import {
     Header,
@@ -14,16 +31,19 @@
   import { afterNavigate } from '$app/navigation'
   import Avatar from '$lib/Avatar.svelte'
   import LoginButton from '$lib/LoginButton.svelte'
+  import GuildSwitcher from '$lib/GuildSwitcher.svelte'
   import { notifications } from '$lib/store'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
   import '../app.css'
+
+  export let guilds
 
   let theme: CarbonTheme = 'g100'
 
   let isSideNavOpen = false
   let isUserPanelOpen = false
 
-  afterNavigate((navigation) => {
+  afterNavigate(() => {
     if (isUserPanelOpen) isUserPanelOpen = false
   })
 </script>
@@ -41,7 +61,10 @@
     </span>
 
     <HeaderUtilities>
-      {#if $session.expires}
+      {#if $session?.user}
+        <!-- {#if guilds.length > 1}
+          <GuildSwitcher guilds="{guilds}" />
+        {/if} -->
         <HeaderAction
           aria-label="User settings"
           bind:isOpen="{isUserPanelOpen}"
@@ -49,6 +72,9 @@
         >
           <Avatar slot="icon" url="{$session.user.image}" />
           <HeaderPanelLinks>
+            {#if $session.user.isAdmin}
+              <HeaderPanelLink href="/admin">Admin</HeaderPanelLink>
+            {/if}
             <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
             {#if !$session.user.github}
               <HeaderPanelLink href="/profile/link">Link Github Account</HeaderPanelLink>
@@ -73,6 +99,11 @@
 </Theme>
 
 <style>
+  :global(.bx--content) {
+    background-image: unset;
+    background-color: var(--cds-ui-background);
+  }
+
   :global(.bx--col > h1) {
     font-size: var(--cds-display-01-font-size);
     font-weight: var(--cds-display-01-font-weight);
