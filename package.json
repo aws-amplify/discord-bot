@@ -25,6 +25,7 @@
     "@aws-crypto/sha256-js": "^2.0.1",
     "@discordjs/rest": "^0.4.1",
     "@next-auth/prisma-adapter": "^1.0.3",
+    "@octokit/auth-app": "^4.0.4",
     "@octokit/rest": "^19.0.3",
     "@prisma/client": "^3.14.0",
     "cookie": "^0.5.0",

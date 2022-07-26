@@ -1,4 +1,6 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import { NextAuthHandler } from 'next-auth/core'
 import cookie from 'cookie'
 import getFormBody from './support/get-form-body'
@@ -13,8 +15,7 @@ import type {
 } from 'next-auth'
 import type { OutgoingResponse } from 'next-auth/core'
 import { appplyRoles } from './github/apply-roles'
-import { signIn } from './auth'
-import { user } from './store'
+import { createAppAuth } from '@octokit/auth-app'
 
 // TODO: can we get around this behavior for SSR builds?
 // @ts-expect-error
@@ -24,7 +25,7 @@ const github = GithubProvider?.default || GithubProvider
 
 export const options: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
-//  debug: import.meta.env.DEV,
+  //  debug: import.meta.env.DEV,
   providers: [
     discord({
       clientId: process.env.DISCORD_AUTH_CLIENT_ID,
@@ -39,12 +40,6 @@ export const options: NextAuthOptions = {
     error: '/auth/error', // Error code passed in query string as ?error=
   },
   callbacks: {
-    async signIn({user, account}) {
-      console.log("\nsignin")
-      console.log(user)
-      console.log(account)
-      return true
-    },
     async redirect({ url, baseUrl }) {
       return baseUrl
     },
@@ -65,15 +60,34 @@ export const options: NextAuthOptions = {
   },
   events: {
     async signIn({ user, account }) {
-      console.log("\nEVENT")
-      console.log(user)
-      console.log(account)
-      // if user signed into github apply discord roles
-      if (account?.provider === 'github' && account?.providerAccountId && account?.access_token && user?.id) {
-        await appplyRoles(user.id, account.providerAccountId, account.access_token)
-      } 
-    }
-  }
+      // if user is signing into github
+      if (
+        account?.provider === 'github' &&
+        account?.providerAccountId &&
+        user?.id
+      ) {
+        const { privateKey } = JSON.parse(process.env.GITHUB_PRIVATE_KEY)
+        const auth = createAppAuth({
+          appId: process.env.GITHUB_APP_ID,
+          privateKey: privateKey,
+          clientId: process.env.GITHUB_CLIENT_ID,
+          clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        })
+
+        try {
+          const { token } = await auth({
+            type: 'installation',
+            installationId: process.env.GITHUB_INSTALLATION_ID,
+          })
+
+          await appplyRoles(user.id, account.providerAccountId, token)
+
+        } catch (err) {
+          console.error(`Error fetching installation token: ${err.code}`)
+        }
+      }
+    },
+  },
 }
 
 async function toSvelteKitResponse(

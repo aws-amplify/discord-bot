@@ -35,7 +35,7 @@ async function isOrgMember(accessToken: string, ghUserId: string) {
     auth: `token ${accessToken}`,
   })
   try {
-    const { data } = await octokit.request('GET /orgs/{org}/members/', {
+    const { data } = await octokit.request('GET /orgs/{org}/members', {
       org: process.env.GITHUB_ORG_LOGIN,
     })
     const index = data.findIndex(
@@ -163,6 +163,7 @@ export async function appplyRoles(userId: string, ghUserId: string, accessToken:
       userIsContributor &&
       !(process.env.DISCORD_CONTRIBUTOR_ROLE_ID in userRoles)
     ) {
+      console.log("adding contributor role")
       contributorResponse = await addRole(
         process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
         process.env.DISCORD_GUILD_ID,
@@ -173,6 +174,7 @@ export async function appplyRoles(userId: string, ghUserId: string, accessToken:
       !userIsContributor &&
       process.env.DISCORD_CONTRIBUTOR_ROLE_ID in userRoles
     ) {
+      console.log("removing contributor role")
       contributorResponse = await removeRole(
         process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
         process.env.DISCORD_GUILD_ID,
