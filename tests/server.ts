@@ -10,6 +10,8 @@ import type { Session } from 'next-auth'
 import { it } from 'vitest'
 import { mockedPublished, mockedCreated, mockedPreReleased, mockedReleased, addedPayload1, addedPayload2, addedPayloadUserDNE, removedPayload1, removedPayload2, removedPayloadUserDNE } from './mock/github-webhook'
 import { describe } from 'vitest'
+import { createAppAuth } from '@octokit/auth-app'
+import { expect } from 'vitest'
 
 let app: Express.Application
 const session: Session = {
@@ -89,141 +91,128 @@ describe('Admin Routes', () => {
   })
 })
 
-// describe('webhooks', () => {
-//   describe('POST /api/webhooks/github-release', () => {
-//     it('should not return 401', async () => {
-//       const response = await request(app)
-//         .post('/api/webhooks/github-release')
-//         .send({})
-//       expect(response.status).not.toBe(401)
-//     })
+describe('webhooks', () => {
+  // describe('POST /api/webhooks/github-release', () => {
+  //   it('should not return 401', async () => {
+  //     const response = await request(app)
+  //       .post('/api/webhooks/github-release')
+  //       .send({})
+  //     expect(response.status).not.toBe(401)
+  //   })
 
-//     it('should return 403 without auth header', async () => {
-//       const response = await request(app)
-//         .post('/api/webhooks/github-release')
-//         .send({})
-//       expect(response.status).toBe(403)
-//     })
+  //   it('should return 403 without auth header', async () => {
+  //     const response = await request(app)
+  //       .post('/api/webhooks/github-release')
+  //       .send({})
+  //     expect(response.status).toBe(403)
+  //   })
 
-//     it('should return 400 if webhook URL is bad', async () => {
-//       const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
-//       process.env.DISCORD_WEBHOOK_URL_RELEASES =
-//         'https://discordapp.com/api/webhooks/bad'
-//       const response = await request(app)
-//         .post('/api/webhooks/github-release')
-//         .send(mockedReleased.body)
-//         .set(mockedReleased.headers)
-//       expect(response.status).toBe(400)
-//       process.env.DISCORD_WEBHOOK_URL_RELEASES = url
-//     })
+  //   it('should return 400 if webhook URL is bad', async () => {
+  //     const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
+  //     process.env.DISCORD_WEBHOOK_URL_RELEASES =
+  //       'https://discordapp.com/api/webhooks/bad'
+  //     const response = await request(app)
+  //       .post('/api/webhooks/github-release')
+  //       .send(mockedReleased.body)
+  //       .set(mockedReleased.headers)
+  //     expect(response.status).toBe(400)
+  //     process.env.DISCORD_WEBHOOK_URL_RELEASES = url
+  //   })
 
-//     it('should return 201 if everything is correct', async () => {
-//       const response = await request(app)
-//       .post('/api/webhooks/github-release')
-//       .send(mockedReleased.body)
-//       .set(mockedReleased.headers)
-//       expect(response.status).toBe(201)
-//     })
+  //   it('should return 201 if everything is correct', async () => {
+  //     const response = await request(app)
+  //     .post('/api/webhooks/github-release')
+  //     .send(mockedReleased.body)
+  //     .set(mockedReleased.headers)
+  //     expect(response.status).toBe(201)
+  //   })
 
-//     it(`should return 204 is event action is not 'released'`, async () => {
-//       const response = await request(app)
-//       .post('/api/webhooks/github-release')
-//       .send(mockedCreated.body)
-//       .set(mockedCreated.headers)
-//       expect(response.status).toBe(204)
-//     })
+  //   it(`should return 204 is event action is not 'released'`, async () => {
+  //     const response = await request(app)
+  //     .post('/api/webhooks/github-release')
+  //     .send(mockedCreated.body)
+  //     .set(mockedCreated.headers)
+  //     expect(response.status).toBe(204)
+  //   })
 
-//     it(`should return 204 is event action is not 'released'`, async () => {
-//       const response = await request(app)
-//       .post('/api/webhooks/github-release')
-//       .send(mockedPublished.body)
-//       .set(mockedPublished.headers)
-//       expect(response.status).toBe(204)
-//     })
+  //   it(`should return 204 is event action is not 'released'`, async () => {
+  //     const response = await request(app)
+  //     .post('/api/webhooks/github-release')
+  //     .send(mockedPublished.body)
+  //     .set(mockedPublished.headers)
+  //     expect(response.status).toBe(204)
+  //   })
 
-//     it(`should return 204 is event action is not 'released'`, async () => {
-//       const response = await request(app)
-//       .post('/api/webhooks/github-release')
-//       .send(mockedPreReleased.body)
-//       .set(mockedPreReleased.headers)
-//       expect(response.status).toBe(204)
-//     })
+  //   it(`should return 204 is event action is not 'released'`, async () => {
+  //     const response = await request(app)
+  //     .post('/api/webhooks/github-release')
+  //     .send(mockedPreReleased.body)
+  //     .set(mockedPreReleased.headers)
+  //     expect(response.status).toBe(204)
+  //   })
 
-//   })
+  // })
 
-//   describe('POST api/webhooks/github-org-membership', () => {
-//     it('should return 403 without auth header', async () => {
-//       const response = await request(app)
-//         .post('/api/webhooks/github-release')
-//         .send({})
-//       expect(response.status).toBe(403)
-//     })
-//     it('should return 200 if everything is correct', async () => {
-//       const response = await request(app)
-//         .post('/api/webhooks/github-org-membership')
-//         .send(addedPayload1.body)
-//         .set(addedPayload1.headers)
-//       expect(response.status).toBe(200)
-//     })
-//     it('should return 200 if everything is correct', async () => {
-//       const response = await request(app)
-//         .post('/api/webhooks/github-org-membership')
-//         .send(addedPayload2.body)
-//         .set(addedPayload2.headers)
-//       expect(response.status).toBe(200)
-//     })
-//     it('should return 200 if everything is correct', async () => {
-//       const response = await request(app)
-//         .post('/api/webhooks/github-org-membership')
-//         .send(removedPayload2.body)
-//         .set(removedPayload2.headers)
-//       expect(response.status).toBe(200)
-//     })
-//     it('should return 200 if everything is correct', async () => {
-//       const response = await request(app)
-//         .post('/api/webhooks/github-org-membership')
-//         .send(removedPayload1.body)
-//         .set(removedPayload1.headers)
-//       expect(response.status).toBe(200)
-//     })
+  describe('POST api/webhooks/github-org-membership', () => {
+    it('should return 403 without auth header', async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-release')
+        .send({})
+      expect(response.status).toBe(403)
+    })
+    it('should return 200 if everything is correct', async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(addedPayload1.body)
+        .set(addedPayload1.headers)
+      expect(response.status).toBe(200)
+    })
 
-//     it(`should return 403 if user isn't in db`, async () => {
-//       const response = await await request(app)
-//         .post('/api/webhooks/github-org-membership')
-//         .send(removedPayloadUserDNE.body)
-//         .set(removedPayloadUserDNE.headers)
-//       expect(response.status).toBe(403)
-//     })
+    it('should return 200 if everything is correct', async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(removedPayload1.body)
+        .set(removedPayload1.headers)
+      expect(response.status).toBe(200)
+    })
+
+    it(`should return 403 if user isn't in db`, async () => {
+      const response = await await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(removedPayloadUserDNE.body)
+        .set(removedPayloadUserDNE.headers)
+      expect(response.status).toBe(403)
+    })
 
 
-//     it(`should return 403 if user isn't in db`, async () => {
-//       const response = await await request(app)
-//         .post('/api/webhooks/github-org-membership')
-//         .send(addedPayloadUserDNE.body)
-//         .set(addedPayloadUserDNE.headers)
-//       expect(response.status).toBe(403)
-//     })
+    it(`should return 403 if user isn't in db`, async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(addedPayloadUserDNE.body)
+        .set(addedPayloadUserDNE.headers)
+      expect(response.status).toBe(403)
+    })
 
-//     it('should return 400 with bad role ID', async () => {
-//       const staffRoleId = process.env.DISCORD_STAFF_ROLE_ID
-//       process.env.DISCORD_STAFF_ROLE_ID = 'badid'
-//       const response = await request(app)
-//         .post('/api/webhooks/github-org-membership')
-//         .send(addedPayload2.body)
-//         .set(addedPayload2.headers)
-//       expect(response.status).toBe(400)
-//       process.env.DISCORD_STAFF_ROLE_ID = staffRoleId
-//     })
+    it('should return 400 with bad role ID', async () => {
+      const staffRoleId = process.env.DISCORD_STAFF_ROLE_ID
+      process.env.DISCORD_STAFF_ROLE_ID = 'badid'
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(addedPayload1.body)
+        .set(addedPayload1.headers)
+      expect(response.status).toBe(400)
+      process.env.DISCORD_STAFF_ROLE_ID = staffRoleId
+    })
 
-//     it('should return 400 with badd guild ID', async () => {
-//       const guildId = process.env.DISCORD_GUILD_ID
-//       process.env.DISCORD_GUILD_ID = 'badid'
-//       const response = await request(app)
-//         .post('/api/webhooks/github-org-membership')
-//         .send(addedPayload2.body)
-//         .set(addedPayload2.headers)
-//       expect(response.status).toBe(400)
-//       process.env.DISCORD_GUILD_ID = guildId
-//     })
-//   })
-// })
+    it('should return 400 with badd guild ID', async () => {
+      const guildId = process.env.DISCORD_GUILD_ID
+      process.env.DISCORD_GUILD_ID = 'badid'
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(addedPayload1.body)
+        .set(addedPayload1.headers)
+      expect(response.status).toBe(400)
+      process.env.DISCORD_GUILD_ID = guildId
+    })
+  })
+})

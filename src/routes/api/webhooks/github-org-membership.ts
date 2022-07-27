@@ -6,7 +6,6 @@ import { seed } from '../../../../tests/setup/seed'
 import { addedPayload1, addedPayload2, addedPayloadUserDNE, removedPayload1, removedPayload2, removedPayloadUserDNE } from '../../../../tests/mock/github-webhook'
 
 async function getDiscordUserId(ghUserId: string) {
-  console.log(ghUserId)
   const data = await prisma.user.findFirst({
     where: {
       accounts: {
@@ -24,9 +23,8 @@ async function getDiscordUserId(ghUserId: string) {
       },
     },
   })
-  console.log(data)
 
-  if (data && data.accounts && data.accounts.length === 1) {
+  if (data && data?.accounts && data?.accounts?.length === 1) {
     const userId = data.accounts[0].providerAccountId
     if (userId) return userId
   }

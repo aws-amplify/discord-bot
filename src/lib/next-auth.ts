@@ -47,6 +47,8 @@ export const options: NextAuthOptions = {
     async session({ session, user }) {
       if (!session || !user) return session
 
+      session.user.id = user.id
+
       const userAccounts = await prisma.account.findMany({
         where: { userId: user.id },
       })
@@ -83,7 +85,7 @@ export const options: NextAuthOptions = {
           await appplyRoles(user.id, account.providerAccountId, token)
 
         } catch (err) {
-          console.error(`Error fetching installation token: ${err.code}`)
+          console.error(`Error fetching installation token: ${err}`)
         }
       }
     },
