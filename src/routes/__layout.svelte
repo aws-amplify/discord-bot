@@ -77,7 +77,7 @@
             {/if}
             <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
             {#if !$session.user.github}
-              <HeaderPanelLink href="/profile/link">Link Github Account</HeaderPanelLink>
+              <HeaderPanelLink href="/profile/link">Link GitHub Account</HeaderPanelLink>
             {:else}
               <p class="header-text">Github Account Linked</p>
             {/if}
