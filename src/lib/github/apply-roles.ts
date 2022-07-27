@@ -2,6 +2,7 @@ import { Octokit } from '@octokit/rest'
 import { prisma } from '$lib/db'
 import { addRole } from '$discord/roles/addRole'
 import { removeRole } from '$discord/roles/removeRole'
+import { createAppAuth } from '@octokit/auth-app'
 
 // returns the given user's roles within the guild,
 // false if user doesn't exist or isn't a member of the guild
@@ -108,31 +109,47 @@ export async function isContributor(
 }
 
 // driver code that checks github membership/contribution status and applies roles
-export async function appplyRoles(userId: string, ghUserId: string, accessToken: string) {
+export async function appplyRoles(
+  userId: string,
+  ghUserId: string,
+  accessToken: string
+) {
   let staffResponse = true
   let contributorResponse = true
-  let discUserId
-  const userAccounts = await prisma.account.findMany({
-    where: { userId: userId },
+  // const userAccounts = await prisma.account.findMany({
+  //   where: { userId: userId },
+  // })
+
+  // if (userAccounts.length >= 1) {
+  //   discUserId = userAccounts.filter((acct) => acct.provider === 'discord')[0]
+  //     .providerAccountId
+  // }
+  const data = await prisma.user.findFirst({
+    where: {
+      id: userId
+    },
+    select: {
+      accounts: {
+        some: {
+          provider: 'discord',
+          providerAccountId: true
+        }
+      },
+    },
   })
-   
-  if(userAccounts.length >= 1) {
-    discUserId = userAccounts.filter(
-      (acct) => acct.provider === 'discord'
-    )[0].providerAccountId
-  }
+  const discUserId = data?.id
 
   if (!accessToken || !ghUserId || !discUserId) return false
   // user's current Discord roles
   const userRoles = await fetchDiscordUserRoles(discUserId)
-  if(!userRoles) return false
+  if (!userRoles) return false
 
   const isGitHubOrgMember = await isOrgMember(accessToken, ghUserId)
 
   // user is member of amplify org
   // and user DOESN'T already have staff role -> apply staff role
   if (isGitHubOrgMember && !(process.env.DISCORD_STAFF_ROLE_ID in userRoles)) {
-    console.log("adding staff role")
+    console.log('adding staff role')
     staffResponse = await addRole(
       process.env.DISCORD_STAFF_ROLE_ID,
       process.env.DISCORD_GUILD_ID,
@@ -144,7 +161,7 @@ export async function appplyRoles(userId: string, ghUserId: string, accessToken:
     !isGitHubOrgMember &&
     process.env.DISCORD_STAFF_ROLE_ID in userRoles
   ) {
-    console.log("removing staff role")
+    console.log('removing staff role')
     staffResponse = await removeRole(
       process.env.DISCORD_STAFF_ROLE_ID,
       process.env.DISCORD_GUILD_ID,
@@ -163,7 +180,7 @@ export async function appplyRoles(userId: string, ghUserId: string, accessToken:
       userIsContributor &&
       !(process.env.DISCORD_CONTRIBUTOR_ROLE_ID in userRoles)
     ) {
-      console.log("adding contributor role")
+      console.log('adding contributor role')
       contributorResponse = await addRole(
         process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
         process.env.DISCORD_GUILD_ID,
@@ -174,7 +191,7 @@ export async function appplyRoles(userId: string, ghUserId: string, accessToken:
       !userIsContributor &&
       process.env.DISCORD_CONTRIBUTOR_ROLE_ID in userRoles
     ) {
-      console.log("removing contributor role")
+      console.log('removing contributor role')
       contributorResponse = await removeRole(
         process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
         process.env.DISCORD_GUILD_ID,
@@ -187,31 +204,63 @@ export async function appplyRoles(userId: string, ghUserId: string, accessToken:
 }
 
 if (import.meta.vitest) {
-  const { describe, expect, test, beforeAll } = import.meta.vitest
-  let repos: []
-  const userId = 'cl4n0kjqd0006iqtda15yzzcw'
+  const { describe, expect, it } = import.meta.vitest
+  const { privateKey } = JSON.parse(process.env.GITHUB_PRIVATE_KEY)
   const ghUserId = '107655607'
   const guildMemberId = '985985131271585833'
-  const userAccounts = await prisma.account.findMany({
-    where: { userId: userId },
-  })
-  const accessToken = userAccounts.filter(
-    (account) => account.provider === 'github'
-  )[0].access_token
 
-  beforeAll(async () => {
-    await addRole(
-      process.env.DISCORD_STAFF_ROLE_ID,
-      process.env.DISCORD_GUILD_ID,
-      guildMemberId
-    )
-    await addRole(
-      process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-      process.env.DISCORD_GUILD_ID,
-      guildMemberId
-    )
-    repos = await fetchOrgRepos(accessToken)
+  const data = await prisma.user.findFirst({
+    where: {
+      accounts: {
+        some: {
+          provider: 'discord',
+          providerAccountId: guildMemberId,
+        },
+      },
+    },
+    select: {
+      id: true,
+    },
   })
+  const id = data?.id
+
+  const auth = createAppAuth({
+    appId: process.env.GITHUB_APP_ID,
+    privateKey: privateKey,
+    clientId: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  })
+  const { token } = await auth({
+    type: 'installation',
+    installationId: process.env.GITHUB_INSTALLATION_ID,
+  })
+
+  // const { access_token } = await prisma.user.findFirst({
+  //   where: {
+  //     id: id
+  //   },
+  //   select: {
+  //     accounts: {
+  //       some: {
+  //         provider: 'github',
+  //         access_token: true
+  //       }
+  //     }
+  //   }
+  // })
+  // const repos = await fetchOrgRepos(access_token)
+  const repos = await fetchOrgRepos(token)
+
+  await addRole(
+    process.env.DISCORD_STAFF_ROLE_ID,
+    process.env.DISCORD_GUILD_ID,
+    guildMemberId
+  )
+  await addRole(
+    process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
+    process.env.DISCORD_GUILD_ID,
+    guildMemberId
+  )
 
   describe('Successful adding and removal of roles', () => {
     test('Fetch guild user roles', async () => {
@@ -219,15 +268,15 @@ if (import.meta.vitest) {
       expect(roles).toHaveLength(2)
     })
     test('Fetch org repos', async () => {
-      const response = await fetchOrgRepos(accessToken)
+      const response = await fetchOrgRepos(token)
       expect(response).toEqual(repos)
     })
     test('Is org member', async () => {
-      const response = await isOrgMember(accessToken, ghUserId)
+      const response = await isOrgMember(token, ghUserId)
       expect(response).toBeTruthy()
     })
     test('Is org contributor', async () => {
-      const response = await isContributor(accessToken, repos, ghUserId)
+      const response = await isContributor(token, repos, ghUserId)
       expect(response).toBe(true)
     }, 20000)
     test('Remove staff role', async () => {
@@ -287,27 +336,27 @@ if (import.meta.vitest) {
     })
 
     test('Fetch org repos bad access token', async () => {
-      const response = await fetchOrgRepos(`b${accessToken}ad`)
+      const response = await fetchOrgRepos(`b${token}ad`)
       expect(response).toBe(false)
     })
 
     test('Fetch org repos unknown org', async () => {
       const orgLogin = process.env.GITHUB_ORG_LOGIN
       process.env.GITHUB_ORG_LOGIN = `${orgLogin}bad`
-      const response = await fetchOrgRepos(accessToken)
+      const response = await fetchOrgRepos(token)
       process.env.GITHUB_ORG_LOGIN = orgLogin
       expect(response).toBe(false)
     })
 
     test('Is org member bad access token', async () => {
-      const response = await isOrgMember(`bad${accessToken}`, ghUserId)
+      const response = await isOrgMember(`bad${token}`, ghUserId)
       expect(response).toBe(false)
     })
 
     test('Is org member unknown org', async () => {
       const orgLogin = process.env.GITHUB_ORG_LOGIN
       process.env.GITHUB_ORG_LOGIN = `bad${orgLogin}`
-      const response = await isOrgMember(accessToken, ghUserId)
+      const response = await isOrgMember(token, ghUserId)
       process.env.GITHUB_ORG_LOGIN = orgLogin
       expect(response).toBe(false)
     })
@@ -350,12 +399,12 @@ if (import.meta.vitest) {
 
     test('Is org contributor wrong repos', async () => {
       const filtered = repos.filter((repo) => !(repo.name === 'discord-bot'))
-      const response = await isContributor(accessToken, filtered, ghUserId)
+      const response = await isContributor(token, filtered, ghUserId)
       expect(response).toBe(false)
     }, 20000)
 
     test('Is org contributor bad user id', async () => {
-      const response = await isContributor(accessToken, repos, `bad${ghUserId}`)
+      const response = await isContributor(token, repos, `bad${ghUserId}`)
       expect(response).toBe(false)
     }, 20000)
   })
@@ -375,7 +424,7 @@ if (import.meta.vitest) {
     })
 
     test('Applying roles full pipeline', async () => {
-      const response = await appplyRoles(userId)
+      const response = await appplyRoles(id, ghUserId, token)
       expect(response).toBeTruthy()
     }, 10000)
   })
@@ -395,26 +444,26 @@ if (import.meta.vitest) {
     })
 
     test('Applying roles full pipeline bad user id', async () => {
-      const response = await appplyRoles('baduserid')
+      const response = await appplyRoles('baduserid', ghUserId, token)
       expect(response).toBe(false)
     }, 10000)
 
     // this returns true, do we need to check for errors here?
-    test('Applying roles full pipeline bad org login', async () => {
+    it('should return false with bad org login', async () => {
       const orgLogin = process.env.GITHUB_ORG_LOGIN
       process.env.GITHUB_ORG_LOGIN = "somethingthatdoesn'texist123"
-      const response = await appplyRoles(userId)
-     expect(response).toBe(true)
-      process.env.GITHUB_ORG_LOGIN = orgLogin 
+      const response = await appplyRoles(id, ghUserId, token)
+      expect(response).toBe(true)
+      process.env.GITHUB_ORG_LOGIN = orgLogin
     }, 10000)
 
-    test('Applying roles full pipeline bad guild id', async () => {
+    it('should return false with bad guild id', async () => {
       const orgLogin = process.env.DISCORD_GUILD_ID
       process.env.DISCORD_GUILD_ID = "somethingthatdoesn'texist123"
-      const response = await appplyRoles(userId)
+      const response = await appplyRoles(id, ghUserId, token)
       expect(response).toBe(false)
-      process.env.GITHUB_ORG_LOGIN = orgLogin 
+      process.env.GITHUB_ORG_LOGIN = orgLogin
     }, 10000)
   })
-
+  //test.todo('/apply-roles')
 }

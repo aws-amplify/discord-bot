@@ -2,14 +2,15 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export async function seed() {
-  const user1 = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: {
-      id: 'cl4n0kjqd0006iqtda15yzzcw',
+      email: 'esauerbo@amazon.com',
     },
     update: {},
     create: {
       id: 'cl4n0kjqd0006iqtda15yzzcw',
-      name: 'emma',
+      name: 'esauerbo',
+      email: 'esauerbo@amazon.com',
       image: 'https://cdn.discordapp.com/embed/avatars/0.png',
       accounts: {
         create: [
@@ -24,48 +25,15 @@ export async function seed() {
             type: 'oauth',
             provider: 'github',
             providerAccountId: '107655607',
-            access_token: process.env.GITHUB_TESTING_ACCESS_TOKEN,
-          },
-        ],
-      },
-    },
-  })
-
-  const user2 = await prisma.user.upsert({
-    where: {
-      id: 'adsqd0006iqtda15yzz',
-    },
-    update: {},
-    create: {
-      id: 'adsqd0006iqtda15yzz',
-      name: 'josef',
-      image: 'https://cdn.discordapp.com/embed/avatars/0.png',
-      accounts: {
-        create: [
-          {
-            id: 'dsafn0kjqi000s3lk091',
-            type: 'oauth',
-            provider: 'discord',
-            providerAccountId: '143912968529117185',
-          },
-          {
-            id: 'qerkl12p2u0074wbeywasd',
-            type: 'oauth',
-            provider: 'github',
-            providerAccountId: '5033303',
-            access_token: process.env.GITHUB_TESTING_ACCESS_TOKEN,
           },
         ],
       },
     },
   })
 }
-<<<<<<< HEAD
-=======
 
 try {
   await seed()
 } catch (error) {
   throw new Error(`Unable to seed database: ${error.message}`)
 }
->>>>>>> origin
