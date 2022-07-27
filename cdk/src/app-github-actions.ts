@@ -49,7 +49,7 @@ export class GitHubActionsStack extends cdk.Stack {
      * Create a principal for the OpenID; which can allow it to assume
      * deployment roles.
      */
-    const GitHubPrincipal = new iam.OpenIdConnectPrincipal(
+    const principal = new iam.OpenIdConnectPrincipal(
       provider
     ).withConditions({
       StringLike: {
