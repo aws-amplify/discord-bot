@@ -45,6 +45,10 @@ export async function post({ request }) {
     }
   }
 
+  if (payload.action !== 'released') {
+    return { status: 204 }
+  }
+
   const message = createReleaseMessage(payload)
 
   const res = await fetch(process.env.DISCORD_WEBHOOK_URL_RELEASES, {
@@ -64,18 +68,13 @@ export async function post({ request }) {
     }
   } else {
     return {
-      status: 200,
+      status: 201,
     }
   }
 }
 
 if (import.meta.vitest) {
-  const { it, describe, expect, test } = import.meta.vitest
-
-  // in test, we only want to confirm the routes sends a message
-  const createRequest = (payload) => ({
-    json: () => new Promise((resolve) => resolve(payload.body)),
-  })
+  const { it, describe, expect } = import.meta.vitest
 
   const mocked = {
     headers: {
@@ -585,56 +584,31 @@ if (import.meta.vitest) {
     },
   }
 
-  describe('Failed Github -> Discord webhook', () => {
-    test('verification', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          mockedBad.body,
-          mockedBad.headers['X-Hub-Signature-256']
-        )
-      ).toEqual(false)
-    })
-
-    test('verification 2', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          mockedBad.body,
-          mockedBad.headers['X-Hub-Signature-256']
-        )
-      ).toEqual(false)
-    })
-
-    test('verification 3', () => {
-      expect(verifyGithubWebhookEvent({}, '')).toEqual(false)
-    })
-
-    test('verification 4', () => {
-      expect(verifyGithubWebhookEvent(null, null)).toEqual(false)
-    })
-
-    test('send', async () => {
-      const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
-      process.env.DISCORD_WEBHOOK_URL_RELEASES =
-        'https://discordapp.com/api/webhooks/bad'
-      const response = await post({ request: createRequest(mocked) })
-      expect(response.status).toBe(400)
-      process.env.DISCORD_WEBHOOK_URL_RELEASES = url
-    })
-  })
-
-  describe('Successful GitHub -> Discord webhook', () => {
-    test('sends', async () => {
-      const response = await post({ request: createRequest(mocked) })
-      expect(response.status).toBe(200)
-    })
-
-    test('webhook verification', () => {
+  describe('Webhook verification', () => {
+    it('should return true if everything is correct', () => {
       expect(
         verifyGithubWebhookEvent(
           mocked.body,
           mocked.headers['X-Hub-Signature-256']
         )
       ).toBeTruthy()
+    })
+    
+    it('should return false with a jumbled payload', () => {
+      expect(
+        verifyGithubWebhookEvent(
+          mockedBad.body,
+          mockedBad.headers['X-Hub-Signature-256']
+        )
+      ).toEqual(false)
+    })
+
+    test('should return false with empty payload and header', () => {
+      expect(verifyGithubWebhookEvent({}, '')).toEqual(false)
+    })
+
+    test('should return false with null payload and header is null', () => {
+      expect(verifyGithubWebhookEvent(null, null)).toEqual(false)
     })
   })
 }
