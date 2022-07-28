@@ -9,7 +9,7 @@ async function handler(interaction): Promise<InteractionReplyOptions | string>  
   }
 
   return {
-    content: `http://localhost:3000/profile/link`,
+    content: `${import.meta.env.VITE_HOST}/profile/link`,
     ephemeral: true
   }
 }
