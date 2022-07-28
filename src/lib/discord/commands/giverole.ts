@@ -17,7 +17,6 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
   if (user.bot) {
     return 'This command does not support adding roles to bots.'
   }
-  console.log(guild.members.cache.get(user.id))
 
   if (caller.id === user.id) {
     return `This command does not support adding roles to yourself.`
