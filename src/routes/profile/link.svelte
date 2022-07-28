@@ -11,7 +11,6 @@
     console.log('on mount')
     if ($session.user) {
       // push user through GitHub auth
-      console.log('github login')
       formGitHub.requestSubmit()
     } else {
       // push user through Discord auth
