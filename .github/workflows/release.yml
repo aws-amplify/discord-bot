@@ -1,20 +1,33 @@
 name: release
 on:
-  release:
+  pull_request:
+    branches:
+      - main
     types:
-      - prereleased
-      - released
+      - closed
 env:
   AWS_REGION: us-east-1
 jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    # ${{ github.event.head_commit.message }}
+
   release:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
     environment: release
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
       id-token: write
       contents: read
     steps:
+      - name: extract-tag-name
+        id: tag
+        uses: actions/github-script@0.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return context.payload.pull_request.title.replace(/release\: /, '');
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
@@ -29,15 +42,37 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
+      # release next
       - name: release-next-synth
+        if: ${{ contains(steps.tag.outputs.result, 'next') }}
         run: pnpm --filter ./cdk run synth --context env=next
       - name: release-next-deploy
+        if: ${{ contains(steps.tag.outputs.result, 'next') }}
         run: pnpm --filter ./cdk run deploy --context env=next --require-approval never
         timeout-minutes: 30 # to compensate for container healthcheck failures
+      - name: github-prerelease
+        if: ${{ contains(steps.tag.outputs.result, 'next') }}
+        run: |
+          url=$(gh release create ${{ steps.tag.outputs.result }} --generate-notes --prerelease)
+          tag=$(echo "${url/releases\/tag/tree}")
+          echo ::notice title="release"::$url
+          echo ::notice title="tag"::$tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # release main
       - name: release-main-synth
-        if: github.event.action == 'released'
+        if: ${{ !contains(steps.tag.outputs.result, 'next') }}
         run: pnpm --filter ./cdk run synth --context env=main
       - name: release-main-deploy
-        if: github.event.action == 'released'
+        if: ${{ !contains(steps.tag.outputs.result, 'next') }}
         run: pnpm --filter ./cdk run deploy --context env=main --require-approval never
         timeout-minutes: 30 # to compensate for container healthcheck failures
+      - name: github-release # same thing as above but without `--prerelease`...
+        if: ${{ !contains(steps.tag.outputs.result, 'next') }}
+        run: |
+          url=$(gh release create ${{ steps.tag.outputs.result }} --generate-notes)
+          tag=$(echo "${url/releases\/tag/tree}")
+          echo ::notice title="release"::$url
+          echo ::notice title="tag"::$tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
