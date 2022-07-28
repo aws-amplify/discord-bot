@@ -121,7 +121,7 @@ export async function appplyRoles(
   let contributorResponse = true
 
   // retrieve discord user id for current user
-  const data = await prisma.user.findFirst({
+  const data = await prisma.user.findUnique({
     where: {
       id: userId,
     },
