@@ -8,7 +8,6 @@
   let formDiscord 
 
   onMount(() => {
-    console.log('on mount')
     if ($session.user) {
       // push user through GitHub auth
       formGitHub.requestSubmit()
