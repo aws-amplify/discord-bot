@@ -171,7 +171,7 @@ export async function appplyRoles(
 
   // if user is a contrinutor, apply contributor role
   const repos = await fetchOrgRepos(accessToken)
-  if (repos && repos.length > 0) {
+  if (repos?.length) {
     const userIsContributor = await isContributor(accessToken, repos, ghUserId)
 
     // user is a contributor and
