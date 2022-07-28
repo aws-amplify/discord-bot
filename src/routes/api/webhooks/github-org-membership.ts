@@ -2,7 +2,6 @@ import { addRole } from '$discord/roles/addRole'
 import { prisma } from '$lib/db'
 import { removeRole } from '$discord/roles/removeRole'
 import { verifyGithubWebhookEvent } from './_verifyWebhook'
-import { seed } from '../../../../tests/setup/seed'
 import { addedPayload1, addedPayload2, addedPayloadUserDNE, removedPayload1, removedPayload2, removedPayloadUserDNE } from '../../../../tests/mock/github-webhook'
 
 async function getDiscordUserId(ghUserId: string) {
@@ -87,12 +86,6 @@ export async function post({ request }) {
 
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest
-
-  try {
-    await seed()
-  } catch (error) {
-    console.log(error)
-  }
 
   describe('Webhook verification', () => {
     it('should return true with payload for added member', () => {

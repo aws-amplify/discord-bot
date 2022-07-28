@@ -4,14 +4,6 @@
   import LoginButton from '$lib/LoginButton.svelte'
   import { onMount } from 'svelte'
 
-  // bot sends user DM with
-  // [id] = Discord User ID
-  // get ID param
-  // check if user exists with this ID OR if $user
-  // if no, push through Discord login flow
-  // -- after user logs in with Discord, bring user back to this page to complete GitHub auth
-  // if yes, proceed with "linking" GitHub account (submit form for LoginButton,provider=github)
-
   let formGitHub
   let formDiscord 
 
