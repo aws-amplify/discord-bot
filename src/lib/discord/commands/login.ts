@@ -1,4 +1,4 @@
-import { createCommand } from './../../discord'
+import { createCommand } from '$discord'
 import type { InteractionReplyOptions } from 'discord.js'
 
 async function handler(interaction): Promise<InteractionReplyOptions | string>  {
