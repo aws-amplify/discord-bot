@@ -361,7 +361,7 @@ if (import.meta.vitest) {
       'X-Hub-Signature-256':
         'sha256=df80b1d8f9348825f3edd5df44258cb6cfb822f7de73088372c5b54bdd970ce',
       'X-GitHub-Event': 'release',
-      'content-type': 'application/x-www-form-urlencoded',
+      'content-type': 'application/json',
     },
     body: {
       action: 'published',
