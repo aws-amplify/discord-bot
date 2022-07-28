@@ -133,7 +133,7 @@ export async function appplyRoles(
       },
     },
   })
-  if (data && data?.accounts && data?.accounts?.length === 1) {
+  if (data?.accounts?.length === 1) {
     discUserId = data.accounts[0].providerAccountId
   }
 
