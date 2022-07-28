@@ -1,17 +1,17 @@
 // @vitest-environment node
+import type { Server } from 'node:http'
 import { resolve } from 'node:path'
 import { EOL } from 'node:os'
 import { installPolyfills } from '@sveltejs/kit/node/polyfills'
 import glob from 'fast-glob'
 import request from 'supertest'
-import { beforeAll } from 'vitest'
-import type { Server } from 'node:http'
 import type { Session } from 'next-auth'
 import { it } from 'vitest'
-import { mockedPublished, mockedCreated, mockedPreReleased, mockedReleased, addedPayload1, addedPayload2, addedPayloadUserDNE, removedPayload1, removedPayload2, removedPayloadUserDNE } from './mock/github-webhook'
+import { beforeAll } from 'vitest'
 import { describe } from 'vitest'
-import { createAppAuth } from '@octokit/auth-app'
 import { expect } from 'vitest'
+import { mockedPublished, mockedCreated, mockedPreReleased, mockedReleased, addedPayload1, addedPayload2, addedPayloadUserDNE, removedPayload1, removedPayload2, removedPayloadUserDNE } from './mock/github-webhook'
+import { verifyGithubWebhookEvent } from './../src/routes/api/webhooks/_verifyWebhook'
 
 let app: Express.Application
 const session: Session = {
@@ -154,6 +154,72 @@ describe('webhooks', () => {
   // })
 
   describe('POST api/webhooks/github-org-membership', () => {
+    describe('webhook verification', () => {
+      it('should return true with payload for added member', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            addedPayload1.body,
+            addedPayload1.headers['X-Hub-Signature-256']
+          )
+        ).toBeTruthy()
+      })
+  
+      it('should return true with payload for removed member', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            removedPayload2.body,
+            removedPayload2.headers['X-Hub-Signature-256']
+          )
+        ).toBeTruthy()
+      })
+  
+      it('should return true for removed member', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            removedPayloadUserDNE.body,
+            removedPayloadUserDNE.headers['X-Hub-Signature-256']
+          )
+        ).toBeTruthy()
+      })
+  
+      it('should return true for added member', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            addedPayloadUserDNE.body,
+            addedPayloadUserDNE.headers['X-Hub-Signature-256']
+          )
+        ).toBeTruthy()
+      })
+  
+      it('should return false with jumbled payload body and headers', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            addedPayloadUserDNE.body,
+            addedPayload1.headers['X-Hub-Signature-256']
+          )
+        ).toBe(false)
+      })
+  
+      it('should return false with empty body', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            {},
+            addedPayload2.headers['X-Hub-Signature-256']
+          )
+        ).toBe(false)
+      })
+  
+      it('should return false with empty payload and token', () => {
+        expect(verifyGithubWebhookEvent('', {}, '')).toBe(false)
+      })
+    })
+    
     it('should return 403 without auth header', async () => {
       const response = await request(app)
         .post('/api/webhooks/github-release')

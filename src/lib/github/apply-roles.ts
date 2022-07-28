@@ -6,7 +6,7 @@ import { createAppAuth } from '@octokit/auth-app'
 
 // returns the given user's roles within the guild,
 // false if user doesn't exist or isn't a member of the guild
-// used in testing to determine 
+// used in testing to determine
 async function fetchDiscordUserRoles(discUserId: string) {
   const res = await fetch(
     `https://discord.com/api/guilds/${process.env.DISCORD_GUILD_ID}/members/${discUserId}`,
@@ -40,10 +40,11 @@ async function isOrgMember(accessToken: string, ghUserId: string) {
     const { data } = await octokit.request('GET /orgs/{org}/members', {
       org: process.env.GITHUB_ORG_LOGIN,
     })
-    const index = data.findIndex(
+    const isOrgMember = data.some(
       (contributor) => contributor.id === Number(ghUserId)
     )
-    if (index !== -1) return true
+    //if (isOrgMember) return true
+    return isOrgMember
   } catch (err) {
     console.error(
       `Failed to find org member in ${process.env.GITHUB_ORG_LOGIN}: ${err.response.data.message}`
@@ -97,10 +98,10 @@ export async function isContributor(
         }
       )
 
-      const index = data.findIndex(
+      const isContributor = data.some(
         (contributor) => contributor.id === Number(userId)
       )
-      if (index !== -1) return true
+      if (isContributor) return true
     } catch (err) {
       console.error(
         `Error searching for user in repository ${amplifyRepo}: ${err.response.data.message}`
@@ -137,31 +138,21 @@ export async function appplyRoles(
     discUserId = data.accounts[0].providerAccountId
   }
 
-  if (!accessToken || !ghUserId || !discUserId) return false
-  // user's current Discord roles
-  // const userRoles = await fetchDiscordUserRoles(discUserId)
-  // if (!userRoles) return false
+  if (!discUserId) return false
 
   const isGitHubOrgMember = await isOrgMember(accessToken, ghUserId)
 
-  // user is member of amplify org
-  // and user DOESN'T already have staff role -> apply staff role
-  if (
-    isGitHubOrgMember /*&& !(process.env.DISCORD_STAFF_ROLE_ID in userRoles)*/
-  ) {
-    console.log('adding staff role')
+  // user is member of amplify org -> apply staff role
+  if (isGitHubOrgMember) {
     staffResponse = await addRole(
       process.env.DISCORD_STAFF_ROLE_ID,
       process.env.DISCORD_GUILD_ID,
       discUserId
     )
   } else if (
-    // user is NOT member of amplify org
-    // but user DOES have staff role -> remove role
-    !isGitHubOrgMember /*&&
-    process.env.DISCORD_STAFF_ROLE_ID in userRoles*/
+    // user is NOT member of amplify org -> remove role
+    !isGitHubOrgMember
   ) {
-    console.log('removing staff role')
     staffResponse = await removeRole(
       process.env.DISCORD_STAFF_ROLE_ID,
       process.env.DISCORD_GUILD_ID,
@@ -169,29 +160,19 @@ export async function appplyRoles(
     )
   }
 
-  // if user is a contrinutor, apply contributor role
   const repos = await fetchOrgRepos(accessToken)
   if (repos?.length) {
     const userIsContributor = await isContributor(accessToken, repos, ghUserId)
 
-    // user is a contributor and
-    // user DOESN'T have contrubitor role -> apply role
-    if (
-      userIsContributor /*&&
-      !(process.env.DISCORD_CONTRIBUTOR_ROLE_ID in userRoles)*/
-    ) {
-      console.log('adding contributor role')
+    // user is a contributor -> apply role
+    if (userIsContributor) {
       contributorResponse = await addRole(
         process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
         process.env.DISCORD_GUILD_ID,
         discUserId
       )
-      // user is NOT a contributor and user has role -> remove role
-    } else if (
-      !userIsContributor /*&&
-      process.env.DISCORD_CONTRIBUTOR_ROLE_ID in userRoles*/
-    ) {
-      console.log('removing contributor role')
+      // user is NOT a contributor -> remove role
+    } else if (!userIsContributor) {
       contributorResponse = await removeRole(
         process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
         process.env.DISCORD_GUILD_ID,

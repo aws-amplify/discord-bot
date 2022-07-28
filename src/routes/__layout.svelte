@@ -124,7 +124,6 @@
     display: block;
     height: var(--cds-spacing-07, 2rem);
     padding: 0.375rem var(--cds-spacing-05, 1rem);
-    color: #c6c6c6;
     text-decoration: none;
   }
 

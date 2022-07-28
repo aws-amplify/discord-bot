@@ -2,7 +2,6 @@ import { addRole } from '$discord/roles/addRole'
 import { prisma } from '$lib/db'
 import { removeRole } from '$discord/roles/removeRole'
 import { verifyGithubWebhookEvent } from './_verifyWebhook'
-import { addedPayload1, addedPayload2, addedPayloadUserDNE, removedPayload1, removedPayload2, removedPayloadUserDNE } from '../../../../tests/mock/github-webhook'
 
 async function getDiscordUserId(ghUserId: string) {
   const data = await prisma.user.findFirst({
@@ -87,82 +86,18 @@ export async function post({ request }) {
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest
 
-  describe('Webhook verification', () => {
-    it('should return true with payload for added member', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_WEBHOOK_SECRET,
-          addedPayload1.body,
-          addedPayload1.headers['X-Hub-Signature-256']
-        )
-      ).toBeTruthy()
-    })
-
-    test('should return true with payload for removed member', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_WEBHOOK_SECRET,
-          removedPayload2.body,
-          removedPayload2.headers['X-Hub-Signature-256']
-        )
-      ).toBeTruthy()
-    })
-
-    test('should return true for removed member', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_WEBHOOK_SECRET,
-          removedPayloadUserDNE.body,
-          removedPayloadUserDNE.headers['X-Hub-Signature-256']
-        )
-      ).toBeTruthy()
-    })
-
-    it('should return true for added member', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_WEBHOOK_SECRET,
-          addedPayloadUserDNE.body,
-          addedPayloadUserDNE.headers['X-Hub-Signature-256']
-        )
-      ).toBeTruthy()
-    })
-
-    it('should return false with jumbled payload body and headers', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_WEBHOOK_SECRET,
-          addedPayloadUserDNE.body,
-          addedPayload1.headers['X-Hub-Signature-256']
-        )
-      ).toBe(false)
-    })
-
-    it('should return false with empty body', () => {
-      expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_WEBHOOK_SECRET,
-          {},
-          addedPayload2.headers['X-Hub-Signature-256']
-        )
-      ).toBe(false)
-    })
-
-    it('should return false with empty payload and token', () => {
-      expect(verifyGithubWebhookEvent('', {}, '')).toBe(false)
-    })
-  })
-
   describe('Getting discord user id', () => {
+    const ghUserId = '107655607'
+    const ghUserId2 = '70536670'
     test('should return correct id if user in db', async () => {
       expect(
-        await getDiscordUserId(String(removedPayload1.body.membership.user.id))
+        await getDiscordUserId(String(ghUserId))
       ).toEqual('985985131271585833')
     })
 
     test('should throw error if user not in db', async () => {
       await expect(
-         getDiscordUserId(String(addedPayloadUserDNE.body.membership.user.id))
+         getDiscordUserId(String(ghUserId2))
       ).rejects.toThrowError()
     })
 

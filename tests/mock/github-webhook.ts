@@ -421,6 +421,7 @@ export const mockedBad = {
     },
   },
 }
+
 export const mockedPublished = {
   headers: {
     'X-Hub-Signature-256':

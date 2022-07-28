@@ -1,21 +1,24 @@
+<script lang="ts" context="module">
+  import type { Load } from '@sveltejs/kit'
+
+  export const load: Load = async ({ session, fetch }) => {
+    if (!session?.user) {
+      return { redirect: '/restricted', status: 302 }
+    }
+    return {
+      props: {},
+    }
+  }
+</script>
+
 <script lang="ts">
   import { Content } from 'carbon-components-svelte'
   import { session } from '$app/stores'
   import LoginButton from '$lib/LoginButton.svelte'
-  import { onMount } from 'svelte'
 
   let formGitHub
   let formDiscord 
 
-  onMount(() => {
-    if ($session.user) {
-      // push user through GitHub auth
-      formGitHub.requestSubmit()
-    } else {
-      // push user through Discord auth
-      formDiscord.requestSubmit()
-    }
-  })
 </script>
 
 {#if $session?.user?.github}

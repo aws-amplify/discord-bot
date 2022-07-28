@@ -39,24 +39,30 @@ export const options: NextAuthOptions = {
   pages: {
     error: '/auth/error', // Error code passed in query string as ?error=
   },
+  session: {
+    // Choose how you want to save the user session.
+    // The default is `"jwt"`, an encrypted JWT (JWE) stored in the session cookie.
+    // If you use an `adapter` however, we default it to `"database"` instead.
+    // You can still force a JWT session by explicitly defining `"jwt"`.
+    // When using `"database"`, the session cookie will only contain a `sessionToken` value,
+    // which is used to look up the session in the database.
+    strategy: 'database',
+
+    // Seconds - How long until an idle session expires and is no longer valid.
+    maxAge: 30 * 60, // 30 minutes
+
+    // Seconds - Throttle how frequently to write to database to extend a session.
+    // Use it to limit write operations. Set to 0 to always update the database.
+    // Note: This option is ignored if using JSON Web Tokens
+    updateAge: 15 * 60, // 15 minutes
+  },
   callbacks: {
     async redirect({ url, baseUrl }) {
       return baseUrl
     },
 
     async session({ session, user }) {
-      if (!session || !user) return session
-
       session.user.id = user.id
-
-      const userAccounts = await prisma.account.findMany({
-        where: { userId: user.id },
-      })
-      const storedUserGitHub =
-        userAccounts.length === 2 &&
-        userAccounts.filter((account) => account.provider === 'github')
-          .length === 1
-      if (storedUserGitHub) session.user.github = true
       return session
     },
   },
@@ -83,7 +89,6 @@ export const options: NextAuthOptions = {
           })
 
           await appplyRoles(user.id, account.providerAccountId, token)
-
         } catch (err) {
           console.error(`Error fetching installation token: ${err}`)
         }
