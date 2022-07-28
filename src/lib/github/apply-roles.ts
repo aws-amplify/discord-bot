@@ -229,7 +229,6 @@ if (import.meta.vitest) {
     } catch (err) {
       console.log(err)
     }
-    console.log(token)
     repos = await fetchOrgRepos(token)
 
     await addRole(
