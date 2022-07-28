@@ -14,7 +14,6 @@
       formGitHub.requestSubmit()
     } else {
       // push user through Discord auth
-      console.log('discord login')
       formDiscord.requestSubmit()
     }
   })
