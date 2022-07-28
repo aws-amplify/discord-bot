@@ -21,7 +21,7 @@
   })
 </script>
 
-{#if $session.user && $session.user.github}
+{#if $session?.user?.github}
   <Content>
     <p>
       Thanks for linking your GitHub account! It is now safe to close this page
