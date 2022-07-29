@@ -1,26 +1,18 @@
+import { api } from '$discord'
+import { Routes } from 'discord-api-types/v10'
+
 // removes a role from a given user
 export async function removeRole(
-  roleId: string | undefined,
-  guildId: string | undefined,
+  roleId: string,
+  guildId: string,
   userId: string
 ) {
-  const res = await fetch(
-    `https://discord.com/api/guilds/${guildId}/members/${userId}/roles/${roleId}`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
-      },
-      method: 'DELETE',
-    }
-  )
-  if (!res.ok) {
-    console.error(
-      `Failed to remove role ${roleId} from user ${userId}: ${res.statusText}`
-    )
-    return false
-  } else {
+  try {
+    await api.delete(Routes.guildMemberRole(guildId, userId, roleId))
     console.log(`Successfully removed role ${roleId} from user ${userId}`)
     return true
+  } catch (err) {
+    console.error(`Failed to remove role ${roleId} from user ${userId}: ${err}`)
   }
+  return false
 }

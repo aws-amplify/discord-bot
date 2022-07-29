@@ -1,26 +1,16 @@
+import { api } from '$discord'
+import { Routes } from 'discord-api-types/v10'
+
 // applies a role to a given user
-export async function addRole(
-  roleId: string | undefined,
-  guildId: string | undefined,
-  userId: string
-) {
-  const res = await fetch(
-    `https://discord.com/api/guilds/${guildId}/members/${userId}/roles/${roleId}`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
-      },
-      method: 'PUT',
-    }
-  )
-  if (!res.ok) {
-    console.error(
-      `Failed to add role ${roleId} to user ${userId}: ${res.statusText}`
-    )
-    return false
-  } else {
+export async function addRole(roleId: string, guildId: string, userId: string) {
+  try {
+    await api.put(Routes.guildMemberRole(guildId, userId, roleId))
     console.log(`Successfully added role ${roleId} to user ${userId}`)
     return true
+  } catch (err) {
+    console.error(
+      `Failed to add role ${roleId} to user ${userId}: ${err}`
+    )
   }
+  return false
 }

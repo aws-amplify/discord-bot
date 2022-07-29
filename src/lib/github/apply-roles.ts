@@ -1,37 +1,16 @@
+import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
-import { prisma } from '$lib/db'
 import { addRole } from '$discord/roles/addRole'
 import { removeRole } from '$discord/roles/removeRole'
-import { createAppAuth } from '@octokit/auth-app'
+import { prisma } from '$lib/db'
+import { api } from '../../routes/api/_discord'
+import { Routes } from 'discord-api-types/v10'
 
-// returns the given user's roles within the guild,
-// false if user doesn't exist or isn't a member of the guild
-// used in testing to determine
-async function fetchDiscordUserRoles(discUserId: string) {
-  const res = await fetch(
-    `https://discord.com/api/guilds/${process.env.DISCORD_GUILD_ID}/members/${discUserId}`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
-      },
-      method: 'GET',
-    }
-  )
-  if (!res.ok) {
-    console.error(
-      `Failed to fetch user roles userID ${discUserId} guildID ${process.env.DISCORD_GUILD_ID}: ${res.statusText}`
-    )
-    return false
-  } else {
-    const user = await res.json()
-    return user.roles
-  }
-}
-
-// returns true if the user is a member of that org
-// false otherwise or if error
-// (uses access token to determine current user)
+/**
+ * returns true if the user is a member of that org
+ * false otherwise or if error
+ * (uses access token to determine current user) 
+ */
 async function isOrgMember(accessToken: string, ghUserId: string) {
   const octokit = new Octokit({
     auth: `token ${accessToken}`,
@@ -53,9 +32,11 @@ async function isOrgMember(accessToken: string, ghUserId: string) {
   return false
 }
 
-// returns a list of the given organization's repositories,
-// false if error
-// also this will only work if repos are public
+/**
+ * returns a list of the given organization's repositories,
+ * false if error
+ *  also this will only work if repos are public
+ */
 export async function fetchOrgRepos(accessToken) {
   const octokit = new Octokit({
     auth: `token ${accessToken}`,
@@ -73,10 +54,12 @@ export async function fetchOrgRepos(accessToken) {
   }
 }
 
-// for each repository belonging to the org, retrieves a list of
-// contributors. returns true if the user with a given id is
-// a contributor in at least one repository,
-// false otherwise or if error
+/**
+ *  for each repository belonging to the org, retrieves a list of
+ * contributors. returns true if the user with a given id is
+ * a contributor in at least one repository,
+ * false otherwise or if error
+ */
 export async function isContributor(
   accessToken: string,
   repos: [],
@@ -111,7 +94,7 @@ export async function isContributor(
   return false
 }
 
-// driver code that checks github membership/contribution status and applies roles
+/** driver code that checks github membership/contribution status and applies roles */
 export async function appplyRoles(
   userId: string,
   ghUserId: string,
@@ -225,10 +208,6 @@ if (import.meta.vitest) {
   })
 
   describe('Successful adding and removal of roles', () => {
-    // test('Fetch guild user roles', async () => {
-    //   const roles = await fetchDiscordUserRoles(guildMemberId)
-    //   expect(roles).toHaveLength(2)
-    // })
     test('Fetch org repos', async () => {
       const response = await fetchOrgRepos(token)
       expect(response).toEqual(repos)
@@ -248,8 +227,6 @@ if (import.meta.vitest) {
         guildMemberId
       )
       expect(response).toBeTruthy()
-      const roles = await fetchDiscordUserRoles(guildMemberId)
-      expect(roles).not.toContain(process.env.DISCORD_STAFF_ROLE_ID)
     })
     test('Add staff role', async () => {
       const response = await addRole(
@@ -258,8 +235,6 @@ if (import.meta.vitest) {
         guildMemberId
       )
       expect(response).toBeTruthy()
-      const roles = await fetchDiscordUserRoles(guildMemberId)
-      expect(roles).toContain(process.env.DISCORD_STAFF_ROLE_ID)
     })
     test('Remove contributor role', async () => {
       const response = await removeRole(
@@ -268,8 +243,6 @@ if (import.meta.vitest) {
         guildMemberId
       )
       expect(response).toBeTruthy()
-      const roles = await fetchDiscordUserRoles(guildMemberId)
-      expect(roles).not.toContain(process.env.DISCORD_CONTRIBUTOR_ROLE_ID)
     })
     test('Add contributor role', async () => {
       const response = await addRole(
@@ -278,25 +251,10 @@ if (import.meta.vitest) {
         guildMemberId
       )
       expect(response).toBeTruthy()
-      const roles = await fetchDiscordUserRoles(guildMemberId)
-      expect(roles).toContain(process.env.DISCORD_CONTRIBUTOR_ROLE_ID)
     })
   })
 
   describe('Failed adding and removal of roles', () => {
-    // test('Fetch guild user roles unknown user id', async () => {
-    //   const response = await fetchDiscordUserRoles(`bad${guildMemberId}`)
-    //   expect(response).toBe(false)
-    // })
-
-    // test('Fetch guild user bad bot token', async () => {
-    //   const botToken = process.env.DISCORD_BOT_TOKEN
-    //   process.env.DISCORD_BOT_TOKEN = `bad${botToken}`
-    //   const response = await fetchDiscordUserRoles(guildMemberId)
-    //   expect(response).toBe(false)
-    //   process.env.DISCORD_BOT_TOKEN = botToken
-    // })
-
     test('Fetch org repos bad access token', async () => {
       const response = await fetchOrgRepos(`b${token}ad`)
       expect(response).toBe(false)
