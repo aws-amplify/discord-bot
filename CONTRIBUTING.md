@@ -94,9 +94,6 @@ When `pnpm test` is run from the project root, the newly added test is executed 
 
 This process uses one branch, `main`, and relies on the created releases and git tags to showcase the latest source code available in each environment (release -> `main` vs prerelease -> `next`).
 
-<details>
-<summary>Release automation diagram</summary>
-
 ```mermaid
 flowchart TD
     dev[runs `create-release` action]
@@ -168,8 +165,6 @@ flowchart TD
     releaseAction-->released
     released[released]
 ```
-
-</details>
 
 ### Creating Secrets in SSM
 
