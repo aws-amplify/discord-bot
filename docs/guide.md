@@ -46,7 +46,10 @@ You must be the owner of the GitHub organization to perform the following steps.
 
 1. Go to your GitHub organization, and click **Settings** -> **Webhooks** -> **Add Webhook**
 
-2. Under **Payload URL**  choose SOME PAYLOAD
+2. Under **Payload URL**  choose `http://localhost:3000/api/webhooks/github-org-membership`
+
+> **Note**
+> `localhost:3000` should be changed to your production URL
 
 3. Under **Content type**, select `application/json`
 
