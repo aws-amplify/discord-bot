@@ -49,9 +49,7 @@ export class GitHubActionsStack extends cdk.Stack {
      * Create a principal for the OpenID; which can allow it to assume
      * deployment roles.
      */
-    const principal = new iam.OpenIdConnectPrincipal(
-      provider
-    ).withConditions({
+    const principal = new iam.OpenIdConnectPrincipal(provider).withConditions({
       StringLike: {
         'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
         'token.actions.githubusercontent.com:sub': `repo:${repo}:*`,
@@ -66,7 +64,7 @@ export class GitHubActionsStack extends cdk.Stack {
      * by the aws cdk v2.
      */
     const role = new iam.Role(this, 'GitHubActionsRole', {
-      assumedBy: GitHubPrincipal,
+      assumedBy: principal,
       description:
         'Role assumed by GitHubPrincipal for deploying from CI using AWS CDK',
       roleName: 'github-actions-role',
