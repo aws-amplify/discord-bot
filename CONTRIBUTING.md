@@ -96,7 +96,7 @@ This process uses one branch, `main`, and relies on the created releases and git
 
 ```mermaid
 flowchart TD
-    dev[runs `create-release` action]
+    dev[staff runs `create-release` action]
     createPrerelease[prerelease]
     createPatch[patch]
     createMinor[minor]
