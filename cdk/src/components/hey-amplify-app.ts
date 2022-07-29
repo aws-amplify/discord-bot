@@ -135,6 +135,11 @@ export class HeyAmplifyApp extends Construct {
       docker.name
     ) as ecs.ContainerDefinition
 
+    cdk.Tags.of(container).add(
+      'app:version',
+      this.node.tryGetContext('version')
+    )
+
     // mount the filesystem
     container.addMountPoints({
       containerPath: filesystemMountPoint,
