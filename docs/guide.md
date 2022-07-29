@@ -126,7 +126,7 @@ Now you should be looking at the settings page for your app.
 
 ## Installing App
 
-1. On the toolbar on the top left side of the screen, navigate to **Install App** (If you cannot see this, you likely do not have the )
+1. On the toolbar on the top left side of the screen, navigate to **Install App** (If you cannot see this, you likely do not have the correct organizational permissions)
 
 2. Select the organization that you wish to install the app on and select **Install**
 
