@@ -86,23 +86,26 @@ export async function post({ request }) {
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest
 
-  describe('Getting discord user id', () => {
-    const ghUserId = '107655607'
-    const ghUserId2 = '70536670'
-    test('should return correct id if user in db', async () => {
-      expect(
-        await getDiscordUserId(String(ghUserId))
-      ).toEqual('985985131271585833')
-    })
-
-    test('should throw error if user not in db', async () => {
-      await expect(
-         getDiscordUserId(String(ghUserId2))
-      ).rejects.toThrowError()
-    })
-
-    test('should throw error if no user id is passed', async () => {
-      await expect(getDiscordUserId('')).rejects.toThrowError()
+  it.runIf(process.env.TEST_GITHUB_ENABLED)('only run if secrets enabled', () => {
+    describe('Getting discord user id', () => { 
+      const ghUserId = '107655607'
+      const ghUserId2 = '70536670'
+      it('should return correct id if user in db', async () => {
+        expect(
+          await getDiscordUserId(String(ghUserId))
+        ).toEqual('985985131271585833')
+      })
+  
+      it('should throw error if user not in db', async () => {
+        await expect(
+           getDiscordUserId(String(ghUserId2))
+        ).rejects.toThrowError()
+      })
+  
+      it('should throw error if no user id is passed', async () => {
+        await expect(getDiscordUserId('')).rejects.toThrowError()
+      })
     })
   })
+
 }
