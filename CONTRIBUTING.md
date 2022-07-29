@@ -139,8 +139,8 @@ flowchart TD
 
         raVerifyRun-->|if verified|raExtract
         raVerifyRun-->|if not verified|exit
-        raExtract-->raPrerelease
-        raExtract-->raRelease
+        raExtract-->|if prerelease|raPrerelease
+        raExtract-->|if not prerelease|raRelease
         raPrerelease-->|uses|reusableReleaseEnv
         raRelease-->|uses|reusableReleaseEnv
 
