@@ -5,21 +5,13 @@ on:
       - main
     types:
       - closed
-env:
-  AWS_REGION: us-east-1
 jobs:
-  get-version:
-    runs-on: ubuntu-latest
-    # ${{ github.event.head_commit.message }}
-
-  release:
+  verify-run:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
-    environment: release
-    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
-    permissions:
-      id-token: write
-      contents: read
+    outputs:
+      tag: ${{ steps.tag.outputs.result }}
+      is-prerelease: ${{ contains(steps.tag.outputs.result, 'next') }}
     steps:
       - name: extract-tag-name
         id: tag
@@ -28,51 +20,19 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             return context.payload.pull_request.title.replace(/release\: /, '');
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
-          aws-region: ${{ env.AWS_REGION }}
-      - uses: pnpm/action-setup@v2.2.2
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      # release next
-      - name: release-next-synth
-        if: ${{ contains(steps.tag.outputs.result, 'next') }}
-        run: pnpm --filter ./cdk run synth --context env=next
-      - name: release-next-deploy
-        if: ${{ contains(steps.tag.outputs.result, 'next') }}
-        run: pnpm --filter ./cdk run deploy --context env=next --require-approval never
-        timeout-minutes: 30 # to compensate for container healthcheck failures
-      - name: github-prerelease
-        if: ${{ contains(steps.tag.outputs.result, 'next') }}
-        run: |
-          url=$(gh release create ${{ steps.tag.outputs.result }} --generate-notes --prerelease)
-          tag=$(echo "${url/releases\/tag/tree}")
-          echo ::notice title="release"::$url
-          echo ::notice title="tag"::$tag
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # release main
-      - name: release-main-synth
-        if: ${{ !contains(steps.tag.outputs.result, 'next') }}
-        run: pnpm --filter ./cdk run synth --context env=main
-      - name: release-main-deploy
-        if: ${{ !contains(steps.tag.outputs.result, 'next') }}
-        run: pnpm --filter ./cdk run deploy --context env=main --require-approval never
-        timeout-minutes: 30 # to compensate for container healthcheck failures
-      - name: github-release # same thing as above but without `--prerelease`...
-        if: ${{ !contains(steps.tag.outputs.result, 'next') }}
-        run: |
-          url=$(gh release create ${{ steps.tag.outputs.result }} --generate-notes)
-          tag=$(echo "${url/releases\/tag/tree}")
-          echo ::notice title="release"::$url
-          echo ::notice title="tag"::$tag
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  prerelease:
+    needs: verify-run
+    if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == true }}
+    uses: ./.github/workflows/release-env.yml
+    with:
+      env: next
+      version: ${{ needs.verify-run.outputs.tag }}
+      is-prerelease: true
+  release:
+    needs: verify-run
+    if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == false }}
+    uses: ./.github/workflows/release-env.yml
+    with:
+      env: main
+      version: ${{ needs.verify-run.outputs.tag }}
+      is-prerelease: false

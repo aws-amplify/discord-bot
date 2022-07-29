@@ -1,0 +1,64 @@
+name: release-env
+on:
+  workflow_call:
+    inputs:
+      env:
+        description: 'Application environment (e.g. "next")'
+        type: string
+        required: true
+      version:
+        description: 'Version of the release'
+        type: string
+        required: true
+      is-prerelease:
+        description: 'Determines if the release is a prerelease'
+        type: boolean
+        required: true
+      aws-region:
+        description: 'AWS Region to deploy to'
+        type: string
+        required: false
+        default: 'us-east-1'
+jobs:
+  release-env:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    permissions:
+      id-token: write # for AWS Action to interact with GitHub's OIDC endpoint
+      contents: write # for gh CLI to create a release, otherwise "read" for AWS Action
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
+          aws-region: ${{ inputs.aws-region }}
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2.2.2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: cdk synth
+        run: |
+          pnpm --filter ./cdk run synth \
+            --context env=${{ inputs.env }} \
+            --context version=${{ inputs.version }}
+      - name: cdk deploy
+        run: |
+          pnpm --filter ./cdk run deploy \
+            --context env=${{ inputs.env }} \
+            --context version=${{ inputs.version }}
+      - name: release
+        run: |
+          if [ ${{ inputs.is-prerelease }} == true ]
+          then
+            url=$(gh release create ${{ inputs.version }} --generate-notes --prerelease)
+          else
+            url=$(gh release create ${{ inputs.version }} --generate-notes)
+          fi
+          tag=$(echo "${url/releases\/tag/tree}")
+          echo ::notice title="release"::$url
+          echo ::notice title="tag"::$tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
