@@ -3,8 +3,6 @@ import { Octokit } from '@octokit/rest'
 import { addRole } from '$discord/roles/addRole'
 import { removeRole } from '$discord/roles/removeRole'
 import { prisma } from '$lib/db'
-import { api } from '../../routes/api/_discord'
-import { Routes } from 'discord-api-types/v10'
 
 /**
  * returns true if the user is a member of that org
