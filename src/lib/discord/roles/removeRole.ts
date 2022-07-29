@@ -1,7 +1,7 @@
 import { api } from '$discord'
 import { Routes } from 'discord-api-types/v10'
 
-// removes a role from a given user
+/** removes a role from a given user  */
 export async function removeRole(
   roleId: string,
   guildId: string,
