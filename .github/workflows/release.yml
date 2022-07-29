@@ -8,13 +8,20 @@ on:
 jobs:
   verify-run:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    # We run release action only if:
+    #   1. PR comes from internal branch (i.e. not a fork)
+    #   2. PR is merged (a PR can be closed but not merged)
+    #   3. PR branch name begins with "release/"
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.merged == true && 
+      startsWith(github.event.pull_request.head.ref, 'release/')
     outputs:
-      tag: ${{ steps.tag.outputs.result }}
-      is-prerelease: ${{ contains(steps.tag.outputs.result, 'next') }}
+      version: ${{ steps.version.outputs.result }}
+      is-prerelease: ${{ contains(steps.version.outputs.result, 'next') }}
     steps:
-      - name: extract-tag-name
-        id: tag
+      - name: extract-version
+        id: version
         uses: actions/github-script@0.2.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -26,7 +33,7 @@ jobs:
     uses: ./.github/workflows/release-env.yml
     with:
       env: next
-      version: ${{ needs.verify-run.outputs.tag }}
+      version: ${{ needs.verify-run.outputs.version }}
       is-prerelease: true
   release:
     needs: verify-run
@@ -34,5 +41,5 @@ jobs:
     uses: ./.github/workflows/release-env.yml
     with:
       env: main
-      version: ${{ needs.verify-run.outputs.tag }}
+      version: ${{ needs.verify-run.outputs.version }}
       is-prerelease: false
