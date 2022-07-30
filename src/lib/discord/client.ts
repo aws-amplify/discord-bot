@@ -26,8 +26,23 @@ export const commands = createDiscordCommandBank([
   github,
 ])
 
-client.once('ready', () => {
+client.once('ready', async () => {
   console.log('Bot Ready!')
+  for (const guild of client.guilds.cache.values()) {
+    try {
+      await prisma.guild.upsert({
+        where: {
+          id: guild.id,
+        },
+        create: {
+          id: guild.id,
+        },
+        update: {},
+      })
+    } catch (error) {
+      console.error('Error upserting guild', error)
+    }
+  }
 })
 
 client.on('messageCreate', async (message: Message) => {
@@ -54,6 +69,11 @@ client.on('messageCreate', async (message: Message) => {
           title: message.content,
           createdAt: thread.createdAt as Date,
           url: message.url,
+          guild: {
+            connect: {
+              id: message.guild?.id,
+            },
+          },
         },
       })
       console.info(`Created question ${record.id}`)
@@ -82,12 +102,17 @@ client.on('messageCreate', async (message: Message) => {
       where: { threadId: message.channel.id },
       update: { threadMetaUpdatedAt: message.createdAt as Date },
       create: {
-        ownerId: message.author.id,
+        ownerId: message.channel.ownerId as string,
         threadId: message.channel.id,
-        channelName: message.channel.name,
+        channelName: message.channel.parent.name,
         title: message.content,
-        createdAt: message.createdAt as Date,
+        createdAt: message.channel.createdAt as Date,
         url: message.url,
+        guild: {
+          connect: {
+            id: message.guild?.id,
+          },
+        },
       },
     })
     console.info(`Created/updated question ${record.id}`)
