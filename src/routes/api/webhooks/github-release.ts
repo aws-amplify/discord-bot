@@ -1,5 +1,6 @@
 import * as crypto from 'node:crypto'
 import { MessageEmbed } from 'discord.js'
+import type { RequestHandler } from '@sveltejs/kit'
 
 function createReleaseMessage(payload) {
   const embed = new MessageEmbed()
@@ -20,9 +21,10 @@ function createReleaseMessage(payload) {
 }
 
 // https://gist.github.com/stigok/57d075c1cf2a609cb758898c0b202428
-function verifyGithubWebhookEvent(payloadbody, signature256: string) {
+function verifyGithubWebhookEvent(payloadbody: object, signature256: string) {
   if (!signature256) return false
   const token = process.env.GITHUB_WEBHOOK_SECRET
+  if (!token) console.error('GITHUB_WEBHOOK_SECRET is not set')
   const sig = Buffer.from(signature256 || '', 'utf8')
   const hmac = crypto.createHmac('sha256', token)
   const digest = Buffer.from(
@@ -35,13 +37,37 @@ function verifyGithubWebhookEvent(payloadbody, signature256: string) {
   return true
 }
 
-export async function post({ request }) {
-  const payload = await request.json()
+// application/x-www-form-urlencoded
+export const post: RequestHandler = async function post({ request }) {
+  let payload
+  try {
+    payload = await request.json()
+  } catch (error) {
+    return {
+      status: 400,
+      body: {
+        errors: [
+          {
+            message: `Invalid payload: ${error.message}`,
+          },
+        ],
+      },
+    }
+  }
 
   if (!import.meta.vitest) {
     const sig256 = request.headers.get('x-hub-signature-256')
     if (!verifyGithubWebhookEvent(payload, sig256)) {
-      return { status: 403 }
+      return {
+        status: 403,
+        body: {
+          errors: [
+            {
+              message: 'Unable to verify signature',
+            },
+          ],
+        },
+      }
     }
   }
 
@@ -81,7 +107,7 @@ if (import.meta.vitest) {
       'X-Hub-Signature-256':
         'sha256=df80b1d8f9348825f3edd5df44258cb6cfb822f7de73088372c5b54bdd970ce0',
       'X-GitHub-Event': 'release',
-      'Content-Type': 'application/json',
+      'content-type': 'application/json',
     },
     body: {
       action: 'published',
@@ -335,7 +361,7 @@ if (import.meta.vitest) {
       'X-Hub-Signature-256':
         'sha256=df80b1d8f9348825f3edd5df44258cb6cfb822f7de73088372c5b54bdd970ce',
       'X-GitHub-Event': 'release',
-      'Content-Type': 'application/json',
+      'content-type': 'application/json',
     },
     body: {
       action: 'published',
@@ -593,7 +619,7 @@ if (import.meta.vitest) {
         )
       ).toBeTruthy()
     })
-    
+
     it('should return false with a jumbled payload', () => {
       expect(
         verifyGithubWebhookEvent(
