@@ -44,7 +44,7 @@ a.bx--side-nav__link > .bx--side-nav__link-text {
 }
 
 /* sidenav mobile fix */
-@media (max-width: 65.98rem) {
+@media (max-width: 33rem) {
   .bx--side-nav--ux,
   .bx--side-nav--rail {
     width: 0;
