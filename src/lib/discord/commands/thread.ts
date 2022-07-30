@@ -1,11 +1,30 @@
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { createCommand, createOption } from '$discord'
-import type { InteractionReplyOptions, ThreadChannel } from 'discord.js'
+import {
+  type InteractionReplyOptions,
+  type ThreadChannel,
+  MessageType,
+} from 'discord.js'
 import { prisma } from '$lib/db'
 
 export const PREFIXES = {
   solved: '✅ - ',
   open: '﹖ - ',
+}
+
+export function parseTitlePrefix(title: string): string | undefined {
+  let prefix
+  for (const [, value] of Object.entries(PREFIXES)) {
+    if (title.startsWith(value)) {
+      prefix = value
+      break
+    }
+  }
+  return prefix
+}
+
+export function parseTitle(title: string) {
+  return title.replace(parseTitlePrefix(title) as string, '')
 }
 
 async function handler(interaction): Promise<InteractionReplyOptions | string> {
@@ -16,12 +35,12 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
   })
 
   if (!channel.isThread()) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
     embed.setDescription(
       'This command only works in public threads within help channels.'
     )
-    return { embeds: [embed] }
+    return { embeds: [embed], ephemeral: true }
   }
 
   const args = interaction.options.data.reduce(
@@ -35,34 +54,21 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
   )
 
   if (interaction.user.id !== record?.ownerId) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
     embed.setDescription('Only owners of questions can use this command.')
-    return { embeds: [embed] }
-  }
-
-  function parseTitlePrefix(title) {
-    let prefix
-    for (const [, value] of Object.entries(PREFIXES)) {
-      if (title.startsWith(value)) {
-        prefix = value
-        break
-      }
-    }
-    return prefix
-  }
-
-  function parseTitle(title) {
-    return title.replace(parseTitlePrefix(title), '')
+    return { embeds: [embed], ephemeral: true }
   }
 
   if (args.rename) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
 
     // check if thread has been renamed within 10 minutes
     const renames = messages.filter(
-      (m) => m.author.id === channel.ownerId && m.type === 'CHANNEL_NAME_CHANGE'
+      (m) =>
+        m.author.id === channel.ownerId &&
+        m.type === MessageType.ChannelNameChange
     )
     const lastRenameTimestamp = renames.first()?.createdTimestamp
     if (lastRenameTimestamp) {
@@ -73,7 +79,7 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
         embed.setDescription(
           `You can only rename a thread once every 10 minutes.`
         )
-        return { embeds: [embed] }
+        return { embeds: [embed], ephemeral: true }
       }
     }
 
@@ -91,13 +97,13 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
       }
 
       embed.setDescription(`This thread has been renamed.`)
-      return { embeds: [embed] }
+      return { embeds: [embed], ephemeral: true }
     }
   }
 
   if (args.archive) {
     // send a message
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
     embed.setDescription('This thread has been archived.')
     channel.send({ embeds: [embed] })
@@ -112,7 +118,7 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
   }
 
   if (args.solved) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
 
     // is the channel already marked as solved?
@@ -125,22 +131,27 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
     // mark the thread as solved
     const title = parseTitle(channel.name)
     if (await channel.setName(`${PREFIXES.solved}${title}`)) {
+      let updated = false
       try {
         await prisma.question.update({
           where: { threadId: channel.id },
           data: { isSolved: true },
         })
+        updated = true
       } catch (error) {
         console.error('Unable to update thread isSolved=true in db', error)
+        embed.setDescription(
+          'Something went wrong updating the question on our end.'
+        )
       }
 
-      embed.setDescription('Marked as solved.')
+      if (updated) embed.setDescription('Marked as solved.')
       return { embeds: [embed] }
     }
   }
 
   if (args.reopen) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
 
     // is the channel already marked as solved?

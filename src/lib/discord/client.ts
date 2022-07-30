@@ -1,20 +1,25 @@
-import { Client, Intents, MessageEmbed } from 'discord.js'
+import {
+  Client,
+  GatewayIntentBits,
+  EmbedBuilder,
+  ChannelType,
+} from 'discord.js'
 import { createDiscordCommandBank } from '$discord'
-import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
 import { prisma } from '$lib/db'
 // manually import the commands
 import giverole from './commands/giverole'
 import contribute from './commands/contribute'
 import thread, { PREFIXES } from './commands/thread'
 import github from './commands/github'
+import * as selectAnswer from './commands/select-answer'
+import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
 
 export const client = new Client({
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.GUILD_SCHEDULED_EVENTS,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.MessageContent,
   ],
 })
 
@@ -26,15 +31,48 @@ export const commands = createDiscordCommandBank([
   github,
 ])
 
+try {
+  // TODO: command bank to support context menu commands, until then let's manually add it
+  commands.set('select-answer', {
+    ...selectAnswer.config,
+    // @ts-expect-error - hack to add non-slash command to command bank
+    handler: selectAnswer.handler,
+  })
+  await commands.register(selectAnswer.config.toJSON())
+  console.info('Registered selectAnswer command')
+} catch (error) {
+  console.error(error)
+  throw new Error(`Unable to register selectAnswer command`)
+}
+
 client.once('ready', () => {
   console.log('Bot Ready!')
 })
 
+client.on('messageUpdate', async (oldMessage, newMessage) => {
+  if (oldMessage.author?.bot) return
+  if (oldMessage.content === newMessage.content || !newMessage.content) return
+  if (oldMessage.channel.type !== ChannelType.GuildPublicThread) return
+
+  // update answer contents if exists
+  const answer = await prisma.answer.update({
+    where: {
+      id: oldMessage.id,
+    },
+    data: {
+      content: newMessage.content,
+    },
+    select: {
+      id: true,
+    },
+  })
+  console.log('Updated answer content:', answer.id)
+})
+
 client.on('messageCreate', async (message: Message) => {
-  // GuildChannelTypes.GUILD_TEXT
   if (
     !message.author.bot &&
-    message.channel.type === 'GUILD_TEXT' &&
+    message.channel.type === ChannelType.GuildText &&
     (message.channel.name.startsWith('help-') ||
       message.channel.name.endsWith('-help'))
   ) {
@@ -62,7 +100,7 @@ client.on('messageCreate', async (message: Message) => {
     }
 
     // optionally send a message to the thread
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
     // TODO: add more info on /thread command
     embed.setDescription(
@@ -73,7 +111,7 @@ client.on('messageCreate', async (message: Message) => {
 
   // capture thread updates in public "help" channels
   if (
-    message.channel.type === 'GUILD_PUBLIC_THREAD' &&
+    message.channel.type === ChannelType.GuildPublicThread &&
     !message.author.bot &&
     (message.channel.parent?.name.startsWith('help-') ||
       message.channel.parent?.name.endsWith('-help'))
@@ -100,7 +138,10 @@ client.on('interactionCreate', async (interaction) => {
   console.log('Handling interaction for command', commandName)
   const command = commands.get(commandName)
   if (!command) {
-    await interaction.reply(`Command not found 🤕`)
+    await interaction.reply({
+      content: `Command not found 🤕`,
+      ephemeral: true,
+    })
     return
   }
 
@@ -128,3 +169,10 @@ client.on('threadUpdate', async (thread) => {
 export function createBot(token = process.env.DISCORD_BOT_TOKEN) {
   return client.login(token)
 }
+
+// capture SIGINT (Ctrl+C) to gracefully shutdown
+process.on('SIGINT', () => {
+  console.log('destroying client')
+  client?.destroy()
+  process.exit(0)
+})
