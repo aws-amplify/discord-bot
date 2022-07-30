@@ -45,6 +45,25 @@ client.once('ready', async () => {
   }
 })
 
+/**
+ * Create Guild model when bot joins a new guild
+ */
+client.on('guildCreate', async (guild) => {
+  try {
+    await prisma.guild.upsert({
+      where: {
+        id: guild.id,
+      },
+      create: {
+        id: guild.id,
+      },
+      update: {},
+    })
+  } catch (error) {
+    console.error('Error upserting guild', error)
+  }
+})
+
 client.on('messageCreate', async (message: Message) => {
   // GuildChannelTypes.GUILD_TEXT
   if (
