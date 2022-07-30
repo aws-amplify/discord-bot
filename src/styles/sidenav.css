@@ -42,3 +42,15 @@ a.bx--side-nav__link > .bx--side-nav__link-text {
   background-color: var(--cds-ui-03);
   color: var(--cds-text-04);
 }
+
+/* sidenav mobile fix */
+@media (max-width: 65.98rem) {
+  .bx--side-nav--ux,
+  .bx--side-nav--rail {
+    width: 0;
+  }
+
+  .bx--side-nav--expanded {
+    width: 16rem;
+  }
+}
