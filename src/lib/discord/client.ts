@@ -1,12 +1,19 @@
-import { Client, Intents, MessageEmbed } from 'discord.js'
+import { Client, Intents, MessageEmbed, Modal } from 'discord.js'
 import { createDiscordCommandBank } from '$discord'
-import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
+import type {
+  ButtonInteraction,
+  Message,
+  ModalSubmitInteraction,
+  StartThreadOptions,
+  ThreadChannel,
+} from 'discord.js'
 import { prisma } from '$lib/db'
 // manually import the commands
 import giverole from './commands/giverole'
 import contribute from './commands/contribute'
 import thread, { PREFIXES } from './commands/thread'
 import github from './commands/github'
+import * as fileAnIssue from './actions/file-an-issue'
 
 export const client = new Client({
   intents: [
@@ -68,7 +75,8 @@ client.on('messageCreate', async (message: Message) => {
     embed.setDescription(
       "Hey there! :wave: we've created a thread for you!\n\nUse `/thread rename` to change the title.\n\nUse `/thread solved` to mark this thread as solved."
     )
-    thread.send({ embeds: [embed] })
+
+    thread.send({ embeds: [embed], components: [fileAnIssue.row] })
   }
 
   // capture thread updates in public "help" channels
@@ -95,24 +103,39 @@ client.on('messageCreate', async (message: Message) => {
 })
 
 client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isCommand()) return
-  const { commandName } = interaction
-  console.log('Handling interaction for command', commandName)
-  const command = commands.get(commandName)
-  if (!command) {
-    await interaction.reply(`Command not found 🤕`)
-    return
+  // handle buttons
+  if (interaction.isButton()) {
+    interaction as ButtonInteraction
+    if (interaction.customId === fileAnIssue.button.customId) {
+      await fileAnIssue.buttonHandler(interaction)
+    }
   }
 
-  console.log(
-    `Handling command "${command?.name}" for ${interaction.user.username}#${interaction.user.discriminator}`
-  )
-
-  const response = await commands.handle(interaction)
-  if (response) {
-    await interaction.reply(response)
+  if (interaction.isModalSubmit()) {
+    interaction as ModalSubmitInteraction
+    // TODO: multiple modal handlers?
+    fileAnIssue.modalHandler(interaction)
   }
-  return
+
+  // handle slash commands
+  if (interaction.isCommand()) {
+    const { commandName } = interaction
+    console.log('Handling interaction for command', commandName)
+    const command = commands.get(commandName)
+    if (!command) {
+      await interaction.reply(`Command not found 🤕`)
+      return
+    }
+
+    console.log(
+      `Handling command "${command?.name}" for ${interaction.user.username}#${interaction.user.discriminator}`
+    )
+
+    const response = await commands.handle(interaction)
+    if (response) {
+      await interaction.reply(response)
+    }
+  }
 })
 
 client.on('rateLimit', (info) => {
