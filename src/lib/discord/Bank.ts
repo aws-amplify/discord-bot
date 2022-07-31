@@ -73,9 +73,14 @@ export class DiscordCommandBank
     for (const command of this.values()) {
       let registered
       try {
-        registered = (await this.register(
-          command.createRegistrationPayload()
-        )) as any[]
+        if (command.createRegistrationPayload) {
+          registered = (await this.register(
+            command.createRegistrationPayload()
+          )) as any[]
+        }
+        if (command?.config?.toJSON) {
+          registered = await this.register(command.config.toJSON())
+        }
       } catch (error) {
         console.error(`Error registering command ${command.name}:`, error)
         errors.push(error)
@@ -109,7 +114,7 @@ export class DiscordCommandBank
     return commands
   }
 
-  public async handle(interaction: CommandInteraction) {
+  public async handle(interaction) {
     const somethingWentWrongResponse = '🤕 Something went wrong'
     const command = this.get(interaction.commandName)
     if (!command)

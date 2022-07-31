@@ -1,9 +1,9 @@
 import * as crypto from 'node:crypto'
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import type { RequestHandler } from '@sveltejs/kit'
 
 function createReleaseMessage(payload) {
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
   embed.setTitle(`[${payload.repository.full_name}] ${payload.release.name}`)
   embed.setColor('#ff9900')
   embed.setDescription(payload.release.body)

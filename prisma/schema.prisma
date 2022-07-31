@@ -36,10 +36,13 @@ model Question {
 
 model Answer {
   id         String   @id @default(cuid())
+  selectedAt DateTime @default(now())
+  selectedBy String // Discord user ID
   createdAt  DateTime
   updatedAt  DateTime @updatedAt
   ownerId    String // Discord member that answered the question
   content    String
+  url        String?
   question   Question @relation(fields: [questionId], references: [id])
   questionId String   @unique // Question.id
 }
