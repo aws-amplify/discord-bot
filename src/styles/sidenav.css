@@ -1,0 +1,56 @@
+nav.bx--side-nav__navigation {
+  background-color: transparent;
+}
+.bx--side-nav.bx--side-nav--rail:not(.bx--side-nav--fixed):hover,
+nav.bx--side-nav--expanded {
+  background-color: var(--cds-ui-01);
+}
+
+.bx--side-nav__icon > svg {
+  fill: var(--cds-ui-05);
+}
+
+a.bx--side-nav__link[aria-current='page'],
+a.bx--side-nav__link--current,
+a.bx--side-nav__link[aria-current='page'] .bx--side-nav__link-text,
+a.bx--side-nav__link--current .bx--side-nav__link-text {
+  background-color: unset;
+  color: var(--cds-text-05);
+}
+
+a.bx--side-nav__link > .bx--side-nav__link-text {
+  color: var(--cds-text-04);
+}
+
+/* sidenav menu title */
+.bx--side-nav__submenu-title {
+  color: var(--cds-text-04);
+}
+
+/* sidenav menu hover */
+.bx--side-nav__submenu:hover {
+  background-color: var(--cds-ui-03);
+  color: var(--cds-text-04);
+}
+
+/* sidenav item hover */
+.bx--side-nav__item:not(.bx--side-nav__item--active)
+  > .bx--side-nav__link:hover,
+.bx--side-nav__item:not(.bx--side-nav__item--active)
+  > .bx--side-nav__link:hover
+  > span {
+  background-color: var(--cds-ui-03);
+  color: var(--cds-text-04);
+}
+
+/* sidenav mobile fix */
+@media (max-width: 33rem) {
+  .bx--side-nav--ux,
+  .bx--side-nav--rail {
+    width: 0;
+  }
+
+  .bx--side-nav--expanded {
+    width: 16rem;
+  }
+}
