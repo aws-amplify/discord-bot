@@ -1,12 +1,13 @@
 import { Client, Intents, MessageEmbed } from 'discord.js'
 import { createDiscordCommandBank } from '$discord'
-import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
 import { prisma } from '$lib/db'
 // manually import the commands
 import giverole from './commands/giverole'
 import contribute from './commands/contribute'
 import thread, { PREFIXES } from './commands/thread'
 import github from './commands/github'
+import { isHelpChannel, isThreadWithinHelpChannel } from './support'
+import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
 
 export const client = new Client({
   intents: [
@@ -69,8 +70,7 @@ client.on('messageCreate', async (message: Message) => {
   if (
     !message.author.bot &&
     message.channel.type === 'GUILD_TEXT' &&
-    (message.channel.name.startsWith('help-') ||
-      message.channel.name.endsWith('-help'))
+    isHelpChannel(message.channel)
   ) {
     const options: StartThreadOptions = {
       name: `${PREFIXES.open}${message.content.slice(0, 140)}...`,
@@ -114,8 +114,7 @@ client.on('messageCreate', async (message: Message) => {
   if (
     message.channel.type === 'GUILD_PUBLIC_THREAD' &&
     !message.author.bot &&
-    (message.channel.parent?.name.startsWith('help-') ||
-      message.channel.parent?.name.endsWith('-help'))
+    isThreadWithinHelpChannel(message.channel)
   ) {
     const record = await prisma.question.upsert({
       where: { threadId: message.channel.id },
