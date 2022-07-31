@@ -135,10 +135,10 @@ client.on('messageCreate', async (message: Message) => {
       where: { threadId: message.channel.id },
       update: { threadMetaUpdatedAt: message.createdAt as Date },
       create: {
-        ownerId: message.channel.ownerId as string,
+        ownerId: message.channel.messages.cache.first()?.author.id as string,
         threadId: message.channel.id,
         channelName: message.channel.parent.name,
-        title: message.content,
+        title: message.channel.name,
         createdAt: message.channel.createdAt as Date,
         url: message.url,
         guild: {

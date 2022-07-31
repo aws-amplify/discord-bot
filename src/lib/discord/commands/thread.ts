@@ -104,21 +104,24 @@ export async function handler(
     }
   }
 
-  if (args.archive) {
-    // send a message
-    const embed = new EmbedBuilder()
-    embed.setColor('#ff9900')
-    embed.setDescription('This thread has been archived.')
-    channel.send({ embeds: [embed] })
+  /**
+   * @TODO reenable after implementing command hooks (needs to message back, THEN archive)
+   */
+  // if (args.archive) {
+  //   // send a message
+  //   const embed = new EmbedBuilder()
+  //   embed.setColor('#ff9900')
+  //   embed.setDescription('This thread has been archived.')
+  //   channel.send({ embeds: [embed] })
 
-    // archive thread
-    let reason
-    if (args.archive.options.length) {
-      reason = args.archive.options[0].value
-    }
-    await channel.setArchived(true, reason)
-    return
-  }
+  //   // archive thread
+  //   let reason
+  //   if (args.archive.options.length) {
+  //     reason = args.archive.options[0].value
+  //   }
+  //   await channel.setArchived(true, reason)
+  //   return
+  // }
 
   if (args.solved) {
     const embed = new EmbedBuilder()
@@ -206,17 +209,17 @@ export const config = new SlashCommandBuilder()
   .addSubcommand((subcommand) =>
     subcommand.setName('reopen').setDescription('Reopen this thread')
   )
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName('archive')
-      .setDescription('Archive this thread')
-      .addStringOption((option) =>
-        option
-          .setName('reason')
-          .setDescription('Reason for archiving this thread')
-          .setRequired(false)
-      )
-  )
+// .addSubcommand((subcommand) =>
+//   subcommand
+//     .setName('archive')
+//     .setDescription('Archive this thread')
+//     .addStringOption((option) =>
+//       option
+//         .setName('reason')
+//         .setDescription('Reason for archiving this thread')
+//         .setRequired(false)
+//     )
+// )
 
 if (import.meta.vitest) {
   const { test } = import.meta.vitest
