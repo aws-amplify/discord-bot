@@ -97,7 +97,7 @@
 </script>
 
 <Content>
-  <Grid noGutter>
+  <Grid>
     <Row>
       <Column>
         <div class="ha--section-wrapper">
