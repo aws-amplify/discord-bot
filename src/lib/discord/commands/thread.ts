@@ -1,9 +1,12 @@
-import { EmbedBuilder } from 'discord.js'
 import { SlashCommandBuilder } from '@discordjs/builders'
+import { EmbedBuilder, MessageType } from 'discord.js'
 import { prisma } from '$lib/db'
 import { isThreadWithinHelpChannel } from '../support'
-import { ThreadChannel, MessageType } from 'discord.js'
-import type { InteractionReplyOptions } from 'discord.js'
+import type {
+  ChatInputCommandInteraction,
+  ThreadChannel,
+  InteractionReplyOptions,
+} from 'discord.js'
 
 export const PREFIXES = {
   solved: '✅ - ',
@@ -25,7 +28,9 @@ export function parseTitle(title: string) {
   return title.replace(parseTitlePrefix(title) as string, '')
 }
 
-async function handler(interaction): Promise<InteractionReplyOptions | string> {
+export async function handler(
+  interaction: ChatInputCommandInteraction
+): Promise<InteractionReplyOptions | string> {
   const channel = interaction.channel as ThreadChannel
   const messages = await channel.messages.fetch()
   const record = await prisma.question.findUnique({
@@ -188,7 +193,7 @@ export const config = new SlashCommandBuilder()
     subcommand
       .setName('rename')
       .setDescription('Rename a thread')
-      .addUserOption((option) =>
+      .addStringOption((option) =>
         option
           .setName('title')
           .setDescription('Title to rename')
