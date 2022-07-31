@@ -39,8 +39,6 @@ try {
     // @ts-expect-error - hack to add non-slash command to command bank
     handler: selectAnswer.handler,
   })
-  await commands.register(selectAnswer.config.toJSON())
-  console.info('Registered selectAnswer command')
 } catch (error) {
   console.error(error)
   throw new Error(`Unable to register selectAnswer command`)
