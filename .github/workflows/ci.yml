@@ -1,4 +1,4 @@
-name: ci
+name: run-ci
 on:
   push:
     branches:
