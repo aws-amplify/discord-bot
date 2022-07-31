@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js'
-import { createCommand, createOption } from '$discord'
+import { SlashCommandBuilder } from '@discordjs/builders'
 import { prisma } from '$lib/db'
 import { isThreadWithinHelpChannel } from '../support'
 import { ThreadChannel, MessageType } from 'discord.js'
@@ -181,52 +181,37 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
   return '🤢 something went wrong'
 }
 
-const command = createCommand({
-  name: 'thread',
-  description: 'Thread actions',
-  enabledByDefault: true,
-  options: [
-    createOption({
-      name: 'rename',
-      description: 'Rename a thread',
-      type: 1,
-      options: [
-        createOption({
-          name: 'title',
-          description: 'Title to rename',
-          type: 3,
-          required: true,
-        }),
-      ],
-    }),
-    createOption({
-      name: 'solved',
-      description: 'Mark this thread as solved',
-      type: 1,
-    }),
-    createOption({
-      name: 'archive',
-      description: 'Archive a thread',
-      type: 1,
-      options: [
-        createOption({
-          name: 'reason',
-          description: 'Reason for archiving',
-          type: 3,
-          required: false,
-        }),
-      ],
-    }),
-    createOption({
-      name: 'reopen',
-      description: 'Reopen a thread.',
-      type: 1,
-    }),
-  ],
-  handler,
-})
-
-export default command
+export const config = new SlashCommandBuilder()
+  .setName('thread')
+  .setDescription('Thread actions')
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('rename')
+      .setDescription('Rename a thread')
+      .addUserOption((option) =>
+        option
+          .setName('title')
+          .setDescription('Title to rename')
+          .setRequired(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand.setName('solved').setDescription('Mark this thread as solved')
+  )
+  .addSubcommand((subcommand) =>
+    subcommand.setName('reopen').setDescription('Reopen this thread')
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('archive')
+      .setDescription('Archive this thread')
+      .addStringOption((option) =>
+        option
+          .setName('reason')
+          .setDescription('Reason for archiving this thread')
+          .setRequired(false)
+      )
+  )
 
 if (import.meta.vitest) {
   const { test } = import.meta.vitest

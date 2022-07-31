@@ -24,7 +24,7 @@
     isSyncing = true
     let data
     try {
-      const response = await fetch('/api/admin/commands/sync', {
+      const response = await fetch('/api/admin/commands', {
         method: 'POST',
       })
       if (response.ok && response.status === 200) {
