@@ -1,11 +1,9 @@
 import { EmbedBuilder } from 'discord.js'
 import { createCommand, createOption } from '$discord'
-import {
-  type InteractionReplyOptions,
-  type ThreadChannel,
-  MessageType,
-} from 'discord.js'
 import { prisma } from '$lib/db'
+import { isThreadWithinHelpChannel } from '../support'
+import { ThreadChannel, MessageType } from 'discord.js'
+import type { InteractionReplyOptions } from 'discord.js'
 
 export const PREFIXES = {
   solved: '✅ - ',
@@ -34,7 +32,7 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
     where: { threadId: channel.id },
   })
 
-  if (!channel.isThread()) {
+  if (!channel.isThread() || !isThreadWithinHelpChannel(channel)) {
     const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
     embed.setDescription(

@@ -12,6 +12,7 @@ import contribute from './commands/contribute'
 import thread, { PREFIXES } from './commands/thread'
 import github from './commands/github'
 import * as selectAnswer from './commands/select-answer'
+import { isHelpChannel, isThreadWithinHelpChannel } from './support'
 import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
 
 export const client = new Client({
@@ -45,8 +46,42 @@ try {
   throw new Error(`Unable to register selectAnswer command`)
 }
 
-client.once('ready', () => {
+client.once('ready', async () => {
   console.log('Bot Ready!')
+  for (const guild of client.guilds.cache.values()) {
+    try {
+      await prisma.guild.upsert({
+        where: {
+          id: guild.id,
+        },
+        create: {
+          id: guild.id,
+        },
+        update: {},
+      })
+    } catch (error) {
+      console.error('Error upserting guild', error)
+    }
+  }
+})
+
+/**
+ * Create Guild model when bot joins a new guild
+ */
+client.on('guildCreate', async (guild) => {
+  try {
+    await prisma.guild.upsert({
+      where: {
+        id: guild.id,
+      },
+      create: {
+        id: guild.id,
+      },
+      update: {},
+    })
+  } catch (error) {
+    console.error('Error upserting guild', error)
+  }
 })
 
 client.on('messageUpdate', async (oldMessage, newMessage) => {
@@ -72,9 +107,8 @@ client.on('messageUpdate', async (oldMessage, newMessage) => {
 client.on('messageCreate', async (message: Message) => {
   if (
     !message.author.bot &&
-    message.channel.type === ChannelType.GuildText &&
-    (message.channel.name.startsWith('help-') ||
-      message.channel.name.endsWith('-help'))
+    message.channel.type === 'GUILD_TEXT' &&
+    isHelpChannel(message.channel)
   ) {
     const options: StartThreadOptions = {
       name: `${PREFIXES.open}${message.content.slice(0, 140)}...`,
@@ -92,6 +126,11 @@ client.on('messageCreate', async (message: Message) => {
           title: message.content,
           createdAt: thread.createdAt as Date,
           url: message.url,
+          guild: {
+            connect: {
+              id: message.guild?.id,
+            },
+          },
         },
       })
       console.info(`Created question ${record.id}`)
@@ -113,19 +152,23 @@ client.on('messageCreate', async (message: Message) => {
   if (
     message.channel.type === ChannelType.GuildPublicThread &&
     !message.author.bot &&
-    (message.channel.parent?.name.startsWith('help-') ||
-      message.channel.parent?.name.endsWith('-help'))
+    isThreadWithinHelpChannel(message.channel)
   ) {
     const record = await prisma.question.upsert({
       where: { threadId: message.channel.id },
       update: { threadMetaUpdatedAt: message.createdAt as Date },
       create: {
-        ownerId: message.author.id,
+        ownerId: message.channel.ownerId as string,
         threadId: message.channel.id,
-        channelName: message.channel.name,
+        channelName: message.channel.parent.name,
         title: message.content,
-        createdAt: message.createdAt as Date,
+        createdAt: message.channel.createdAt as Date,
         url: message.url,
+        guild: {
+          connect: {
+            id: message.guild?.id,
+          },
+        },
       },
     })
     console.info(`Created/updated question ${record.id}`)

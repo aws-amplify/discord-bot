@@ -35,6 +35,8 @@ export const options: NextAuthOptions = {
     }),
   ],
   pages: {
+    signIn: '/',
+    signOut: '/logout',
     error: '/auth/error', // Error code passed in query string as ?error=
   },
   session: {
