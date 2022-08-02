@@ -108,7 +108,7 @@ export const post: RequestHandler = async function post({ request })  {
 
   if (!rolesApplied) {
     return {
-      status: 400,
+      status: 401,
     }
   } else {
     return {

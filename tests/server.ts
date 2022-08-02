@@ -257,7 +257,7 @@ describe('webhooks', () => {
     it('should return 403 with invalid auth header', async () => {
       const response = await request(app)
         .post('/api/webhooks/github-org-membership')
-        .send(mockedReleased.body)
+        .send(addedPayload1.body)
         .set({ 'X-Hub-Signature-256': 'invalid' })
       expect(response.status).toBe(403)
     })
@@ -267,7 +267,6 @@ describe('webhooks', () => {
         .post('/api/webhooks/github-org-membership')
         .send(addedPayload1.body)
         .set(addedPayload1.headers)
-      console.log(response)
       expect(response.status).toBe(201)
     })
 
