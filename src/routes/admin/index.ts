@@ -7,7 +7,7 @@ import { api } from '../api/_discord'
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function get({ locals }) {
-  const commands = bank.values()
+  const commands = Array.from(bank.values())
   // const id = read(store)
   const id = import.meta.env.VITE_DISCORD_GUILD_ID
 
