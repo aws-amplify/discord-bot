@@ -163,7 +163,7 @@
   
   :global(.bx--header-panel--expanded) {
     height: min-content;
-    padding-bottom: var(--cds-spacing-08);
+    padding-bottom: var(--cds-spacing-10);
   }
   
   .header-text {

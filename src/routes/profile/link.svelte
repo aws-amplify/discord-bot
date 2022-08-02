@@ -1,5 +1,6 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit'
+  
 
   export const load: Load = async ({ session, fetch }) => {
     if (!session?.user) {
@@ -28,6 +29,20 @@
     </p>
   </Content>
 {:else}
-  <LoginButton bind:this={formDiscord} provider="discord" />
-  <LoginButton bind:this={formGitHub} provider="github" />
+  <LoginButton buttonText="with GitHub" bind:this={formGitHub} provider="github" />
 {/if}
+
+<style>
+:global.bx--btn--primary {
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(0,0,0,0);
+  background-color: var(--cds-interactive-01, #0f62fe);
+  color: var(--cds-text-04, #ffffff);
+  margin-top: var(--cds-spacing-10);
+  display: block;
+  margin-right:  auto;
+  margin-left: auto;
+}
+
+</style>
