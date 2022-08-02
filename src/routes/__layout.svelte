@@ -31,14 +31,16 @@
     ToastNotification,
   } from 'carbon-components-svelte'
   import Home from 'carbon-icons-svelte/lib/Home.svelte'
+  import UserAdmin from 'carbon-icons-svelte/lib/UserAdmin.svelte'
   import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte'
+  import LogoDiscord from 'carbon-icons-svelte/lib/LogoDiscord.svelte'
   import MessageQueue from 'carbon-icons-svelte/lib/MessageQueue.svelte'
   import { session, page } from '$app/stores'
   import { afterNavigate } from '$app/navigation'
   import Avatar from '$lib/Avatar.svelte'
   import LoginButton from '$lib/LoginButton.svelte'
   import GuildSwitcher from '$lib/GuildSwitcher.svelte'
-  import { notifications } from '$lib/store'
+  import { notifications, user } from '$lib/store'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
 
   import 'carbon-components-svelte/css/all.css'
@@ -106,11 +108,25 @@
           href="/questions"
           isSelected="{$page.url.pathname === '/questions'}"
         />
+        {#if $session?.user?.isAdmin}
+          <SideNavLink
+            icon="{UserAdmin}"
+            text="Admin"
+            href="/admin"
+            isSelected="{$page.url.pathname === '/admin'}"
+          />
+        {/if}
         <SideNavDivider />
         <SideNavLink
           icon="{LogoGithub}"
           text="GitHub"
           href="https://github.com/aws-amplify/discord-bot"
+          target="_blank"
+        />
+        <SideNavLink
+          icon="{LogoDiscord}"
+          text="Join us on Discord"
+          href="https://discord.gg/invite/amplify"
           target="_blank"
         />
       </SideNavItems>
