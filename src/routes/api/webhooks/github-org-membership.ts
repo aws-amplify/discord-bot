@@ -2,6 +2,7 @@ import { addRole } from '$discord/roles/addRole'
 import { prisma } from '$lib/db'
 import { removeRole } from '$discord/roles/removeRole'
 import { verifyGithubWebhookEvent } from './_verifyWebhook'
+import type { RequestHandler } from 'express'
 
 async function getDiscordUserId(ghUserId: string) {
   const data = await prisma.user.findFirst({
@@ -29,20 +30,43 @@ async function getDiscordUserId(ghUserId: string) {
   throw new Error(`Discord account not found for GitHub user ${ghUserId}`)
 }
 
-export async function post({ request }) {
-  let rolesApplied, guildMemberId
-  const payload = await request.json()
+export const post: RequestHandler = async function post({ request })  {
+  let rolesApplied, guildMemberId, payload
+  try {
+    payload = await request.json()
+  } catch (error) {
+    return {
+      status: 400,
+      body: {
+        errors: [
+          {
+            message: `Invalid payload: ${error.message}`,
+          }
+        ]
+      }
+    }
+  }
 
   if (!import.meta.vitest) {
     const sig256 = request.headers.get('x-hub-signature-256')
     if (
+      !sig256 ||
       !verifyGithubWebhookEvent(
         process.env.GITHUB_WEBHOOK_SECRET,
         payload,
         sig256
       )
     ) {
-      return { status: 403 }
+      return {
+        status: 403,
+        body: {
+          errors: [
+            {
+              message: 'Unable to verify signature',
+            },
+          ],
+        },
+      }
     }
   }
 
@@ -50,7 +74,16 @@ export async function post({ request }) {
     guildMemberId = await getDiscordUserId(String(payload.membership.user.id))
   } catch (err) {
     console.error(err)
-    return { status: 403 }
+    return {
+      status: 403,
+      body: {
+        errors: [
+          {
+            message: 'Could not find Discord user',
+          },
+        ],
+      },
+    }
   }
 
   switch (payload.action) {
@@ -78,7 +111,7 @@ export async function post({ request }) {
     }
   } else {
     return {
-      status: 200,
+      status: 201,
     }
   }
 }

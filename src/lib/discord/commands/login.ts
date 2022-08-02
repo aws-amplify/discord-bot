@@ -1,27 +1,20 @@
-import { createCommand } from '$discord'
-import type { InteractionReplyOptions } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js'
 
-async function handler(interaction): Promise<InteractionReplyOptions | string>  {
+export const config = new SlashCommandBuilder()
+  .setName('login')
+  .setDescription('Login to GitHub to link your accounts.')
+
+export function handler(interaction: ChatInputCommandInteraction): InteractionReplyOptions | string {
   const { user } = interaction
 
   if (user.bot) {
     return 'This command does not support bots logging in.'
-  }
-
-  return {
+  } else return {
     content: `${import.meta.env.VITE_HOST}/profile/link`,
-    ephemeral: true
+    ephemeral: true,
   }
 }
-
-const command = createCommand({
-  name: 'login',
-  description: 'Sends github login link to user',
-  enabledByDefault: false, // todo: restrict who can execute
-  handler,
-})
-
-export default command
 
 if (import.meta.vitest) {
   const { test } = import.meta.vitest

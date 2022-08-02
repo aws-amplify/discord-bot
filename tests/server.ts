@@ -99,66 +99,66 @@ describe('Admin Routes', () => {
 })
 
 describe('webhooks', () => {
-  // describe('POST /api/webhooks/github-release', () => {
-  //   it('should not return 401', async () => {
-  //     const response = await request(app)
-  //       .post('/api/webhooks/github-release')
-  //       .send({})
-  //     expect(response.status).not.toBe(401)
-  //   })
+  describe('POST /api/webhooks/github-release', () => {
+    it('should not return 401', async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-release')
+        .send({})
+      expect(response.status).not.toBe(401)
+    })
 
-  //   it('should return 403 without auth header', async () => {
-  //     const response = await request(app)
-  //       .post('/api/webhooks/github-release')
-  //       .send({})
-  //     expect(response.status).toBe(403)
-  //   })
+    it('should return 403 without auth header', async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-release')
+        .send({})
+      expect(response.status).toBe(403)
+    })
 
-  //   it('should return 400 if webhook URL is bad', async () => {
-  //     const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
-  //     process.env.DISCORD_WEBHOOK_URL_RELEASES =
-  //       'https://discordapp.com/api/webhooks/bad'
-  //     const response = await request(app)
-  //       .post('/api/webhooks/github-release')
-  //       .send(mockedReleased.body)
-  //       .set(mockedReleased.headers)
-  //     expect(response.status).toBe(400)
-  //     process.env.DISCORD_WEBHOOK_URL_RELEASES = url
-  //   })
+    it('should return 400 if webhook URL is bad', async () => {
+      const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
+      process.env.DISCORD_WEBHOOK_URL_RELEASES =
+        'https://discordapp.com/api/webhooks/bad'
+      const response = await request(app)
+        .post('/api/webhooks/github-release')
+        .send(mockedReleased.body)
+        .set(mockedReleased.headers)
+      expect(response.status).toBe(400)
+      process.env.DISCORD_WEBHOOK_URL_RELEASES = url
+    })
 
-  //   it('should return 201 if everything is correct', async () => {
-  //     const response = await request(app)
-  //     .post('/api/webhooks/github-release')
-  //     .send(mockedReleased.body)
-  //     .set(mockedReleased.headers)
-  //     expect(response.status).toBe(201)
-  //   })
+    it('should return 201 if everything is correct', async () => {
+      const response = await request(app)
+      .post('/api/webhooks/github-release')
+      .send(mockedReleased.body)
+      .set(mockedReleased.headers)
+      expect(response.status).toBe(201)
+    })
 
-  //   it(`should return 204 is event action is not 'released'`, async () => {
-  //     const response = await request(app)
-  //     .post('/api/webhooks/github-release')
-  //     .send(mockedCreated.body)
-  //     .set(mockedCreated.headers)
-  //     expect(response.status).toBe(204)
-  //   })
+    it(`should return 204 is event action is not 'released'`, async () => {
+      const response = await request(app)
+      .post('/api/webhooks/github-release')
+      .send(mockedCreated.body)
+      .set(mockedCreated.headers)
+      expect(response.status).toBe(204)
+    })
 
-  //   it(`should return 204 is event action is not 'released'`, async () => {
-  //     const response = await request(app)
-  //     .post('/api/webhooks/github-release')
-  //     .send(mockedPublished.body)
-  //     .set(mockedPublished.headers)
-  //     expect(response.status).toBe(204)
-  //   })
+    it(`should return 204 is event action is not 'released'`, async () => {
+      const response = await request(app)
+      .post('/api/webhooks/github-release')
+      .send(mockedPublished.body)
+      .set(mockedPublished.headers)
+      expect(response.status).toBe(204)
+    })
 
-  //   it(`should return 204 is event action is not 'released'`, async () => {
-  //     const response = await request(app)
-  //     .post('/api/webhooks/github-release')
-  //     .send(mockedPreReleased.body)
-  //     .set(mockedPreReleased.headers)
-  //     expect(response.status).toBe(204)
-  //   })
+    it(`should return 204 is event action is not 'released'`, async () => {
+      const response = await request(app)
+      .post('/api/webhooks/github-release')
+      .send(mockedPreReleased.body)
+      .set(mockedPreReleased.headers)
+      expect(response.status).toBe(204)
+    })
 
-  // })
+  })
 
   describe('POST api/webhooks/github-org-membership', () => {
     describe('webhook verification', () => {
@@ -229,40 +229,29 @@ describe('webhooks', () => {
 
     it('should return 403 without auth header', async () => {
       const response = await request(app)
-        .post('/api/webhooks/github-release')
+        .post('/api/webhooks/github-org-membership')
         .send({})
       expect(response.status).toBe(403)
     })
 
     it('should return 403 with invalid auth header', async () => {
       const response = await request(app)
-        .post('/api/webhooks/github-release')
+        .post('/api/webhooks/github-org-membership')
         .send(mockedReleased.body)
         .set({ 'X-Hub-Signature-256': 'invalid' })
       expect(response.status).toBe(403)
     })
 
-    it('should return 400 if webhook URL is bad', async () => {
-      const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
-      process.env.DISCORD_WEBHOOK_URL_RELEASES =
-        'https://discordapp.com/api/webhooks/bad'
-      const response = await request(app)
-        .post('/api/webhooks/github-org-membership')
-        .send(addedPayload1.body)
-        .set(addedPayload1.headers)
-      expect(response.status).toBe(200)
-    })
-
-    it('should return 200 if everything is correct', async () => {
+    it('should return 201 if everything is correct', async () => {
       const response = await request(app)
         .post('/api/webhooks/github-org-membership')
         .send(removedPayload1.body)
         .set(removedPayload1.headers)
-      expect(response.status).toBe(200)
+      expect(response.status).toBe(201)
     })
 
     it(`should return 403 if user isn't in db`, async () => {
-      const response = await await request(app)
+      const response = await request(app)
         .post('/api/webhooks/github-org-membership')
         .send(removedPayloadUserDNE.body)
         .set(removedPayloadUserDNE.headers)
@@ -297,50 +286,6 @@ describe('webhooks', () => {
         .set(addedPayload1.headers)
       expect(response.status).toBe(400)
       process.env.DISCORD_GUILD_ID = guildId
-    })
-
-    it('should return 400 if invalid content-type', async () => {
-      // if webhook in GitHub is set to application/x-www-url-encoded
-      const response = await request(app)
-        .post('/api/webhooks/github-release')
-        .send(
-          `payload=${encodeURIComponent(JSON.stringify(mockedReleased.body))}`
-        )
-        .set({ 'Content-Type': 'application/x-www-url-encoded' })
-      expect(response.status).toBe(400)
-      // TODO: test for correct error message
-    })
-
-    it('should return 201 if everything is correct', async () => {
-      const response = await request(app)
-        .post('/api/webhooks/github-release')
-        .send(mockedReleased.body)
-        .set(mockedReleased.headers)
-      expect(response.status).toBe(201)
-    })
-
-    it(`should return 204 is event action is not 'released'`, async () => {
-      const response = await request(app)
-        .post('/api/webhooks/github-release')
-        .send(mockedCreated.body)
-        .set(mockedCreated.headers)
-      expect(response.status).toBe(204)
-    })
-
-    it(`should return 204 is event action is not 'released'`, async () => {
-      const response = await request(app)
-        .post('/api/webhooks/github-release')
-        .send(mockedPublished.body)
-        .set(mockedPublished.headers)
-      expect(response.status).toBe(204)
-    })
-
-    it(`should return 204 is event action is not 'released'`, async () => {
-      const response = await request(app)
-        .post('/api/webhooks/github-release')
-        .send(mockedPreReleased.body)
-        .set(mockedPreReleased.headers)
-      expect(response.status).toBe(204)
     })
   })
 })
