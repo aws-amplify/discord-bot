@@ -1,7 +1,6 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit'
   
-
   export const load: Load = async ({ session, fetch }) => {
     if (!session?.user) {
       return { redirect: '/restricted', status: 302 }
@@ -33,7 +32,7 @@
 {/if}
 
 <style>
-:global.bx--btn--primary {
+:global(.bx--btn--primary) {
   border-width: 1px;
   border-style: solid;
   border-color: rgba(0,0,0,0);
