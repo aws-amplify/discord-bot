@@ -265,8 +265,8 @@ describe('webhooks', () => {
     it('should return 201 if everything is correct', async () => {
       const response = await request(app)
         .post('/api/webhooks/github-org-membership')
-        .send(removedPayload1.body)
-        .set(removedPayload1.headers)
+        .send(addedPayload1.body)
+        .set(addedPayload1.headers)
       expect(response.status).toBe(201)
     })
 
