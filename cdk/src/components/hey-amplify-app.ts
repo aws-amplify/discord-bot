@@ -222,6 +222,9 @@ export class HeyAmplifyApp extends Construct {
     // enable access logging for load balancer
     albFargateService.loadBalancer.logAccessLogs(bucket, 'elb-access')
 
+    // enable deletion protection for load balancer
+    albFargateService.loadBalancer.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
+
     // set up DNS record for the CloudFront distribution if subdomain exists
     if (subdomain) {
       const record = new route53.ARecord(this, 'AliasRecordApp', {
