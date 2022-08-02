@@ -7,7 +7,7 @@ Refer to the [readme guide](./README.md#getting-started) to get started.
 - [Carbon DevTools Chrome Extension](https://chrome.google.com/webstore/detail/carbon-devtools/oejjaglcafcolafkjecfkoojgnpfpgca)
 - [Carbon Components Svelte](https://carbon-components-svelte.onrender.com/)
 - [Carbon Icons Svelte](https://carbon-icons-svelte.onrender.com/)
-- [discord.js]()
+- [discord.js](https://discord.js.org/#/docs/discord.js/main/general/welcome)
 - [`@discordjs/builders` Slash Command Builder](https://github.com/discordjs/discord.js/blob/main/packages/builders/docs/examples/Slash%20Command%20Builders.md)
 
 ## Repository Reference
