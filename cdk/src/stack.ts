@@ -77,6 +77,7 @@ export class HeyAmplifyStack extends Stack {
       // if env is destroyed, empty & remove bucket
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
+      serverAccessLogsPrefix: 's3-access',
     })
 
     const filesystemMountPoint = '/data'
