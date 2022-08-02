@@ -60,3 +60,5 @@ export function createDiscordApi(
 ): DiscordApi {
   return new DiscordApi({ token })
 }
+
+export const api = createDiscordApi()

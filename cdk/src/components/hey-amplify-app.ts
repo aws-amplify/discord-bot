@@ -160,6 +160,16 @@ export class HeyAmplifyApp extends Construct {
     const xAmzSecurityTokenHeaderName = 'X-HeyAmplify-Security-Token'
     const xAmzSecurityTokenHeaderValue = uuid()
 
+    const headerAllowlist = [
+      'X-GitHub-Delivery',
+      'X-GitHub-Event',
+      'X-GitHub-Hook-ID',
+      'X-GitHub-Hook-Installation-Target-ID',
+      'X-GitHub-Hook-Installation-Target-Type',
+      'X-Hub-Signature',
+      'X-Hub-Signature-256',
+    ]
+
     // set up CloudFront
     const distribution = new cloudfront.Distribution(this, 'CFDistribution', {
       // domainNames and certificate needed for amplify.aws subdomain (connected to a Route53 hosted zone)
@@ -168,6 +178,9 @@ export class HeyAmplifyApp extends Construct {
       defaultBehavior: {
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: new cloudfront.CachePolicy(this, 'CachePolicy', {
+          headerBehavior: cloudfront.CacheHeaderBehavior.allowList(
+            ...headerAllowlist
+          ),
           queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
           cookieBehavior: cloudfront.CacheCookieBehavior.all(),
         }),

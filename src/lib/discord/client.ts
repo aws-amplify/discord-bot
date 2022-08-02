@@ -1,44 +1,91 @@
-import { Client, Intents, MessageEmbed } from 'discord.js'
-import { createDiscordCommandBank } from '$discord'
-import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
+import {
+  Client,
+  GatewayIntentBits,
+  EmbedBuilder,
+  ChannelType,
+} from 'discord.js'
 import { prisma } from '$lib/db'
-// manually import the commands
-import giverole from './commands/giverole'
-import contribute from './commands/contribute'
-import thread, { PREFIXES } from './commands/thread'
-import github from './commands/github'
-import login from './commands/login'
+import { commands, registerCommands } from './commands'
+import { PREFIXES } from './commands/thread'
+import { isHelpChannel, isThreadWithinHelpChannel } from './support'
+import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
 
 export const client = new Client({
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.GUILD_SCHEDULED_EVENTS,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.MessageContent,
   ],
 })
 
-// instead of using `createBank` helper to create command bank from a directory path, create it manually with the imported commands
-export const commands = createDiscordCommandBank([
-  giverole,
-  contribute,
-  thread,
-  github,
-  login,
-])
-
-client.once('ready', () => {
+client.once('ready', async () => {
   console.log('Bot Ready!')
+  for (const guild of client.guilds.cache.values()) {
+    try {
+      await prisma.guild.upsert({
+        where: {
+          id: guild.id,
+        },
+        create: {
+          id: guild.id,
+        },
+        update: {},
+      })
+    } catch (error) {
+      console.error('Error upserting guild', error)
+    }
+  }
+
+  if (import.meta.env.DEV) {
+    await registerCommands()
+  }
+})
+
+/**
+ * Create Guild model when bot joins a new guild
+ */
+client.on('guildCreate', async (guild) => {
+  try {
+    await prisma.guild.upsert({
+      where: {
+        id: guild.id,
+      },
+      create: {
+        id: guild.id,
+      },
+      update: {},
+    })
+  } catch (error) {
+    console.error('Error upserting guild', error)
+  }
+})
+
+client.on('messageUpdate', async (oldMessage, newMessage) => {
+  if (oldMessage.author?.bot) return
+  if (oldMessage.content === newMessage.content || !newMessage.content) return
+  if (oldMessage.channel.type !== ChannelType.GuildPublicThread) return
+
+  // update answer contents if exists
+  const answer = await prisma.answer.update({
+    where: {
+      id: oldMessage.id,
+    },
+    data: {
+      content: newMessage.content,
+    },
+    select: {
+      id: true,
+    },
+  })
+  console.log('Updated answer content:', answer.id)
 })
 
 client.on('messageCreate', async (message: Message) => {
-  // GuildChannelTypes.GUILD_TEXT
   if (
     !message.author.bot &&
-    message.channel.type === 'GUILD_TEXT' &&
-    (message.channel.name.startsWith('help-') ||
-      message.channel.name.endsWith('-help'))
+    message.channel.type === ChannelType.GuildText &&
+    isHelpChannel(message.channel)
   ) {
     const options: StartThreadOptions = {
       name: `${PREFIXES.open}${message.content.slice(0, 140)}...`,
@@ -56,6 +103,11 @@ client.on('messageCreate', async (message: Message) => {
           title: message.content,
           createdAt: thread.createdAt as Date,
           url: message.url,
+          guild: {
+            connect: {
+              id: message.guild?.id,
+            },
+          },
         },
       })
       console.info(`Created question ${record.id}`)
@@ -64,7 +116,7 @@ client.on('messageCreate', async (message: Message) => {
     }
 
     // optionally send a message to the thread
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
     // TODO: add more info on /thread command
     embed.setDescription(
@@ -75,21 +127,25 @@ client.on('messageCreate', async (message: Message) => {
 
   // capture thread updates in public "help" channels
   if (
-    message.channel.type === 'GUILD_PUBLIC_THREAD' &&
+    message.channel.type === ChannelType.GuildPublicThread &&
     !message.author.bot &&
-    (message.channel.parent?.name.startsWith('help-') ||
-      message.channel.parent?.name.endsWith('-help'))
+    isThreadWithinHelpChannel(message.channel)
   ) {
     const record = await prisma.question.upsert({
       where: { threadId: message.channel.id },
       update: { threadMetaUpdatedAt: message.createdAt as Date },
       create: {
-        ownerId: message.author.id,
+        ownerId: message.channel.messages.cache.first()?.author.id as string,
         threadId: message.channel.id,
-        channelName: message.channel.name,
-        title: message.content,
-        createdAt: message.createdAt as Date,
+        channelName: message.channel.parent.name,
+        title: message.channel.name,
+        createdAt: message.channel.createdAt as Date,
         url: message.url,
+        guild: {
+          connect: {
+            id: message.guild?.id,
+          },
+        },
       },
     })
     console.info(`Created/updated question ${record.id}`)
@@ -102,7 +158,10 @@ client.on('interactionCreate', async (interaction) => {
   console.log('Handling interaction for command', commandName)
   const command = commands.get(commandName)
   if (!command) {
-    await interaction.reply(`Command not found 🤕`)
+    await interaction.reply({
+      content: `Command not found 🤕`,
+      ephemeral: true,
+    })
     return
   }
 
@@ -110,11 +169,7 @@ client.on('interactionCreate', async (interaction) => {
     `Handling command "${command?.name}" for ${interaction.user.username}#${interaction.user.discriminator}`
   )
 
-  const response = await commands.handle(interaction)
-  if (response) {
-    await interaction.reply(response)
-  }
-  return
+  await command.handle(interaction)
 })
 
 client.on('rateLimit', (info) => {
@@ -130,3 +185,10 @@ client.on('threadUpdate', async (thread) => {
 export function createBot(token = process.env.DISCORD_BOT_TOKEN) {
   return client.login(token)
 }
+
+// capture SIGINT (Ctrl+C) to gracefully shutdown
+process.on('SIGINT', () => {
+  console.log('destroying client')
+  client?.destroy()
+  process.exit(0)
+})

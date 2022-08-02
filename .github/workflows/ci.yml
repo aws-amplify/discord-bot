@@ -1,4 +1,4 @@
-name: ci
+name: run-ci
 on:
   push:
     branches:
@@ -67,6 +67,7 @@ jobs:
           DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
           DISCORD_STAFF_ROLE_ID: ${{ secrets.DISCORD_STAFF_ROLE_ID }}
           DISCORD_CONTRIBUTOR_ROLE_ID: ${{  secrets.DISCORD_CONTRIBUTOR_ROLE_ID }}
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
           VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           GITHUB_APP_ID: ${{ secrets.GH_APP_ID }}
@@ -75,5 +76,3 @@ jobs:
           GITHUB_PRIVATE_KEY: ${{ secrets.GH_PRIVATE_KEY }}
           GITHUB_INSTALLATION_ID: ${{ secrets.GH_INSTALLATION_ID }}
           GITHUB_ORG_LOGIN: ${{ secrets.GH_ORG_LOGIN }}
-
-         

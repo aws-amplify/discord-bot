@@ -1,6 +1,7 @@
 <script context="module" lang="ts">
-  /** @type {import('@sveltejs/kit').Load} */
-  export async function load({ props }) {
+  import type { Load } from '@sveltejs/kit'
+
+  export const load: Load = ({ props }) => {
     return {
       props,
     }

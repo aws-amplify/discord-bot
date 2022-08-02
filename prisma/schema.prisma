@@ -10,6 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Guild {
+  id            String         @id @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now())
+  configuration Configuration?
+  questions     Question[]
+}
+
 model Question {
   id                  String   @id @default(cuid())
   createdAt           DateTime
@@ -22,17 +30,21 @@ model Question {
   isSolved            Boolean  @default(false)
   url                 String?
   answer              Answer?
-  answerId            String?  @unique
+  guild               Guild    @relation(fields: [guildId], references: [id])
+  guildId             String
 }
 
 model Answer {
   id         String   @id @default(cuid())
+  selectedAt DateTime @default(now())
+  selectedBy String // Discord user ID
   createdAt  DateTime
   updatedAt  DateTime @updatedAt
-  questionId String   @unique // Question.id
   ownerId    String // Discord member that answered the question
   content    String
+  url        String?
   question   Question @relation(fields: [questionId], references: [id])
+  questionId String   @unique // Question.id
 }
 
 // SQLite does not support enums, https://github.com/prisma/prisma/issues/2219
@@ -58,6 +70,7 @@ model Configuration {
   name               String
   roles              Role[]
   githubOrganization String?
+  guild              Guild    @relation(fields: [id], references: [id])
   // "default" server configuration for the instance, in our case this will be the "AWS Amplify" Discord server. This will be the default choice for the server switcher
   // isDefaultServer    Boolean                   @default(false)
 }

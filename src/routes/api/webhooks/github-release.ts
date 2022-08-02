@@ -1,9 +1,10 @@
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { verifyGithubWebhookEvent } from './_verifyWebhook'
 import { mocked, mockedBad } from '../../../../tests/mock/github-webhook'
+import type { RequestHandler } from '@sveltejs/kit'
 
 function createReleaseMessage(payload) {
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
   embed.setTitle(`[${payload.repository.full_name}] ${payload.release.name}`)
   embed.setColor('#ff9900')
   embed.setDescription(payload.release.body)
@@ -20,19 +21,44 @@ function createReleaseMessage(payload) {
   }
 }
 
-export async function post({ request }) {
-  const payload = await request.json()
+// application/x-www-form-urlencoded
+export const post: RequestHandler = async function post({ request }) {
+  let payload
+  try {
+    payload = await request.json()
+  } catch (error) {
+    return {
+      status: 400,
+      body: {
+        errors: [
+          {
+            message: `Invalid payload: ${error.message}`,
+          },
+        ],
+      },
+    }
+  }
 
   if (!import.meta.vitest) {
     const sig256 = request.headers.get('x-hub-signature-256')
     if (
+      !sig256 ||
       !verifyGithubWebhookEvent(
         process.env.GITHUB_WEBHOOK_SECRET,
         payload,
         sig256
       )
     ) {
-      return { status: 403 }
+      return {
+        status: 403,
+        body: {
+          errors: [
+            {
+              message: 'Unable to verify signature',
+            },
+          ],
+        },
+      }
     }
   }
 
@@ -89,23 +115,14 @@ if (import.meta.vitest) {
 
     test('should return false with empty payload and header', () => {
       expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_WEBHOOK_SECRET,
-          {},
-          ''
-        )
+        verifyGithubWebhookEvent(process.env.GITHUB_WEBHOOK_SECRET, {}, '')
       ).toEqual(false)
     })
 
     test('should return false with null payload and header is null', () => {
       expect(
-        verifyGithubWebhookEvent(
-          process.env.GITHUB_WEBHOOK_SECRET,
-          null,
-          null
-        )
+        verifyGithubWebhookEvent(process.env.GITHUB_WEBHOOK_SECRET, null, null)
       ).toEqual(false)
     })
   })
-
 }

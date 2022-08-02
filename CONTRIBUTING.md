@@ -2,6 +2,14 @@
 
 Refer to the [readme guide](./README.md#getting-started) to get started.
 
+## Resources
+
+- [Carbon DevTools Chrome Extension](https://chrome.google.com/webstore/detail/carbon-devtools/oejjaglcafcolafkjecfkoojgnpfpgca)
+- [Carbon Components Svelte](https://carbon-components-svelte.onrender.com/)
+- [Carbon Icons Svelte](https://carbon-icons-svelte.onrender.com/)
+- [discord.js](https://discord.js.org/#/docs/discord.js/main/general/welcome)
+- [`@discordjs/builders` Slash Command Builder](https://github.com/discordjs/discord.js/blob/main/packages/builders/docs/examples/Slash%20Command%20Builders.md)
+
 ## Repository Reference
 
 - [`cdk/`](./cdk) - AWS CDK application to deploy apps
@@ -27,6 +35,35 @@ git config core.hookspath .git-hooks
 To get started, let's create a new command file in `src/lib/discord/commands`: `hello.ts`
 
 ```ts
+import { SlashCommandBuilder } from '@discordjs/builders'
+import type { ChatInputCommandInteraction } from 'discord.js'
+
+export const config = new SlashCommandBuilder()
+  .setName('hello')
+  .setDescription('Says hello to the world (or everyone)')
+  .addStringOption((option) =>
+    option
+      .setName('name')
+      .setDescription('Say hello to this name')
+      .setRequired(true)
+      .addChoices(
+        { name: 'world', value: 'world' }
+        { name: 'everyone', value: 'everyone' }
+      )
+  )
+
+export function handler(interaction: ChatInputCommandInteraction): string {
+  const name = interaction.options.getString('name') as string
+  return `Hello, ${name}!`
+}
+
+if (import.meta.vitest) {
+  const { test } = import.meta.vitest
+  test.todo('/hello')
+}
+```
+
+<!-- ```ts
 import { createCommand, createOption } from '$discord'
 
 const name = createOption({
@@ -45,11 +82,7 @@ export default createCommand({
     return `hello ${name.value}`
   },
 })
-```
-
-Save and register the new command with `commands.sync()`
-
-**NOTE:** refresh your Discord client and optionally allow up to 30 minutes for commands to show in Discord
+``` -->
 
 ## Creating Secrets in SSM
 

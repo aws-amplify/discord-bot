@@ -1,7 +1,14 @@
-import { createCommand } from '$discord'
-import type { Role, User, InteractionReplyOptions } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import type {
+  Role,
+  User,
+  InteractionReplyOptions,
+  ChatInputCommandInteraction,
+} from 'discord.js'
 
-async function handler(interaction): Promise<InteractionReplyOptions | string> {
+export async function handler(
+  interaction: ChatInputCommandInteraction
+): Promise<InteractionReplyOptions | string> {
   const { member: caller, guild } = interaction
   
   const { role, user } = interaction.options.data.reduce(
@@ -18,7 +25,7 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
     return 'This command does not support adding roles to bots.'
   }
 
-  if (caller.id === user.id) {
+  if (caller.user.id === user.id) {
     return `This command does not support adding roles to yourself.`
   }
 
@@ -29,28 +36,16 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
   return '🤢 something went wrong'
 }
 
-const command = createCommand({
-  name: 'giverole',
-  description: 'Gives role to user',
-  enabledByDefault: false, // todo: restrict who can execute
-  options: [
-    {
-      name: 'role',
-      description: 'Role to give',
-      type: 8,
-      required: true,
-    },
-    {
-      name: 'user',
-      description: 'User to receive role',
-      type: 6,
-      required: true,
-    },
-  ],
-  handler,
-})
-
-export default command
+export const config = new SlashCommandBuilder()
+  .setName('giverole')
+  .setDescription('Give a user a role.')
+  .setDefaultMemberPermissions('0') // 0 = disabled by default
+  .addRoleOption((option) =>
+    option.setName('role').setDescription('The role to give.').setRequired(true)
+  )
+  .addUserOption((option) =>
+    option.setName('user').setDescription('The user to boop').setRequired(true)
+  )
 
 if (import.meta.vitest) {
   const { test } = import.meta.vitest
