@@ -31,7 +31,8 @@ async function getDiscordUserId(ghUserId: string) {
 }
 
 export const post: RequestHandler = async function post({ request })  {
-  let rolesApplied, guildMemberId, payload
+  let rolesApplied, guildMemberId
+  let payload
   try {
     payload = await request.json()
   } catch (error) {

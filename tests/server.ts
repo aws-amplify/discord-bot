@@ -267,6 +267,7 @@ describe('webhooks', () => {
         .post('/api/webhooks/github-org-membership')
         .send(addedPayload1.body)
         .set(addedPayload1.headers)
+      console.log(response)
       expect(response.status).toBe(201)
     })
 
