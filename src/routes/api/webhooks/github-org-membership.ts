@@ -2,7 +2,7 @@ import { addRole } from '$discord/roles/addRole'
 import { prisma } from '$lib/db'
 import { removeRole } from '$discord/roles/removeRole'
 import { verifyGithubWebhookEvent } from './_verifyWebhook'
-import type { RequestHandler } from 'express'
+import type { RequestHandler } from '@sveltejs/kit'
 
 async function getDiscordUserId(ghUserId: string) {
   const data = await prisma.user.findFirst({
