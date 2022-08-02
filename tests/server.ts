@@ -85,9 +85,9 @@ describe('Admin Routes', () => {
       expect(response.headers.location).toBe('/restricted')
     })
   })
-  describe('POST /api/admin/commands/sync', () => {
+  describe('POST /api/admin/commands', () => {
     it('should return 401', async () => {
-      const response = await request(app).post('/api/admin/commands/sync')
+      const response = await request(app).post('/api/admin/commands')
       expect(response.status).toBe(401)
     })
   })

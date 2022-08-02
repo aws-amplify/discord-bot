@@ -1,17 +1,12 @@
-<script context="module">
-  /** * @type {import('@sveltejs/kit').Load} */
-  export async function load({ session }) {
-    if (!session?.user?.isAdmin) {
+<script context="module" lang="ts">
+  import type { Load } from '@sveltejs/kit'
+
+  export const load: Load = ({ session }) => {
+    if (!session?.user) {
       return { redirect: '/restricted', status: 302 }
     }
-    return {
-      props: { user: session.user },
-    }
+    return {}
   }
-</script>
-
-<script>
-  export let user
 </script>
 
 <slot />

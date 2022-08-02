@@ -4,14 +4,9 @@ import {
   EmbedBuilder,
   ChannelType,
 } from 'discord.js'
-import { createDiscordCommandBank } from '$discord'
 import { prisma } from '$lib/db'
-// manually import the commands
-import giverole from './commands/giverole'
-import contribute from './commands/contribute'
-import thread, { PREFIXES } from './commands/thread'
-import github from './commands/github'
-import * as selectAnswer from './commands/select-answer'
+import { commands, registerCommands } from './commands'
+import { PREFIXES } from './commands/thread'
 import { isHelpChannel, isThreadWithinHelpChannel } from './support'
 import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
 
@@ -23,26 +18,6 @@ export const client = new Client({
     GatewayIntentBits.MessageContent,
   ],
 })
-
-// instead of using `createBank` helper to create command bank from a directory path, create it manually with the imported commands
-export const commands = createDiscordCommandBank([
-  giverole,
-  contribute,
-  thread,
-  github,
-])
-
-try {
-  // TODO: command bank to support context menu commands, until then let's manually add it
-  commands.set('select-answer', {
-    ...selectAnswer.config,
-    // @ts-expect-error - hack to add non-slash command to command bank
-    handler: selectAnswer.handler,
-  })
-} catch (error) {
-  console.error(error)
-  throw new Error(`Unable to register selectAnswer command`)
-}
 
 client.once('ready', async () => {
   console.log('Bot Ready!')
@@ -60,6 +35,10 @@ client.once('ready', async () => {
     } catch (error) {
       console.error('Error upserting guild', error)
     }
+  }
+
+  if (import.meta.env.DEV) {
+    await registerCommands()
   }
 })
 
@@ -105,7 +84,7 @@ client.on('messageUpdate', async (oldMessage, newMessage) => {
 client.on('messageCreate', async (message: Message) => {
   if (
     !message.author.bot &&
-    message.channel.type === 'GUILD_TEXT' &&
+    message.channel.type === ChannelType.GuildText &&
     isHelpChannel(message.channel)
   ) {
     const options: StartThreadOptions = {
@@ -156,10 +135,10 @@ client.on('messageCreate', async (message: Message) => {
       where: { threadId: message.channel.id },
       update: { threadMetaUpdatedAt: message.createdAt as Date },
       create: {
-        ownerId: message.channel.ownerId as string,
+        ownerId: message.channel.messages.cache.first()?.author.id as string,
         threadId: message.channel.id,
         channelName: message.channel.parent.name,
-        title: message.content,
+        title: message.channel.name,
         createdAt: message.channel.createdAt as Date,
         url: message.url,
         guild: {
@@ -190,11 +169,7 @@ client.on('interactionCreate', async (interaction) => {
     `Handling command "${command?.name}" for ${interaction.user.username}#${interaction.user.discriminator}`
   )
 
-  const response = await commands.handle(interaction)
-  if (response) {
-    await interaction.reply(response)
-  }
-  return
+  await command.handle(interaction)
 })
 
 client.on('rateLimit', (info) => {

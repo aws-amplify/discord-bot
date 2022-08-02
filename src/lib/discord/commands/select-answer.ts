@@ -19,6 +19,15 @@ export const handler = async (
   const answer = interaction.targetId
   const record = await prisma.question.findUnique({
     where: { threadId: interaction.channelId },
+    select: {
+      id: true,
+      ownerId: true,
+      answer: {
+        select: {
+          id: true,
+        },
+      },
+    },
   })
 
   if (!channel?.isThread()) {
@@ -36,7 +45,7 @@ export const handler = async (
    * - author of question
    */
   if (
-    interaction.user.id !== record?.ownerId ||
+    interaction.user.id !== record?.ownerId &&
     !(await isAdminOrStaff(interaction.member as GuildMember))
   ) {
     const embed = new EmbedBuilder()
@@ -58,17 +67,17 @@ export const handler = async (
   /**
    * Deny reselecting same answer
    */
-  if (record?.answerId === answer) {
+  if (record?.answer?.id === answer) {
     const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
     embed.setDescription('You have already selected this answer.')
     return { embeds: [embed], ephemeral: true }
   }
 
-  if (record?.answerId) {
+  if (record?.answer?.id) {
     // delete previous answer
     await prisma.answer.delete({
-      where: { id: record.answerId },
+      where: { id: record.answer.id },
     })
   }
 
@@ -86,7 +95,6 @@ export const handler = async (
           url: interaction.targetMessage.url,
         },
       },
-      answerId: answer,
     },
   })
 
