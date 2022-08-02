@@ -74,9 +74,9 @@ export class HeyAmplifyStack extends Stack {
       bucketName: `${this.appName}-${this.envName}-bucket`,
       encryption: s3.BucketEncryption.KMS,
       versioned: true,
-      // if env is destroyed, empty & remove bucket
-      removalPolicy: RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
+      // if env is destroyed, keep the bucket
+      removalPolicy: RemovalPolicy.RETAIN,
+      // autoDeleteObjects: true,
       serverAccessLogsPrefix: 's3-access',
     })
 
