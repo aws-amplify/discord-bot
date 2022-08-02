@@ -35,7 +35,7 @@ async function isOrgMember(accessToken: string, ghUserId: string) {
  * false if error
  *  also this will only work if repos are public
  */
-export async function fetchOrgRepos(accessToken) {
+export async function fetchOrgRepos(accessToken: string) {
   const octokit = new Octokit({
     auth: `token ${accessToken}`,
   })
@@ -68,7 +68,7 @@ export async function isContributor(
   })
 
   for (let i = 0; i < repos.length; i++) {
-    const amplifyRepo = repos[i].name
+    const amplifyRepo = repos[i]?.name
 
     try {
       const { data } = await octokit.request(
@@ -166,8 +166,8 @@ export async function appplyRoles(
 }
 
 if (import.meta.vitest) {
-  const { describe, expect, it, beforeAll } = import.meta.vitest
-  test.runIf(process.env.TEST_GITHUB_ENABLED)(
+  const { describe, expect, test, it, beforeAll } = import.meta.vitest
+  test.runIf(process.env.GITHUB_TESTS_ENABLED)(
     'only test if app secrets are enabled',
     () => {
       const { privateKey } = JSON.parse(process.env.GITHUB_PRIVATE_KEY)

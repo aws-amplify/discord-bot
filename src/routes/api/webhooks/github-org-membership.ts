@@ -119,7 +119,7 @@ export const post: RequestHandler = async function post({ request })  {
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest
 
-  it.runIf(process.env.TEST_GITHUB_ENABLED)('only run if secrets enabled', () => {
+  it.runIf(process.env.GITHUB_TESTS_ENABLED)('only run if secrets enabled', () => {
     describe('Getting discord user id', () => { 
       const ghUserId = '107655607'
       const ghUserId2 = '70536670'
