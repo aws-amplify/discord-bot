@@ -4,6 +4,7 @@ import * as giverole from './commands/giverole'
 import * as selectAnswer from './commands/select-answer'
 import * as thread from './commands/thread'
 import * as q from './commands/q'
+import * as login from './commands/login'
 import { api } from './api'
 import { Routes } from 'discord-api-types/v10'
 import type { RESTPostAPIApplicationCommandsResult } from 'discord-api-types/v10'
@@ -55,6 +56,7 @@ export const commands = createCommandsMap([
   contribute,
   github,
   giverole,
+  login,
   selectAnswer,
   thread,
   q,
