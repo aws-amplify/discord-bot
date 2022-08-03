@@ -80,7 +80,6 @@ export async function handler(
 
   collector.on('collect', async (i: ButtonInteraction) => {
     const direction = i.customId === 'previous' ? 'prev' : 'next'
-    if (!direction) return
     const isNextDirection = direction === 'next'
     // @ts-expect-error we know this message contains an embed
     const [prev, next] = i.message.embeds[0].footer.text.split('/')
