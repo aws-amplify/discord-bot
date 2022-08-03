@@ -17,7 +17,7 @@
 </script>
 
 <Content>
-  <Grid noGutter>
+  <Grid>
     <Row>
       <Column>
         <!-- <h1>Hey, Amplify!</h1> -->

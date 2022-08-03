@@ -13,7 +13,7 @@
 </script>
 
 <Content>
-  <Grid noGutter>
+  <Grid>
     <Row>
       <Column>
         <h1>Restricted</h1>

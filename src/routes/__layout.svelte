@@ -24,17 +24,28 @@
     HeaderAction,
     HeaderPanelLinks,
     HeaderPanelLink,
+    SideNav,
+    SideNavItems,
+    SideNavLink,
+    SideNavDivider,
     ToastNotification,
   } from 'carbon-components-svelte'
-  import 'carbon-components-svelte/css/all.css'
-  import { session } from '$app/stores'
+  import Home from 'carbon-icons-svelte/lib/Home.svelte'
+  import UserAdmin from 'carbon-icons-svelte/lib/UserAdmin.svelte'
+  import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte'
+  import LogoDiscord from 'carbon-icons-svelte/lib/LogoDiscord.svelte'
+  import MessageQueue from 'carbon-icons-svelte/lib/MessageQueue.svelte'
+  import { session, page } from '$app/stores'
   import { afterNavigate } from '$app/navigation'
   import Avatar from '$lib/Avatar.svelte'
   import LoginButton from '$lib/LoginButton.svelte'
   import GuildSwitcher from '$lib/GuildSwitcher.svelte'
-  import { notifications } from '$lib/store'
+  import { notifications, user } from '$lib/store'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
+
+  import 'carbon-components-svelte/css/all.css'
   import '../app.css'
+  import '../styles/sidenav.css'
 
   export let guilds
 
@@ -76,12 +87,55 @@
               <HeaderPanelLink href="/admin">Admin</HeaderPanelLink>
             {/if}
             <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
+            {#if !$session.user.github}
+              <HeaderPanelLink href="/profile/link">Link GitHub Account</HeaderPanelLink>
+            {:else}
+              <p class="header-text">Github Account Linked</p>
+            {/if}
           </HeaderPanelLinks>
         </HeaderAction>
       {:else}
         <LoginButton provider="{'discord'}" />
       {/if}
     </HeaderUtilities>
+
+    <SideNav bind:isOpen="{isSideNavOpen}" rail>
+      <SideNavItems>
+        <SideNavLink
+          icon="{Home}"
+          text="Home"
+          href="/"
+          isSelected="{$page.url.pathname === '/'}"
+        />
+        <SideNavLink
+          icon="{MessageQueue}"
+          text="Questions"
+          href="/questions"
+          isSelected="{$page.url.pathname === '/questions'}"
+        />
+        {#if $session?.user?.isAdmin}
+          <SideNavLink
+            icon="{UserAdmin}"
+            text="Admin"
+            href="/admin"
+            isSelected="{$page.url.pathname === '/admin'}"
+          />
+        {/if}
+        <SideNavDivider />
+        <SideNavLink
+          icon="{LogoGithub}"
+          text="GitHub"
+          href="https://github.com/aws-amplify/discord-bot"
+          target="_blank"
+        />
+        <SideNavLink
+          icon="{LogoDiscord}"
+          text="Join us on Discord"
+          href="https://discord.gg/invite/amplify"
+          target="_blank"
+        />
+      </SideNavItems>
+    </SideNav>
   </Header>
 
   <slot />
@@ -106,6 +160,22 @@
     line-height: var(--cds-display-01-line-height);
     margin-bottom: var(--cds-layout-01);
   }
+  
+  :global(.bx--header-panel--expanded) {
+    height: min-content;
+    padding-bottom: var(--cds-spacing-10);
+  }
+  
+  .header-text {
+    font-size: var(--cds-productive-heading-01-font-size, 0.875rem);
+    line-height: var(--cds-productive-heading-01-line-height, 1.28572);
+    letter-spacing: var(--cds-productive-heading-01-letter-spacing, 0.16px);
+    display: block;
+    height: var(--cds-spacing-07, 2rem);
+    padding: 0.375rem var(--cds-spacing-05, 1rem);
+    text-decoration: none;
+  }
+
 
   div.ha--notification--container {
     position: fixed;

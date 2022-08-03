@@ -1,27 +1,49 @@
-import { MessageEmbed } from 'discord.js'
-import { createCommand, createOption } from '$discord'
-import type { InteractionReplyOptions, ThreadChannel } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { EmbedBuilder, MessageType } from 'discord.js'
 import { prisma } from '$lib/db'
+import { isThreadWithinHelpChannel } from '../support'
+import type {
+  ChatInputCommandInteraction,
+  ThreadChannel,
+  InteractionReplyOptions,
+} from 'discord.js'
 
 export const PREFIXES = {
   solved: '✅ - ',
   open: '﹖ - ',
 }
 
-async function handler(interaction): Promise<InteractionReplyOptions | string> {
+export function parseTitlePrefix(title: string): string | undefined {
+  let prefix
+  for (const [, value] of Object.entries(PREFIXES)) {
+    if (title.startsWith(value)) {
+      prefix = value
+      break
+    }
+  }
+  return prefix
+}
+
+export function parseTitle(title: string) {
+  return title.replace(parseTitlePrefix(title) as string, '')
+}
+
+export async function handler(
+  interaction: ChatInputCommandInteraction
+): Promise<InteractionReplyOptions | string> {
   const channel = interaction.channel as ThreadChannel
   const messages = await channel.messages.fetch()
   const record = await prisma.question.findUnique({
     where: { threadId: channel.id },
   })
 
-  if (!channel.isThread()) {
-    const embed = new MessageEmbed()
+  if (!channel.isThread() || !isThreadWithinHelpChannel(channel)) {
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
     embed.setDescription(
       'This command only works in public threads within help channels.'
     )
-    return { embeds: [embed] }
+    return { embeds: [embed], ephemeral: true }
   }
 
   const args = interaction.options.data.reduce(
@@ -35,34 +57,21 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
   )
 
   if (interaction.user.id !== record?.ownerId) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
     embed.setDescription('Only owners of questions can use this command.')
-    return { embeds: [embed] }
-  }
-
-  function parseTitlePrefix(title) {
-    let prefix
-    for (const [, value] of Object.entries(PREFIXES)) {
-      if (title.startsWith(value)) {
-        prefix = value
-        break
-      }
-    }
-    return prefix
-  }
-
-  function parseTitle(title) {
-    return title.replace(parseTitlePrefix(title), '')
+    return { embeds: [embed], ephemeral: true }
   }
 
   if (args.rename) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
 
     // check if thread has been renamed within 10 minutes
     const renames = messages.filter(
-      (m) => m.author.id === channel.ownerId && m.type === 'CHANNEL_NAME_CHANGE'
+      (m) =>
+        m.author.id === channel.ownerId &&
+        m.type === MessageType.ChannelNameChange
     )
     const lastRenameTimestamp = renames.first()?.createdTimestamp
     if (lastRenameTimestamp) {
@@ -73,7 +82,7 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
         embed.setDescription(
           `You can only rename a thread once every 10 minutes.`
         )
-        return { embeds: [embed] }
+        return { embeds: [embed], ephemeral: true }
       }
     }
 
@@ -91,28 +100,31 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
       }
 
       embed.setDescription(`This thread has been renamed.`)
-      return { embeds: [embed] }
+      return { embeds: [embed], ephemeral: true }
     }
   }
 
-  if (args.archive) {
-    // send a message
-    const embed = new MessageEmbed()
-    embed.setColor('#ff9900')
-    embed.setDescription('This thread has been archived.')
-    channel.send({ embeds: [embed] })
+  /**
+   * @TODO reenable after implementing command hooks (needs to message back, THEN archive)
+   */
+  // if (args.archive) {
+  //   // send a message
+  //   const embed = new EmbedBuilder()
+  //   embed.setColor('#ff9900')
+  //   embed.setDescription('This thread has been archived.')
+  //   channel.send({ embeds: [embed] })
 
-    // archive thread
-    let reason
-    if (args.archive.options.length) {
-      reason = args.archive.options[0].value
-    }
-    await channel.setArchived(true, reason)
-    return
-  }
+  //   // archive thread
+  //   let reason
+  //   if (args.archive.options.length) {
+  //     reason = args.archive.options[0].value
+  //   }
+  //   await channel.setArchived(true, reason)
+  //   return
+  // }
 
   if (args.solved) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
 
     // is the channel already marked as solved?
@@ -125,22 +137,27 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
     // mark the thread as solved
     const title = parseTitle(channel.name)
     if (await channel.setName(`${PREFIXES.solved}${title}`)) {
+      let updated = false
       try {
         await prisma.question.update({
           where: { threadId: channel.id },
           data: { isSolved: true },
         })
+        updated = true
       } catch (error) {
         console.error('Unable to update thread isSolved=true in db', error)
+        embed.setDescription(
+          'Something went wrong updating the question on our end.'
+        )
       }
 
-      embed.setDescription('Marked as solved.')
+      if (updated) embed.setDescription('Marked as solved.')
       return { embeds: [embed] }
     }
   }
 
   if (args.reopen) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
 
     // is the channel already marked as solved?
@@ -172,52 +189,37 @@ async function handler(interaction): Promise<InteractionReplyOptions | string> {
   return '🤢 something went wrong'
 }
 
-const command = createCommand({
-  name: 'thread',
-  description: 'Thread actions',
-  enabledByDefault: true,
-  options: [
-    createOption({
-      name: 'rename',
-      description: 'Rename a thread',
-      type: 1,
-      options: [
-        createOption({
-          name: 'title',
-          description: 'Title to rename',
-          type: 3,
-          required: true,
-        }),
-      ],
-    }),
-    createOption({
-      name: 'solved',
-      description: 'Mark this thread as solved',
-      type: 1,
-    }),
-    createOption({
-      name: 'archive',
-      description: 'Archive a thread',
-      type: 1,
-      options: [
-        createOption({
-          name: 'reason',
-          description: 'Reason for archiving',
-          type: 3,
-          required: false,
-        }),
-      ],
-    }),
-    createOption({
-      name: 'reopen',
-      description: 'Reopen a thread.',
-      type: 1,
-    }),
-  ],
-  handler,
-})
-
-export default command
+export const config = new SlashCommandBuilder()
+  .setName('thread')
+  .setDescription('Thread actions')
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('rename')
+      .setDescription('Rename a thread')
+      .addStringOption((option) =>
+        option
+          .setName('title')
+          .setDescription('Title to rename')
+          .setRequired(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand.setName('solved').setDescription('Mark this thread as solved')
+  )
+  .addSubcommand((subcommand) =>
+    subcommand.setName('reopen').setDescription('Reopen this thread')
+  )
+// .addSubcommand((subcommand) =>
+//   subcommand
+//     .setName('archive')
+//     .setDescription('Archive this thread')
+//     .addStringOption((option) =>
+//       option
+//         .setName('reason')
+//         .setDescription('Reason for archiving this thread')
+//         .setRequired(false)
+//     )
+// )
 
 if (import.meta.vitest) {
   const { test } = import.meta.vitest

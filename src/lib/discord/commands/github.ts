@@ -1,44 +1,29 @@
-import { createCommand, createOption } from '$discord'
-import type { CommandInteraction, InteractionReplyOptions } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { repositories } from './_repositories'
+import type { ChatInputCommandInteraction } from 'discord.js'
 
-const repository = createOption({
-  name: 'repository',
-  description: 'The AWS Amplify repository',
-  required: true,
-  type: 3,
-  choices: ['cli', 'hosting', 'js', 'docs'],
-})
+export const config = new SlashCommandBuilder()
+  .setName('github')
+  .setDescription('Links the GitHub repository for the specified repository.')
+  .addStringOption((option) =>
+    option
+      .setName('repository')
+      .setDescription('The AWS Amplify repository')
+      .setRequired(true)
+      .addChoices(
+        ...[...repositories.keys()].map((r) => ({ name: r, value: r }))
+      )
+  )
 
-function getRepositoryUrl(repository: string) {
-  switch (repository) {
-    case 'cli':
-      return 'https://github.com/aws-amplify/amplify-cli'
-    case 'hosting':
-      return 'https://github.com/aws-amplify/amplify-hosting'
-    case 'js':
-      return 'https://github.com/aws-amplify/amplify-js'
-    case 'docs':
-      return 'https://github.com/aws-amplify/docs'
-    case 'studio':
-      return 'https://github.com/aws-amplify/admin-ui'
-    default:
-      return '🤢 something went wrong, repository not found'
-  }
+export function handler(interaction: ChatInputCommandInteraction): string {
+  const somethingWentWrongResponse =
+    '🤢 something went wrong, repository not found'
+  const repo = repositories.get(
+    interaction.options.getString('repository') as string
+  )
+  if (!repo) return somethingWentWrongResponse
+  else return `📦 ${repo}`
 }
-
-const command = createCommand({
-  name: 'github',
-  description: 'Gives link to GitHub repository',
-  options: [repository],
-  handler: (
-    interaction: CommandInteraction
-  ): InteractionReplyOptions | string => {
-    const [{ value: repository }] = interaction.options.data
-    return getRepositoryUrl(repository as string)
-  },
-})
-
-export default command
 
 if (import.meta.vitest) {
   const { test } = import.meta.vitest

@@ -1,14 +1,25 @@
 // @vitest-environment node
+import type { Server } from 'node:http'
 import { resolve } from 'node:path'
 import { EOL } from 'node:os'
 import { installPolyfills } from '@sveltejs/kit/node/polyfills'
 import glob from 'fast-glob'
 import request from 'supertest'
-import { beforeAll } from 'vitest'
-import type { Server } from 'node:http'
 import type { Session } from 'next-auth'
-import { it } from 'vitest'
-import { mockedPublished, mockedCreated, mockedPreReleased, mockedReleased } from './mock/github-webhook'
+import {
+  mockedPublished,
+  mockedCreated,
+  mockedPreReleased,
+  mockedReleased,
+  addedPayload1,
+  addedPayload2,
+  addedPayloadUserDNE,
+  removedPayload1,
+  removedPayload2,
+  removedPayloadUserDNE,
+} from './mock/github-webhook'
+import { verifyGithubWebhookEvent } from './../src/routes/api/webhooks/_verifyWebhook'
+
 
 let app: Express.Application
 const session: Session = {
@@ -80,9 +91,9 @@ describe('Admin Routes', () => {
       expect(response.headers.location).toBe('/restricted')
     })
   })
-  describe('POST /api/admin/commands/sync', () => {
+  describe('POST /api/admin/commands', () => {
     it('should return 401', async () => {
-      const response = await request(app).post('/api/admin/commands/sync')
+      const response = await request(app).post('/api/admin/commands')
       expect(response.status).toBe(401)
     })
   })
@@ -104,6 +115,14 @@ describe('webhooks', () => {
       expect(response.status).toBe(403)
     })
 
+    it('should return 403 with invalid auth header', async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-release')
+        .send(mockedReleased.body)
+        .set({ 'X-Hub-Signature-256': 'invalid' })
+      expect(response.status).toBe(403)
+    })
+
     it('should return 400 if webhook URL is bad', async () => {
       const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
       process.env.DISCORD_WEBHOOK_URL_RELEASES =
@@ -116,37 +135,177 @@ describe('webhooks', () => {
       process.env.DISCORD_WEBHOOK_URL_RELEASES = url
     })
 
+    it('should return 400 if invalid content-type', async () => {
+      // if webhook in GitHub is set to application/x-www-url-encoded
+      const response = await request(app)
+        .post('/api/webhooks/github-release')
+        .send(
+          `payload=${encodeURIComponent(JSON.stringify(mockedReleased.body))}`
+        )
+        .set({ 'Content-Type': 'application/x-www-url-encoded' })
+      expect(response.status).toBe(400)
+      // TODO: test for correct error message
+    })
+
     it('should return 201 if everything is correct', async () => {
       const response = await request(app)
-      .post('/api/webhooks/github-release')
-      .send(mockedReleased.body)
-      .set(mockedReleased.headers)
+        .post('/api/webhooks/github-release')
+        .send(mockedReleased.body)
+        .set(mockedReleased.headers)
       expect(response.status).toBe(201)
     })
 
     it(`should return 204 is event action is not 'released'`, async () => {
       const response = await request(app)
-      .post('/api/webhooks/github-release')
-      .send(mockedCreated.body)
-      .set(mockedCreated.headers)
+        .post('/api/webhooks/github-release')
+        .send(mockedCreated.body)
+        .set(mockedCreated.headers)
       expect(response.status).toBe(204)
     })
 
     it(`should return 204 is event action is not 'released'`, async () => {
       const response = await request(app)
-      .post('/api/webhooks/github-release')
-      .send(mockedPublished.body)
-      .set(mockedPublished.headers)
+        .post('/api/webhooks/github-release')
+        .send(mockedPublished.body)
+        .set(mockedPublished.headers)
       expect(response.status).toBe(204)
     })
 
     it(`should return 204 is event action is not 'released'`, async () => {
       const response = await request(app)
-      .post('/api/webhooks/github-release')
-      .send(mockedPreReleased.body)
-      .set(mockedPreReleased.headers)
+        .post('/api/webhooks/github-release')
+        .send(mockedPreReleased.body)
+        .set(mockedPreReleased.headers)
       expect(response.status).toBe(204)
     })
+  })
 
+  describe('POST api/webhooks/github-org-membership', () => {
+    describe('webhook verification', () => {
+      it('should return true with payload for added member', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            addedPayload1.body,
+            addedPayload1.headers['X-Hub-Signature-256']
+          )
+        ).toBeTruthy()
+      })
+
+      it('should return true with payload for removed member', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            removedPayload2.body,
+            removedPayload2.headers['X-Hub-Signature-256']
+          )
+        ).toBeTruthy()
+      })
+
+      it('should return true for removed member', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            removedPayloadUserDNE.body,
+            removedPayloadUserDNE.headers['X-Hub-Signature-256']
+          )
+        ).toBeTruthy()
+      })
+
+      it('should return true for added member', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            addedPayloadUserDNE.body,
+            addedPayloadUserDNE.headers['X-Hub-Signature-256']
+          )
+        ).toBeTruthy()
+      })
+
+      it('should return false with jumbled payload body and headers', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            addedPayloadUserDNE.body,
+            addedPayload1.headers['X-Hub-Signature-256']
+          )
+        ).toBe(false)
+      })
+
+      it('should return false with empty body', () => {
+        expect(
+          verifyGithubWebhookEvent(
+            process.env.GITHUB_WEBHOOK_SECRET,
+            {},
+            addedPayload2.headers['X-Hub-Signature-256']
+          )
+        ).toBe(false)
+      })
+
+      it('should return false with empty payload and token', () => {
+        expect(verifyGithubWebhookEvent('', {}, '')).toBe(false)
+      })
+    })
+
+    it('should return 403 without auth header', async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send({})
+      expect(response.status).toBe(403)
+    })
+
+    it('should return 403 with invalid auth header', async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(addedPayload1.body)
+        .set({ 'X-Hub-Signature-256': 'invalid' })
+      expect(response.status).toBe(403)
+    })
+
+    it('should return 201 if everything is correct', async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(addedPayload1.body)
+        .set(addedPayload1.headers)
+      expect(response.status).toBe(201)
+    })
+
+    it(`should return 403 if user isn't in db`, async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(removedPayloadUserDNE.body)
+        .set(removedPayloadUserDNE.headers)
+      expect(response.status).toBe(403)
+    })
+
+    it(`should return 403 if user isn't in db`, async () => {
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(addedPayloadUserDNE.body)
+        .set(addedPayloadUserDNE.headers)
+      expect(response.status).toBe(403)
+    })
+
+    it('should return 400 with bad role ID', async () => {
+      const staffRoleId = process.env.DISCORD_STAFF_ROLE_ID
+      process.env.DISCORD_STAFF_ROLE_ID = 'badid'
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(addedPayload1.body)
+        .set(addedPayload1.headers)
+      expect(response.status).toBe(400)
+      process.env.DISCORD_STAFF_ROLE_ID = staffRoleId
+    })
+
+    it('should return 400 with bad guild ID', async () => {
+      const guildId = process.env.DISCORD_GUILD_ID
+      process.env.DISCORD_GUILD_ID = 'badid'
+      const response = await request(app)
+        .post('/api/webhooks/github-org-membership')
+        .send(addedPayload1.body)
+        .set(addedPayload1.headers)
+      expect(response.status).toBe(400)
+      process.env.DISCORD_GUILD_ID = guildId
+    })
   })
 })
