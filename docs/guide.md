@@ -30,7 +30,7 @@ You must be the owner of the GitHub repository to perform the following steps.
 
  4. Under **Content type**, select `application/json`
 
- 5. Create a **Secret** and store in in `.env` as `GITHUB_RELEAES_WEBHOOK_SECRET`
+ 5. Create a **Secret** and store it in `.env` as `GITHUB_RELEASES_WEBHOOK_SECRET`
 
  6. Select  **Let me select individual events** then choose `releases`
 
