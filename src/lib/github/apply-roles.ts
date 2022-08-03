@@ -93,7 +93,7 @@ export async function isContributor(
 }
 
 /** driver code that checks github membership/contribution status and applies roles */
-export async function appplyRoles(
+export async function applyRoles(
   userId: string,
   ghUserId: string,
   accessToken: string
