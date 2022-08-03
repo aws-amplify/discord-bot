@@ -32,7 +32,7 @@ function createQuestionEmbedFields(questions: Question[]) {
 
 export const config = new SlashCommandBuilder()
   .setName('q')
-  .setDescription('Get a digest of the latest questions')
+  .setDescription('Get a digest of the latest unsolved questions')
 
 export async function handler(
   interaction: ChatInputCommandInteraction
