@@ -12,6 +12,8 @@ import type {
   // App.Session,
 } from 'next-auth'
 import type { OutgoingResponse } from 'next-auth/core'
+import { applyRoles } from './github/apply-roles'
+import { createAppAuth } from '@octokit/auth-app'
 
 // TODO: can we get around this behavior for SSR builds?
 // @ts-expect-error import is exported on .default during SSR
@@ -57,12 +59,42 @@ export const options: NextAuthOptions = {
     updateAge: 15 * 60, // 15 minutes
   },
   callbacks: {
-    signIn: async ({ user, account, profile }) => {
-      return true
+    async redirect({ url, baseUrl }) {
+      return baseUrl
     },
-    session: async ({ session, user, token }) => {
+
+    async session({ session, user }) {
       session.user.id = user.id
       return session
+    },
+  },
+  events: {
+    async signIn({ user, account }) {
+      // if user is signing into github
+      if (
+        account?.provider === 'github' &&
+        account?.providerAccountId &&
+        user?.id
+      ) {
+        const { privateKey } = JSON.parse(process.env.GITHUB_PRIVATE_KEY)
+        const auth = createAppAuth({
+          appId: process.env.GITHUB_APP_ID,
+          privateKey: privateKey,
+          clientId: process.env.GITHUB_CLIENT_ID,
+          clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        })
+
+        try {
+          const { token } = await auth({
+            type: 'installation',
+            installationId: process.env.GITHUB_INSTALLATION_ID,
+          })
+
+          await applyRoles(user.id, account.providerAccountId, token)
+        } catch (err) {
+          console.error(`Error fetching installation token: ${err}`)
+        }
+      }
     },
   },
 }

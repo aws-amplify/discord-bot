@@ -39,17 +39,20 @@ export const handle: Handle = async function handle({
       },
       select: {
         accounts: {
-          where: {
-            provider: 'discord',
-          },
           select: {
+            provider: true,
             providerAccountId: true,
           },
         },
       },
     })
 
-    const discordUserId = user.accounts[0].providerAccountId
+    const storedUserGitHub = user.accounts.some(
+      (account) => account.provider === 'github'
+    )
+    if (storedUserGitHub) session.user.github = true
+
+    const discordUserId = user.accounts.filter((account) => account.provider === 'discord')[0].providerAccountId
     let access
     try {
       access = await getUserAccess(discordUserId)
