@@ -95,7 +95,7 @@ export default defineConfig(({ mode }) => {
     include: ['tests/**/*.ts'],
     exclude: ['tests/setup/**/*.ts', 'tests/mock/**/*.ts'],
     includeSource: ['src/**/*.{js,ts,svelte}'],
-    setupFiles: ['tests/setup/svelte-kit-routes.ts'],
+    setupFiles: ['tests/setup/svelte-kit-routes.ts', 'tests/setup/seed.ts', 'tests/setup/github-secrets-enabled.ts'],
   }
   // `vitest` sets mode to test, load local environment variables for test
   if (mode === 'test') {
