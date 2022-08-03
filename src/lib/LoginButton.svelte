@@ -6,6 +6,7 @@
   type Provider = 'discord' | 'github'
 
   export let provider: Provider
+  export let buttonText = ''
 
   let redirect = global?.window?.location?.href || import.meta.env.VITE_HOST
 </script>
@@ -16,6 +17,6 @@
   {/await}
   <input type="hidden" name="callbackUrl" value="{redirect}" />
   <Button type="submit" icon="{Login}">
-    <slot>Login</slot>
+    <slot>Login {buttonText}</slot>
   </Button>
 </form>

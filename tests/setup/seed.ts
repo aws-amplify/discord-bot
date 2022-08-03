@@ -2,22 +2,32 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export async function seed() {
-  await prisma.question.upsert({
+  await prisma.user.upsert({
     where: {
-      id: 'cl5vgzv8i0012z6r7lba6zuvg',
+      email: 'esauerbo@amazon.com',
     },
     update: {},
     create: {
-      id: 'cl5vgzv8i0012z6r7lba6zuvg',
-      threadId: '999770893356122152',
-      ownerId: '143912968529117185',
-      channelName: 'cli-help',
-      createdAt: '2022-07-21T20:12:36.084Z',
-      updatedAt: '2022-07-21T20:12:36.450Z',
-      threadMetaUpdatedAt: '2022-07-21T20:12:36.450Z',
-      title: 'How do I upgrade the CLI?',
-      isSolved: false,
-      url: 'https://discord.com/channels/976838371383083068/976838372205137982/999770893356122152',
+      id: 'cl4n0kjqd0006iqtda15yzzcw',
+      name: 'esauerbo',
+      email: 'esauerbo@amazon.com',
+      image: 'https://cdn.discordapp.com/embed/avatars/0.png',
+      accounts: {
+        create: [
+          {
+            id: 'cl4n0kjqi0013iqtdzg0s37k1',
+            type: 'oauth',
+            provider: 'discord',
+            providerAccountId: '985985131271585833',
+          },
+          {
+            id: 'cl5bbdp2u0074wbtdkn2a2eyw',
+            type: 'oauth',
+            provider: 'github',
+            providerAccountId: '107655607',
+          },
+        ],
+      },
     },
   })
 }
