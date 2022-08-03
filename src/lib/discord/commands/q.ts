@@ -75,7 +75,7 @@ export async function handler(
     interaction.channel as TextBasedChannel
   ).createMessageComponentCollector({
     filter,
-    time: 15000,
+    idle: 15000,
   })
 
   collector.on('collect', async (i: ButtonInteraction) => {
@@ -109,8 +109,10 @@ export async function handler(
     await i.update({ embeds: [embed] })
   })
 
-  collector.on('end', async (collected) => {
-    console.log(`[command: q] Collected ${collected.size} items`)
+  collector.on('end', async (collected, reason) => {
+    console.log(
+      `[command: q] Collector ${reason} - collected ${collected.size} items`
+    )
     /**
      * remove buttons from the interaction. Once the collector times out it will not respond to buttons
      * @TODO should we move the button handler to the client?
