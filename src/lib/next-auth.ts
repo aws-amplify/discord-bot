@@ -12,7 +12,7 @@ import type {
   // App.Session,
 } from 'next-auth'
 import type { OutgoingResponse } from 'next-auth/core'
-import { appplyRoles } from './github/apply-roles'
+import { applyRoles } from './github/apply-roles'
 import { createAppAuth } from '@octokit/auth-app'
 
 // TODO: can we get around this behavior for SSR builds?
@@ -90,7 +90,7 @@ export const options: NextAuthOptions = {
             installationId: process.env.GITHUB_INSTALLATION_ID,
           })
 
-          await appplyRoles(user.id, account.providerAccountId, token)
+          await applyRoles(user.id, account.providerAccountId, token)
         } catch (err) {
           console.error(`Error fetching installation token: ${err}`)
         }

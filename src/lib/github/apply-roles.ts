@@ -347,7 +347,7 @@ if (import.meta.vitest) {
         })
 
         test('Applying roles full pipeline', async () => {
-          const response = await appplyRoles(id, ghUserId, token)
+          const response = await applyRoles(id, ghUserId, token)
           expect(response).toBeTruthy()
         }, 10000)
       })
@@ -367,7 +367,7 @@ if (import.meta.vitest) {
         })
 
         test('Applying roles full pipeline bad user id', async () => {
-          const response = await appplyRoles('baduserid', ghUserId, token)
+          const response = await applyRoles('baduserid', ghUserId, token)
           expect(response).toBe(false)
         }, 10000)
 
@@ -375,7 +375,7 @@ if (import.meta.vitest) {
         it('should return false with bad org login', async () => {
           const orgLogin = process.env.GITHUB_ORG_LOGIN
           process.env.GITHUB_ORG_LOGIN = "somethingthatdoesn'texist123"
-          const response = await appplyRoles(id, ghUserId, token)
+          const response = await applyRoles(id, ghUserId, token)
           expect(response).toBe(true)
           process.env.GITHUB_ORG_LOGIN = orgLogin
         }, 10000)
@@ -383,7 +383,7 @@ if (import.meta.vitest) {
         it('should return false with bad guild id', async () => {
           const orgLogin = process.env.DISCORD_GUILD_ID
           process.env.DISCORD_GUILD_ID = "somethingthatdoesn'texist123"
-          const response = await appplyRoles(id, ghUserId, token)
+          const response = await applyRoles(id, ghUserId, token)
           expect(response).toBe(false)
           process.env.GITHUB_ORG_LOGIN = orgLogin
         }, 10000)
