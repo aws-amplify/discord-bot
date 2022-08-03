@@ -3,6 +3,7 @@ import * as github from './commands/github'
 import * as giverole from './commands/giverole'
 import * as selectAnswer from './commands/select-answer'
 import * as thread from './commands/thread'
+import * as q from './commands/q'
 import { api } from './api'
 import { Routes } from 'discord-api-types/v10'
 import type { RESTPostAPIApplicationCommandsResult } from 'discord-api-types/v10'
@@ -31,11 +32,17 @@ function createCommandsMap(commands: any[]) {
             `Error handling command ${command.config.name} for ${interaction.user.id}:`,
             error
           )
-          return await interaction.reply(somethingWentWrongResponse)
+          return await interaction.reply({
+            ephemeral: true,
+            content: somethingWentWrongResponse,
+          })
         }
         if (!interaction.replied) {
           // should not make it here...
-          await interaction.reply(somethingWentWrongResponse)
+          await interaction.reply({
+            ephemeral: true,
+            content: somethingWentWrongResponse,
+          })
         }
       },
     }
@@ -50,6 +57,7 @@ export const commands = createCommandsMap([
   giverole,
   selectAnswer,
   thread,
+  q,
 ])
 
 const c = commands
