@@ -27,6 +27,7 @@
     "@next-auth/prisma-adapter": "^1.0.3",
     "@octokit/auth-app": "^4.0.4",
     "@octokit/rest": "^19.0.3",
+    "@octokit/graphql": "^5.0.0",
     "@prisma/client": "^3.14.0",
     "cookie": "^0.5.0",
     "discord-api-types": "^0.37.0",

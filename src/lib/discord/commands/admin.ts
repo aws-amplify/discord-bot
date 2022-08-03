@@ -1,0 +1,34 @@
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { repositories, fetchRepositories } from './_repositories'
+import type { ChatInputCommandInteraction } from 'discord.js'
+
+export const config = new SlashCommandBuilder()
+  .setName('github')
+  .setDescription('Links the GitHub repository for the specified repository.')
+  .addStringOption((option) =>
+    option
+      .setName('repository')
+      .setDescription('The AWS Amplify repository')
+      .setRequired(true)
+      .addChoices(
+        ...[...repositories.keys()].map((r) => ({ name: r, value: r }))
+      )
+  )
+
+export async function handler(interaction: ChatInputCommandInteraction): string {
+  const somethingWentWrongResponse =
+    '🤢 something went wrong, repository not found'
+//   const repo = repositories.get(
+//     interaction.options.getString('repository') as string
+//   )
+await fetchRepositories()
+const repo = "hello"
+
+  if (!repo) return somethingWentWrongResponse
+  else return `📦 ${repo}`
+}
+
+if (import.meta.vitest) {
+  const { test } = import.meta.vitest
+  test.todo('/github')
+}
