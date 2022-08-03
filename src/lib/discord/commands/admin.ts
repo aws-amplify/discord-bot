@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { repositories, fetchRepositories } from './_repositories'
+import { repositories  } from './_repositories'
 import type { ChatInputCommandInteraction } from 'discord.js'
 
 export const config = new SlashCommandBuilder()
@@ -10,18 +10,21 @@ export const config = new SlashCommandBuilder()
       .setName('repository')
       .setDescription('The AWS Amplify repository')
       .setRequired(true)
-      .addChoices(
-        ...[...repositories.keys()].map((r) => ({ name: r, value: r }))
-      )
+    //   .addChoices(
+    //     ...[...repositories.keys()].map((r) => ({ name: r, value: r }))
+    //   )
   )
 
-export async function handler(interaction: ChatInputCommandInteraction): string {
+export function handler(interaction: ChatInputCommandInteraction): string {
   const somethingWentWrongResponse =
     '🤢 something went wrong, repository not found'
+   console.log(repositories)
+  //  console.log('discussions')
+  //  console.log(repositoriesWithDiscussions)
 //   const repo = repositories.get(
 //     interaction.options.getString('repository') as string
 //   )
-await fetchRepositories()
+
 const repo = "hello"
 
   if (!repo) return somethingWentWrongResponse

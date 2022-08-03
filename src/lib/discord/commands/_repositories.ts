@@ -1,10 +1,6 @@
 import { getRepos } from '../../github/queries'
-/**
- * @TODO replace with GitHub API call
- */
 
-
-const ghNameToAlias = {
+const nameToAlias = {
   'amplify-cli': 'cli',
   'amplify-ios': 'ios',
   'discord-bot': 'discord-bot',
@@ -24,21 +20,51 @@ const ghNameToAlias = {
   'aws-appsync-realtime-client-ios': 'appsync-realtime-client-ios',
   'amplify-js-samples': 'js-samples',
   'maplibre-gl-js-amplify': 'maplibre-gl-js',
-  'aws-amplify.github.io':  'aws-amplify.github.io',
+  'aws-amplify.github.io': 'aws-amplify.github.io',
   'aws-sdk-ios-spm': 'ios-spm',
   'amplify-ci-support': 'ci-support',
-  'maplibre-gl-draw-circle':   'maplibre-gl-draw-circle',
+  'maplibre-gl-draw-circle': 'maplibre-gl-draw-circle',
   'amplify-ios-samples': 'ios-samples',
   'amplify-hosting': 'hosting',
   'amplify-ios-maplibre': 'ios-maplibre',
   'amplify-android-samples': 'android-samples',
-  '.github': '.github'
+  '.github': '.github',
 }
+
+const getAlias = (name: string) =>
+  nameToAlias[name] ? nameToAlias[name] : name
+const containsQA = (category) =>
+  category?.name === process.env.GITHUB_DISCUSSION_CATEGORY
+
+async function fetchRepositories() {
+  try {
+    const organization = await getRepos()
+    if (organization?.repositories?.edges?.length) {
+      const repos = organization.repositories.edges
+      const aliased = repos.reduce(
+        (obj, repo) => ({ ...obj, [getAlias(repo.node.name)]: repo.node.url }),
+        {}
+      )
+      // console.log("1")
+      // console.log(aliased)
+      // console.log("2")
+      // console.log(Object.entries(aliased))
+      // console.log("3")
+      const repositories = new Map<string, Repository>(Object.entries(aliased))
+   //   console.log([...repositories.keys()].map((r) => ({ name: r, value: r })))
+      return aliased
+    }
+  } catch (error) {
+    console.error(`Error fetching repositories: ${error.message}`)
+  }
+  return {}
+}
+
 // async function fetchRepositories() {
 //   const github = 'https://github.com'
 //   const org = 'aws-amplify'
 //   const createRepoUrl = (repo: string) => `${github}/${org}/${repo}`
-//   return {
+//   const obj = {
 //     android: createRepoUrl('amplify-android'),
 //     bot: createRepoUrl('discord-bot'),
 //     cli: createRepoUrl('amplify-cli'),
@@ -49,27 +75,53 @@ const ghNameToAlias = {
 //     js: createRepoUrl('amplify-js'),
 //     ui: createRepoUrl('amplify-ui'),
 //   }
+//   console.log(obj)
+//   console.log(Object.entries(obj))
+//   console.log(new Map<string, string>(Object.entries(obj)))
+//   return obj
 // }
 
-export async function fetchRepositories() {
-  const organization = await getRepos()
-  const repos = organization.repositories.edges
-  console.log(repos)
-  if (repos?.length) console.log(repos?.reduce((obj, repo) => ({ ...obj, [repo.node.name]: repo.node}), {}) )
+/** Return repositories that have the Q&A category on Discussions enabled */
+async function fetchRepositoriesWithDiscussions() {
+  try {
+    const organization = await getRepos()
+    if (organization) {
+      const repos = organization?.repositories?.edges
+      const filtered = repos.filter((repo) =>
+        repo?.node?.discussionCategories?.nodes?.some(containsQA)
+      )
+      //  console.log(filtered)
+      const aliased = filtered?.reduce(
+        (obj, repo) => ({ ...obj, [getAlias(repo.node.name)]: repo.node }),
+        {}
+      )
+      //  console.log("discussions")
+      // console.log(aliased)
+      return aliased
+    }
+  } catch (error) {
+    console.error(
+      `Error fetching repositories with discussions: ${error.message}`
+    )
+  }
+  return {}
 }
-
-// if(organization?.repositories?.edges?.length) {
-//   console.log(organization.repositories.edges.filter)
-//   const containsQA = (category) => category.name === process.env.GITHUB_DISCUSSION_CATEGORY
-//   return organization.repositories.edges.filter((repo) => repo.node.discussionCategories.nodes.some(containsQA))
-// }
-
-// async function fetchRepositoriesWithDiscussions() {
-//   const repos = await getReposWithDiscussions()
-//   if (repos?.length) return repos?.reduce((obj, repo) => ({ ...obj, [repo.node.name]: repo.node}), {})   
-//   return false 
-// }
 
 export const repositories = new Map<string, string>(
   Object.entries(await fetchRepositories())
 )
+
+// export const repositoriesWithDiscussions = new Map<string, Repository>(
+//   Object.entries(await fetchRepositoriesWithDiscussions())
+// )
+
+type Repository = {
+  name: string
+  url: string
+  id: string
+  discussionCategories: DiscussionCategories
+}
+
+type DiscussionCategories = {
+  nodes: string[]
+}
