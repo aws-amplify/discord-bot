@@ -46,14 +46,12 @@ const MUTATION_ADD_DISCUSSION_COMMENT = gql`
     $discussionId: ID!
     $body: String!
     $clientMutationId: String
-    $replyToId: ID
   ) {
     addDiscussionComment(
       input: {
         discussionId: $discussionId
         body: $body
         clientMutationId: $clientMutationId
-        replyToId: $replyToId
       }
     ) {
       clientMutationId
@@ -87,12 +85,15 @@ const MUTATION_DELETE_DISCUSSION = gql`
 const QUERY_GET_REPOSITORIES = gql`
   query GetRepositories($login: String!) {
     organization(login: $login) {
-      repositories(first: 100, orderBy: {field: UPDATED_AT, direction: DESC}) {
+      repositories(
+        first: 100
+        orderBy: { field: UPDATED_AT, direction: DESC }
+      ) {
         edges {
           node {
             name
             url
-			id
+            id
             discussionCategories(first: 20) {
               nodes {
                 id
@@ -127,20 +128,88 @@ async function authenticate() {
 export async function getRepos() {
   try {
     const request = await authenticate()
-    const { organization } = await request(QUERY_GET_REPOSITORIES, { login: process.env.GITHUB_ORG_LOGIN })
-	if(organization) return organization
+    const { organization } = await request(QUERY_GET_REPOSITORIES, {
+      login: process.env.GITHUB_ORG_LOGIN,
+    })
+    if (organization) return organization
   } catch (err) {
     console.error(err)
   }
   return false
 }
 
-// TODO: is it safe to assume 
-export async function postDiscussion(repoId: string) {
-	try {
-		const request = await authenticate()
-		//const response = await request(MUTATION_CREATE_DISCUSSION, {})
-	} catch (err) {
-		console.error(err)
-	}
+export async function postDiscussion(
+  repoId: string,
+  categoryId: string,
+  title: string,
+  body: string,
+  mutationId: string
+) {
+  try {
+    const request = await authenticate()
+    const response = await request(MUTATION_CREATE_DISCUSSION, {
+      repositoryId: repoId,
+      categoryId: categoryId,
+      title: title,
+      body: body,
+      clientMutationId: mutationId,
+    })
+    return response
+  } catch (err) {
+    console.error(err)
+  }
+  return false
+}
+
+export async function postAnswer(
+  discussionId: string,
+  body: string,
+  clientMutationId: string
+) {
+  try {
+    const request = await authenticate()
+    const response = await request(MUTATION_ADD_DISCUSSION_COMMENT, {
+      discussionId: discussionId,
+      body: body,
+      clientMutationId: clientMutationId,
+    })
+    return response
+  } catch (err) {
+    console.error(err)
+  }
+  return false
+}
+
+export async function markAnswered(
+  commentId: string,
+  clientMutationId: string
+) {
+  try {
+    const request = await authenticate()
+    const response = await request(MUTATION_RESOLVE_DISCUSSION, {
+      commentId: commentId,
+      clientMutationId: clientMutationId,
+    })
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+  return false
+}
+
+export async function lockDiscussion(
+  discussionId: string,
+  clientMutationId: string
+) {
+  try {
+    const request = await authenticate()
+    const response = await request(MUTATION_LOCK_DISCUSSION, {
+      discussionId: discussionId,
+      clientMutationId: clientMutationId,
+    })
+    return response
+  } catch (error) {
+    console.error(error)
+  }
+  return false
 }

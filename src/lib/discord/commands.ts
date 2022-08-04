@@ -4,6 +4,7 @@ import * as giverole from './commands/giverole'
 import * as selectAnswer from './commands/select-answer'
 import * as thread from './commands/thread'
 import * as login from './commands/login'
+import * as admin from './commands/admin'
 import { api } from './api'
 import { Routes } from 'discord-api-types/v10'
 import type { RESTPostAPIApplicationCommandsResult } from 'discord-api-types/v10'
@@ -52,6 +53,7 @@ export const commands = createCommandsMap([
   selectAnswer,
   thread,
   login,
+  admin,
 ])
 
 const c = commands
