@@ -72,7 +72,9 @@ export class HeyAmplifyStack extends Stack {
     // create bucket for SQLite backups with Litestream
     const bucket = new s3.Bucket(this, 'Bucket', {
       bucketName: `${this.appName}-${this.envName}-bucket`,
+      bucketKeyEnabled: true,
       encryption: s3.BucketEncryption.KMS,
+      enforceSSL: true,
       versioned: true,
       // if env is destroyed, keep the bucket
       removalPolicy: RemovalPolicy.RETAIN,
