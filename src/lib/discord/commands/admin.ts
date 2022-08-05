@@ -12,7 +12,6 @@ import {
 import { repositoriesWithDiscussions as repositories } from './_repositories'
 import { isThreadWithinHelpChannel } from '../support'
 import type {
-  Guild,
   GuildMember,
   Message,
   ChatInputCommandInteraction,
