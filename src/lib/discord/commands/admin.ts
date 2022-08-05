@@ -43,7 +43,7 @@ type user = {
 
 function getUser(userId: string, guildMember: GuildMember | null) {
   if (!userIdToUsername.get(userId)) {
-    let role = '@everyone'
+    let role = 'at-everyone'
     if (guildMember?.roles?.highest?.name) role = guildMember.roles.highest.name
     userIdToUsername.set(`${userId}`, {
       username: `${faker.unique(faker.color.human)} ${faker.unique(
