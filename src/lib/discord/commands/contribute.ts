@@ -22,7 +22,6 @@ export function handler(
 ): InteractionReplyOptions | string {
   const somethingWentWrongResponse =
     '🤢 something went wrong, repository not found'
-  console.log(interaction.options)
   const repo = repositories.get(
     interaction.options.getString('repository') as string
   )
