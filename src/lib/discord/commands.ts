@@ -1,10 +1,11 @@
+import * as admin from './commands/admin'
 import * as contribute from './commands/contribute'
 import * as github from './commands/github'
 import * as giverole from './commands/giverole'
+import * as login from './commands/login'
 import * as selectAnswer from './commands/select-answer'
 import * as thread from './commands/thread'
-import * as login from './commands/login'
-import * as admin from './commands/admin'
+import * as q from './commands/q'
 import { api } from './api'
 import { Routes } from 'discord-api-types/v10'
 import type { RESTPostAPIApplicationCommandsResult } from 'discord-api-types/v10'
@@ -26,7 +27,7 @@ function createCommandsMap(commands: any[]) {
       ) => {
         const somethingWentWrongResponse = '🤕 Something went wrong'
         try {
-          await interaction.deferReply()
+          await interaction.deferReply({ephemeral: true})
           const response = await command.handler(interaction)
           if (response) return await interaction.editReply(response)
         } catch (error) {
@@ -34,11 +35,15 @@ function createCommandsMap(commands: any[]) {
             `Error handling command ${command.config.name} for ${interaction.user.id}:`,
             error
           )
-          return interaction.editReply(somethingWentWrongResponse)
+          return await interaction.editReply({
+            content: somethingWentWrongResponse,
+          })
         }
         if (!interaction.replied) {
           // should not make it here...
-          await interaction.editReply(somethingWentWrongResponse)
+          await interaction.editReply({
+            content: somethingWentWrongResponse,
+          })
         }
       },
     }
@@ -48,13 +53,14 @@ function createCommandsMap(commands: any[]) {
 }
 
 export const commands = createCommandsMap([
+  admin,
   contribute,
   github,
   giverole,
+  login,
   selectAnswer,
   thread,
-  login,
-  admin,
+  q,
 ])
 
 const c = commands
