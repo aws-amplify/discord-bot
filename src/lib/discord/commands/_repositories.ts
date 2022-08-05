@@ -63,7 +63,6 @@ async function fetchRepositoriesWithDiscussions() {
           (obj, repo: Repository) => ({ ...obj, [alias(repo.name)]: repo }),
           {}
         )
-        console.log(res)
         return res
     }
   } catch (error) {

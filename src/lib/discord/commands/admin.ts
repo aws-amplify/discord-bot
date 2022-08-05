@@ -1,8 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { faker } from '@faker-js/faker'
 import { EmbedBuilder } from 'discord.js'
-import { Routes } from 'discord-api-types/v10'
-import { api } from '$discord'
 import { getUserAccess } from '$discord/get-user-access'
 import { prisma } from '$lib/db'
 import {
@@ -22,78 +20,65 @@ import type {
   ThreadChannel,
 } from 'discord.js'
 
-// if question was marked as answered, add additional comment and add answered label
-// lock discussion
-
 const userIdToUsername = new Map<string, user>()
+
+// const iconMap = new Map<string, string>([
+//   ['Admin', "https://github.com/esauerbo1/Images/blob/main/Admin.svg"],
+//   ['Bot', 'https://github.com/esauerbo1/Images/blob/main/Bot.svg'],
+//   ['Amplify Bot Dev', 'https://github.com/esauerbo1/Images/blob/main/Amplify-Bot-Dev.svg'],
+//   ['Moderator', 'https://github.com/esauerbo1/Images/blob/main/Moderator.svg'],
+//   ['Amplify Staff', 'https://github.com/esauerbo1/Images/blob/main/Amplify-Staff.svg'],
+//   ['AWS Staff', 'https://github.com/esauerbo1/Images/blob/main/AWS-Staff.svg'],
+//   ['Community Builder', 'https://github.com/esauerbo1/Images/blob/main/Community-Builder.svg'],
+//   ['Contributor', 'https://github.com/esauerbo1/Images/blob/main/Contributor.svg'],
+//   ['Meetup Organizer', 'https://github.com/esauerbo1/Images/blob/main/Meetup-Organizer.svg'],
+//   ['Amplify Guru', 'https://github.com/esauerbo1/Images/blob/main/Amplify-Guru.svg'],
+//   ['@everyone', 'https://github.com/esauerbo1/Images/blob/main/%40everyone.svg'],
+// ])
 
 type user = {
   username: string
   avatar: string
+  highestRole: string
 }
 
-// https://fakerjs.dev/api/unique.html ?
-// not sure how long this is stored.. maybe instead just generate
-// username while value is already in map?
-function getUser(userId: string) {
+function getUser(userId: string, guildMember: GuildMember | null) {
   if (!userIdToUsername.get(userId)) {
+    let role = '@everyone'
+    if (guildMember?.roles?.highest?.name) role = guildMember.roles.highest.name
     userIdToUsername.set(`${userId}`, {
-      username: faker.unique(faker.hacker.adjective),
+      username: `${faker.unique(faker.color.human)} ${faker.unique(
+        faker.hacker.noun
+      )}`,
       avatar: `https://avatars.dicebear.com/api/bottts/${userId}.svg`,
+      highestRole: `(${role})`,
     })
   }
-  return `<img src=${
-    userIdToUsername.get(userId)?.avatar
-  } width="30" style="vertical-align:bottom; display:inline" /> **${
-    userIdToUsername.get(userId)?.username
-  }**: <br />`
+
+  const user = userIdToUsername.get(userId)
+  return `<img src=${user?.avatar} width="30" style="vertical-align:bottom;display:inline" /> **${user?.username}** ${user?.highestRole}: `
 }
 
-// for some reason this also doesn't return the highest role
-async function getHighestRole(
-  userId: string,
-  guildId: string
-): Promise<string> {
-  try {
-    const res: GuildMember = (await api.get(
-      Routes.guildMember(guildId, userId)
-    )) as GuildMember
-    if (res?.roles?.highest) return ` (${res.roles.highest.name})`
-  } catch (error) {
-    console.error(`Error fetching user ${userId} roles: ${error.message}`)
-  }
-  return ''
+function createAnswer(answer: Message) {
+  const user = getUser(answer.author.id, answer.member)
+  return `${user} ${answer.content}`
 }
 
-function createAnswer(record) {
-  const user = getUser(record.ownerId)
-  return `${user} ${record.content}`
-}
-
-function createDiscussionBody(record, messages: Map<string, Message>): string {
-  let user = getUser(record.ownerId)
-  /** @TODO include record content in db so if it gets renamed we still have access to original message */
-  let body = `${user} ${record.title}<br /><br />`
-  //console.log(messages.values())
+function createDiscussionBody(
+  firstMessage: Message,
+  messages: Map<string, Message>,
+  threadUrl: string
+): string {
+  let user = getUser(firstMessage.author.id, firstMessage.member)
+  let body = `${user} ${firstMessage.content}\n\n`
   Array.from(messages.values())
     .reverse()
     .filter((message: Message<boolean>) => !message.author.bot)
     .forEach(async (message: Message<boolean>) => {
-      user = getUser(message.author.id)
-      //   console.log(message.member)
-      // const username = getUsername(message.author.id)
-      //   console.log("username")
-      //   console.log(username)
-      //   const role = await getHighestRole(record.ownerId, guildId)
-      //   console.log("role")
-      //   console.log(role)
-      //   console.log("message.content")
-      //   console.log(message)
-      body += `${user} ${message.content}<br /><br />`
-      //   console.log("body")
-      //   console.log(body)
+      user = getUser(message.author.id, message.member)
+      body += `${user} ${message.content}\n\n`
     })
-  body += `View the original thread: ${record.url}`
+  body += `#### 🕹️ View the original Discord thread [here](${threadUrl})\n`
   return body
 }
 
@@ -123,21 +108,13 @@ export async function handler(
   const record = await prisma.question.findUnique({
     where: { threadId: channel.id },
   })
-
-  // ** for some reason this only returns josef's user
-  // and the highest role is null
-
-  //   console.log(channel.guildId)
-  //   const guildMembers: GuildMember[] = (await api.get(
-  //     Routes.guildMembers(channel.guildId)
-  //   )) as GuildMember[]
-  //   console.log(guildMembers[0].roles.highest)
+  const firstMessage = await channel.fetchStarterMessage()
 
   const somethingWentWrongResponse = (message?: string) => {
     return `🤢 something went wrong${message}`
   }
 
-  const accessMessage = (text: string) => {
+  const badAccessMessage = (text: string) => {
     const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
     embed.setDescription(text)
@@ -145,7 +122,7 @@ export async function handler(
   }
 
   if (!channel.isThread() || !isThreadWithinHelpChannel(channel))
-    return accessMessage(
+    return badAccessMessage(
       'This command only works in public threads within help channels.'
     )
 
@@ -160,18 +137,28 @@ export async function handler(
     }
   }
   if (!access?.isAdmin)
-    return accessMessage('Only admins can use this command.')
+    return badAccessMessage('Only admins can use this command.')
   if (!record || !messages?.size)
-    return somethingWentWrongResponse(': failed to fetch messages.')
+    return somethingWentWrongResponse(': failed to fetch thread messages.')
 
+ // create discussion content
   const title = record?.title
-  const body = createDiscussionBody(record, messages)
-  let answerMessage
+  const body = createDiscussionBody(firstMessage, messages, record?.url)
+  let answerContent
+
+  // if the answer is solved create solution content
   if (record.isSolved) {
-    const answer = await prisma.answer.findUnique({
+    const answerRecord = await prisma.answer.findUnique({
       where: { questionId: record?.id },
     })
-    answerMessage = createAnswer(answer)
+    const messageArray = Array.from(messages.values())
+    const answerMessage =
+      messageArray[
+        messageArray.findIndex(
+          (message: Message) => message.id === answerRecord.id
+        )
+      ]
+    if (answerMessage) answerContent = createAnswer(answerMessage)
   }
   const repo = repositories.get(
     interaction.options.getString('repository') as string
@@ -186,11 +173,11 @@ export async function handler(
         body,
         record.id
       )
-      if (answerMessage) {
+      if (answerContent) {
         try {
           const commentResponse = await postAnswer(
             postResponse?.createDiscussion?.discussion?.id,
-            answerMessage,
+            answerContent,
             record.id
           )
           try {
