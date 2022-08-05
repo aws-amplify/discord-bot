@@ -66,6 +66,14 @@ export class SupportBox extends Construct {
     )
 
     const instance = new ec2.Instance(this, 'Instance', {
+      blockDevices: [
+        {
+          deviceName: '/dev/xvda',
+          volume: ec2.BlockDeviceVolume.ebs(8, {
+            encrypted: true,
+          }),
+        },
+      ],
       vpc,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PUBLIC,
