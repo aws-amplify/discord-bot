@@ -17,8 +17,7 @@ const nameToAlias = new Map<string, string>([
   ['Test-Repository', 'TEST'],
 ])
 
-const alias = (name: string) =>
-  nameToAlias.get(name) ? nameToAlias.get(name) : name
+const alias = (name: string) => nameToAlias.get(name) ?? name
 
 async function fetchRepositories() {
   try {
