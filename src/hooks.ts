@@ -13,16 +13,18 @@ function isApiRoute(pathname: URL['pathname']) {
   return pathname.startsWith('/api')
 }
 
-function isApiWebhookRoute(pathname: URL['pathname']) {
-  return pathname.startsWith('/api/webhooks')
-}
-
 function isApiAuthRoute(pathname: URL['pathname']) {
   return pathname.startsWith('/api/auth')
 }
 
 function isApiAdminRoute(pathname: URL['pathname']) {
   return pathname.startsWith('/api/admin')
+}
+
+function isPublicApiRoute(pathname: URL['pathname']) {
+  const publicRoutes = ['/api/p', '/api/webhooks']
+
+  return publicRoutes.some((route) => pathname.startsWith(route))
 }
 
 export const handle: Handle = async function handle({
@@ -47,12 +49,14 @@ export const handle: Handle = async function handle({
       },
     })
 
-    const storedUserGitHub = user.accounts.some(
+    const storedUserGitHub = user!.accounts.some(
       (account) => account.provider === 'github'
     )
     if (storedUserGitHub) session.user.github = true
 
-    const discordUserId = user.accounts.filter((account) => account.provider === 'discord')[0].providerAccountId
+    const discordUserId = user!.accounts.filter(
+      (account) => account.provider === 'discord'
+    )[0].providerAccountId
     let access
     try {
       access = await getUserAccess(discordUserId)
@@ -70,7 +74,7 @@ export const handle: Handle = async function handle({
   if (isApiRoute(event.url.pathname)) {
     if (
       !isApiAuthRoute(event.url.pathname) &&
-      !isApiWebhookRoute(event.url.pathname)
+      !isPublicApiRoute(event.url.pathname)
     ) {
       if (!session?.user) {
         return new Response('Unauthorized', { status: 401 })
