@@ -23,9 +23,9 @@ interface DockerProps {
 
 export interface HeyAmplifyAppProps {
   /**
-   * S3 bucket to store SQLite backups
+   * S3 bucket to store SQLite backups and logs
    */
-  bucket?: s3.Bucket
+  bucket: s3.Bucket
 
   /**
    * ECS Cluster the Application Load Balanced Fargate Service will be deployed to.
@@ -219,6 +219,12 @@ export class HeyAmplifyApp extends Construct {
       })
     }
 
+    // enable access logging for load balancer
+    albFargateService.loadBalancer.logAccessLogs(bucket, 'elb-access')
+
+    // enable deletion protection for load balancer
+    albFargateService.loadBalancer.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
+
     // set up DNS record for the CloudFront distribution if subdomain exists
     if (subdomain) {
       const record = new route53.ARecord(this, 'AliasRecordApp', {
@@ -235,7 +241,7 @@ export class HeyAmplifyApp extends Construct {
     }
 
     // if DATABASE_URL is a SQLite database, create a backup solution
-    if (docker.environment?.DATABASE_URL?.startsWith('file:') && bucket) {
+    if (docker.environment?.DATABASE_URL?.startsWith('file:')) {
       // create backup infrastructure, Litestream sidecar
       const litestreamContainer =
         albFargateService.service.taskDefinition.addContainer('db-backup', {
