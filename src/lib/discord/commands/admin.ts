@@ -77,7 +77,7 @@ function createDiscussionBody(
       user = getUser(message.author.id, message.member)
       body += `${user} ${message.content}\n\n`
     })
-  body += `#### 🕹️ View the original Discord thread [here](${threadUrl})\n`
+  body += `---\n🕹️ [View the original Discord thread](${threadUrl})\n`
   return body
 }
 
