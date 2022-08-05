@@ -19,19 +19,28 @@ model Guild {
 }
 
 model Question {
-  id                  String   @id @default(cuid())
+  id                  String            @id @default(cuid())
   createdAt           DateTime
-  updatedAt           DateTime @updatedAt
-  threadId            String   @unique
+  updatedAt           DateTime          @updatedAt
+  threadId            String            @unique
   ownerId             String
   channelName         String
-  threadMetaUpdatedAt DateTime @default(now())
+  threadMetaUpdatedAt DateTime          @default(now())
   title               String
-  isSolved            Boolean  @default(false)
+  isSolved            Boolean           @default(false)
   url                 String?
   answer              Answer?
-  guild               Guild    @relation(fields: [guildId], references: [id])
+  guild               Guild             @relation(fields: [guildId], references: [id])
   guildId             String
+  githubDiscussion    GitHubDiscussion? @relation(fields: [githubDiscussionId], references: [id])
+  githubDiscussionId  String?           @unique
+}
+
+model GitHubDiscussion {
+  id        String    @id @unique
+  url       String
+  createdBy String // Discord admin ID
+  Question  Question?
 }
 
 model Answer {

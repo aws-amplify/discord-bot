@@ -70,7 +70,7 @@ export const handle: Handle = async function handle({
   if (isApiRoute(event.url.pathname)) {
     if (
       !isApiAuthRoute(event.url.pathname) &&
-      !isApiWebhookRoute(event.url.pathname)
+      !isApiWebhookRoute(event.url.pathname) // replace with isApiPublicRoute
     ) {
       if (!session?.user) {
         return new Response('Unauthorized', { status: 401 })

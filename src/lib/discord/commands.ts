@@ -27,23 +27,41 @@ function createCommandsMap(commands: any[]) {
       ) => {
         const somethingWentWrongResponse = '🤕 Something went wrong'
         try {
-          await interaction.deferReply({ephemeral: true})
           const response = await command.handler(interaction)
-          if (response) return await interaction.editReply(response)
+          if (response) {
+            if (interaction.deferred) {
+              return await interaction.editReply(response)
+            }
+            return await interaction.reply(response)
+          }
         } catch (error) {
           console.error(
             `Error handling command ${command.config.name} for ${interaction.user.id}:`,
             error
           )
-          return await interaction.editReply({
-            content: somethingWentWrongResponse,
-          })
+          if (interaction.deferred) {
+            return await interaction.editReply({
+              content: somethingWentWrongResponse,
+            })
+          } else {
+            return await interaction.reply({
+              ephemeral: true,
+              content: somethingWentWrongResponse,
+            })
+          }
         }
         if (!interaction.replied) {
           // should not make it here...
-          await interaction.editReply({
-            content: somethingWentWrongResponse,
-          })
+          if (interaction.deferred) {
+            await interaction.editReply({
+              content: somethingWentWrongResponse,
+            })
+          } else {
+            await interaction.reply({
+              ephemeral: true,
+              content: somethingWentWrongResponse,
+            })
+          }
         }
       },
     }

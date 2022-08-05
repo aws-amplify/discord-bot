@@ -43,7 +43,7 @@ type user = {
 
 function getUser(userId: string, guildMember: GuildMember | null) {
   if (!userIdToUsername.get(userId)) {
-    let role = 'at-everyone'
+    let role = '@everyone'
     if (guildMember?.roles?.highest?.name) role = guildMember.roles.highest.name
     userIdToUsername.set(`${userId}`, {
       username: `${faker.unique(faker.color.human)} ${faker.unique(
@@ -77,7 +77,7 @@ function createDiscussionBody(
       user = getUser(message.author.id, message.member)
       body += `${user} ${message.content}\n\n`
     })
-  body += `---\n🕹️ [View the original Discord thread](${threadUrl})\n`
+  body += `#### 🕹️ View the original Discord thread [here](${threadUrl})\n`
   return body
 }
 
@@ -102,6 +102,8 @@ export const config = new SlashCommandBuilder()
 export async function handler(
   interaction: ChatInputCommandInteraction
 ): Promise<InteractionReplyOptions | string> {
+  await interaction.deferReply()
+
   const channel = interaction.channel as ThreadChannel
   const messages = await channel?.messages?.fetch()
   const record = await prisma.question.findUnique({
@@ -140,7 +142,7 @@ export async function handler(
   if (!record || !messages?.size)
     return somethingWentWrongResponse(': failed to fetch thread messages.')
 
- // create discussion content
+  // create discussion content
   const title = record?.title
   const body = createDiscussionBody(firstMessage, messages, record?.url)
   let answerContent
@@ -165,42 +167,37 @@ export async function handler(
 
   if (repo?.discussion) {
     try {
-      const postResponse = await postDiscussion(
-        repo.id,
-        repo.discussion.id,
+      const postResponse = await postDiscussion({
+        repoId: repo.id,
+        categoryId: repo.discussion.id,
         title,
         body,
-        record.id
-      )
+        mutationId: record.id,
+      })
       if (answerContent) {
         try {
-          const commentResponse = await postAnswer(
-            postResponse?.createDiscussion?.discussion?.id,
-            answerContent,
-            record.id
-          )
-          try {
-            const markedAnswered = await markAnswered(
-              commentResponse?.addDiscussionComment?.comment?.id,
-              record.id
-            )
-            try {
-              const locked = await lockDiscussion(
-                postResponse?.createDiscussion?.discussion?.id,
-                record.id
-              )
-            } catch (error) {
-              console.error(`Failed to lock discussion ${error.message}`)
-            }
-          } catch (error) {
-            console.error(`Failed to mark answer ${error.message}`)
-          }
+          const answerResponse = await postAnswer({
+            discussionId: postResponse?.createDiscussion?.discussion?.id,
+            body: answerContent,
+            clientMutationId: record.id,
+          })
+          await markAnswered({
+            commentId: answerResponse?.addDiscussionComment?.comment?.id,
+            clientMutationId: record.id,
+          })
         } catch (error) {
-          console.error(`Failed to post answer ${error.message}`)
+          console.error(error.message)
         }
       }
+      await lockDiscussion({
+        discussionId: postResponse?.createDiscussion?.discussion?.id,
+        clientMutationId: record.id
+      })
       if (postResponse?.createDiscussion?.discussion?.url) {
+      //  interaction.editReply({content: `📦 ${postResponse.createDiscussion.discussion.url}`})
+      console.log("a")
         return `📦 ${postResponse.createDiscussion.discussion.url}`
+        
       }
     } catch (error) {
       return somethingWentWrongResponse(': failed to post discussion')

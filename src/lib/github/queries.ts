@@ -132,19 +132,28 @@ export async function getRepos() {
       login: process.env.GITHUB_ORG_LOGIN,
     })
     if (organization) return organization
-  } catch (err) {
-    console.error(err)
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch repos for org ${process.env.GITHUB_ORG_LOGIN}: ${error.message}`
+    )
   }
-  return false
 }
 
-export async function postDiscussion(
-  repoId: string,
-  categoryId: string,
-  title: string,
-  body: string,
+type postDiscussionInput = {
+  repoId: string
+  categoryId: string
+  title: string
+  body: string
   mutationId: string
-) {
+}
+
+export async function postDiscussion({
+  repoId,
+  categoryId,
+  title,
+  body,
+  mutationId,
+}: postDiscussionInput) {
   try {
     const request = await authenticate()
     const response = await request(MUTATION_CREATE_DISCUSSION, {
@@ -155,17 +164,22 @@ export async function postDiscussion(
       clientMutationId: mutationId,
     })
     return response
-  } catch (err) {
-    console.error(err)
+  } catch (error) {
+    throw new Error(`Failed to post discussion: ${error.message}`)
   }
-  return false
 }
 
-export async function postAnswer(
-  discussionId: string,
-  body: string,
+type postAnswerInput = {
+  discussionId: string
+  body: string
   clientMutationId: string
-) {
+}
+
+export async function postAnswer({
+  discussionId,
+  body,
+  clientMutationId,
+}: postAnswerInput) {
   try {
     const request = await authenticate()
     const response = await request(MUTATION_ADD_DISCUSSION_COMMENT, {
@@ -174,16 +188,19 @@ export async function postAnswer(
       clientMutationId: clientMutationId,
     })
     return response
-  } catch (err) {
-    console.error(err)
+  } catch (error) {
+    throw new Error(`Failed to post answer: ${error.message}`)
   }
-  return false
 }
 
-export async function markAnswered(
-  commentId: string,
+type markAnsweredInput = {
+  commentId: string
   clientMutationId: string
-) {
+}
+export async function markAnswered({
+  commentId,
+  clientMutationId,
+}: markAnsweredInput) {
   try {
     const request = await authenticate()
     const response = await request(MUTATION_RESOLVE_DISCUSSION, {
@@ -192,15 +209,18 @@ export async function markAnswered(
     })
     return response
   } catch (error) {
-    console.error(error)
+    throw new Error(`Failed to mark solution as answered: ${error.message}`)
   }
-  return false
 }
 
-export async function lockDiscussion(
-  discussionId: string,
+type lockDiscussionInput = {
+  discussionId: string
   clientMutationId: string
-) {
+}
+export async function lockDiscussion({
+  discussionId,
+  clientMutationId,
+}: lockDiscussionInput) {
   try {
     const request = await authenticate()
     const response = await request(MUTATION_LOCK_DISCUSSION, {
@@ -209,7 +229,6 @@ export async function lockDiscussion(
     })
     return response
   } catch (error) {
-    console.error(error)
+    throw new Error(`Failed to lock discussion: ${error.message}`)
   }
-  return false
 }
