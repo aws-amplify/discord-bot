@@ -190,15 +190,13 @@ export async function handler(
                 record.id
               )
             } catch (error) {
-              return somethingWentWrongResponse(': failed to lock discussion')
+              console.error(`Failed to lock discussion ${error.message}`)
             }
           } catch (error) {
-            return somethingWentWrongResponse(
-              ': failed to mark solution as answered'
-            )
+            console.error(`Failed to mark answer ${error.message}`)
           }
         } catch (error) {
-          return somethingWentWrongResponse(': failed to post answer comment')
+          console.error(`Failed to post answer ${error.message}`)
         }
       }
       if (postResponse?.createDiscussion?.discussion?.url) {
