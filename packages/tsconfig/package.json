@@ -6,8 +6,8 @@
     "base.json"
   ],
   "peerDependencies": {
-    "typescript": "^4.6.3",
-    "vitest": "^0.9.4"
+    "typescript": "^4.7.4",
+    "vitest": "^0.20.3"
   },
   "peerDependenciesMeta": {
     "vitest": {

@@ -52,7 +52,9 @@ export const handle: Handle = async function handle({
     )
     if (storedUserGitHub) session.user.github = true
 
-    const discordUserId = user.accounts.filter((account) => account.provider === 'discord')[0].providerAccountId
+    const discordUserId = user.accounts.filter(
+      (account) => account.provider === 'discord'
+    )[0].providerAccountId
     let access
     try {
       access = await getUserAccess(discordUserId)

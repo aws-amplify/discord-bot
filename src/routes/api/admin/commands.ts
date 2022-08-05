@@ -1,7 +1,7 @@
 import { registerCommands } from '$discord/commands'
 import type { RequestHandler } from '@sveltejs/kit'
 
-export const post: RequestHandler = async () => {
+export const POST: RequestHandler = async () => {
   const list = await registerCommands()
 
   if (!list) {

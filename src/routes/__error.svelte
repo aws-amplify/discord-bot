@@ -1,20 +1,27 @@
 <script lang="ts" context="module">
-  /** @type {import('@sveltejs/kit').ErrorLoad} */
-  export function load({ error, status }) {
+  import type { Load } from '@sveltejs/kit'
+  export const load: Load = ({ error, status }) => {
     return {
       props: {
-        title: `${status}: ${error.message}`,
+        title: `${status}${error?.message ? ': ' + error.message : ''}`,
       },
     }
   }
 </script>
 
 <script lang="ts">
-  import { Content } from 'carbon-components-svelte'
+  import { Content, Grid, Row, Column } from 'carbon-components-svelte'
 
-  export let title
+  export let title: string
 </script>
 
 <Content>
-  <h1>{title}</h1>
+  <Grid>
+    <Row>
+      <Column>
+        <h1>{title}</h1>
+        <p>Something went wrong.</p>
+      </Column>
+    </Row>
+  </Grid>
 </Content>

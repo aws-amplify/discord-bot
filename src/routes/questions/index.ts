@@ -1,6 +1,6 @@
 import { prisma } from '$lib/db'
 
-export async function get() {
+export async function GET() {
   const questions = await prisma.question.findMany()
 
   return {

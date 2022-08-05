@@ -21,7 +21,7 @@ function createReleaseMessage(payload) {
 }
 
 // application/x-www-form-urlencoded
-export const post: RequestHandler = async function post({ request }) {
+export const POST: RequestHandler = async function post({ request }) {
   let payload
   try {
     payload = await request.json()
@@ -97,170 +97,219 @@ if (import.meta.vitest) {
       'content-type': 'application/json',
     },
     body: {
-      "action": "released",
-      "release": {
-        "url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/73467874",
-        "assets_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/73467874/assets",
-        "upload_url": "https://uploads.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/73467874/assets{?name,label}",
-        "html_url": "https://github.com/esauerbo1/Amplify-Bot-Testing/releases/tag/hello",
-        "id": 73467874,
-        "author": {
-          "login": "esauerbo1",
-          "id": 107655607,
-          "node_id": "U_kgDOBmqxtw",
-          "avatar_url": "https://avatars.githubusercontent.com/u/107655607?v=4",
-          "gravatar_id": "",
-          "url": "https://api.github.com/users/esauerbo1",
-          "html_url": "https://github.com/esauerbo1",
-          "followers_url": "https://api.github.com/users/esauerbo1/followers",
-          "following_url": "https://api.github.com/users/esauerbo1/following{/other_user}",
-          "gists_url": "https://api.github.com/users/esauerbo1/gists{/gist_id}",
-          "starred_url": "https://api.github.com/users/esauerbo1/starred{/owner}{/repo}",
-          "subscriptions_url": "https://api.github.com/users/esauerbo1/subscriptions",
-          "organizations_url": "https://api.github.com/users/esauerbo1/orgs",
-          "repos_url": "https://api.github.com/users/esauerbo1/repos",
-          "events_url": "https://api.github.com/users/esauerbo1/events{/privacy}",
-          "received_events_url": "https://api.github.com/users/esauerbo1/received_events",
-          "type": "User",
-          "site_admin": false
+      action: 'released',
+      release: {
+        url: 'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/73467874',
+        assets_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/73467874/assets',
+        upload_url:
+          'https://uploads.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases/73467874/assets{?name,label}',
+        html_url:
+          'https://github.com/esauerbo1/Amplify-Bot-Testing/releases/tag/hello',
+        id: 73467874,
+        author: {
+          login: 'esauerbo1',
+          id: 107655607,
+          node_id: 'U_kgDOBmqxtw',
+          avatar_url: 'https://avatars.githubusercontent.com/u/107655607?v=4',
+          gravatar_id: '',
+          url: 'https://api.github.com/users/esauerbo1',
+          html_url: 'https://github.com/esauerbo1',
+          followers_url: 'https://api.github.com/users/esauerbo1/followers',
+          following_url:
+            'https://api.github.com/users/esauerbo1/following{/other_user}',
+          gists_url: 'https://api.github.com/users/esauerbo1/gists{/gist_id}',
+          starred_url:
+            'https://api.github.com/users/esauerbo1/starred{/owner}{/repo}',
+          subscriptions_url:
+            'https://api.github.com/users/esauerbo1/subscriptions',
+          organizations_url: 'https://api.github.com/users/esauerbo1/orgs',
+          repos_url: 'https://api.github.com/users/esauerbo1/repos',
+          events_url: 'https://api.github.com/users/esauerbo1/events{/privacy}',
+          received_events_url:
+            'https://api.github.com/users/esauerbo1/received_events',
+          type: 'User',
+          site_admin: false,
         },
-        "node_id": "RE_kwDOHipEIc4EYQfi",
-        "tag_name": "hello",
-        "target_commitish": "main",
-        "name": "New Release Again",
-        "draft": false,
-        "prerelease": false,
-        "created_at": "2022-06-22T22:59:54Z",
-        "published_at": "2022-08-02T18:05:29Z",
-        "assets": [
-    
-        ],
-        "tarball_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/tarball/hello",
-        "zipball_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/zipball/hello",
-        "body": "This is a new release!"
+        node_id: 'RE_kwDOHipEIc4EYQfi',
+        tag_name: 'hello',
+        target_commitish: 'main',
+        name: 'New Release Again',
+        draft: false,
+        prerelease: false,
+        created_at: '2022-06-22T22:59:54Z',
+        published_at: '2022-08-02T18:05:29Z',
+        assets: [],
+        tarball_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/tarball/hello',
+        zipball_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/zipball/hello',
+        body: 'This is a new release!',
       },
-      "repository": {
-        "id": 506086433,
-        "node_id": "R_kgDOHipEIQ",
-        "name": "Amplify-Bot-Testing",
-        "full_name": "esauerbo1/Amplify-Bot-Testing",
-        "private": true,
-        "owner": {
-          "login": "esauerbo1",
-          "id": 107655607,
-          "node_id": "U_kgDOBmqxtw",
-          "avatar_url": "https://avatars.githubusercontent.com/u/107655607?v=4",
-          "gravatar_id": "",
-          "url": "https://api.github.com/users/esauerbo1",
-          "html_url": "https://github.com/esauerbo1",
-          "followers_url": "https://api.github.com/users/esauerbo1/followers",
-          "following_url": "https://api.github.com/users/esauerbo1/following{/other_user}",
-          "gists_url": "https://api.github.com/users/esauerbo1/gists{/gist_id}",
-          "starred_url": "https://api.github.com/users/esauerbo1/starred{/owner}{/repo}",
-          "subscriptions_url": "https://api.github.com/users/esauerbo1/subscriptions",
-          "organizations_url": "https://api.github.com/users/esauerbo1/orgs",
-          "repos_url": "https://api.github.com/users/esauerbo1/repos",
-          "events_url": "https://api.github.com/users/esauerbo1/events{/privacy}",
-          "received_events_url": "https://api.github.com/users/esauerbo1/received_events",
-          "type": "User",
-          "site_admin": false
+      repository: {
+        id: 506086433,
+        node_id: 'R_kgDOHipEIQ',
+        name: 'Amplify-Bot-Testing',
+        full_name: 'esauerbo1/Amplify-Bot-Testing',
+        private: true,
+        owner: {
+          login: 'esauerbo1',
+          id: 107655607,
+          node_id: 'U_kgDOBmqxtw',
+          avatar_url: 'https://avatars.githubusercontent.com/u/107655607?v=4',
+          gravatar_id: '',
+          url: 'https://api.github.com/users/esauerbo1',
+          html_url: 'https://github.com/esauerbo1',
+          followers_url: 'https://api.github.com/users/esauerbo1/followers',
+          following_url:
+            'https://api.github.com/users/esauerbo1/following{/other_user}',
+          gists_url: 'https://api.github.com/users/esauerbo1/gists{/gist_id}',
+          starred_url:
+            'https://api.github.com/users/esauerbo1/starred{/owner}{/repo}',
+          subscriptions_url:
+            'https://api.github.com/users/esauerbo1/subscriptions',
+          organizations_url: 'https://api.github.com/users/esauerbo1/orgs',
+          repos_url: 'https://api.github.com/users/esauerbo1/repos',
+          events_url: 'https://api.github.com/users/esauerbo1/events{/privacy}',
+          received_events_url:
+            'https://api.github.com/users/esauerbo1/received_events',
+          type: 'User',
+          site_admin: false,
         },
-        "html_url": "https://github.com/esauerbo1/Amplify-Bot-Testing",
-        "description": "a temporary repo for testing the amplify bot",
-        "fork": false,
-        "url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing",
-        "forks_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/forks",
-        "keys_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/keys{/key_id}",
-        "collaborators_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/collaborators{/collaborator}",
-        "teams_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/teams",
-        "hooks_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/hooks",
-        "issue_events_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/issues/events{/number}",
-        "events_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/events",
-        "assignees_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/assignees{/user}",
-        "branches_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/branches{/branch}",
-        "tags_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/tags",
-        "blobs_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/git/blobs{/sha}",
-        "git_tags_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/git/tags{/sha}",
-        "git_refs_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/git/refs{/sha}",
-        "trees_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/git/trees{/sha}",
-        "statuses_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/statuses/{sha}",
-        "languages_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/languages",
-        "stargazers_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/stargazers",
-        "contributors_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/contributors",
-        "subscribers_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/subscribers",
-        "subscription_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/subscription",
-        "commits_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/commits{/sha}",
-        "git_commits_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/git/commits{/sha}",
-        "comments_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/comments{/number}",
-        "issue_comment_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/issues/comments{/number}",
-        "contents_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/contents/{+path}",
-        "compare_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/compare/{base}...{head}",
-        "merges_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/merges",
-        "archive_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/{archive_format}{/ref}",
-        "downloads_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/downloads",
-        "issues_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/issues{/number}",
-        "pulls_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/pulls{/number}",
-        "milestones_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/milestones{/number}",
-        "notifications_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/notifications{?since,all,participating}",
-        "labels_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/labels{/name}",
-        "releases_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases{/id}",
-        "deployments_url": "https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/deployments",
-        "created_at": "2022-06-22T03:37:37Z",
-        "updated_at": "2022-06-22T03:37:37Z",
-        "pushed_at": "2022-08-02T18:03:05Z",
-        "git_url": "git://github.com/esauerbo1/Amplify-Bot-Testing.git",
-        "ssh_url": "git@github.com:esauerbo1/Amplify-Bot-Testing.git",
-        "clone_url": "https://github.com/esauerbo1/Amplify-Bot-Testing.git",
-        "svn_url": "https://github.com/esauerbo1/Amplify-Bot-Testing",
-        "homepage": null,
-        "size": 2,
-        "stargazers_count": 0,
-        "watchers_count": 0,
-        "language": null,
-        "has_issues": true,
-        "has_projects": true,
-        "has_downloads": true,
-        "has_wiki": true,
-        "has_pages": false,
-        "forks_count": 0,
-        "mirror_url": null,
-        "archived": false,
-        "disabled": false,
-        "open_issues_count": 1,
-        "license": null,
-        "allow_forking": true,
-        "is_template": false,
-        "web_commit_signoff_required": false,
-        "topics": [
-    
-        ],
-        "visibility": "private",
-        "forks": 0,
-        "open_issues": 1,
-        "watchers": 0,
-        "default_branch": "main"
+        html_url: 'https://github.com/esauerbo1/Amplify-Bot-Testing',
+        description: 'a temporary repo for testing the amplify bot',
+        fork: false,
+        url: 'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing',
+        forks_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/forks',
+        keys_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/keys{/key_id}',
+        collaborators_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/collaborators{/collaborator}',
+        teams_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/teams',
+        hooks_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/hooks',
+        issue_events_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/issues/events{/number}',
+        events_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/events',
+        assignees_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/assignees{/user}',
+        branches_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/branches{/branch}',
+        tags_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/tags',
+        blobs_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/git/blobs{/sha}',
+        git_tags_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/git/tags{/sha}',
+        git_refs_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/git/refs{/sha}',
+        trees_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/git/trees{/sha}',
+        statuses_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/statuses/{sha}',
+        languages_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/languages',
+        stargazers_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/stargazers',
+        contributors_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/contributors',
+        subscribers_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/subscribers',
+        subscription_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/subscription',
+        commits_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/commits{/sha}',
+        git_commits_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/git/commits{/sha}',
+        comments_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/comments{/number}',
+        issue_comment_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/issues/comments{/number}',
+        contents_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/contents/{+path}',
+        compare_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/compare/{base}...{head}',
+        merges_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/merges',
+        archive_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/{archive_format}{/ref}',
+        downloads_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/downloads',
+        issues_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/issues{/number}',
+        pulls_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/pulls{/number}',
+        milestones_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/milestones{/number}',
+        notifications_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/notifications{?since,all,participating}',
+        labels_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/labels{/name}',
+        releases_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/releases{/id}',
+        deployments_url:
+          'https://api.github.com/repos/esauerbo1/Amplify-Bot-Testing/deployments',
+        created_at: '2022-06-22T03:37:37Z',
+        updated_at: '2022-06-22T03:37:37Z',
+        pushed_at: '2022-08-02T18:03:05Z',
+        git_url: 'git://github.com/esauerbo1/Amplify-Bot-Testing.git',
+        ssh_url: 'git@github.com:esauerbo1/Amplify-Bot-Testing.git',
+        clone_url: 'https://github.com/esauerbo1/Amplify-Bot-Testing.git',
+        svn_url: 'https://github.com/esauerbo1/Amplify-Bot-Testing',
+        homepage: null,
+        size: 2,
+        stargazers_count: 0,
+        watchers_count: 0,
+        language: null,
+        has_issues: true,
+        has_projects: true,
+        has_downloads: true,
+        has_wiki: true,
+        has_pages: false,
+        forks_count: 0,
+        mirror_url: null,
+        archived: false,
+        disabled: false,
+        open_issues_count: 1,
+        license: null,
+        allow_forking: true,
+        is_template: false,
+        web_commit_signoff_required: false,
+        topics: [],
+        visibility: 'private',
+        forks: 0,
+        open_issues: 1,
+        watchers: 0,
+        default_branch: 'main',
       },
-      "sender": {
-        "login": "esauerbo1",
-        "id": 107655607,
-        "node_id": "U_kgDOBmqxtw",
-        "avatar_url": "https://avatars.githubusercontent.com/u/107655607?v=4",
-        "gravatar_id": "",
-        "url": "https://api.github.com/users/esauerbo1",
-        "html_url": "https://github.com/esauerbo1",
-        "followers_url": "https://api.github.com/users/esauerbo1/followers",
-        "following_url": "https://api.github.com/users/esauerbo1/following{/other_user}",
-        "gists_url": "https://api.github.com/users/esauerbo1/gists{/gist_id}",
-        "starred_url": "https://api.github.com/users/esauerbo1/starred{/owner}{/repo}",
-        "subscriptions_url": "https://api.github.com/users/esauerbo1/subscriptions",
-        "organizations_url": "https://api.github.com/users/esauerbo1/orgs",
-        "repos_url": "https://api.github.com/users/esauerbo1/repos",
-        "events_url": "https://api.github.com/users/esauerbo1/events{/privacy}",
-        "received_events_url": "https://api.github.com/users/esauerbo1/received_events",
-        "type": "User",
-        "site_admin": false
-      }
-    }
+      sender: {
+        login: 'esauerbo1',
+        id: 107655607,
+        node_id: 'U_kgDOBmqxtw',
+        avatar_url: 'https://avatars.githubusercontent.com/u/107655607?v=4',
+        gravatar_id: '',
+        url: 'https://api.github.com/users/esauerbo1',
+        html_url: 'https://github.com/esauerbo1',
+        followers_url: 'https://api.github.com/users/esauerbo1/followers',
+        following_url:
+          'https://api.github.com/users/esauerbo1/following{/other_user}',
+        gists_url: 'https://api.github.com/users/esauerbo1/gists{/gist_id}',
+        starred_url:
+          'https://api.github.com/users/esauerbo1/starred{/owner}{/repo}',
+        subscriptions_url:
+          'https://api.github.com/users/esauerbo1/subscriptions',
+        organizations_url: 'https://api.github.com/users/esauerbo1/orgs',
+        repos_url: 'https://api.github.com/users/esauerbo1/repos',
+        events_url: 'https://api.github.com/users/esauerbo1/events{/privacy}',
+        received_events_url:
+          'https://api.github.com/users/esauerbo1/received_events',
+        type: 'User',
+        site_admin: false,
+      },
+    },
   }
   const mockedBad = {
     headers: {
@@ -344,7 +393,8 @@ if (import.meta.vitest) {
             'https://api.github.com/users/aws-amplify/subscriptions',
           organizations_url: 'https://api.github.com/users/aws-amplify/orgs',
           repos_url: 'https://api.github.com/users/aws-amplify/repos',
-          events_url: 'https://api.github.com/users/aws-amplify/events{/privacy}',
+          events_url:
+            'https://api.github.com/users/aws-amplify/events{/privacy}',
           received_events_url:
             'https://api.github.com/users/aws-amplify/received_events',
           type: 'Organization',
@@ -363,7 +413,8 @@ if (import.meta.vitest) {
         hooks_url: 'https://api.github.com/repos/aws-amplify/discord-bot/hooks',
         issue_events_url:
           'https://api.github.com/repos/aws-amplify/discord-bot/issues/events{/number}',
-        events_url: 'https://api.github.com/repos/aws-amplify/discord-bot/events',
+        events_url:
+          'https://api.github.com/repos/aws-amplify/discord-bot/events',
         assignees_url:
           'https://api.github.com/repos/aws-amplify/discord-bot/assignees{/user}',
         branches_url:
@@ -401,7 +452,8 @@ if (import.meta.vitest) {
           'https://api.github.com/repos/aws-amplify/discord-bot/contents/{+path}',
         compare_url:
           'https://api.github.com/repos/aws-amplify/discord-bot/compare/{base}...{head}',
-        merges_url: 'https://api.github.com/repos/aws-amplify/discord-bot/merges',
+        merges_url:
+          'https://api.github.com/repos/aws-amplify/discord-bot/merges',
         archive_url:
           'https://api.github.com/repos/aws-amplify/discord-bot/{archive_format}{/ref}',
         downloads_url:
@@ -500,7 +552,8 @@ if (import.meta.vitest) {
         gists_url: 'https://api.github.com/users/josefaidt/gists{/gist_id}',
         starred_url:
           'https://api.github.com/users/josefaidt/starred{/owner}{/repo}',
-        subscriptions_url: 'https://api.github.com/users/josefaidt/subscriptions',
+        subscriptions_url:
+          'https://api.github.com/users/josefaidt/subscriptions',
         organizations_url: 'https://api.github.com/users/josefaidt/orgs',
         repos_url: 'https://api.github.com/users/josefaidt/repos',
         events_url: 'https://api.github.com/users/josefaidt/events{/privacy}',

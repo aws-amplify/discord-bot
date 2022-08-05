@@ -5,7 +5,7 @@ import { Routes } from 'discord-api-types/v10'
 import type { APIGuild } from 'discord-api-types/v10'
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
-export async function get({ locals }) {
+export async function GET({ locals }) {
   const botGuilds = (await api.get(Routes.userGuilds())) as APIGuild[]
 
   const guilds = []
