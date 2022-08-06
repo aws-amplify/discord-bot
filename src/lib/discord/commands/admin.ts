@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { faker } from '@faker-js/faker'
 import { EmbedBuilder } from 'discord.js'
+import { api } from '$discord'
 import { getUserAccess } from '$discord/get-user-access'
 import { prisma } from '$lib/db'
 import {
@@ -12,27 +13,72 @@ import {
 import { repositoriesWithDiscussions as repositories } from './_repositories'
 import { isThreadWithinHelpChannel } from '../support'
 import type {
+  Attachment,
   GuildMember,
   Message,
   ChatInputCommandInteraction,
   InteractionReplyOptions,
   ThreadChannel,
 } from 'discord.js'
+import { stringify } from 'querystring'
 
 const userIdToUsername = new Map<string, user>()
 
+// const iconMap = new Map<string, string>([
+//   ['Admin', 'FD0061'],
+//   ['Bot', '7A2F8F'],
+//   ['Amplify Bot Dev', '969C9F'],
+//   ['Moderator', '0099E1'],
+//   ['Amplify Staff', 'CC7900'],
+//   ['AWS Staff', 'F93A2F'],
+//   ['Community Builder', '00D166'],
+//   ['Contributor', '00C09A'],
+//   ['Meetup Organizer', 'F8C300'],
+//   ['Amplify Guru', '4E6F7B'],
+//   ['at-everyone', '91A6A6'],
+// ])
 const iconMap = new Map<string, string>([
-  ['Admin', '#FD0061'],
-  ['Bot', '#7A2F8F'],
-  ['Amplify Bot Dev', '#969C9F'],
-  ['Moderator', '#0099E1'],
-  ['Amplify Staff', '#CC7900'],
-  ['AWS Staff', '#F93A2F'],
-  ['Community Builder', '#00D166'],
-  ['Contributor', '#00C09A'],
-  ['Meetup Organizer', '#F8C300'],
-  ['Amplify Guru', '#4E6F7B'],
-  ['at-everyone', '#91A6A6'],
+  [
+    'Admin',
+    'https://raw.githubusercontent.com/esauerbo1/Images/main/Admin.svg',
+  ],
+  ['Bot', 'https://raw.githubusercontent.com/esauerbo1/Images/main/Bot.svg'],
+  [
+    'Amplify Bot Dev',
+    'https://raw.githubusercontent.com/esauerbo1/Images/main/Amplify-Bot-Dev.svg',
+  ],
+  [
+    'Moderator',
+    'https://raw.githubusercontent.com/esauerbo1/Images/main/Moderator.svg',
+  ],
+  [
+    'Amplify Staff',
+    'https://raw.githubusercontent.com/esauerbo1/Images/main/Amplify-Staff.svg',
+  ],
+  [
+    'AWS Staff',
+    'https://raw.githubusercontent.com/esauerbo1/Images/main/AWS-Staff.svg',
+  ],
+  [
+    'Community Builder',
+    'https://raw.githubusercontent.com/esauerbo1/Images/main/Community-Builder.svg',
+  ],
+  [
+    'Contributor',
+    'https://raw.githubusercontent.com/esauerbo1/Images/main/Contributor.svg',
+  ],
+  [
+    'Meetup Organizer',
+    'https://raw.githubusercontent.com/esauerbo1/Images/main/Meetup-Organizer.svg',
+  ],
+  [
+    'Amplify Guru',
+    'https://raw.githubusercontent.com/esauerbo1/Images/main/Amplify-Guru.svg',
+  ],
+  [
+    'at-everyone',
+    'https://raw.githubusercontent.com/esauerbo1/Images/main/%40everyone.svg',
+  ],
 ])
 
 type user = {
@@ -43,16 +89,18 @@ type user = {
 
 function getUser(userId: string, guildMember: GuildMember | null) {
   if (!userIdToUsername.get(userId)) {
-    let img
     let role = 'at-everyone'
     if (guildMember?.roles?.highest?.name) role = guildMember.roles.highest.name
-
+    // const roleIcon = `<img src="${import.meta.env.VITE_HOST}/api/p/color/f3f.svg" height="20" width="20" />`
+    const roleIcon = `<img src="${iconMap.get(
+      role
+    )}" height="20" width="20" style="display:inline-block;" />`
     userIdToUsername.set(`${userId}`, {
       username: `${faker.unique(faker.color.human)} ${faker.unique(
         faker.hacker.noun
       )}`,
       avatar: `https://avatars.dicebear.com/api/bottts/${userId}.svg`,
-      highestRole: `(${role})`,
+      highestRole: `(${role} ${roleIcon})`,
     })
   }
 
@@ -76,8 +124,14 @@ function createDiscussionBody(
     .reverse()
     .filter((message: Message<boolean>) => !message.author.bot)
     .forEach(async (message: Message<boolean>) => {
+      console.log(message)
       user = getUser(message.author.id, message.member)
       body += `${user} ${message.content}\n\n`
+      if (message.attachments.size) {
+        message.attachments.forEach((attachment, id) => {
+          body += `<img src="${attachment.attachment}" />\n\n`
+        })
+      }
     })
   body += `#### 🕹️ View the original Discord thread [here](${threadUrl})\n`
   return body
@@ -168,14 +222,18 @@ export async function handler(
   const title = record?.title
   const body = createDiscussionBody(firstMessage, messages, record?.url)
   let answerContent
-  try {
-    const img = await fetch(
-      `${process.env.VITE_NEXTAUTH_URL}/api/p/colors/${'#FD0061'}`
-    )
-    console.log(img)
-  } catch (error) {
-    console.error('failed to fetch image')
-  }
+
+  //   try {
+  //     console.log( `${process.env.VITE_HOST}/api/p/color/${iconMap.get('Admin')}.svg`)
+  //     const img = await fetch(
+  //       `${process.env.VITE_HOST}/api/p/color/f3f.svg`
+  //     )
+  //     console.log(img)
+  //   } catch (error) {
+  //     console.error(error)
+  //    // console.error(`failed to fetch image ${error.message}`)
+  //   }
+
   // if the answer is solved create solution content
   if (record.isSolved) {
     const answerRecord = await prisma.answer.findUnique({

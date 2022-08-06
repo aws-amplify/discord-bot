@@ -10,7 +10,7 @@ const svg = (color: string) => `
   </svg>
 `
 
-export const GET: RequestHandler = ({ params }) => {
+export const get: RequestHandler = ({ params }) => {
   const { code } = params
   const color = `#${code.replace(/\.svg$/, '')}`
   return {
