@@ -2,6 +2,7 @@ import { addRole } from '$discord/roles/addRole'
 import { prisma } from '$lib/db'
 import { removeRole } from '$discord/roles/removeRole'
 import { verifyGithubWebhookEvent } from './_verifyWebhook'
+import { AccessType } from '$lib/configure'
 import type { RequestHandler } from '@sveltejs/kit'
 
 async function getDiscordUserId(ghUserId: string) {
@@ -30,7 +31,7 @@ async function getDiscordUserId(ghUserId: string) {
   throw new Error(`Discord account not found for GitHub user ${ghUserId}`)
 }
 
-export const post: RequestHandler = async function post({ request })  {
+export const post: RequestHandler = async function post({ request }) {
   let rolesApplied, guildMemberId
   let payload
   try {
@@ -42,9 +43,9 @@ export const post: RequestHandler = async function post({ request })  {
         errors: [
           {
             message: `Invalid payload: ${error.message}`,
-          }
-        ]
-      }
+          },
+        ],
+      },
     }
   }
 
@@ -71,6 +72,37 @@ export const post: RequestHandler = async function post({ request })  {
     }
   }
 
+  /**
+   * @TODO match org from webhook with guild id's with this config
+   */
+
+  const config = await prisma.configuration.findUnique({
+    where: {
+      id: import.meta.env.VITE_DISCORD_GUILD_ID,
+    },
+    select: {
+      id: true,
+      roles: {
+        select: {
+          discordRoleId: true,
+          accessType: true,
+        },
+        where: {
+          accessType: {
+            in: [AccessType.STAFF],
+          },
+        },
+      },
+    },
+  })
+
+  if (!config?.roles?.some((r) => !!r.discordRoleId)) {
+    console.error(`No staff roles found for guild ${config.id}, skipping...`)
+    return
+  }
+
+  const [{ discordRoleId: staffRoleId }] = config.roles
+
   try {
     guildMemberId = await getDiscordUserId(String(payload.membership.user.id))
   } catch (err) {
@@ -89,18 +121,10 @@ export const post: RequestHandler = async function post({ request })  {
 
   switch (payload.action) {
     case 'member_added':
-      rolesApplied = await addRole(
-        process.env.DISCORD_STAFF_ROLE_ID,
-        process.env.DISCORD_GUILD_ID,
-        guildMemberId
-      )
+      rolesApplied = await addRole(staffRoleId, config.id, guildMemberId)
       break
     case 'member_removed':
-      rolesApplied = await removeRole(
-        process.env.DISCORD_STAFF_ROLE_ID,
-        process.env.DISCORD_GUILD_ID,
-        guildMemberId
-      )
+      rolesApplied = await removeRole(staffRoleId, config.id, guildMemberId)
       break
     default:
       rolesApplied = true
@@ -120,26 +144,28 @@ export const post: RequestHandler = async function post({ request })  {
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest
 
-  it.runIf(process.env.GITHUB_TESTS_ENABLED)('only run if secrets enabled', () => {
-    describe('Getting discord user id', () => { 
-      const ghUserId = '107655607'
-      const ghUserId2 = '70536670'
-      it('should return correct id if user in db', async () => {
-        expect(
-          await getDiscordUserId(String(ghUserId))
-        ).toEqual('985985131271585833')
-      })
-  
-      it('should throw error if user not in db', async () => {
-        await expect(
-           getDiscordUserId(String(ghUserId2))
-        ).rejects.toThrowError()
-      })
-  
-      it('should throw error if no user id is passed', async () => {
-        await expect(getDiscordUserId('')).rejects.toThrowError()
-      })
-    })
-  })
+  it.runIf(process.env.GITHUB_TESTS_ENABLED)(
+    'only run if secrets enabled',
+    () => {
+      describe('Getting discord user id', () => {
+        const ghUserId = '107655607'
+        const ghUserId2 = '70536670'
+        it('should return correct id if user in db', async () => {
+          expect(await getDiscordUserId(String(ghUserId))).toEqual(
+            '985985131271585833'
+          )
+        })
 
+        it('should throw error if user not in db', async () => {
+          await expect(
+            getDiscordUserId(String(ghUserId2))
+          ).rejects.toThrowError()
+        })
+
+        it('should throw error if no user id is passed', async () => {
+          await expect(getDiscordUserId('')).rejects.toThrowError()
+        })
+      })
+    }
+  )
 }

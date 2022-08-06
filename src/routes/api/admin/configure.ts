@@ -1,7 +1,9 @@
 import { prisma } from '$lib/db'
+import { AccessType } from '$lib/configure'
 
 export async function post({ request }) {
-  const { id, name, adminRoles, staffRoles } = await request.json()
+  const { id, name, adminRoles, staffRoles, contributorRoles } =
+    await request.json()
   const record = await prisma.configuration.findUnique({
     where: { id },
     include: {
@@ -11,14 +13,20 @@ export async function post({ request }) {
 
   if (record) {
     const adminRolesToDisconnect = record.roles.filter(
-      (r) => !adminRoles.includes(r.id) && r.accessType === 'ADMIN'
+      (r) => !adminRoles.includes(r.id) && r.accessType === AccessType.ADMIN
     )
     const staffRolesToDisconnect = record.roles.filter(
-      (r) => !staffRoles.includes(r.id) && r.accessType === 'STAFF'
+      (r) => !staffRoles.includes(r.id) && r.accessType === AccessType.STAFF
+    )
+    const contributorRolesToDisconnect = record.roles.filter(
+      (r) =>
+        !contributorRoles.includes(r.id) &&
+        r.accessType === AccessType.CONTRIBUTOR
     )
     const rolesToDisconnect = [
       ...adminRolesToDisconnect,
       ...staffRolesToDisconnect,
+      ...contributorRolesToDisconnect,
     ]
     // delete old roles
     await prisma.role.deleteMany({
@@ -31,8 +39,18 @@ export async function post({ request }) {
   }
 
   const rolesToCreateOrUpdate = [
-    ...adminRoles.map((id) => ({ discordRoleId: id, accessType: 'ADMIN' })),
-    ...staffRoles.map((id) => ({ discordRoleId: id, accessType: 'STAFF' })),
+    ...adminRoles.map((id) => ({
+      discordRoleId: id,
+      accessType: AccessType.ADMIN,
+    })),
+    ...staffRoles.map((id) => ({
+      discordRoleId: id,
+      accessType: AccessType.STAFF,
+    })),
+    ...contributorRoles.map((id) => ({
+      discordRoleId: id,
+      accessType: AccessType.CONTRIBUTOR,
+    })),
   ]
   const config = await prisma.configuration.upsert({
     where: {
