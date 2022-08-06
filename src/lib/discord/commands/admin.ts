@@ -20,23 +20,9 @@ import type {
   InteractionReplyOptions,
   ThreadChannel,
 } from 'discord.js'
-import { stringify } from 'querystring'
 
 const userIdToUsername = new Map<string, user>()
 
-// const iconMap = new Map<string, string>([
-//   ['Admin', 'FD0061'],
-//   ['Bot', '7A2F8F'],
-//   ['Amplify Bot Dev', '969C9F'],
-//   ['Moderator', '0099E1'],
-//   ['Amplify Staff', 'CC7900'],
-//   ['AWS Staff', 'F93A2F'],
-//   ['Community Builder', '00D166'],
-//   ['Contributor', '00C09A'],
-//   ['Meetup Organizer', 'F8C300'],
-//   ['Amplify Guru', '4E6F7B'],
-//   ['at-everyone', '91A6A6'],
-// ])
 const iconMap = new Map<string, string>([
   [
     'Admin',
@@ -91,10 +77,9 @@ function getUser(userId: string, guildMember: GuildMember | null) {
   if (!userIdToUsername.get(userId)) {
     let role = 'at-everyone'
     if (guildMember?.roles?.highest?.name) role = guildMember.roles.highest.name
-    // const roleIcon = `<img src="${import.meta.env.VITE_HOST}/api/p/color/f3f.svg" height="20" width="20" />`
     const roleIcon = `<img src="${iconMap.get(
       role
-    )}" height="20" width="20" style="display:inline-block;" />`
+    )}" height="20" width="20" align="center" />`
     userIdToUsername.set(`${userId}`, {
       username: `${faker.unique(faker.color.human)} ${faker.unique(
         faker.hacker.noun
@@ -105,7 +90,7 @@ function getUser(userId: string, guildMember: GuildMember | null) {
   }
 
   const user = userIdToUsername.get(userId)
-  return `<img src=${user?.avatar} width="30" style="vertical-align:bottom;display:inline" /> **${user?.username}** ${user?.highestRole}: `
+  return `<img src=${user?.avatar} width="30"  align="center" /> **${user?.username}** ${user?.highestRole}: `
 }
 
 function createAnswer(answer: Message) {

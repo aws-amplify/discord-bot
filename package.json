@@ -127,8 +127,7 @@
       "svelte3/typescript": true
     },
     "rules": {
-      "@typescript-eslint/prefer-ts-expect-error": "warn",
-      "@typescript-eslint/no-non-null-assertion": "off"
+      "@typescript-eslint/prefer-ts-expect-error": "warn"
     }
   },
   "packageManager": "pnpm@7.1.0",
