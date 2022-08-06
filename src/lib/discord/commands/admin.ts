@@ -1,7 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { faker } from '@faker-js/faker'
 import { EmbedBuilder } from 'discord.js'
-import { api } from '$discord'
 import { getUserAccess } from '$discord/get-user-access'
 import { prisma } from '$lib/db'
 import {
@@ -13,7 +12,6 @@ import {
 import { repositoriesWithDiscussions as repositories } from './_repositories'
 import { isThreadWithinHelpChannel } from '../support'
 import type {
-  Attachment,
   GuildMember,
   Message,
   ChatInputCommandInteraction,
@@ -109,7 +107,6 @@ function createDiscussionBody(
     .reverse()
     .filter((message: Message<boolean>) => !message.author.bot)
     .forEach(async (message: Message<boolean>) => {
-      console.log(message)
       user = getUser(message.author.id, message.member)
       body += `${user} ${message.content}\n\n`
       if (message.attachments.size) {
@@ -207,17 +204,6 @@ export async function handler(
   const title = record?.title
   const body = createDiscussionBody(firstMessage, messages, record?.url)
   let answerContent
-
-  //   try {
-  //     console.log( `${process.env.VITE_HOST}/api/p/color/${iconMap.get('Admin')}.svg`)
-  //     const img = await fetch(
-  //       `${process.env.VITE_HOST}/api/p/color/f3f.svg`
-  //     )
-  //     console.log(img)
-  //   } catch (error) {
-  //     console.error(error)
-  //    // console.error(`failed to fetch image ${error.message}`)
-  //   }
 
   // if the answer is solved create solution content
   if (record.isSolved) {
