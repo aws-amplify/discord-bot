@@ -3,9 +3,9 @@ import { guild as store } from '$lib/store'
 import { api } from './_discord'
 import { Routes } from 'discord-api-types/v10'
 import type { APIGuild } from 'discord-api-types/v10'
+import type { RequestHandler } from '@sveltejs/kit'
 
-/** @type {import('@sveltejs/kit').RequestHandler} */
-export async function GET({ locals }) {
+export const GET: RequestHandler = async ({ locals }) => {
   const botGuilds = (await api.get(Routes.userGuilds())) as APIGuild[]
 
   const guilds = []
