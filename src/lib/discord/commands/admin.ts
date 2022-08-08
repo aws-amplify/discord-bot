@@ -18,7 +18,7 @@ import type {
   ThreadChannel,
 } from 'discord.js'
 
-const userIdToUsername = new Map<string, user>()
+const userIdToUsername = new Map<string, User>()
 
 const iconMap = new Map<string, string>([
   [
@@ -64,7 +64,7 @@ const iconMap = new Map<string, string>([
   ],
 ])
 
-type user = {
+type User = {
   username: string
   avatar: string
   highestRole: string
@@ -102,9 +102,8 @@ async function createDiscussionBody(
   threadUrl: string
 ): Promise<string> {
   let body = ''
-
   for (const [id, message] of messages) {
-    user = await getUser(message)
+    const user = await getUser(message)
     body += `${user} ${message.content}\n\n`
     if (message.attachments?.size) {
       message.attachments.forEach((attachment, id) => {
