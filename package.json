@@ -138,6 +138,9 @@
     }
   },
   "lint-staged": {
+    "*.ts": [
+      "tsc --noEmit"
+    ],
     "*.(ts|js|svelte)": [
       "prettier --list-different",
       "eslint"
