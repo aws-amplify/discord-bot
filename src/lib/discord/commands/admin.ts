@@ -20,6 +20,7 @@ import type {
 
 const userIdToUsername = new Map<string, User>()
 
+/** @TODO replace with colors endpoint once this is deployed */
 const iconMap = new Map<string, string>([
   [
     'Admin',
