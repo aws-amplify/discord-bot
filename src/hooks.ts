@@ -13,17 +13,12 @@ function isApiRoute(pathname: URL['pathname']) {
   return pathname.startsWith('/api')
 }
 
-function isApiAuthRoute(pathname: URL['pathname']) {
-  return pathname.startsWith('/api/auth')
-}
-
 function isApiAdminRoute(pathname: URL['pathname']) {
   return pathname.startsWith('/api/admin')
 }
 
 function isPublicApiRoute(pathname: URL['pathname']) {
-  const publicRoutes = ['/api/p', '/api/webhooks']
-
+  const publicRoutes = ['/api/auth', '/api/p', '/api/webhooks']
   return publicRoutes.some((route) => pathname.startsWith(route))
 }
 
@@ -72,10 +67,7 @@ export const handle: Handle = async function handle({
 
   // protect API routes
   if (isApiRoute(event.url.pathname)) {
-    if (
-      !isApiAuthRoute(event.url.pathname) &&
-      !isPublicApiRoute(event.url.pathname)
-    ) {
+    if (!isPublicApiRoute(event.url.pathname)) {
       if (!session?.user) {
         return new Response('Unauthorized', { status: 401 })
       }
