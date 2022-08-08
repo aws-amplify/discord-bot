@@ -30,7 +30,7 @@ async function getDiscordUserId(ghUserId: string) {
   throw new Error(`Discord account not found for GitHub user ${ghUserId}`)
 }
 
-export const post: RequestHandler = async function post({ request })  {
+export const POST: RequestHandler = async function post({ request }) {
   let rolesApplied, guildMemberId
   let payload
   try {
@@ -42,9 +42,9 @@ export const post: RequestHandler = async function post({ request })  {
         errors: [
           {
             message: `Invalid payload: ${error.message}`,
-          }
-        ]
-      }
+          },
+        ],
+      },
     }
   }
 
@@ -120,26 +120,28 @@ export const post: RequestHandler = async function post({ request })  {
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest
 
-  it.runIf(process.env.GITHUB_TESTS_ENABLED)('only run if secrets enabled', () => {
-    describe('Getting discord user id', () => { 
-      const ghUserId = '107655607'
-      const ghUserId2 = '70536670'
-      it('should return correct id if user in db', async () => {
-        expect(
-          await getDiscordUserId(String(ghUserId))
-        ).toEqual('985985131271585833')
-      })
-  
-      it('should throw error if user not in db', async () => {
-        await expect(
-           getDiscordUserId(String(ghUserId2))
-        ).rejects.toThrowError()
-      })
-  
-      it('should throw error if no user id is passed', async () => {
-        await expect(getDiscordUserId('')).rejects.toThrowError()
-      })
-    })
-  })
+  it.runIf(process.env.GITHUB_TESTS_ENABLED)(
+    'only run if secrets enabled',
+    () => {
+      describe('Getting discord user id', () => {
+        const ghUserId = '107655607'
+        const ghUserId2 = '70536670'
+        it('should return correct id if user in db', async () => {
+          expect(await getDiscordUserId(String(ghUserId))).toEqual(
+            '985985131271585833'
+          )
+        })
 
+        it('should throw error if user not in db', async () => {
+          await expect(
+            getDiscordUserId(String(ghUserId2))
+          ).rejects.toThrowError()
+        })
+
+        it('should throw error if no user id is passed', async () => {
+          await expect(getDiscordUserId('')).rejects.toThrowError()
+        })
+      })
+    }
+  )
 }

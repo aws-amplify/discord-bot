@@ -1,6 +1,7 @@
 import { prisma } from '$lib/db'
+import type { RequestHandler } from '@sveltejs/kit'
 
-export async function post({ request }) {
+export const POST: RequestHandler = async ({ request }) => {
   const { id, name, adminRoles, staffRoles } = await request.json()
   const record = await prisma.configuration.findUnique({
     where: { id },
@@ -61,7 +62,7 @@ export async function post({ request }) {
   }
 }
 
-export async function del({ request }) {
+export const DELETE: RequestHandler = async ({ request }) => {
   const { id } = await request.json()
   return {
     body: await prisma.configuration.delete({

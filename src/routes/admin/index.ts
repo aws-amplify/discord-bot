@@ -4,9 +4,9 @@ import { commands as bank } from '$discord/commands'
 import { guild as store } from '$lib/store'
 import { prisma } from '$lib/db'
 import { api } from '../api/_discord'
+import type { RequestHandler } from '@sveltejs/kit'
 
-/** @type {import('@sveltejs/kit').RequestHandler} */
-export async function get({ locals }) {
+export const GET: RequestHandler = async ({ locals }) => {
   const commands = Array.from(bank.values())
   // const id = read(store)
   const id = import.meta.env.VITE_DISCORD_GUILD_ID
@@ -34,6 +34,7 @@ export async function get({ locals }) {
   }
 
   return {
+    status: 200,
     body: {
       commands,
       configure: {
