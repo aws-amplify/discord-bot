@@ -12,7 +12,6 @@ import {
 import { repositoriesWithDiscussions as repositories } from './_repositories'
 import { isThreadWithinHelpChannel } from '../support'
 import type {
-  GuildMember,
   Message,
   ChatInputCommandInteraction,
   InteractionReplyOptions,
@@ -71,10 +70,12 @@ type user = {
   highestRole: string
 }
 
-function getUser(userId: string, guildMember: GuildMember | null) {
-  if (!userIdToUsername.get(userId)) {
-    let role = 'at-everyone'
-    if (guildMember?.roles?.highest?.name) role = guildMember.roles.highest.name
+async function getUser(message: Message) {
+  const userId = message.author?.id
+  const defaultRole = 'at-everyone'
+  if (!userIdToUsername.has(userId)) {
+    const guildMember = await message.guild?.members.fetch(userId)
+    const role = guildMember?.roles?.highest?.name ?? defaultRole
     const roleIcon = `<img src="${iconMap.get(
       role
     )}" height="20" width="20" align="center" />`
@@ -82,7 +83,7 @@ function getUser(userId: string, guildMember: GuildMember | null) {
       username: `${faker.unique(faker.color.human)} ${faker.unique(
         faker.hacker.noun
       )}`,
-      avatar: `https://avatars.dicebear.com/api/bottts/${userId}.svg`,
+      avatar: `https://avatars.dicebear.com/api/bottts/${userId}.svg`,  
       highestRole: `(${role} ${roleIcon})`,
     })
   }
@@ -91,30 +92,27 @@ function getUser(userId: string, guildMember: GuildMember | null) {
   return `<img src=${user?.avatar} width="30"  align="center" /> **${user?.username}** ${user?.highestRole}: `
 }
 
-function createAnswer(answer: Message) {
-  const user = getUser(answer.author.id, answer.member)
+async function createAnswer(answer: Message) {
+  const user = await getUser(answer)
   return `${user} ${answer.content}`
 }
 
-function createDiscussionBody(
-  firstMessage: Message,
+async function createDiscussionBody(
   messages: Map<string, Message>,
   threadUrl: string
-): string {
-  let user = getUser(firstMessage.author.id, firstMessage.member)
-  let body = `${user} ${firstMessage.content}\n\n`
-  Array.from(messages.values())
-    .reverse()
-    .filter((message: Message<boolean>) => !message.author.bot)
-    .forEach(async (message: Message<boolean>) => {
-      user = getUser(message.author.id, message.member)
-      body += `${user} ${message.content}\n\n`
-      if (message.attachments.size) {
-        message.attachments.forEach((attachment, id) => {
-          body += `<img src="${attachment.attachment}" />\n\n`
-        })
-      }
-    })
+): Promise<string> {
+  let body = ''
+
+  for (const [id, message] of messages) {
+    user = await getUser(message)
+    body += `${user} ${message.content}\n\n`
+    if (message.attachments?.size) {
+      message.attachments.forEach((attachment, id) => {
+        body += `<img src="${attachment.attachment}" />\n\n`
+      })
+    }
+  }
+
   body += `#### 🕹️ View the original Discord thread [here](${threadUrl})\n`
   return body
 }
@@ -163,11 +161,22 @@ export async function handler(
   await interaction.deferReply()
 
   const channel = interaction.channel as ThreadChannel
-  const messages = await channel?.messages?.fetch()
   const record = await prisma.question.findUnique({
     where: { threadId: channel.id },
   })
+
+  const messagesCollection = await channel?.messages?.fetch()
+  let messagesArr = Array.from(messagesCollection.values())
   const firstMessage = await channel.fetchStarterMessage()
+  messagesArr.push(firstMessage)
+  messagesArr = messagesArr
+    .reverse()
+    .filter((message: Message<boolean>) => !message.author.bot)
+  const messages = new Map(
+    messagesArr.map((message) => {
+      return [message.id, message]
+    })
+  )
 
   const somethingWentWrongResponse = (message?: string) => {
     return `🤢 something went wrong${message}`
@@ -202,7 +211,7 @@ export async function handler(
 
   // create discussion content
   const title = record?.title
-  const body = createDiscussionBody(firstMessage, messages, record?.url)
+  const body = await createDiscussionBody(messages, record?.url)
   let answerContent
 
   // if the answer is solved create solution content
@@ -210,14 +219,15 @@ export async function handler(
     const answerRecord = await prisma.answer.findUnique({
       where: { questionId: record?.id },
     })
-    const messageArray = Array.from(messages.values())
     const answerMessage =
-      messageArray[
-        messageArray.findIndex(
-          (message: Message) => message.id === answerRecord.id
+      messagesArr[
+        messagesArr.findIndex(
+          (message: Message) => message.id === answerRecord?.id
         )
       ]
-    if (answerMessage) answerContent = createAnswer(answerMessage)
+    if (answerMessage) {
+      answerContent = await createAnswer(answerMessage)
+    }
   }
   const repo = repositories.get(
     interaction.options.getString('repository') as string
