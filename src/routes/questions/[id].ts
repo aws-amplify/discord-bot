@@ -1,6 +1,6 @@
 import { prisma } from '$lib/db'
 
-export async function get({ params }) {
+export async function GET({ params }) {
   const question = await prisma.question.findUnique({
     where: {
       id: params.id,

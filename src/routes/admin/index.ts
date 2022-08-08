@@ -6,7 +6,7 @@ import { prisma } from '$lib/db'
 import { api } from '../api/_discord'
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
-export async function get({ locals }) {
+export async function GET({ locals }) {
   const commands = Array.from(bank.values())
   // const id = read(store)
   const id = import.meta.env.VITE_DISCORD_GUILD_ID

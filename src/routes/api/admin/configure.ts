@@ -1,6 +1,6 @@
 import { prisma } from '$lib/db'
 
-export async function post({ request }) {
+export async function POST({ request }) {
   const { id, name, adminRoles, staffRoles } = await request.json()
   const record = await prisma.configuration.findUnique({
     where: { id },
@@ -61,7 +61,7 @@ export async function post({ request }) {
   }
 }
 
-export async function del({ request }) {
+export async function DELETE({ request }) {
   const { id } = await request.json()
   return {
     body: await prisma.configuration.delete({
