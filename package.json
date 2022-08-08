@@ -125,7 +125,8 @@
       "svelte3/typescript": true
     },
     "rules": {
-      "@typescript-eslint/prefer-ts-expect-error": "warn"
+      "@typescript-eslint/prefer-ts-expect-error": "warn",
+      "@typescript-eslint/no-non-null-assertion": "off"
     }
   },
   "packageManager": "pnpm@7.1.0",
@@ -138,6 +139,9 @@
     }
   },
   "lint-staged": {
+    "*.ts": [
+      "tsc --noEmit"
+    ],
     "*.(ts|js|svelte)": [
       "prettier --list-different",
       "eslint"
