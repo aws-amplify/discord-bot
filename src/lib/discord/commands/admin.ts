@@ -274,5 +274,5 @@ export async function handler(
 
 if (import.meta.vitest) {
   const { test } = import.meta.vitest
-  test.todo('/github')
+  test.todo('/admin')
 }
