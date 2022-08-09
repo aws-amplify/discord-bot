@@ -39,19 +39,19 @@ export class DiscordApi extends REST implements IDiscordApi {
   }
 
   public get(url: string): Promise<unknown> {
-    return this._request('get', url)
+    return this._request('GET', url)
   }
 
   public post(url: string, payload?: unknown): Promise<unknown> {
-    return this._request('post', url, payload)
+    return this._request('POST', url, payload)
   }
 
   public put(url: string, payload?: unknown): Promise<unknown> {
-    return this._request('put', url, payload)
+    return this._request('PUT', url, payload)
   }
 
   public delete(url: string, payload?: unknown): Promise<unknown> {
-    return this._request('delete', url, payload)
+    return this._request('DELETE', url, payload)
   }
 }
 
