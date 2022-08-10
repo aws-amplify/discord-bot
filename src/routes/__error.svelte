@@ -3,7 +3,7 @@
   export const load: Load = ({ error, status }) => {
     return {
       props: {
-        title: `${status}${error?.message ? ': ' + error.message : ''}`,
+        title: `${status}`,
       },
     }
   }
