@@ -220,7 +220,7 @@ export class HeyAmplifyApp extends Construct {
     }
 
     // enable access logging for load balancer
-    albFargateService.loadBalancer.logAccessLogs(bucket, 'elb-access')
+    // albFargateService.loadBalancer.logAccessLogs(bucket, 'elb-access')
 
     // enable deletion protection for load balancer
     albFargateService.loadBalancer.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
@@ -240,33 +240,34 @@ export class HeyAmplifyApp extends Construct {
       })
     }
 
-    // if DATABASE_URL is a SQLite database, create a backup solution
+    /**
+     * if DATABASE_URL is a SQLite database, create a backup solution
+     * @TODO litestream is causing conflicts with prisma, locking the database and throwing disk I/O errors, revisit with backups on cron
+     */
     if (docker.environment?.DATABASE_URL?.startsWith('file:')) {
       // create backup infrastructure, Litestream sidecar
-      const litestreamContainer =
-        albFargateService.service.taskDefinition.addContainer('db-backup', {
-          image: ecs.ContainerImage.fromRegistry('litestream/litestream'),
-          environment: {
-            BUCKET_NAME: bucket.bucketName,
-          },
-          logging: new ecs.AwsLogDriver({
-            streamPrefix: 'backup',
-          }),
-          command: [
-            'replicate',
-            `${docker.environment.DATABASE_URL.replace('file:', '')}`,
-            `s3://${bucket.bucketName}/backups`,
-          ],
-        })
-
-      bucket.grantReadWrite(albFargateService.service.taskDefinition.taskRole)
-
-      // mount the filesystem
-      litestreamContainer.addMountPoints({
-        containerPath: filesystemMountPoint,
-        sourceVolume: volumeName,
-        readOnly: false,
-      })
+      // const litestreamContainer =
+      //   albFargateService.service.taskDefinition.addContainer('db-backup', {
+      //     image: ecs.ContainerImage.fromRegistry('litestream/litestream'),
+      //     environment: {
+      //       BUCKET_NAME: bucket.bucketName,
+      //     },
+      //     logging: new ecs.AwsLogDriver({
+      //       streamPrefix: 'backup',
+      //     }),
+      //     command: [
+      //       'replicate',
+      //       `${docker.environment.DATABASE_URL.replace('file:', '')}`,
+      //       `s3://${bucket.bucketName}/backups`,
+      //     ],
+      //   })
+      // bucket.grantReadWrite(albFargateService.service.taskDefinition.taskRole)
+      // // mount the filesystem
+      // litestreamContainer.addMountPoints({
+      //   containerPath: filesystemMountPoint,
+      //   sourceVolume: volumeName,
+      //   readOnly: false,
+      // })
     }
   }
 }
