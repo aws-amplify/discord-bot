@@ -205,9 +205,9 @@ export async function getServerSession(
 export default (
   options: NextAuthOptions
 ): {
-  get: (req) => Promise<unknown>
-  post: (req) => Promise<unknown>
+  GET: (req) => Promise<unknown>
+  POST: (req) => Promise<unknown>
 } => ({
-  get: (req) => SKNextAuthHandler(req, options),
-  post: (req) => SKNextAuthHandler(req, options),
+  GET: (req) => SKNextAuthHandler(req, options),
+  POST: (req) => SKNextAuthHandler(req, options),
 })
