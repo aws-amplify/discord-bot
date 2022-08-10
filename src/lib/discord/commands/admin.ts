@@ -84,7 +84,7 @@ async function getUser(message: Message) {
       username: `${faker.unique(faker.color.human)} ${faker.unique(
         faker.hacker.noun
       )}`,
-      avatar: `https://avatars.dicebear.com/api/bottts/${userId}.svg`,  
+      avatar: `https://avatars.dicebear.com/api/bottts/${userId}.svg`,
       highestRole: `(${role} ${roleIcon})`,
     })
   }
@@ -271,9 +271,4 @@ export async function handler(
     }
   }
   return somethingWentWrongResponse(': GitHub discussion not found')
-}
-
-if (import.meta.vitest) {
-  const { test } = import.meta.vitest
-  test.todo('/admin')
 }

@@ -230,8 +230,3 @@ export const config = new SlashCommandBuilder()
 //         .setRequired(false)
 //     )
 // )
-
-if (import.meta.vitest) {
-  const { test } = import.meta.vitest
-  test.todo('/thread')
-}
