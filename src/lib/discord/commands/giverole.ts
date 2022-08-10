@@ -10,7 +10,7 @@ export async function handler(
   interaction: ChatInputCommandInteraction
 ): Promise<InteractionReplyOptions | string> {
   const { member: caller, guild } = interaction
-  
+
   const { role, user } = interaction.options.data.reduce(
     (acc, current, index, source) => {
       return {
@@ -46,8 +46,3 @@ export const config = new SlashCommandBuilder()
   .addUserOption((option) =>
     option.setName('user').setDescription('The user to boop').setRequired(true)
   )
-
-if (import.meta.vitest) {
-  const { test } = import.meta.vitest
-  test.todo('/giverole')
-}

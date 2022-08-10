@@ -240,8 +240,3 @@ export async function handler(
   }
   return somethingWentWrongResponse(': GitHub discussion not found')
 }
-
-if (import.meta.vitest) {
-  const { test } = import.meta.vitest
-  test.todo('/admin')
-}
