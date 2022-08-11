@@ -62,13 +62,17 @@ export const options: NextAuthOptions = {
     async redirect({ url, baseUrl }) {
       return baseUrl
     },
-
     async session({ session, user }) {
-      session.user.id = user.id
+      session!.user!.id = user.id
       return session
     },
   },
   events: {
+    /**
+     * @TODO link `DiscordUser` model to `Account` model
+     */
+    // async createAccount({ user }) {
+    // },
     async signIn({ user, account }) {
       // if user is signing into github
       if (
@@ -109,6 +113,10 @@ async function toSvelteKitResponse(
     status,
     headers: {},
   }
+
+  /**
+   * @TODO remove "NextAuth.js" from error message
+   */
 
   headers?.forEach((header) => {
     response.headers[header.key] = header.value
