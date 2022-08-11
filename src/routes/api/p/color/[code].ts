@@ -14,7 +14,6 @@ export const GET: RequestHandler = ({ params }) => {
   const { code } = params
   const parsed = code.replace(/\.svg$/, '')
   const hex = parseFloat(parsed).toString(16)
-  console.log(hex)
   const color = `#${hex}`
   return {
     headers: {
