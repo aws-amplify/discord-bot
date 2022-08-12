@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client'
+import { ACCESS_LEVELS } from '$lib/constants'
+import { init } from '$lib/db'
 const prisma = new PrismaClient()
 
 export async function seed() {
@@ -30,10 +32,47 @@ export async function seed() {
       },
     },
   })
+
+  const STAFF_ROLE = '1001228846768590934'
+  await prisma.configuration.upsert({
+    where: { id: import.meta.env.VITE_DISCORD_GUILD_ID },
+    update: {},
+    create: {
+      name: 'hey-amplify-e2e',
+      roles: {
+        create: [
+          {
+            id: STAFF_ROLE,
+            accessLevel: {
+              connect: {
+                name: ACCESS_LEVELS.STAFF,
+                // where: { name: ACCESS_LEVELS.STAFF },
+              },
+            },
+            discordRole: {
+              connectOrCreate: {
+                where: { id: STAFF_ROLE },
+                create: { id: STAFF_ROLE },
+              },
+            },
+          },
+        ],
+      },
+      guild: {
+        connectOrCreate: {
+          where: { id: import.meta.env.VITE_DISCORD_GUILD_ID },
+          create: { id: import.meta.env.VITE_DISCORD_GUILD_ID },
+        },
+      },
+    },
+  })
 }
 
-try {
-  await seed()
-} catch (error) {
-  throw new Error(`Unable to seed database: ${error.message}`)
-}
+beforeAll(async () => {
+  try {
+    await init()
+    await seed()
+  } catch (error) {
+    throw new Error(`Unable to seed database: ${error.message}`)
+  }
+})

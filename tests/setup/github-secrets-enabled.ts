@@ -13,8 +13,10 @@ export function secretsEnabled() {
   }
 }
 
-try {
-  secretsEnabled()
-} catch (err) {
-  console.error(`Error checking github tests ${err.message}`)
-}
+beforeAll(() => {
+  try {
+    secretsEnabled()
+  } catch (err) {
+    console.error(`Error checking github tests ${err.message}`)
+  }
+})

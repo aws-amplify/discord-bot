@@ -16,7 +16,7 @@
     "lint": "eslint .",
     "prepare": "prisma generate",
     "setup": "pnpm install && pnpm build:lib && pnpm setup-test",
-    "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push",
+    "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push && vite build --mode test && vite build --mode server-test",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
@@ -144,9 +144,6 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "tsc --noEmit"
-    ],
     "*.(ts|js|svelte)": [
       "prettier --list-different",
       "eslint"

@@ -97,8 +97,13 @@ export const POST: RequestHandler = async function post({ request }) {
   })
 
   if (!config?.roles?.some((r) => !!r.discordRoleId)) {
-    console.error(`No staff roles found for guild ${config.id}, skipping...`)
-    return
+    console.error(`No staff roles found for guild ${config!.id}, skipping...`)
+    /**
+     * @TODO better error code? 412?
+     */
+    return {
+      status: 400,
+    }
   }
 
   const [{ discordRoleId: staffRoleId }] = config.roles

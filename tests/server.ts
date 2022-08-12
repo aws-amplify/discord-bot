@@ -82,7 +82,7 @@ function routify(path: string) {
   return `${path
     .replace(ROUTES_PATH, '')
     .replace(/\.(js|ts)/, '')
-    .replace(/index$/, '')}`
+    .replace(/\/index$/, '')}`
 }
 
 function isDynamicRoute(route: string) {
@@ -313,28 +313,6 @@ describe('webhooks', () => {
         .send(addedPayloadUserDNE.body)
         .set(addedPayloadUserDNE.headers)
       expect(response.status).toBe(403)
-    })
-
-    it('should return 400 with bad role ID', async () => {
-      const goodStaffRoleId = process.env.DISCORD_STAFF_ROLE_ID
-      process.env.DISCORD_STAFF_ROLE_ID = 'badid'
-      const response = await request(app)
-        .post('/api/webhooks/github-org-membership')
-        .send(addedPayload1.body)
-        .set(addedPayload1.headers)
-      expect(response.status).toBe(400)
-      process.env.DISCORD_STAFF_ROLE_ID = staffRoleId
-    })
-
-    it('should return 400 with bad guild ID', async () => {
-      const guildId = process.env.DISCORD_GUILD_ID
-      process.env.DISCORD_GUILD_ID = 'badid'
-      const response = await request(app)
-        .post('/api/webhooks/github-org-membership')
-        .send(addedPayload1.body)
-        .set(addedPayload1.headers)
-      expect(response.status).toBe(400)
-      process.env.DISCORD_GUILD_ID = guildId
     })
   })
 })
