@@ -55,10 +55,13 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
-      - run: pnpm setup-test
+      - run: pnpm build
         env:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
+      - run: pnpm prisma db push
+        env:
+          DATABASE_URL: 'file:data/test.db'
       - run: pnpm test
         env:
           DISCORD_WEBHOOK_URL_RELEASES: ${{ secrets.DISCORD_WEBHOOK_URL_RELEASES }}
