@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit'
   export const load: Load = ({ error, status }) => {
+    console.error('[app] Error:', error)
     return {
       props: {
         title: `${status}`,

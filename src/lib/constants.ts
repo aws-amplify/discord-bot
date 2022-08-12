@@ -1,0 +1,6 @@
+export const ACCESS_LEVELS = {
+  ADMIN: 'ADMIN',
+  STAFF: 'STAFF',
+  CONTRIBUTOR: 'CONTRIBUTOR',
+  MEMBER: 'MEMBER',
+}
