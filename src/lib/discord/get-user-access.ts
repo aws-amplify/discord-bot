@@ -1,5 +1,6 @@
 import { get as read } from 'svelte/store'
 import { Routes } from 'discord-api-types/v10'
+import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { guild as store } from '$lib/store'
 import { api } from './index'
@@ -31,7 +32,7 @@ export async function getUserAccess(guildMemberId: string) {
       roles: {
         select: {
           discordRoleId: true,
-          accessType: true,
+          accessLevelId: true,
         },
       },
     },
@@ -47,11 +48,13 @@ export async function getUserAccess(guildMemberId: string) {
 
   const isAdmin = config.roles.some(
     (r) =>
-      r.accessType === 'ADMIN' && guildMember.roles.includes(r.discordRoleId)
+      r.accessLevelId === ACCESS_LEVELS.ADMIN &&
+      guildMember.roles.includes(r.discordRoleId)
   )
   const isStaff = config.roles.some(
     (r) =>
-      r.accessType === 'STAFF' && guildMember.roles.includes(r.discordRoleId)
+      r.accessLevelId === ACCESS_LEVELS.STAFF &&
+      guildMember.roles.includes(r.discordRoleId)
   )
 
   return {

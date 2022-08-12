@@ -17,53 +17,9 @@ import type {
   InteractionReplyOptions,
   ThreadChannel,
 } from 'discord.js'
+import type { Question } from '@prisma/client'
 
 const userIdToUsername = new Map<string, User>()
-
-/** @TODO replace with colors endpoint once this is deployed */
-const iconMap = new Map<string, string>([
-  [
-    'Admin',
-    'https://raw.githubusercontent.com/esauerbo1/Images/main/Admin.svg',
-  ],
-  ['Bot', 'https://raw.githubusercontent.com/esauerbo1/Images/main/Bot.svg'],
-  [
-    'Amplify Bot Dev',
-    'https://raw.githubusercontent.com/esauerbo1/Images/main/Amplify-Bot-Dev.svg',
-  ],
-  [
-    'Moderator',
-    'https://raw.githubusercontent.com/esauerbo1/Images/main/Moderator.svg',
-  ],
-  [
-    'Amplify Staff',
-    'https://raw.githubusercontent.com/esauerbo1/Images/main/Amplify-Staff.svg',
-  ],
-  [
-    'AWS Staff',
-    'https://raw.githubusercontent.com/esauerbo1/Images/main/AWS-Staff.svg',
-  ],
-  [
-    'Community Builder',
-    'https://raw.githubusercontent.com/esauerbo1/Images/main/Community-Builder.svg',
-  ],
-  [
-    'Contributor',
-    'https://raw.githubusercontent.com/esauerbo1/Images/main/Contributor.svg',
-  ],
-  [
-    'Meetup Organizer',
-    'https://raw.githubusercontent.com/esauerbo1/Images/main/Meetup-Organizer.svg',
-  ],
-  [
-    'Amplify Guru',
-    'https://raw.githubusercontent.com/esauerbo1/Images/main/Amplify-Guru.svg',
-  ],
-  [
-    'at-everyone',
-    'https://raw.githubusercontent.com/esauerbo1/Images/main/%40everyone.svg',
-  ],
-])
 
 type User = {
   username: string
@@ -77,9 +33,8 @@ async function getUser(message: Message) {
   if (!userIdToUsername.has(userId)) {
     const guildMember = await message.guild?.members.fetch(userId)
     const role = guildMember?.roles?.highest?.name ?? defaultRole
-    const roleIcon = `<img src="${iconMap.get(
-      role
-    )}" height="20" width="20" align="center" />`
+    const color = guildMember?.roles?.highest?.color ?? '91A6A6'
+    const roleIcon = `<img src="${import.meta.env.VITE_HOST}/api/p/color/${color}.svg" height="12px" width="12px" align="center" />`
     userIdToUsername.set(`${userId}`, {
       username: `${faker.unique(faker.color.human)} ${faker.unique(
         faker.hacker.noun
@@ -135,7 +90,7 @@ export const config = new SlashCommandBuilder()
       )
   )
 
-async function addDiscussion(discussion, userId: string, record) {
+async function addDiscussion(discussion, userId: string, record: Question) {
   const githubDiscussion = {
     id: discussion?.createDiscussion?.discussion?.id,
     url: discussion?.createDiscussion?.discussion?.url,

@@ -1,7 +1,5 @@
 import { Routes } from 'discord-api-types/v10'
-import { get as read } from 'svelte/store'
 import { commands as bank } from '$discord/commands'
-import { guild as store } from '$lib/store'
 import { prisma } from '$lib/db'
 import { api } from '../api/_discord'
 import type { RequestHandler } from '@sveltejs/kit'
@@ -17,9 +15,16 @@ export const GET: RequestHandler = async ({ locals }) => {
   const config = await prisma.configuration.findUnique({
     where: { id },
     include: {
-      roles: true,
+      roles: {
+        select: {
+          accessLevelId: true, // i.e. "name"
+          discordRoleId: true,
+        },
+      },
     },
   })
+
+  const accessLevels = await prisma.accessLevel.findMany()
 
   if (!locals.session?.user?.isGuildOwner && !config) {
     return {
@@ -27,7 +32,7 @@ export const GET: RequestHandler = async ({ locals }) => {
     }
   }
 
-  if (!commands) {
+  if (!commands || !roles) {
     return {
       status: 500,
     }
@@ -38,6 +43,7 @@ export const GET: RequestHandler = async ({ locals }) => {
     body: {
       commands,
       configure: {
+        accessLevels,
         guild,
         roles,
         config,
