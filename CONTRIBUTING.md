@@ -14,13 +14,13 @@ Refer to the [readme guide](./README.md#getting-started) to get started.
 
 - [`cdk/`](./cdk) - AWS CDK application to deploy apps
 - [`docs/`](./docs) - Documentation related to project including architecture diagrams
-- [`e2e/`](./e2e) - End-to-end test suite powered by [Vitest](https://vitest.dev/), supports in-source unit testing
+- [`tests/`](./tests) - End-to-end test suite powered by [Vitest](https://vitest.dev/), supports in-source unit testing
 - [`packages/`](./packages) - collection of library packages, including Discord, support helpers, and a shared TypeScript configuration
 - [`scripts/`](./scripts) - small CLI helper for automating tasks
 
 ## Architecture Reference
 
-![Architecture diagram](./docs/architecture-diagram-0.5.1.png)
+![Architecture diagram](./docs/architecture-diagram-0.7.0.png)
 
 ## Git Hooks
 
@@ -134,6 +134,8 @@ if (import.meta.vitest) {
   test.todo('my unit test')
 }
 ```
+
+> **_NOTE:_** in-source testing with Vitest does not tree-shake dependencies, which could lead to ambiguous errors caused by circular references
 
 When `pnpm test` is run from the project root, the newly added test is executed alongside the e2e tests.
 

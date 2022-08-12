@@ -1,4 +1,5 @@
 # SQLite uses a file URL, remove "file:" prefix from DATABASE_URL
+pnpm prisma generate
 DATABASE_FILE_PATH=${DATABASE_URL#*file:}
 cd prisma
 if [ ! -f "${DATABASE_FILE_PATH}" ]
