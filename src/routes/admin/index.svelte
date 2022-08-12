@@ -170,7 +170,7 @@
                       checked="{configure.config?.roles?.some(
                         (r) =>
                           r.discordRoleId === role.id &&
-                          r.accessType === 'CONTRIBUTOR'
+                          r.accessTypeId === ACCESS_LEVELS.CONTRIBUTOR
                       ) || false}"
                       value="{role.id}"
                     />
