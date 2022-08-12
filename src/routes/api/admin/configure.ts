@@ -3,7 +3,8 @@ import { ACCESS_LEVELS } from '$lib/constants'
 import type { RequestHandler } from '@sveltejs/kit'
 
 export const POST: RequestHandler = async ({ request }) => {
-  const { id, name, adminRoles, staffRoles } = await request.json()
+  const { id, name, adminRoles, staffRoles, contributorRoles } =
+    await request.json()
   const record = await prisma.configuration.findUnique({
     where: { id },
     include: {
@@ -20,9 +21,15 @@ export const POST: RequestHandler = async ({ request }) => {
       (r) =>
         !staffRoles.includes(r.id) && r.accessLevelId === ACCESS_LEVELS.STAFF
     )
+    const contributorRolesToDisconnect = record.roles.filter(
+      (r) =>
+        !staffRoles.includes(r.id) &&
+        r.accessLevelId === ACCESS_LEVELS.CONTRIBUTOR
+    )
     const rolesToDisconnect = [
       ...adminRolesToDisconnect,
       ...staffRolesToDisconnect,
+      ...contributorRolesToDisconnect,
     ]
     // delete old roles
     await prisma.accessLevelRole.deleteMany({
@@ -60,6 +67,20 @@ export const POST: RequestHandler = async ({ request }) => {
         connectOrCreate: {
           where: { name: ACCESS_LEVELS.STAFF },
           create: { name: ACCESS_LEVELS.STAFF },
+        },
+      },
+    })),
+    ...contributorRoles.map((id) => ({
+      discordRole: {
+        connectOrCreate: {
+          where: { id },
+          create: { id },
+        },
+      },
+      accessLevel: {
+        connectOrCreate: {
+          where: { name: ACCESS_LEVELS.CONTRIBUTOR },
+          create: { name: ACCESS_LEVELS.CONTRIBUTOR },
         },
       },
     })),

@@ -8,11 +8,25 @@ import * as thread from './commands/thread'
 import * as q from './commands/q'
 import { api } from './api'
 import { Routes } from 'discord-api-types/v10'
+import type {
+  SlashCommandBuilder,
+  ContextMenuCommandBuilder,
+} from '@discordjs/builders'
 import type { RESTPostAPIApplicationCommandsResult } from 'discord-api-types/v10'
 import type {
   ChatInputCommandInteraction,
   ContextMenuCommandInteraction,
+  InteractionReplyOptions,
 } from 'discord.js'
+
+export type Command = {
+  name: string
+  description: string
+  config: SlashCommandBuilder | ContextMenuCommandBuilder
+  handle: (
+    interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction
+  ) => Promise<InteractionReplyOptions | string | undefined | void>
+}
 
 function createCommandsMap(commands: any[]) {
   const map = new Map()

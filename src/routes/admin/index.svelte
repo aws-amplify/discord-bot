@@ -14,9 +14,23 @@
   import * as store from '$lib/store'
   import Command from '$lib/Command.svelte'
   import { guild, notifications } from '$lib/store'
+  import type { Configuration, Guild, Role } from '@prisma/client'
+  import type {
+    RESTGetAPIGuildRolesResult,
+    RESTGetAPIApplicationCommandResult,
+  } from 'discord-api-types/v10'
+  import type { Command as CommandType } from '$discord/commands'
 
-  export let commands
-  export let configure
+  export let commands: Array<
+    CommandType & { registration: RESTGetAPIApplicationCommandResult }
+  >
+  export let configure: {
+    config: Configuration & {
+      roles: Role[]
+    }
+    guild: Guild
+    roles: RESTGetAPIGuildRolesResult
+  }
 
   const roles = configure.roles.sort((a, b) => b.position - a.position)
 
@@ -53,18 +67,19 @@
   async function onSubmit(event) {
     event.preventDefault()
     const form = event.target
-    const selectedAdminRoles = Array.from(
-      form.adminRoles.querySelectorAll(':checked')
-    ).map((node) => node.value)
-    const selectedStaffRoles = Array.from(
-      form.staffRoles.querySelectorAll(':checked')
-    ).map((node) => node.value)
 
     const body = {
       id: get(guild),
       name: configure.guild.name,
-      adminRoles: selectedAdminRoles,
-      staffRoles: selectedStaffRoles,
+      adminRoles: [...form.adminRoles.querySelectorAll(':checked')].map(
+        (node) => node.value
+      ),
+      staffRoles: [...form.staffRoles.querySelectorAll(':checked')].map(
+        (node) => node.value
+      ),
+      contributorRoles: [
+        ...form.contributorRoles.querySelectorAll(':checked'),
+      ].map((node) => node.value),
     }
 
     try {
@@ -142,6 +157,20 @@
                         (r) =>
                           r.discordRoleId === role.id &&
                           r.accessLevelId === ACCESS_LEVELS.STAFF
+                      ) || false}"
+                      value="{role.id}"
+                    />
+                  {/each}
+                </FormGroup>
+                <FormGroup id="contributorRoles" legendText="Contributor Roles">
+                  {#each roles as role}
+                    <Checkbox
+                      id="{`contributor-${role.id}`}"
+                      labelText="{role.name}"
+                      checked="{configure.config?.roles?.some(
+                        (r) =>
+                          r.discordRoleId === role.id &&
+                          r.accessTypeId === ACCESS_LEVELS.CONTRIBUTOR
                       ) || false}"
                       value="{role.id}"
                     />

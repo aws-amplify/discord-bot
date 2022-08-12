@@ -1,4 +1,5 @@
 import { addRole } from '$discord/roles/addRole'
+import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { removeRole } from '$discord/roles/removeRole'
 import { verifyGithubWebhookEvent } from './_verifyWebhook'
@@ -71,6 +72,42 @@ export const POST: RequestHandler = async function post({ request }) {
     }
   }
 
+  /**
+   * @TODO match org from webhook with guild id's with this config
+   */
+
+  const config = await prisma.configuration.findUnique({
+    where: {
+      id: import.meta.env.VITE_DISCORD_GUILD_ID,
+    },
+    select: {
+      id: true,
+      roles: {
+        select: {
+          discordRoleId: true,
+          accessLevelId: true,
+        },
+        where: {
+          accessLevelId: {
+            in: [ACCESS_LEVELS.STAFF],
+          },
+        },
+      },
+    },
+  })
+
+  if (!config?.roles?.some((r) => !!r.discordRoleId)) {
+    console.error(`No staff roles found for guild ${config!.id}, skipping...`)
+    /**
+     * @TODO better error code? 412?
+     */
+    return {
+      status: 400,
+    }
+  }
+
+  const [{ discordRoleId: staffRoleId }] = config.roles
+
   try {
     guildMemberId = await getDiscordUserId(String(payload.membership.user.id))
   } catch (err) {
@@ -89,18 +126,10 @@ export const POST: RequestHandler = async function post({ request }) {
 
   switch (payload.action) {
     case 'member_added':
-      rolesApplied = await addRole(
-        process.env.DISCORD_STAFF_ROLE_ID,
-        process.env.DISCORD_GUILD_ID,
-        guildMemberId
-      )
+      rolesApplied = await addRole(staffRoleId, config.id, guildMemberId)
       break
     case 'member_removed':
-      rolesApplied = await removeRole(
-        process.env.DISCORD_STAFF_ROLE_ID,
-        process.env.DISCORD_GUILD_ID,
-        guildMemberId
-      )
+      rolesApplied = await removeRole(staffRoleId, config.id, guildMemberId)
       break
     default:
       rolesApplied = true

@@ -95,7 +95,7 @@ const server: UserConfig = {
 
 export default defineConfig(({ mode }) => {
   let config = app
-  if (mode === 'server') {
+  if (mode === 'server' || mode === 'server-test') {
     config = server
   }
   // apply general test config
@@ -112,7 +112,7 @@ export default defineConfig(({ mode }) => {
     ],
   }
   // `vitest` sets mode to test, load local environment variables for test
-  if (mode === 'test') {
+  if (mode === 'test' || mode === 'server-test') {
     loadEnvVars(mode)
   } else {
     // rely on Vite to load public env vars (i.e. prefixed with VITE_)

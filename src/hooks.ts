@@ -5,7 +5,7 @@ import { getServerSession, options } from '$lib/next-auth'
 import type { Handle, GetSession } from '@sveltejs/kit'
 
 // only load the bot if we're in development (on first request to the server), otherwise the bot will be loaded onto the Node/Express server
-if (import.meta.env.DEV) {
+if (import.meta.env.MODE === 'development') {
   await init()
   await createBot()
 }

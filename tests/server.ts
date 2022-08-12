@@ -6,6 +6,7 @@ import { installPolyfills } from '@sveltejs/kit/node/polyfills'
 import glob from 'fast-glob'
 import request from 'supertest'
 import type { Session } from 'next-auth'
+import { prisma } from '$lib/db'
 import {
   mockedPublished,
   mockedCreated,
@@ -19,8 +20,10 @@ import {
   removedPayloadUserDNE,
 } from './mock/github-webhook'
 import { verifyGithubWebhookEvent } from './../src/routes/api/webhooks/_verifyWebhook'
+import { ACCESS_LEVELS } from '$lib/constants'
 
-
+let config
+let staffRoleId: string
 let app: Express.Application
 const session: Session = {
   expires: '1',
@@ -40,6 +43,32 @@ beforeAll(async () => {
       `Unable to import server application, has it been built?${EOL}${EOL}Run "pnpm build"`
     )
   }
+
+  config = await prisma.configuration.findUnique({
+    where: {
+      id: import.meta.env.VITE_DISCORD_GUILD_ID,
+    },
+    select: {
+      id: true,
+      roles: {
+        select: {
+          discordRoleId: true,
+          accessLevelId: true,
+        },
+        where: {
+          accessLevelId: {
+            in: [ACCESS_LEVELS.STAFF],
+          },
+        },
+      },
+    },
+  })
+
+  if (!config?.roles?.some((r) => !!r.discordRoleId)) {
+    console.error(`No staff roles found for guild ${config?.id}, skipping...`)
+    return
+  }
+  staffRoleId = config.roles[0].discordRoleId
 })
 
 const ROUTES_PATH = resolve('src/routes')
@@ -53,7 +82,7 @@ function routify(path: string) {
   return `${path
     .replace(ROUTES_PATH, '')
     .replace(/\.(js|ts)/, '')
-    .replace(/index$/, '')}`
+    .replace(/\/index$/, '')}`
 }
 
 function isDynamicRoute(route: string) {
@@ -284,28 +313,6 @@ describe('webhooks', () => {
         .send(addedPayloadUserDNE.body)
         .set(addedPayloadUserDNE.headers)
       expect(response.status).toBe(403)
-    })
-
-    it('should return 400 with bad role ID', async () => {
-      const staffRoleId = process.env.DISCORD_STAFF_ROLE_ID
-      process.env.DISCORD_STAFF_ROLE_ID = 'badid'
-      const response = await request(app)
-        .post('/api/webhooks/github-org-membership')
-        .send(addedPayload1.body)
-        .set(addedPayload1.headers)
-      expect(response.status).toBe(400)
-      process.env.DISCORD_STAFF_ROLE_ID = staffRoleId
-    })
-
-    it('should return 400 with bad guild ID', async () => {
-      const guildId = process.env.DISCORD_GUILD_ID
-      process.env.DISCORD_GUILD_ID = 'badid'
-      const response = await request(app)
-        .post('/api/webhooks/github-org-membership')
-        .send(addedPayload1.body)
-        .set(addedPayload1.headers)
-      expect(response.status).toBe(400)
-      process.env.DISCORD_GUILD_ID = guildId
     })
   })
 })
