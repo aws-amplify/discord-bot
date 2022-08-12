@@ -2,7 +2,7 @@ import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
 import { addRole } from '$discord/roles/addRole'
 import { removeRole } from '$discord/roles/removeRole'
-import { ACCESS_LEVELS } from '/constants'
+import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 
 /**
