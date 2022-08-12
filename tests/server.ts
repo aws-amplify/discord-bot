@@ -7,7 +7,6 @@ import glob from 'fast-glob'
 import request from 'supertest'
 import type { Session } from 'next-auth'
 import { prisma } from '$lib/db'
-import { AccessType } from '$lib/configure'
 import {
   mockedPublished,
   mockedCreated,
@@ -21,6 +20,7 @@ import {
   removedPayloadUserDNE,
 } from './mock/github-webhook'
 import { verifyGithubWebhookEvent } from './../src/routes/api/webhooks/_verifyWebhook'
+import { ACCESS_LEVELS } from '$lib/constants'
 
 let config
 let staffRoleId: string
@@ -53,11 +53,11 @@ beforeAll(async () => {
       roles: {
         select: {
           discordRoleId: true,
-          accessType: true,
+          accessLevelId: true,
         },
         where: {
-          accessType: {
-            in: [AccessType.STAFF],
+          accessLevelId: {
+            in: [ACCESS_LEVELS.STAFF],
           },
         },
       },

@@ -1,8 +1,8 @@
 import { addRole } from '$discord/roles/addRole'
+import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { removeRole } from '$discord/roles/removeRole'
 import { verifyGithubWebhookEvent } from './_verifyWebhook'
-import { AccessType } from '$lib/configure'
 import type { RequestHandler } from '@sveltejs/kit'
 
 async function getDiscordUserId(ghUserId: string) {
@@ -85,11 +85,11 @@ export const POST: RequestHandler = async function post({ request }) {
       roles: {
         select: {
           discordRoleId: true,
-          accessType: true,
+          accessLevelId: true,
         },
         where: {
-          accessType: {
-            in: [AccessType.STAFF],
+          accessLevelId: {
+            in: [ACCESS_LEVELS.STAFF],
           },
         },
       },

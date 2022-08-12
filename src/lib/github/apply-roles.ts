@@ -2,8 +2,8 @@ import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
 import { addRole } from '$discord/roles/addRole'
 import { removeRole } from '$discord/roles/removeRole'
+import { ACCESS_LEVELS } from '/constants'
 import { prisma } from '$lib/db'
-import { AccessType } from '$lib/configure'
 
 /**
  * returns true if the user is a member of that org
@@ -132,12 +132,12 @@ export async function applyRoles(
       id: true,
       roles: {
         select: {
-          accessType: true,
+          accessLevelId: true,
           discordRoleId: true,
         },
         where: {
-          accessType: {
-            in: [AccessType.STAFF, AccessType.CONTRIBUTOR],
+          accessLevelId: {
+            in: [ACCESS_LEVELS.STAFF, ACCESS_LEVELS.CONTRIBUTOR],
           },
         },
       },
@@ -150,10 +150,10 @@ export async function applyRoles(
   }
 
   const staffRoleId = config.roles.find(
-    (r) => r.accessType === AccessType.STAFF
+    (r) => r.accessLevelId === ACCESS_LEVELS.STAFF
   )?.discordRoleId
   const contributorRoleId = config.roles.find(
-    (r) => r.accessType === AccessType.CONTRIBUTOR
+    (r) => r.accessLevelId === ACCESS_LEVELS.CONTRIBUTOR
   )?.discordRoleId
 
   // user is member of amplify org -> apply staff role
@@ -222,12 +222,12 @@ if (import.meta.vitest) {
           id: true,
           roles: {
             select: {
-              accessType: true,
+              accessLevelId: true,
               discordRoleId: true,
             },
             where: {
-              accessType: {
-                in: [AccessType.STAFF, AccessType.CONTRIBUTOR],
+              accessLevelId: {
+                in: [ACCESS_LEVELS.STAFF, ACCESS_LEVELS.CONTRIBUTOR],
               },
             },
           },
@@ -241,10 +241,10 @@ if (import.meta.vitest) {
 
       // type cast to string because this data will be seeded in test db
       const staffRoleId = config.roles.find(
-        (r) => r.accessType === AccessType.STAFF
+        (r) => r.accessLevelId === ACCESS_LEVELS.STAFF
       )?.discordRoleId as string
       const contributorRoleId = config.roles.find(
-        (r) => r.accessType === AccessType.CONTRIBUTOR
+        (r) => r.accessLevelId === ACCESS_LEVELS.CONTRIBUTOR
       )?.discordRoleId as string
 
       beforeAll(async () => {
