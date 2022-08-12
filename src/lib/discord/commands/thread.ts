@@ -2,8 +2,10 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import { EmbedBuilder, MessageType } from 'discord.js'
 import { prisma } from '$lib/db'
 import { isThreadWithinHelpChannel } from '../support'
+import { isAdminOrStaff } from '../is-admin-or-staff'
 import type {
   ChatInputCommandInteraction,
+  GuildMember,
   ThreadChannel,
   InteractionReplyOptions,
 } from 'discord.js'
@@ -46,22 +48,30 @@ export async function handler(
     return { embeds: [embed], ephemeral: true }
   }
 
-  const args = interaction.options.data.reduce(
-    (acc, current, index, source) => {
-      return {
-        ...acc,
-        [current.name]: current,
-      }
-    },
-    {}
-  )
-
-  if (interaction.user.id !== record?.ownerId) {
+  /**
+   * Only allow answer selections if user is:
+   * - admin or staff
+   * - author of question
+   */
+  if (
+    interaction.user.id !== record?.ownerId &&
+    !(await isAdminOrStaff(interaction.member as GuildMember))
+  ) {
     const embed = new EmbedBuilder()
     embed.setColor('#ff9900')
     embed.setDescription('Only owners of questions can use this command.')
     return { embeds: [embed], ephemeral: true }
   }
+
+  /**
+   * @TODO - refactor for explicit typing, ease of use
+   */
+  const args = interaction.options.data.reduce((acc, current) => {
+    return {
+      ...acc,
+      [current.name]: current,
+    }
+  }, {})
 
   if (args.rename) {
     const embed = new EmbedBuilder()
@@ -220,8 +230,3 @@ export const config = new SlashCommandBuilder()
 //         .setRequired(false)
 //     )
 // )
-
-if (import.meta.vitest) {
-  const { test } = import.meta.vitest
-  test.todo('/thread')
-}

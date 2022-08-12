@@ -31,7 +31,7 @@ async function getDiscordUserId(ghUserId: string) {
   throw new Error(`Discord account not found for GitHub user ${ghUserId}`)
 }
 
-export const post: RequestHandler = async function post({ request }) {
+export const POST: RequestHandler = async function post({ request }) {
   let rolesApplied, guildMemberId
   let payload
   try {

@@ -10,6 +10,7 @@
     Button,
   } from 'carbon-components-svelte'
   import { get } from 'svelte/store'
+  import { ACCESS_LEVELS } from '$lib/constants'
   import * as store from '$lib/store'
   import Command from '$lib/Command.svelte'
   import { guild, notifications } from '$lib/store'
@@ -31,7 +32,7 @@
     roles: RESTGetAPIGuildRolesResult
   }
 
-  $: roles = configure.roles.sort((a, b) => b.position - a.position)
+  const roles = configure.roles.sort((a, b) => b.position - a.position)
 
   let isSyncing = false
   async function syncCommands() {
@@ -141,7 +142,7 @@
                       checked="{configure.config?.roles?.some(
                         (r) =>
                           r.discordRoleId === role.id &&
-                          r.accessType === 'ADMIN'
+                          r.accessLevelId === ACCESS_LEVELS.ADMIN
                       ) || false}"
                       value="{role.id}"
                     />
@@ -155,7 +156,7 @@
                       checked="{configure.config?.roles?.some(
                         (r) =>
                           r.discordRoleId === role.id &&
-                          r.accessType === 'STAFF'
+                          r.accessLevelId === ACCESS_LEVELS.STAFF
                       ) || false}"
                       value="{role.id}"
                     />

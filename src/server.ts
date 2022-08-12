@@ -1,4 +1,5 @@
 import { createBot } from '$discord/client'
+import { init } from '$lib/db'
 // @ts-expect-error this file is externalized for build
 import { handler } from './handler.js'
 import express from 'express'
@@ -16,7 +17,8 @@ app.get('/healthcheck', (req, res) => {
 app.use(handler)
 
 // export instance of server for e2e tests
-export const server = app.listen(PORT, () => {
+export const server = app.listen(PORT, async () => {
   console.log(`listening on port ${PORT}`)
-  createBot()
+  await init()
+  await createBot()
 })

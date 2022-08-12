@@ -19,7 +19,7 @@ similarity index 100%
 rename from dist-es/is-crt-available.js
 rename to dist-es/is-crt-available.mjs
 diff --git a/package.json b/package.json
-index 6593af3e515e8479dc2a4c630c47f2d6a8477427..3cb12d0fe8eac1634da286b1e59b2b3a6a01698d 100644
+index ab8dfa7e617fb3baf452d1f8cdab4ac9c450083b..196ad3a4810e90ae87415ea21288a42bf65c69d0 100644
 --- a/package.json
 +++ b/package.json
 @@ -11,7 +11,7 @@

@@ -19,19 +19,54 @@ model Guild {
 }
 
 model Question {
-  id                  String   @id @default(cuid())
+  id                  String            @id @default(cuid())
   createdAt           DateTime
-  updatedAt           DateTime @updatedAt
-  threadId            String   @unique
+  updatedAt           DateTime          @updatedAt
+  threadId            String            @unique
   ownerId             String
   channelName         String
-  threadMetaUpdatedAt DateTime @default(now())
+  threadMetaUpdatedAt DateTime          @default(now())
   title               String
-  isSolved            Boolean  @default(false)
+  isSolved            Boolean           @default(false)
   url                 String?
   answer              Answer?
-  guild               Guild    @relation(fields: [guildId], references: [id])
+  guild               Guild             @relation(fields: [guildId], references: [id])
   guildId             String
+  githubDiscussion    GitHubDiscussion? @relation(fields: [githubDiscussionId], references: [id])
+  githubDiscussionId  String?           @unique
+  // participants        DiscordUser[]
+  participation       Participation[]
+}
+
+model Participation {
+  id               String        @id @default(cuid())
+  question         Question      @relation(fields: [questionId], references: [id])
+  questionId       String
+  participant      DiscordUser   @relation(fields: [participantId], references: [id])
+  // @TODO - track role at the time of participation, accounts for users that _leave_ "staff"
+  participantId    String
+  participantRoles DiscordRole[]
+}
+
+model DiscordRole {
+  id            String           @id @unique
+  participation Participation[]
+  // @TODO - link up with AccessLevelRole?
+  role          AccessLevelRole?
+}
+
+model DiscordUser {
+  id             String          @id @unique
+  account        Account?        @relation(fields: [accountId], references: [id])
+  accountId      String?         @unique
+  participations Participation[]
+  // we are not storing roles on users because we want to capture point-in-time roles for participation records
+}
+
+model GitHubDiscussion {
+  id       String    @id @unique
+  url      String
+  Question Question?
 }
 
 model Answer {
@@ -53,24 +88,32 @@ model Answer {
 //   STAFF
 // }
 
-model Role {
+model AccessLevel {
+  name        String            @id
+  description String?
+  role        AccessLevelRole[]
+}
+
+model AccessLevelRole {
   id              String         @id @default(cuid())
-  discordRoleId   String
-  accessType      String
+  accessLevel     AccessLevel    @relation(fields: [accessLevelId], references: [name])
+  accessLevelId   String
   Configuration   Configuration? @relation(fields: [configurationId], references: [id])
   configurationId String?
+  discordRole     DiscordRole    @relation(fields: [discordRoleId], references: [id])
+  discordRoleId   String         @unique
 }
 
 // Configuration of each Discord server for the frontend access controls
 model Configuration {
   // ID of Discord server
-  id                 String   @id @unique
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id                 String            @id @unique
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
   name               String
-  roles              Role[]
+  roles              AccessLevelRole[]
   githubOrganization String?
-  guild              Guild    @relation(fields: [id], references: [id])
+  guild              Guild             @relation(fields: [id], references: [id])
   // "default" server configuration for the instance, in our case this will be the "AWS Amplify" Discord server. This will be the default choice for the server switcher
   // isDefaultServer    Boolean                   @default(false)
 }
@@ -87,21 +130,21 @@ model AuditLog {
 
 // next-auth
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
+  id                       String       @id @default(cuid())
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String?
+  access_token             String?
+  expires_at               Int?
   refresh_token_expires_in Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token_type               String?
+  scope                    String?
+  id_token                 String?
+  session_state            String?
+  user                     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                   String
+  discordUser              DiscordUser?
 
   @@unique([provider, providerAccountId])
 }
