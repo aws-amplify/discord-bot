@@ -9,6 +9,7 @@ import { commands, registerCommands } from './commands'
 import { PREFIXES } from './commands/thread'
 import { isHelpChannel, isThreadWithinHelpChannel } from './support'
 import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
+import type { Question } from '@prisma/client'
 
 export const client = new Client({
   intents: [
@@ -131,24 +132,87 @@ client.on('messageCreate', async (message: Message) => {
     !message.author.bot &&
     isThreadWithinHelpChannel(message.channel)
   ) {
-    const record = await prisma.question.upsert({
-      where: { threadId: message.channel.id },
-      update: { threadMetaUpdatedAt: message.createdAt as Date },
-      create: {
-        ownerId: message.channel.messages.cache.first()?.author.id as string,
-        threadId: message.channel.id,
-        channelName: message.channel.parent.name,
-        title: message.channel.name,
-        createdAt: message.channel.createdAt as Date,
-        url: message.url,
-        guild: {
-          connect: {
-            id: message.guild?.id,
+    let record
+    try {
+      // if we need to backfill the question, we'll need to fetch all messages from the thread first
+      record = await prisma.question.upsert({
+        where: { threadId: message.channel.id },
+        update: {
+          threadMetaUpdatedAt: message.createdAt as Date,
+        },
+        create: {
+          ownerId: (
+            await message.channel.fetchStarterMessage()
+          ).author.id as string,
+          threadId: message.channel.id,
+          channelName: message.channel.parent.name,
+          title: message.channel.name,
+          createdAt: message.channel.createdAt as Date,
+          url: message.url,
+          isSolved: message.channel.name.startsWith(PREFIXES.solved),
+          guild: {
+            connect: {
+              id: message.guild?.id,
+            },
           },
         },
-      },
-    })
-    console.info(`Created/updated question ${record.id}`)
+        select: {
+          id: true,
+          ownerId: true,
+        },
+      })
+      console.info(`Created/updated question ${record.id}`)
+    } catch (error) {
+      console.error('Unable to create/update Question in db', error)
+    }
+
+    try {
+      /**
+       * add the participants separately only if they are not the owners of the question
+       */
+      if (record && record.ownerId !== message.author.id) {
+        const roleIds = message.member?.roles.cache.map((role) => role.id)
+        await prisma.question.update({
+          where: {
+            id: record.id,
+          },
+          data: {
+            // participation record
+            participation: {
+              connectOrCreate: {
+                where: { id: message.author.id },
+                create: {
+                  id: message.author.id,
+                  // DiscordUser
+                  participant: {
+                    connectOrCreate: {
+                      where: { id: message.author.id },
+                      create: {
+                        id: message.author.id,
+                      },
+                    },
+                  },
+                  // capture roles of the participant at the time of participating
+                  participantRoles: {
+                    connectOrCreate: roleIds?.map((id) => ({
+                      where: {
+                        id: id,
+                      },
+                      create: {
+                        id: id,
+                      },
+                    })),
+                  },
+                },
+              },
+            },
+          },
+        })
+        console.log('Successfully updated participants')
+      }
+    } catch (error) {
+      console.error('Unable to update participants', error)
+    }
   }
 })
 
@@ -192,3 +256,10 @@ process.on('SIGINT', () => {
   client?.destroy()
   process.exit(0)
 })
+
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    console.log('destroying client')
+    client?.destroy()
+  })
+}

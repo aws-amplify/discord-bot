@@ -1,3 +1,4 @@
+import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import type { GuildMember } from 'discord.js'
 
@@ -9,8 +10,8 @@ export async function isAdminOrStaff(user: GuildMember) {
     select: {
       roles: {
         where: {
-          accessType: {
-            in: ['ADMIN', 'STAFF'],
+          accessLevelId: {
+            in: [ACCESS_LEVELS.ADMIN, ACCESS_LEVELS.STAFF],
           },
         },
         select: {
