@@ -74,6 +74,32 @@ export const options: NextAuthOptions = {
     // async createAccount({ user }) {
     // },
     async signIn({ user, account }) {
+      if (account.provider === 'discord') {
+        await prisma.discordUser.upsert({
+          where: { id: account.providerAccountId },
+          create: {
+            id: account.providerAccountId,
+            account: {
+              connect: {
+                provider_providerAccountId: {
+                  provider: account.provider, // discord
+                  providerAccountId: account.providerAccountId,
+                },
+              },
+            },
+          },
+          update: {
+            account: {
+              connect: {
+                provider_providerAccountId: {
+                  provider: account.provider, // discord
+                  providerAccountId: account.providerAccountId,
+                },
+              },
+            },
+          },
+        })
+      }
       // if user is signing into github
       if (
         account?.provider === 'github' &&
