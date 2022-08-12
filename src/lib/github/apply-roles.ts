@@ -2,6 +2,7 @@ import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
 import { addRole } from '$discord/roles/addRole'
 import { removeRole } from '$discord/roles/removeRole'
+import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 
 /**
@@ -123,43 +124,79 @@ export async function applyRoles(
 
   const isGitHubOrgMember = await isOrgMember(accessToken, ghUserId)
 
-  // user is member of amplify org -> apply staff role
-  if (isGitHubOrgMember) {
-    staffResponse = await addRole(
-      process.env.DISCORD_STAFF_ROLE_ID,
-      process.env.DISCORD_GUILD_ID,
-      discUserId
-    )
-  } else if (
-    // user is NOT member of amplify org -> remove role
-    !isGitHubOrgMember
-  ) {
-    staffResponse = await removeRole(
-      process.env.DISCORD_STAFF_ROLE_ID,
-      process.env.DISCORD_GUILD_ID,
-      discUserId
-    )
+  const config = await prisma.configuration.findUnique({
+    where: {
+      id: import.meta.env.VITE_DISCORD_GUILD_ID,
+    },
+    select: {
+      id: true,
+      roles: {
+        select: {
+          accessLevelId: true,
+          discordRoleId: true,
+        },
+        where: {
+          accessLevelId: {
+            in: [ACCESS_LEVELS.STAFF, ACCESS_LEVELS.CONTRIBUTOR],
+          },
+        },
+      },
+    },
+  })
+
+  if (!config?.roles?.some((r) => !!r.discordRoleId)) {
+    console.error('No roles found')
+    return
   }
 
-  const repos = await fetchOrgRepos(accessToken)
-  if (repos?.length) {
-    const userIsContributor = await isContributor(accessToken, repos, ghUserId)
+  const staffRoleId = config.roles.find(
+    (r) => r.accessLevelId === ACCESS_LEVELS.STAFF
+  )?.discordRoleId
+  const contributorRoleId = config.roles.find(
+    (r) => r.accessLevelId === ACCESS_LEVELS.CONTRIBUTOR
+  )?.discordRoleId
 
-    // user is a contributor -> apply role
-    if (userIsContributor) {
-      contributorResponse = await addRole(
-        process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-        process.env.DISCORD_GUILD_ID,
-        discUserId
-      )
-      // user is NOT a contributor -> remove role
-    } else if (!userIsContributor) {
-      contributorResponse = await removeRole(
-        process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-        process.env.DISCORD_GUILD_ID,
-        discUserId
-      )
+  // user is member of amplify org -> apply staff role
+  if (staffRoleId) {
+    if (isGitHubOrgMember) {
+      staffResponse = await addRole(staffRoleId, config.id, discUserId)
+    } else if (
+      // user is NOT member of amplify org -> remove role
+      !isGitHubOrgMember
+    ) {
+      staffResponse = await removeRole(staffRoleId, config.id, discUserId)
     }
+  } else {
+    console.error('No staff role found, skipping...')
+  }
+
+  if (contributorRoleId) {
+    const repos = await fetchOrgRepos(accessToken)
+    if (repos?.length) {
+      const userIsContributor = await isContributor(
+        accessToken,
+        repos,
+        ghUserId
+      )
+
+      // user is a contributor -> apply role
+      if (userIsContributor) {
+        contributorResponse = await addRole(
+          contributorRoleId,
+          config.id,
+          discUserId
+        )
+        // user is NOT a contributor -> remove role
+      } else if (!userIsContributor) {
+        contributorResponse = await removeRole(
+          contributorRoleId,
+          config.id,
+          discUserId
+        )
+      }
+    }
+  } else {
+    console.error('No contributor role found, skipping...')
   }
   // if removal/addition of either role failed, return false
   return contributorResponse && staffResponse
@@ -169,13 +206,46 @@ if (import.meta.vitest) {
   const { describe, expect, test, it, beforeAll } = import.meta.vitest
   test.runIf(process.env.GITHUB_TESTS_ENABLED)(
     'only test if app secrets are enabled',
-    () => {
+    async () => {
       const { privateKey } = JSON.parse(process.env.GITHUB_PRIVATE_KEY)
       const id = 'cl4n0kjqd0006iqtda15yzzcw'
       const ghUserId = '107655607'
       const guildMemberId = '985985131271585833'
 
       let token: string, repos: []
+
+      const config = await prisma.configuration.findUnique({
+        where: {
+          id: import.meta.env.VITE_DISCORD_GUILD_ID,
+        },
+        select: {
+          id: true,
+          roles: {
+            select: {
+              accessLevelId: true,
+              discordRoleId: true,
+            },
+            where: {
+              accessLevelId: {
+                in: [ACCESS_LEVELS.STAFF, ACCESS_LEVELS.CONTRIBUTOR],
+              },
+            },
+          },
+        },
+      })
+
+      if (!config?.roles?.some((r) => !!r.discordRoleId)) {
+        console.error('No roles found')
+        return
+      }
+
+      // type cast to string because this data will be seeded in test db
+      const staffRoleId = config.roles.find(
+        (r) => r.accessLevelId === ACCESS_LEVELS.STAFF
+      )?.discordRoleId as string
+      const contributorRoleId = config.roles.find(
+        (r) => r.accessLevelId === ACCESS_LEVELS.CONTRIBUTOR
+      )?.discordRoleId as string
 
       beforeAll(async () => {
         const auth = createAppAuth({
@@ -196,16 +266,8 @@ if (import.meta.vitest) {
         }
         repos = await fetchOrgRepos(token)
 
-        await addRole(
-          process.env.DISCORD_STAFF_ROLE_ID,
-          process.env.DISCORD_GUILD_ID,
-          guildMemberId
-        )
-        await addRole(
-          process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-          process.env.DISCORD_GUILD_ID,
-          guildMemberId
-        )
+        await addRole(staffRoleId, config.id, guildMemberId)
+        await addRole(contributorRoleId, config.id, guildMemberId)
       })
 
       describe('Successful adding and removal of roles', () => {
@@ -223,32 +285,28 @@ if (import.meta.vitest) {
         }, 20000)
         test('Remove staff role', async () => {
           const response = await removeRole(
-            process.env.DISCORD_STAFF_ROLE_ID,
-            process.env.DISCORD_GUILD_ID,
+            staffRoleId,
+            config.id,
             guildMemberId
           )
           expect(response).toBeTruthy()
         })
         test('Add staff role', async () => {
-          const response = await addRole(
-            process.env.DISCORD_STAFF_ROLE_ID,
-            process.env.DISCORD_GUILD_ID,
-            guildMemberId
-          )
+          const response = await addRole(staffRoleId, config.id, guildMemberId)
           expect(response).toBeTruthy()
         })
         test('Remove contributor role', async () => {
           const response = await removeRole(
-            process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-            process.env.DISCORD_GUILD_ID,
+            contributorRoleId,
+            config.id,
             guildMemberId
           )
           expect(response).toBeTruthy()
         })
         test('Add contributor role', async () => {
           const response = await addRole(
-            process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-            process.env.DISCORD_GUILD_ID,
+            contributorRoleId,
+            config.id,
             guildMemberId
           )
           expect(response).toBeTruthy()
@@ -284,8 +342,8 @@ if (import.meta.vitest) {
 
         test('Remove role from unknown user', async () => {
           const response = await removeRole(
-            process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-            process.env.DISCORD_GUILD_ID,
+            contributorRoleId,
+            config.id,
             `1${guildMemberId}`
           )
           expect(response).toBe(false)
@@ -293,8 +351,8 @@ if (import.meta.vitest) {
 
         test('Add role to unknown user', async () => {
           const response = await addRole(
-            process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-            process.env.DISCORD_GUILD_ID,
+            contributorRoleId,
+            config.id,
             `1${guildMemberId}`
           )
           expect(response).toBe(false)
@@ -302,8 +360,8 @@ if (import.meta.vitest) {
 
         test('Add unknown role', async () => {
           const response = await addRole(
-            `1${process.env.DISCORD_CONTRIBUTOR_ROLE_ID}`,
-            process.env.DISCORD_GUILD_ID,
+            `1${contributorRoleId}`,
+            config.id,
             guildMemberId
           )
           expect(response).toBe(false)
@@ -311,8 +369,8 @@ if (import.meta.vitest) {
 
         test('Add role in unknown guild', async () => {
           const response = await addRole(
-            process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-            `123${process.env.DISCORD_GUILD_ID}`,
+            contributorRoleId,
+            `123${config.id}`,
             guildMemberId
           )
           expect(response).toBe(false)
@@ -334,16 +392,8 @@ if (import.meta.vitest) {
 
       describe('Test full pipeline success', async () => {
         test('Add and remove roles', async () => {
-          await removeRole(
-            process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-            process.env.DISCORD_GUILD_ID,
-            guildMemberId
-          )
-          await removeRole(
-            process.env.DISCORD_STAFF_ROLE_ID,
-            process.env.DISCORD_GUILD_ID,
-            guildMemberId
-          )
+          await removeRole(contributorRoleId, config.id, guildMemberId)
+          await removeRole(staffRoleId, config.id, guildMemberId)
         })
 
         test('Applying roles full pipeline', async () => {
@@ -354,16 +404,8 @@ if (import.meta.vitest) {
 
       describe('Test full pipeline failure', async () => {
         test('Add and remove roles', async () => {
-          await removeRole(
-            process.env.DISCORD_CONTRIBUTOR_ROLE_ID,
-            process.env.DISCORD_GUILD_ID,
-            guildMemberId
-          )
-          await removeRole(
-            process.env.DISCORD_STAFF_ROLE_ID,
-            process.env.DISCORD_GUILD_ID,
-            guildMemberId
-          )
+          await removeRole(contributorRoleId, config.id, guildMemberId)
+          await removeRole(staffRoleId, config.id, guildMemberId)
         })
 
         test('Applying roles full pipeline bad user id', async () => {
@@ -381,8 +423,8 @@ if (import.meta.vitest) {
         }, 10000)
 
         it('should return false with bad guild id', async () => {
-          const orgLogin = process.env.DISCORD_GUILD_ID
-          process.env.DISCORD_GUILD_ID = "somethingthatdoesn'texist123"
+          const orgLogin = config.id
+          config.id = "somethingthatdoesn'texist123"
           const response = await applyRoles(id, ghUserId, token)
           expect(response).toBe(false)
           process.env.GITHUB_ORG_LOGIN = orgLogin

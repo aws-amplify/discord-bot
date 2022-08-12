@@ -31,9 +31,13 @@ export class HeyAmplifyStack extends Stack {
       'DISCORD_PUBLIC_KEY',
       'DISCORD_AUTH_CLIENT_ID',
       'DISCORD_AUTH_CLIENT_SECRET',
-      'NEXTAUTH_SECRET',
-      'GITHUB_WEBHOOK_SECRET',
       'DISCORD_WEBHOOK_URL_RELEASES',
+      'GITHUB_WEBHOOK_SECRET',
+      'GITHUB_APP_ID',
+      'GITHUB_CLIENT_ID',
+      'GITHUB_CLIENT_SECRET',
+      'GITHUB_PRIVATE_KEY',
+      'NEXTAUTH_SECRET',
     ] as const
     // NOTE: this TypeScript trick is to say `secrets` should include key value pairs where the keys are one of the names in the array above
     const secrets: Partial<
@@ -72,9 +76,18 @@ export class HeyAmplifyStack extends Stack {
     // create bucket for SQLite backups with Litestream
     const bucket = new s3.Bucket(this, 'Bucket', {
       bucketName: `${this.appName}-${this.envName}-bucket`,
-      // if env is destroyed, empty & remove bucket
-      removalPolicy: RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
+      /**
+       * @TODO enable bucket encryption when supported by litestream (sqlite backup solution)
+       * https://github.com/benbjohnson/litestream/issues/88
+       */
+      bucketKeyEnabled: true,
+      encryption: s3.BucketEncryption.KMS,
+      enforceSSL: true,
+      versioned: true,
+      // if env is destroyed, keep the bucket
+      removalPolicy: RemovalPolicy.RETAIN,
+      // autoDeleteObjects: true,
+      serverAccessLogsPrefix: 's3-access',
     })
 
     const filesystemMountPoint = '/data'

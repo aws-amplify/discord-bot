@@ -10,6 +10,7 @@ ADD . .
 # install dependencies
 RUN pnpm install --offline --frozen-lockfile
 # expose arguments for VITE environment variables
+ARG VITE_HOST=http://localhost:3000
 ARG VITE_NEXTAUTH_URL=http://localhost:3000
 ARG VITE_DISCORD_GUILD_ID=935912872352051313
 ARG DATABASE_URL="file:/data/sqlite.db"

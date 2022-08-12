@@ -1,16 +1,32 @@
+import * as admin from './commands/admin'
 import * as contribute from './commands/contribute'
 import * as github from './commands/github'
 import * as giverole from './commands/giverole'
+import * as login from './commands/login'
 import * as selectAnswer from './commands/select-answer'
 import * as thread from './commands/thread'
-import * as login from './commands/login'
+import * as q from './commands/q'
 import { api } from './api'
 import { Routes } from 'discord-api-types/v10'
+import type {
+  SlashCommandBuilder,
+  ContextMenuCommandBuilder,
+} from '@discordjs/builders'
 import type { RESTPostAPIApplicationCommandsResult } from 'discord-api-types/v10'
 import type {
   ChatInputCommandInteraction,
   ContextMenuCommandInteraction,
+  InteractionReplyOptions,
 } from 'discord.js'
+
+export type Command = {
+  name: string
+  description: string
+  config: SlashCommandBuilder | ContextMenuCommandBuilder
+  handle: (
+    interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction
+  ) => Promise<InteractionReplyOptions | string | undefined | void>
+}
 
 function createCommandsMap(commands: any[]) {
   const map = new Map()
@@ -26,17 +42,40 @@ function createCommandsMap(commands: any[]) {
         const somethingWentWrongResponse = '🤕 Something went wrong'
         try {
           const response = await command.handler(interaction)
-          if (response) return await interaction.reply(response)
+          if (response) {
+            if (interaction.deferred) {
+              return await interaction.editReply(response)
+            }
+            return await interaction.reply(response)
+          }
         } catch (error) {
           console.error(
             `Error handling command ${command.config.name} for ${interaction.user.id}:`,
             error
           )
-          return await interaction.reply(somethingWentWrongResponse)
+          if (interaction.deferred) {
+            return await interaction.editReply({
+              content: somethingWentWrongResponse,
+            })
+          } else {
+            return await interaction.reply({
+              ephemeral: true,
+              content: somethingWentWrongResponse,
+            })
+          }
         }
         if (!interaction.replied) {
           // should not make it here...
-          await interaction.reply(somethingWentWrongResponse)
+          if (interaction.deferred) {
+            await interaction.editReply({
+              content: somethingWentWrongResponse,
+            })
+          } else {
+            await interaction.reply({
+              ephemeral: true,
+              content: somethingWentWrongResponse,
+            })
+          }
         }
       },
     }
@@ -46,12 +85,14 @@ function createCommandsMap(commands: any[]) {
 }
 
 export const commands = createCommandsMap([
+  admin,
   contribute,
   github,
   giverole,
+  login,
   selectAnswer,
   thread,
-  login,
+  q,
 ])
 
 const c = commands

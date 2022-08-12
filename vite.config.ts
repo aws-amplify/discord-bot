@@ -32,11 +32,16 @@ const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
  */
 const app: UserConfig = {
   build: {
-    target: 'es2022',
+    target: 'esnext',
   },
   envDir: '.',
   define: {
     'import.meta.vitest': 'undefined',
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext',
+    },
   },
   plugins: [sveltekit()],
   resolve: {
@@ -52,7 +57,7 @@ const app: UserConfig = {
 const server: UserConfig = {
   mode: 'production',
   build: {
-    target: 'es2022',
+    target: 'esnext',
     outDir: 'build',
     // do not erase Svelte-Kit build output
     emptyOutDir: false,
@@ -74,6 +79,11 @@ const server: UserConfig = {
     },
     ssr: true,
   },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext',
+    },
+  },
   resolve: {
     // use same helper aliases as Svelte-Kit
     alias: {
@@ -85,7 +95,7 @@ const server: UserConfig = {
 
 export default defineConfig(({ mode }) => {
   let config = app
-  if (mode === 'server') {
+  if (mode === 'server' || mode === 'server-test') {
     config = server
   }
   // apply general test config
@@ -95,10 +105,14 @@ export default defineConfig(({ mode }) => {
     include: ['tests/**/*.ts'],
     exclude: ['tests/setup/**/*.ts', 'tests/mock/**/*.ts'],
     includeSource: ['src/**/*.{js,ts,svelte}'],
-    setupFiles: ['tests/setup/svelte-kit-routes.ts', 'tests/setup/seed.ts', 'tests/setup/github-secrets-enabled.ts'],
+    setupFiles: [
+      'tests/setup/svelte-kit-routes.ts',
+      'tests/setup/seed.ts',
+      'tests/setup/github-secrets-enabled.ts',
+    ],
   }
   // `vitest` sets mode to test, load local environment variables for test
-  if (mode === 'test') {
+  if (mode === 'test' || mode === 'server-test') {
     loadEnvVars(mode)
   } else {
     // rely on Vite to load public env vars (i.e. prefixed with VITE_)

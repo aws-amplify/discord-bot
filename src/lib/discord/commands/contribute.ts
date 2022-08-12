@@ -28,8 +28,3 @@ export function handler(
   if (!repo) return somethingWentWrongResponse
   else return `${repo}/contribute`
 }
-
-if (import.meta.vitest) {
-  const { test } = import.meta.vitest
-  test.todo('/contribute')
-}

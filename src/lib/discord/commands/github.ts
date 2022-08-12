@@ -24,8 +24,3 @@ export function handler(interaction: ChatInputCommandInteraction): string {
   if (!repo) return somethingWentWrongResponse
   else return `📦 ${repo}`
 }
-
-if (import.meta.vitest) {
-  const { test } = import.meta.vitest
-  test.todo('/github')
-}
