@@ -62,7 +62,7 @@ jobs:
       - run: pnpm prisma db push
         env:
           DATABASE_URL: 'file:data/test.db'
-      - run: pnpm test -- --silent
+      - run: pnpm vitest run --silent
         env:
           DISCORD_WEBHOOK_URL_RELEASES: ${{ secrets.DISCORD_WEBHOOK_URL_RELEASES }}
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
