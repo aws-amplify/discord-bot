@@ -12,7 +12,7 @@ export async function seed() {
     create: {
       id: 'cl4n0kjqd0006iqtda15yzzcw',
       name: 'esauerbo',
-      email: 'esauerbo@amazon.com',
+      email: 'esauerbo@fake.com',
       image: 'https://cdn.discordapp.com/embed/avatars/0.png',
       accounts: {
         create: [
@@ -34,6 +34,7 @@ export async function seed() {
   })
 
   const STAFF_ROLE = '1001228846768590934'
+  const CONTRIBUTOR_ROLE = '1001228846768590931'
   await prisma.configuration.upsert({
     where: { id: import.meta.env.VITE_DISCORD_GUILD_ID },
     update: {},
@@ -56,6 +57,20 @@ export async function seed() {
               },
             },
           },
+          {
+            id: CONTRIBUTOR_ROLE,
+            accessLevel: {
+              connect: {
+                name: ACCESS_LEVELS.CONTRIBUTOR,
+              },
+            },
+            discordRole: {
+              connectOrCreate: {
+                where: { id: CONTRIBUTOR_ROLE },
+                create: { id: CONTRIBUTOR_ROLE },
+              },
+            },
+          },
         ],
       },
       guild: {
@@ -72,6 +87,7 @@ beforeAll(async () => {
   try {
     await init()
     await seed()
+    console.log('[test] Database seeded')
   } catch (error) {
     throw new Error(`Unable to seed database: ${error.message}`)
   }
