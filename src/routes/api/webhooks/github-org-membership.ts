@@ -137,7 +137,7 @@ export const POST: RequestHandler = async function post({ request }) {
 
   if (!rolesApplied) {
     return {
-      status: 400,
+      status: 500,
     }
   } else {
     return {

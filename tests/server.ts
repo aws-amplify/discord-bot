@@ -297,8 +297,6 @@ describe('webhooks', () => {
         .send(addedPayload1.body)
         .set(addedPayload1.headers)
       expect(response.status).toBe(201)
-      expect(response.body.errors).toBeTruthy()
-      console.log(response.body)
     })
 
     it(`should return 403 if user isn't in db`, async () => {
