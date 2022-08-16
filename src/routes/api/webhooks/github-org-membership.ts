@@ -102,7 +102,7 @@ export const POST: RequestHandler = async function post({ request }) {
      * @TODO better error code? 412?
      */
     return {
-      status: 412,
+      status: 400,
     }
   }
 
