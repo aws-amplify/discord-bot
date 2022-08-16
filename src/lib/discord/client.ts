@@ -180,9 +180,13 @@ client.on('messageCreate', async (message: Message) => {
             // participation record
             participation: {
               connectOrCreate: {
-                where: { id: message.author.id },
+                where: {
+                  questionId_participantId: {
+                    questionId: record.id,
+                    participantId: message.author.id,
+                  },
+                },
                 create: {
-                  id: message.author.id,
                   // DiscordUser
                   participant: {
                     connectOrCreate: {
@@ -208,10 +212,12 @@ client.on('messageCreate', async (message: Message) => {
             },
           },
         })
-        console.log('Successfully updated participants')
+        console.log(
+          `Successfully updated participants for question ${record.id}`
+        )
       }
     } catch (error) {
-      console.error('Unable to update participants', error)
+      console.error(`Unable to update participants`, error)
     }
   }
 })
