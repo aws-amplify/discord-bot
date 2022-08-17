@@ -46,6 +46,8 @@ model Participation {
   // @TODO - track role at the time of participation, accounts for users that _leave_ "staff"
   participantId    String
   participantRoles DiscordRole[]
+
+  @@unique([questionId, participantId])
 }
 
 model DiscordRole {
