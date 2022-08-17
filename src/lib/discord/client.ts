@@ -134,7 +134,9 @@ client.on('messageCreate', async (message: Message) => {
   ) {
     let record
     try {
-      // if we need to backfill the question, we'll need to fetch all messages from the thread first
+      /**
+       * @TODO if we need to backfill the question, we'll need to fetch all messages from the thread first
+       */
       record = await prisma.question.upsert({
         where: { threadId: message.channel.id },
         update: {
@@ -145,7 +147,7 @@ client.on('messageCreate', async (message: Message) => {
             await message.channel.fetchStarterMessage()
           ).author.id as string,
           threadId: message.channel.id,
-          channelName: message.channel.parent.name,
+          channelName: message.channel.parent!.name,
           title: message.channel.name,
           createdAt: message.channel.createdAt as Date,
           url: message.url,
@@ -168,9 +170,9 @@ client.on('messageCreate', async (message: Message) => {
 
     try {
       /**
-       * add the participants separately only if they are not the owners of the question
+       * add the participants separately
        */
-      if (record && record.ownerId !== message.author.id) {
+      if (record) {
         const roleIds = message.member?.roles.cache.map((role) => role.id)
         await prisma.question.update({
           where: {

@@ -83,16 +83,28 @@ export const handler = async (
 
   // update question with new answer
   await prisma.question.update({
-    where: { id: record.id },
+    where: { id: record!.id },
     data: {
       answer: {
         create: {
           id: answer,
           content: interaction.targetMessage.content,
-          ownerId: interaction.targetMessage.author.id,
+          owner: {
+            connect: {
+              id: interaction.targetMessage.author.id,
+            },
+          },
           createdAt: interaction.targetMessage.createdAt,
           selectedBy: interaction.user.id,
           url: interaction.targetMessage.url,
+          participation: {
+            connect: {
+              questionId_participantId: {
+                participantId: interaction.targetMessage.author.id,
+                questionId: record!.id,
+              },
+            },
+          },
         },
       },
     },
@@ -133,7 +145,9 @@ export const handler = async (
       ].join('\n')
     )
     console.info(
-      `User ${interaction.user.id} selected answer ${answer} to question ${record.id}`
+      `User ${interaction.user.id} selected answer ${answer} to question ${
+        record!.id
+      }`
     )
   }
 

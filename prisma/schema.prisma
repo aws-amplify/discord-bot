@@ -46,14 +46,14 @@ model Participation {
   // @TODO - track role at the time of participation, accounts for users that _leave_ "staff"
   participantId    String
   participantRoles DiscordRole[]
+  answer           Answer?
 
   @@unique([questionId, participantId])
 }
 
 model DiscordRole {
-  id            String           @id @unique
+  id            String           @id @unique // Discord Role ID
   participation Participation[]
-  // @TODO - link up with AccessLevelRole?
   role          AccessLevelRole?
 }
 
@@ -63,6 +63,7 @@ model DiscordUser {
   accountId      String?         @unique
   participations Participation[]
   // we are not storing roles on users because we want to capture point-in-time roles for participation records
+  answers        Answer[]
 }
 
 model GitHubDiscussion {
@@ -72,16 +73,19 @@ model GitHubDiscussion {
 }
 
 model Answer {
-  id         String   @id @default(cuid())
-  selectedAt DateTime @default(now())
-  selectedBy String // Discord user ID
-  createdAt  DateTime
-  updatedAt  DateTime @updatedAt
-  ownerId    String // Discord member that answered the question
-  content    String
-  url        String?
-  question   Question @relation(fields: [questionId], references: [id])
-  questionId String   @unique // Question.id
+  id              String        @id @default(cuid())
+  selectedAt      DateTime      @default(now())
+  selectedBy      String // Discord user ID
+  createdAt       DateTime
+  updatedAt       DateTime      @updatedAt
+  owner           DiscordUser   @relation(fields: [ownerId], references: [id])
+  ownerId         String // Discord member that answered the question
+  content         String
+  url             String?
+  question        Question      @relation(fields: [questionId], references: [id])
+  questionId      String        @unique // Question.id
+  participation   Participation @relation(fields: [participationId], references: [id])
+  participationId String        @unique
 }
 
 // SQLite does not support enums, https://github.com/prisma/prisma/issues/2219
