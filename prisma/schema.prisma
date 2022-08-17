@@ -67,7 +67,7 @@ model DiscordUser {
 }
 
 model GitHubDiscussion {
-  id       String    @id @unique
+  id       String    @id @unique // GitHub Discussion ID 
   url      String
   Question Question?
 }
