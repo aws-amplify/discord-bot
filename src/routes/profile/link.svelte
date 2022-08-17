@@ -2,9 +2,6 @@
   import type { Load } from '@sveltejs/kit'
 
   export const load: Load = async ({ session }) => {
-    if (!session?.user) {
-      return { redirect: '/restricted', status: 302 }
-    }
     return {
       props: {},
     }
@@ -17,14 +14,15 @@
   import LoginButton from '$lib/LoginButton.svelte'
 
   let formGitHub
-  let formDiscord
 </script>
 
 <Content>
   <Grid>
     <Row>
       <Column>
-        {#if $session?.user?.github}
+        {#if !$session?.user}
+          <p>You do not appear to be logged in. First, login with Discord</p>
+        {:else if $session?.user?.github}
           <p>
             Thanks for linking your GitHub account! It is now safe to close this
             page
