@@ -87,10 +87,12 @@ export function filterAnswers(
   channels: string[],
   dates: Date[],
   contributors: Contributor[]
-) {
-  return contributors.forEach((user) => {
+): Contributor[] {
+  return contributors.map((user) => {
+    const newUser = Object.assign({}, user)
     const filtered = filterByChannel(channels, user.answers)
-    user.answers = filterByDate(filtered, dates)
+    newUser.answers = filterByDate(filtered, dates)
+    return user
   })
 }
 

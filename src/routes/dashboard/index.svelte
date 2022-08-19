@@ -8,9 +8,17 @@
   }
 </script>
 
+<svelte:head>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/@carbon/charts/styles.min.css"
+  />
+  <title>Discord Metrics Dashboard></title>
+</svelte:head>
+
 <script lang="ts">
-  // import '@carbon/styles/css/styles.css'
-  // import '@carbon/charts/styles.css'
+  import '@carbon/styles/css/styles.css'
+  import '@carbon/charts/styles.css'
   import {
     BarChartStacked,
     PieChart,
@@ -28,7 +36,7 @@
   import { getTopContributors } from './contributors'
   import { timeBetweenDates } from './dates'
   import FilterMenu from './FilterMenu.svelte'
-  import type { Contributors, Questions } from './types'
+  import type { Contributor, Contributors, Questions } from './types'
 
   export let channels: string[]
   export let contributors: Contributors
@@ -36,17 +44,24 @@
   export let name: string
   export let presenceCount: number
   export let questions: Questions
-
+  
   let today = new Date()
   let endDate = today
   let startDate = new Date(today.getFullYear(), today.getMonth() - 3, 1)
   let dates: Date[] = timeBetweenDates('months', [startDate, endDate])
   let filteredQuestions = filterQuestions(channels, dates, questions)
-  // let filteredContributors = filterAnswers(
-  //   channels,
-  //   [dates[0], today],
-  //   allContributors
-  // )
+  let filteredContributors = filterAnswers(
+    channels,
+    [dates[0], today],
+    contributors.staff.concat(contributors.community)
+  )
+  let filteredStaffContributors = filterAnswers(
+    channels,
+    [dates[0], today],
+    contributors.staff
+  )
+  let topOverall = getTopContributors(contributors.staff.concat(contributors.community), 10)
+  let topStaff = getTopContributors(contributors.staff, 10)
 
   const getBarData = (filteredQuestions: Map<string, Questions>) => {
     const map = new Map(filteredQuestions)
@@ -66,15 +81,17 @@
     return values
   }
 
-  // let topOverall = getTopContributors(allContributors, false)
-  // let topStaff = getTopContributors(allContributors, true)
-
     $: filteredQuestions = filterQuestions(channels, dates, questions)
-  //   $: filteredContributors = filterAnswers(
-  //     channels,
-  //     [dates[0], today],
-  //     allContributors
-  //   )
+    $: filteredContributors = filterAnswers(
+      channels,
+      [dates[0], today],
+      contributors.staff.concat(contributors.community)
+    )
+    $: filteredStaffContributors = filterAnswers(
+      channels,
+      [dates[0], today],
+      contributors.staff
+    )
 
     $: total = filteredQuestions.get('aggregate')?.total?.length ?? ''
     $: unanswered = filteredQuestions.get('aggregate')?.unanswered?.length ?? ''
@@ -98,13 +115,9 @@
     $: pieDataStaff = sortChannels(filteredQuestions.get('aggregate')!.staff)
     $: pieDataCommunity= sortChannels(filteredQuestions.get('aggregate')!.community)
     $: pieDataUnanswered = sortChannels(filteredQuestions.get('aggregate')!.unanswered)
-  //   $: topStaff = getTopContributors(filteredContributors, true)
-  //   $: topOverall = getTopContributors(filteredContributors, false)
+    $: topStaff = getTopContributors(filteredStaffContributors, 10) 
+    $: topOverall = getTopContributors(filteredContributors, 10) 
 </script>
-
-<svelte:head>
-  <title>Discord Metrics Dashboard></title>
-</svelte:head>
 
 <Content>
   <Grid>
@@ -265,7 +278,7 @@
     <Row style="justify-content: center;" class="styled-row"
       ><h1 class="number-text">Top Contributors</h1></Row
     >
-    <!-- <Row
+    <Row
       ><Column style="display: grid; justify-content:center">
         <Row>
           <h2>
@@ -306,7 +319,7 @@
           /></Row
         ></Column
       ></Row
-    > -->
+    >
   </Grid> 
 </Content>
 

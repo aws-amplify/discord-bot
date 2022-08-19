@@ -4,18 +4,27 @@ import { api } from '$discord'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { isHelpChannel } from '$lib/discord/support'
-import type {
-  APIPartialChannel,
-  APIGuildPreview,
-} from 'discord-api-types/v10'
+import type { APIPartialChannel, APIGuildPreview } from 'discord-api-types/v10'
 import type { TextChannel } from 'discord.js'
 import type { Contributor } from './types'
 
 const guildId = import.meta.env.VITE_DISCORD_GUILD_ID
 const GUILD_TEXT_CHANNEL = 0
 
+async function getDiscordUsername(userId: string) {
+  try {
+    const guildMember = (await api.get(Routes.guildMember(guildId, userId))) as
+      | APIGuildMember
+      | undefined
+    if (guildMember?.nick) return guildMember.nick
+    if (guildMember?.user?.username) return guildMember.user.username
+  } catch (error) {
+    console.error(`Failed to fetch discord username: ${error.message}`)
+  }
+  return 'unknown discord user'
+}
+
 async function fetchHelpChannels() {
-  console.time('fetch help channels')
   try {
     const allChannels = (await api.get(
       Routes.guildChannels(guildId)
@@ -28,7 +37,6 @@ async function fetchHelpChannels() {
             isHelpChannel(channel as TextChannel)
         )
         .map((channel) => channel.name)
-      console.timeEnd('fetch help channels')
       return filtered
     }
   } catch (error) {
@@ -78,22 +86,25 @@ async function getCommunityContributors(): Promise<Contributor[]> {
             createdAt: true,
             question: {
               select: {
-                channelName: true
-              }
+                channelName: true,
+              },
             },
           },
         },
       },
     })
-     /** @ts-expect-error mutating to include chanelName */
-    return data.map((user) => {
-      user.answers = user.answers.map((answer) => {
-        answer['channelName'] = answer.question?.channelName ?? ''
-        delete answer.question
-        return answer
+    /** @ts-expect-error mutating to include chanelName */
+    return Promise.all(
+      data.map(async (user) => {
+        user['discordUsername'] = await getDiscordUsername(user.id)
+        user.answers = user.answers.map((answer) => {
+          answer['channelName'] = answer.question?.channelName ?? ''
+          delete answer.question
+          return answer
+        })
+        return user
       })
-      return user
-    })
+    )
   } catch (error) {
     console.error(`Failed to fetch community contributors: ${error.message}`)
   }
@@ -165,17 +176,20 @@ async function getStaffContributors(): Promise<Contributor[]> {
       },
     })
     /** @ts-expect-error mutating to include chanelName */
-    return data.map((user) => {
-      user['githubId'] =
-        user.account?.user?.accounts[0]?.providerAccountId ?? null
-      delete user.account
-      user.answers = user.answers.map((answer) => {
-        answer['channelName'] = answer.question?.channelName ?? ''
-        delete answer.question
-        return answer
+    return Promise.all(
+      data.map(async (user) => {
+        user['discordUsername'] = await getDiscordUsername(user.id)
+        user['githubId'] =
+          user.account?.user?.accounts[0]?.providerAccountId ?? null
+        delete user.account
+        user.answers = user.answers.map((answer) => {
+          answer['channelName'] = answer.question?.channelName ?? ''
+          delete answer.question
+          return answer
+        })
+        return user
       })
-      return user
-    })
+    )
   } catch (error) {
     console.error(`Failed to fetch staff contributors: ${error.message}`)
   }
@@ -216,6 +230,7 @@ async function getStaffAnswers() {
   } catch (error) {
     console.error(`Failed to fetch staff answers ${error.message}`)
   }
+  return []
 }
 
 async function getCommunityAnswers() {
