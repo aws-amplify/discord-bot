@@ -45,6 +45,29 @@ async function getRandomFakeRole(): Promise<DiscordRole> {
   return role
 }
 
+const CHANNELS = [
+  'android-help',
+  'authentication-help',
+  'cli-help',
+  'cloudformation-help',
+  'container-help',
+  'datastore-help',
+  'flutter-help',
+  'geo-help',
+  'graphql-help',
+  'ios-help',
+  'js-help',
+  'lambda-help',
+  'next-js-ssr-help',
+  'opensearch-help',
+  'studio-help',
+  'ui-help',
+]
+
+function getRandomChannel(): string {
+  return CHANNELS[Math.floor(Math.random() * CHANNELS.length)]
+}
+
 /**
  * @TODO accept argument for list length?
  */
@@ -56,7 +79,7 @@ function createFakeQuestions(
       const input: Prisma.QuestionCreateInput = {
         threadId: `999770${faker.random.numeric(12)}`,
         ownerId: '143912968529117185',
-        channelName: 'cli-help',
+        channelName: getRandomChannel(),
         title: faker.random.words(15),
         isSolved: faker.datatype.boolean(),
         url: 'https://discord.com/channels/976838371383083068/976838372205137982/999770893356122152',
