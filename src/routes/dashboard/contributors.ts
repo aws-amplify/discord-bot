@@ -43,16 +43,15 @@ import type { Contributor } from './types'
 //   )
 // }
 export function getTopContributors(contributors: Contributor[], n: number) {
-  contributors
+  return contributors
     .sort((prev, next) => next.answers.length - prev.answers.length)
     .slice(0, n)
     .map((contributor) => {
-      const ghUsername = ''
       return {
         id: contributor.id,
         name: contributor.discordUsername,
-        github: ghUsername,
-        count: contributor.answers.length,
+        // github: ghUsername,
+        answers: contributor.answers.length,
       }
     })
 }

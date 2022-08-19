@@ -231,7 +231,7 @@
           theme="g100"
         />
       </Column>
-      <Column class="styled-row">
+      <!-- <Column class="styled-row">
         <PieChart
           bind:data="{pieDataStaff}"
           options="{{
@@ -258,7 +258,7 @@
           }}"
           theme="g100"
         />
-      </Column>
+      </Column> -->
       <Column style="display: grid; justify-content:center">
         <PieChart
           bind:data="{pieDataUnanswered}"

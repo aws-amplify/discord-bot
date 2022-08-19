@@ -1,6 +1,8 @@
 // // question fetched from db with answer's ownerId and participation fields included
 // export type DBQuestion = Question & { answer: { ownerId: string} | null, participation: Participation[]}
 
+import type { StringInteger } from "carbon-icons-svelte"
+
 // // answered or unanswered question
 // // export type AnyQuestion = Question | DBQuestion
 
@@ -53,5 +55,6 @@ export type Question = {
 export type Contributor = {
   id: string,
   githubId?: string,
+  discordUsername?: string,
   answers: Question[]
 }

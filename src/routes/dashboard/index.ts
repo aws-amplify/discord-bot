@@ -4,7 +4,7 @@ import { api } from '$discord'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { isHelpChannel } from '$lib/discord/support'
-import type { APIPartialChannel, APIGuildPreview } from 'discord-api-types/v10'
+import type { APIPartialChannel, APIGuildPreview, APIGuildMember } from 'discord-api-types/v10'
 import type { TextChannel } from 'discord.js'
 import type { Contributor } from './types'
 
@@ -25,6 +25,7 @@ async function getDiscordUsername(userId: string) {
 }
 
 async function fetchHelpChannels() {
+  console.time("fetch channels")
   try {
     const allChannels = (await api.get(
       Routes.guildChannels(guildId)
@@ -37,6 +38,7 @@ async function fetchHelpChannels() {
             isHelpChannel(channel as TextChannel)
         )
         .map((channel) => channel.name)
+        console.timeEnd("fetch channels")
       return filtered
     }
   } catch (error) {
@@ -46,6 +48,7 @@ async function fetchHelpChannels() {
 }
 
 async function getCommunityContributors(): Promise<Contributor[]> {
+  console.time('get community')
   try {
     const data = await prisma.discordUser.findMany({
       where: {
@@ -94,7 +97,7 @@ async function getCommunityContributors(): Promise<Contributor[]> {
       },
     })
     /** @ts-expect-error mutating to include chanelName */
-    return Promise.all(
+    const val =  Promise.all(
       data.map(async (user) => {
         user['discordUsername'] = await getDiscordUsername(user.id)
         user.answers = user.answers.map((answer) => {
@@ -105,6 +108,8 @@ async function getCommunityContributors(): Promise<Contributor[]> {
         return user
       })
     )
+    console.timeEnd("get community")
+    return val
   } catch (error) {
     console.error(`Failed to fetch community contributors: ${error.message}`)
   }
@@ -112,6 +117,7 @@ async function getCommunityContributors(): Promise<Contributor[]> {
 }
 
 async function getStaffContributors(): Promise<Contributor[]> {
+  console.time("get staff")
   try {
     const data = await prisma.discordUser.findMany({
       where: {
@@ -176,7 +182,7 @@ async function getStaffContributors(): Promise<Contributor[]> {
       },
     })
     /** @ts-expect-error mutating to include chanelName */
-    return Promise.all(
+    const val = Promise.all(
       data.map(async (user) => {
         user['discordUsername'] = await getDiscordUsername(user.id)
         user['githubId'] =
@@ -190,6 +196,8 @@ async function getStaffContributors(): Promise<Contributor[]> {
         return user
       })
     )
+    console.timeEnd('get staff')
+    return val
   } catch (error) {
     console.error(`Failed to fetch staff contributors: ${error.message}`)
   }
@@ -197,6 +205,7 @@ async function getStaffContributors(): Promise<Contributor[]> {
 }
 
 async function getStaffAnswers() {
+  console.time('get staff answers')
   try {
     const data = await prisma.answer.findMany({
       where: {
@@ -222,11 +231,13 @@ async function getStaffAnswers() {
         },
       },
     })
-    return data.map((answer) => {
+    const val = data.map((answer) => {
       answer['channelName'] = answer.question?.channelName ?? ''
       delete answer.question
       return answer
     })
+    console.timeEnd('get staff answers')
+    return val
   } catch (error) {
     console.error(`Failed to fetch staff answers ${error.message}`)
   }
@@ -234,6 +245,7 @@ async function getStaffAnswers() {
 }
 
 async function getCommunityAnswers() {
+  console.time('get answers')
   try {
     const data = await prisma.answer.findMany({
       where: {
@@ -259,11 +271,13 @@ async function getCommunityAnswers() {
         },
       },
     })
-    return data.map((answer) => {
+    const val = data.map((answer) => {
       answer['channelName'] = answer.question?.channelName ?? ''
       delete answer.question
       return answer
     })
+    console.timeEnd('get answers')
+    return val
   } catch (error) {
     console.error(`Failed to fetch staff answers ${error.message}`)
   }
