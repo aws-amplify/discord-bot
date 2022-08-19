@@ -9,15 +9,10 @@
 </script>
 
 <svelte:head>
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/@carbon/charts/styles.min.css"
-  />
   <title>Discord Metrics Dashboard></title>
 </svelte:head>
 
 <script lang="ts">
-  import '@carbon/styles/css/styles.css'
   import '@carbon/charts/styles.css'
   import {
     BarChartStacked,
@@ -231,34 +226,6 @@
           theme="g100"
         />
       </Column>
-      <!-- <Column class="styled-row">
-        <PieChart
-          bind:data="{pieDataStaff}"
-          options="{{
-            title: 'Answered Staff',
-            resizable: true,
-            pie: {
-              valueMapsTo: 'count',
-            },
-            height: '400px',
-          }}"
-          theme="g100"
-        />
-      </Column> 
-    <Column class="styled-row">
-        <PieChart
-          bind:data="{pieDataCommunity}"
-          options="{{
-            title: 'Answered Community',
-            resizable: true,
-            pie: {
-              valueMapsTo: 'count',
-            },
-            height: '400px',
-          }}"
-          theme="g100"
-        />
-      </Column> -->
       <Column style="display: grid; justify-content:center">
         <PieChart
           bind:data="{pieDataUnanswered}"

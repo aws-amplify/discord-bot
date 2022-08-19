@@ -14,6 +14,7 @@ const nameToAlias = new Map<string, string>([
   ['amplify-codegen', 'codegen'],
   ['amplify-adminui', 'adminui'],
   ['amplify-hosting', 'hosting'],
+  ['Test-Repository', 'Fake Repo']
 ])
 
 const alias = (name: string) => nameToAlias.get(name) ?? name

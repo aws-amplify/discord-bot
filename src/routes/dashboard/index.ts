@@ -19,7 +19,7 @@ async function getDiscordUsername(userId: string) {
     if (guildMember?.nick) return guildMember.nick
     if (guildMember?.user?.username) return guildMember.user.username
   } catch (error) {
-    console.error(`Failed to fetch discord username: ${error.message}`)
+    // console.error(`Failed to fetch discord username: ${error.message}`)
   }
   return 'unknown discord user'
 }
@@ -96,7 +96,6 @@ async function getCommunityContributors(): Promise<Contributor[]> {
         },
       },
     })
-    /** @ts-expect-error mutating to include chanelName */
     const val =  Promise.all(
       data.map(async (user) => {
         user['discordUsername'] = await getDiscordUsername(user.id)
@@ -181,7 +180,6 @@ async function getStaffContributors(): Promise<Contributor[]> {
         },
       },
     })
-    /** @ts-expect-error mutating to include chanelName */
     const val = Promise.all(
       data.map(async (user) => {
         user['discordUsername'] = await getDiscordUsername(user.id)
