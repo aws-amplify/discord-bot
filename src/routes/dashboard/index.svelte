@@ -56,13 +56,35 @@
     [dates[0], today],
     contributors.staff
   )
-  let topOverallPromise = getTopContributors(
-    contributors.all,
-    gitHubStaff,
-    9
-  )
+  let topOverallPromise = getTopContributors(contributors.all, gitHubStaff, 9)
   let topStaffPromise = getTopContributors(contributors.staff, gitHubStaff, 9)
+  const colors = [
+    '#6929c4',
+    '#1192e8',
+    '#005d5d',
+    '#9f1853',
+    '#fa4d56',
+    '#520408',
+    '#198038',
+    '#002d9c',
+    '#ee5396',
+    '#b28600',
+    '#009d9a',
+    '#012749',
+    '#8a3800',
+    '#a56eff',
+    '#6929c4',
+    '#1192e8',
+  ]
+  const chartColors = channels.reduce((accumulator, channel, idx) => {
+    return {
+      ...accumulator,
+      [channel]:
+        idx < colors.length - 1 ? colors[idx] : colors[idx % colors.length],
+    }
+  }, {})
 
+  console.log(chartColors)
   const tableHeaders = [
     { key: 'discord', value: 'Discord User' },
     { key: 'github', value: 'GitHub' },
@@ -157,9 +179,10 @@
     </Row>
     <Row class="date-container">
       <Column style="max-width:min-content"
-        ><Tooltip triggerText="Questions" direction="top" icon={CalendarTools}><p>Filter by date and channel</p></Tooltip>
-        </Column
-      >
+        ><Tooltip triggerText="Questions" direction="top" icon="{CalendarTools}"
+          ><p>Filter by date and channel</p></Tooltip
+        >
+      </Column>
       <Column>
         <FilterMenu
           bind:dates
@@ -241,6 +264,9 @@
           <PieChart
             bind:data="{pieDataTotal}"
             options="{{
+              color: {
+                scale: chartColors,
+              },
               title: 'All questions',
               resizable: true,
               pie: {
@@ -258,6 +284,9 @@
           <PieChart
             bind:data="{pieDataUnanswered}"
             options="{{
+              color: {
+                scale: chartColors,
+              },
               title: 'Unanswered',
               resizable: true,
               pie: {

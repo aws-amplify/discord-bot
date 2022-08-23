@@ -105,4 +105,5 @@ export function sortChannels(questions: Question[]) {
 
     return Object.entries(counts)
       .map(([channelName, count]) => {return {group: channelName, count}})
+      .sort((a, b) => a.group.localeCompare(b.group))
 }
