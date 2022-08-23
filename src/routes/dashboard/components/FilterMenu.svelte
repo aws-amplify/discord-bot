@@ -15,6 +15,8 @@
   export let endDate: Date
   export let channels: string[]
 
+  const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
   // filter by channel
   const channelDropdownItems: { id: string; text: string }[] = []
   let i = 0
@@ -31,10 +33,10 @@
   // filter by date
   let frequency_selectedId = '2'
   const frequencyDropdownItems = [
-    { id: '0', text: 'Daily', disabled: false, value: 'days' },
-    { id: '1', text: 'Weekly', disabled: false, value: 'weeks' },
-    { id: '2', text: 'Monthly', disabled: false, value: 'months' },
-    { id: '3', text: 'Yearly', disabled: false, value: 'years' },
+    { id: '0', text: 'Daily', disabled: false, value: 'days', description: ''},
+    { id: '1', text: 'Weekly', disabled: false, value: 'weeks', description: 'Starting Monday'},
+    { id: '2', text: 'Monthly', disabled: false, value: 'months', description: 'Starting first of the month'},
+    { id: '3', text: 'Yearly', disabled: false, value: 'years', description: 'Starting January 1'},
   ]
 
   const onDateChange = (d: CustomEvent) => {
@@ -48,7 +50,7 @@
   const frequencySpelling = () =>
     dates.length === 1 ? frequency.slice(0, -1) : frequency
 
-  $: label = `${dates.length} ${frequencySpelling()}`
+  $: label = `${dates.length} ${frequencySpelling()} (beginning ${dates[0].toDateString()})`
   $: frequency =
     frequencyDropdownItems.find((item) => item.id === frequency_selectedId)
       ?.value ?? ''
@@ -57,13 +59,21 @@
 </script>
 
 <Row class="filter">
-  <Column style="max-width:min-content">
+  <Column>
     <Dropdown
       class="frequency-selector"
       titleText="Frequency"
       bind:selectedId="{frequency_selectedId}"
       items="{frequencyDropdownItems}"
-    />
+      let:item
+    >
+    <div>
+      <strong>{item.text}</strong>
+    </div>
+    <div>
+      {item.description}
+    </div>
+    </Dropdown>
   </Column>
   <Column>
     <DatePicker
@@ -91,5 +101,9 @@
 <style>
   :global(.flatpickr-calendar.open) {
     background-color: var(--cds-ui-01, #f4f4f4);
+  }
+
+  :global(.bx--list-box__menu-item, .bx--list-box__menu-item__option) {
+    height: auto;
   }
 </style>

@@ -9,6 +9,7 @@
 </script>
 
 <script lang="ts">
+  import '@carbon/styles/css/styles.css'
   import '@carbon/charts/styles.css'
   import { BarChartStacked, PieChart } from '@carbon/charts-svelte'
   import {
@@ -19,8 +20,9 @@
     Grid,
     Row,
     Tag,
+    Tooltip,
   } from 'carbon-components-svelte'
-  import { ArrowUp, CaretUp, Group } from 'carbon-icons-svelte'
+  import { ArrowUp, CalendarTools, CaretUp, Group } from 'carbon-icons-svelte'
   import {
     filterAnswers,
     filterQuestions,
@@ -119,8 +121,16 @@
   $: pieDataUnanswered = sortChannels(
     filteredQuestions.get('aggregate')!.unanswered
   )
-  $: topStaffPromise = getTopContributors(filteredStaffContributors, gitHubStaff, 9)
-  $: topOverallPromise = getTopContributors(filteredContributors, gitHubStaff, 9)
+  $: topStaffPromise = getTopContributors(
+    filteredStaffContributors,
+    gitHubStaff,
+    9
+  )
+  $: topOverallPromise = getTopContributors(
+    filteredContributors,
+    gitHubStaff,
+    9
+  )
 </script>
 
 <svelte:head>
@@ -147,7 +157,8 @@
     </Row>
     <Row class="date-container">
       <Column style="max-width:min-content"
-        ><h2 style="font-weight: 300;">Questions</h2></Column
+        ><Tooltip triggerText="Questions" direction="top" icon={CalendarTools}><p>Filter by date and channel</p></Tooltip>
+        </Column
       >
       <Column>
         <FilterMenu
@@ -278,15 +289,9 @@
         >
         <Row>
           {#await topOverallPromise}
-            <DataTableSkeleton
-              headers="{tableHeaders}"
-              rows="{10}"
-            />
+            <DataTableSkeleton headers="{tableHeaders}" rows="{10}" />
           {:then topOverall}
-            <DataTable
-              headers="{tableHeaders}"
-              rows="{topOverall}"
-            />
+            <DataTable headers="{tableHeaders}" rows="{topOverall}" />
           {:catch error}
             <p>Failed to fetch top contributors ${error.message}</p>
           {/await}
@@ -303,17 +308,9 @@
           </h2></Row
         >
         {#await topStaffPromise}
-          <DataTableSkeleton
-            headers="{tableHeaders}"
-            rows="{10}"
-          />
+          <DataTableSkeleton headers="{tableHeaders}" rows="{10}" />
         {:then topStaff}
-          <Row
-            ><DataTable
-              headers="{tableHeaders}"
-              rows="{topStaff}"
-            /></Row
-          >
+          <Row><DataTable headers="{tableHeaders}" rows="{topStaff}" /></Row>
         {:catch error}
           <p>Failed to fetch top staff contributors</p>
         {/await}
@@ -354,5 +351,10 @@
     margin: 6px;
     padding: 12px;
     margin-top: 20px;
+  }
+
+  :global(.date-container .bx--tooltip__label) {
+    font-size: 50px;
+    font-weight: 280;
   }
 </style>
