@@ -1,5 +1,6 @@
 import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
+import type { RequestHandler } from '@sveltejs/kit'
 
 async function authenticate() {
   const { privateKey } = JSON.parse(process.env.GITHUB_PRIVATE_KEY)
@@ -21,19 +22,32 @@ async function authenticate() {
   return null
 }
 
-export async function getGHUsername(userId: string) {
-  const token = await authenticate()
-  const octokit = new Octokit({
-    auth: `token ${token}`,
-  })
+
+export const GET: RequestHandler = async ({ params }) => {
+
   try {
-    const { data } = await octokit.request('GET /orgs/{org}/members', {
+    const { username } = params
+    const token = await authenticate()
+    const octokit = new Octokit({
+      auth: `token ${token}`,
+    })
+    const { data } = await octokit.request(`GET /users/${username}`, {
       org: process.env.GITHUB_ORG_LOGIN,
     })
-    const user = data[data.findIndex((user) => user.id === Number(userId))]
-    if (user?.login) return ` ${user.login}`
+    if (data?.name)
+      return {
+        headers: {
+          'content-type': 'text/html; charset=UTF-8',
+        },
+        body: data.name,
+      }
   } catch (error) {
-    console.error(`Error getting github username ${userId}: ${error.message}`)
+    console.error(`User not found: ${error.message}`)
   }
-  return ''
+  return {
+    headers: {
+      'content-type': 'text/html; charset=UTF-8',
+    },
+    body: '',
+  }
 }

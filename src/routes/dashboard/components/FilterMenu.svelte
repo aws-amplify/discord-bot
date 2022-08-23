@@ -7,7 +7,7 @@
     MultiSelect,
     Row,
   } from 'carbon-components-svelte'
-  import { timeBetweenDates } from './dates'
+  import { timeBetweenDates } from '../helpers/dates'
 
   export let dates: Date[]
   export let today: Date

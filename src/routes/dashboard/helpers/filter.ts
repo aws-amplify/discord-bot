@@ -2,7 +2,7 @@ import type {
   Contributor,
   Question,
   Questions
-} from './types'
+} from '../types'
 
 function filterByDate(questions: Question[], dates: Date[]): Question[] {
   return questions.filter((question) =>  new Date(question.createdAt) >= dates[0] &&

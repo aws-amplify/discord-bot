@@ -74,7 +74,7 @@ const server: UserConfig = {
     },
     rollupOptions: {
       // externalize dependencies and "./handler.js" for build
-      external: Object.keys(pkg.dependencies).concat('./handler.js').concat('@carbon/styles/css/styles.css'),
+      external: Object.keys(pkg.dependencies).concat('./handler.js'),
       output: {
         inlineDynamicImports: false,
         preserveModules: true,
@@ -87,7 +87,6 @@ const server: UserConfig = {
     esbuildOptions: {
       target: 'esnext',
     },
-    include: ['@carbon/charts'],
   },
   resolve: {
     // use same helper aliases as Svelte-Kit
@@ -96,9 +95,6 @@ const server: UserConfig = {
       $discord: relative('./src/lib/discord'),
     },
   },
-  ssr: {
-		noExternal: ['@carbon/charts', 'carbon-components'],
-	},
 }
 
 export default defineConfig(({ mode }) => {

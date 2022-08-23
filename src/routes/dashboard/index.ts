@@ -1,45 +1,68 @@
 import type { RequestHandler } from '@sveltejs/kit'
+import { createAppAuth } from '@octokit/auth-app'
+import { Octokit } from '@octokit/rest'
 import { Routes } from 'discord-api-types/v10'
 import { api } from '$discord'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { isHelpChannel } from '$lib/discord/support'
-import type { APIPartialChannel, APIGuildPreview, APIGuildMember } from 'discord-api-types/v10'
+import type { APIPartialChannel, APIGuildPreview } from 'discord-api-types/v10'
 import type { TextChannel } from 'discord.js'
-import type { Contributor } from './types'
+import type { Contributor, Question } from './types'
 
 const guildId = import.meta.env.VITE_DISCORD_GUILD_ID
 const GUILD_TEXT_CHANNEL = 0
 
-async function getDiscordUsername(userId: string) {
+async function authenticate() {
+  const { privateKey } = JSON.parse(process.env.GITHUB_PRIVATE_KEY)
+  const auth = createAppAuth({
+    appId: process.env.GITHUB_APP_ID,
+    privateKey: privateKey,
+    clientId: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  })
   try {
-    const guildMember = (await api.get(Routes.guildMember(guildId, userId))) as
-      | APIGuildMember
-      | undefined
-    if (guildMember?.nick) return guildMember.nick
-    if (guildMember?.user?.username) return guildMember.user.username
-  } catch (error) {
-    // console.error(`Failed to fetch discord username: ${error.message}`)
+    const { token } = await auth({
+      type: 'installation',
+      installationId: process.env.GITHUB_INSTALLATION_ID,
+    })
+    return token
+  } catch (err) {
+    console.error(`Error fetching installation token: ${err}`)
   }
-  return 'unknown discord user'
+  return null
 }
 
-async function fetchHelpChannels() {
-  console.time("fetch channels")
+export async function getGitHubMembers() {
+  const token = await authenticate()
+  const octokit = new Octokit({
+    auth: `token ${token}`,
+  })
+  try {
+    const { data } = await octokit.request('GET /orgs/{org}/members', {
+      org: process.env.GITHUB_ORG_LOGIN,
+    })
+    return data
+  } catch (error) {
+    console.error(`Error getting github members ${error.message}`)
+  }
+  return []
+}
+
+async function fetchHelpChannels(): Promise<string[]> {
   try {
     const allChannels = (await api.get(
       Routes.guildChannels(guildId)
     )) as APIPartialChannel[]
-    if (allChannels) {
-      const filtered = allChannels
+    if (allChannels?.length) {
+      /** @ts-expect-error checking to make sure not undefined */
+      return allChannels
         .filter(
           (channel: APIPartialChannel) =>
             channel.type === GUILD_TEXT_CHANNEL &&
             isHelpChannel(channel as TextChannel)
         )
         .map((channel) => channel.name)
-        console.timeEnd("fetch channels")
-      return filtered
     }
   } catch (error) {
     console.error(`Error fetching guild channels ${guildId}: ${error.message}`)
@@ -48,7 +71,6 @@ async function fetchHelpChannels() {
 }
 
 async function getCommunityContributors(): Promise<Contributor[]> {
-  console.time('get community')
   try {
     const data = await prisma.discordUser.findMany({
       where: {
@@ -96,9 +118,9 @@ async function getCommunityContributors(): Promise<Contributor[]> {
         },
       },
     })
-    const val =  Promise.all(
+    /** @ts-expect-error mutating return object to have correct return type */
+    return Promise.all(
       data.map(async (user) => {
-        user['discordUsername'] = await getDiscordUsername(user.id)
         user.answers = user.answers.map((answer) => {
           answer['channelName'] = answer.question?.channelName ?? ''
           delete answer.question
@@ -107,8 +129,6 @@ async function getCommunityContributors(): Promise<Contributor[]> {
         return user
       })
     )
-    console.timeEnd("get community")
-    return val
   } catch (error) {
     console.error(`Failed to fetch community contributors: ${error.message}`)
   }
@@ -116,7 +136,6 @@ async function getCommunityContributors(): Promise<Contributor[]> {
 }
 
 async function getStaffContributors(): Promise<Contributor[]> {
-  console.time("get staff")
   try {
     const data = await prisma.discordUser.findMany({
       where: {
@@ -180,9 +199,9 @@ async function getStaffContributors(): Promise<Contributor[]> {
         },
       },
     })
-    const val = Promise.all(
+    /** @ts-expect-error mutating return object to have correct return type */
+    return Promise.all(
       data.map(async (user) => {
-        user['discordUsername'] = await getDiscordUsername(user.id)
         user['githubId'] =
           user.account?.user?.accounts[0]?.providerAccountId ?? null
         delete user.account
@@ -194,16 +213,13 @@ async function getStaffContributors(): Promise<Contributor[]> {
         return user
       })
     )
-    console.timeEnd('get staff')
-    return val
   } catch (error) {
     console.error(`Failed to fetch staff contributors: ${error.message}`)
   }
   return []
 }
 
-async function getStaffAnswers() {
-  console.time('get staff answers')
+async function getStaffAnswers(): Promise<Question[]> {
   try {
     const data = await prisma.answer.findMany({
       where: {
@@ -229,21 +245,19 @@ async function getStaffAnswers() {
         },
       },
     })
-    const val = data.map((answer) => {
+    /** @ts-expect-error mutating return object to have correct return type */
+    return data.map((answer) => {
       answer['channelName'] = answer.question?.channelName ?? ''
       delete answer.question
       return answer
     })
-    console.timeEnd('get staff answers')
-    return val
   } catch (error) {
     console.error(`Failed to fetch staff answers ${error.message}`)
   }
   return []
 }
 
-async function getCommunityAnswers() {
-  console.time('get answers')
+async function getCommunityAnswers(): Promise<Question[]> {
   try {
     const data = await prisma.answer.findMany({
       where: {
@@ -269,16 +283,16 @@ async function getCommunityAnswers() {
         },
       },
     })
-    const val = data.map((answer) => {
+    /** @ts-expect-error mutating return object to have correct return type */
+    return data.map((answer) => {
       answer['channelName'] = answer.question?.channelName ?? ''
       delete answer.question
       return answer
     })
-    console.timeEnd('get answers')
-    return val
   } catch (error) {
     console.error(`Failed to fetch staff answers ${error.message}`)
   }
+  return []
 }
 
 export const GET: RequestHandler = async () => {
@@ -303,6 +317,7 @@ export const GET: RequestHandler = async () => {
         staff: await getStaffContributors(),
         community: await getCommunityContributors(),
       },
+      gitHubStaff: await getGitHubMembers(),
       memberCount: guildPreview?.approximate_member_count,
       name: guildPreview?.name,
       presenceCount: guildPreview?.approximate_presence_count,

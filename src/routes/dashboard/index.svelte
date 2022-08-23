@@ -8,38 +8,37 @@
   }
 </script>
 
-<svelte:head>
-  <title>Discord Metrics Dashboard></title>
-</svelte:head>
-
 <script lang="ts">
   import '@carbon/charts/styles.css'
-  import {
-    BarChartStacked,
-    PieChart,
-  } from '@carbon/charts-svelte'
+  import { BarChartStacked, PieChart } from '@carbon/charts-svelte'
   import {
     Column,
     Content,
     DataTable,
+    DataTableSkeleton,
     Grid,
     Row,
     Tag,
   } from 'carbon-components-svelte'
   import { ArrowUp, CaretUp, Group } from 'carbon-icons-svelte'
-  import { filterAnswers, filterQuestions, sortChannels } from './applyFilter'
-  import { getTopContributors } from './contributors'
-  import { timeBetweenDates } from './dates'
-  import FilterMenu from './FilterMenu.svelte'
-  import type { Contributor, Contributors, Questions } from './types'
+  import {
+    filterAnswers,
+    filterQuestions,
+    sortChannels,
+  } from './helpers/filter'
+  import { getTopContributors } from './helpers/contributors'
+  import { timeBetweenDates } from './helpers/dates'
+  import FilterMenu from './components/FilterMenu.svelte'
+  import type { Contributors, GitHubUser, Questions } from './types'
 
   export let channels: string[]
   export let contributors: Contributors
+  export let gitHubStaff: GitHubUser[]
   export let memberCount: number
   export let name: string
   export let presenceCount: number
   export let questions: Questions
-  
+
   let today = new Date()
   let endDate = today
   let startDate = new Date(today.getFullYear(), today.getMonth() - 3, 1)
@@ -55,9 +54,19 @@
     [dates[0], today],
     contributors.staff
   )
-  let topOverall = getTopContributors(contributors.staff.concat(contributors.community), 10)
-  let topStaff = getTopContributors(contributors.staff, 10)
+  let topOverallPromise = getTopContributors(
+    contributors.staff.concat(contributors.community),
+    gitHubStaff,
+    9
+  )
+  let topStaffPromise = getTopContributors(contributors.staff, gitHubStaff, 9)
 
+  const tableHeaders = [
+    { key: 'discord', value: 'Discord User' },
+    { key: 'github', value: 'GitHub' },
+    { key: 'name', value: 'Name' },
+    { key: 'answers', value: 'Answers' },
+  ]
   const getBarData = (filteredQuestions: Map<string, Questions>) => {
     const map = new Map(filteredQuestions)
     map.delete('aggregate')
@@ -76,43 +85,47 @@
     return values
   }
 
-    $: filteredQuestions = filterQuestions(channels, dates, questions)
-    $: filteredContributors = filterAnswers(
-      channels,
-      [dates[0], today],
-      contributors.staff.concat(contributors.community)
-    )
-    $: filteredStaffContributors = filterAnswers(
-      channels,
-      [dates[0], today],
-      contributors.staff
-    )
+  $: filteredQuestions = filterQuestions(channels, dates, questions)
+  $: filteredContributors = filterAnswers(
+    channels,
+    [dates[0], today],
+    contributors.staff.concat(contributors.community)
+  )
+  $: filteredStaffContributors = filterAnswers(
+    channels,
+    [dates[0], today],
+    contributors.staff
+  )
 
-    $: total = filteredQuestions.get('aggregate')?.total?.length ?? ''
-    $: unanswered = filteredQuestions.get('aggregate')?.unanswered?.length ?? ''
-    $: unansweredPct =
-      total && unanswered
-        ? `${Math.round((100 * parseInt(unanswered)) / parseInt(total))}%`
-        : ''
-    $: staff = filteredQuestions.get('aggregate')?.staff?.length ?? ''
-    $: staffPct =
-      total && staff
-        ? `${Math.round((100 * parseInt(staff)) / parseInt(total))}%`
-        : ''
-    $: community = filteredQuestions.get('aggregate')?.community?.length ?? ''
-    $: communityPct =
-      total && staff
-        ? `${Math.round((100 * parseInt(community)) / parseInt(total))}%`
-        : ''
+  $: total = filteredQuestions.get('aggregate')?.total?.length ?? ''
+  $: unanswered = filteredQuestions.get('aggregate')?.unanswered?.length ?? ''
+  $: unansweredPct =
+    total && unanswered
+      ? `${Math.round((100 * parseInt(unanswered)) / parseInt(total))}%`
+      : ''
+  $: staff = filteredQuestions.get('aggregate')?.staff?.length ?? ''
+  $: staffPct =
+    total && staff
+      ? `${Math.round((100 * parseInt(staff)) / parseInt(total))}%`
+      : ''
+  $: community = filteredQuestions.get('aggregate')?.community?.length ?? ''
+  $: communityPct =
+    total && staff
+      ? `${Math.round((100 * parseInt(community)) / parseInt(total))}%`
+      : ''
 
-    $: barData = getBarData(filteredQuestions)
-    $: pieDataTotal = sortChannels(filteredQuestions.get('aggregate')!.total)
-    $: pieDataStaff = sortChannels(filteredQuestions.get('aggregate')!.staff)
-    $: pieDataCommunity= sortChannels(filteredQuestions.get('aggregate')!.community)
-    $: pieDataUnanswered = sortChannels(filteredQuestions.get('aggregate')!.unanswered)
-    $: topStaff = getTopContributors(filteredStaffContributors, 10) 
-    $: topOverall = getTopContributors(filteredContributors, 10) 
+  $: barData = getBarData(filteredQuestions)
+  $: pieDataTotal = sortChannels(filteredQuestions.get('aggregate')!.total)
+  $: pieDataUnanswered = sortChannels(
+    filteredQuestions.get('aggregate')!.unanswered
+  )
+  $: topStaffPromise = getTopContributors(filteredStaffContributors, gitHubStaff, 9)
+  $: topOverallPromise = getTopContributors(filteredContributors, gitHubStaff, 9)
 </script>
+
+<svelte:head>
+  <title>Discord Metrics Dashboard</title>
+</svelte:head>
 
 <Content>
   <Grid>
@@ -177,7 +190,7 @@
       </Column>
     </Row>
     <Row style="margin-top:16px">
-      <Column >
+      <Column>
         <BarChartStacked
           bind:data="{barData}"
           options="{{
@@ -210,37 +223,44 @@
             height: '400px',
           }}"
           theme="g100"
-        /></Column>
-      <Row  style="justify-content: center;" class="styled-row">
-      <Column style="display: grid; justify-content:center">
-        <PieChart
-          bind:data="{pieDataTotal}"
-          options="{{
-            title: 'All questions',
-            resizable: true,
-            pie: {
-              valueMapsTo: 'count',
-            },
-            height: '400px',
-          }}"
-          theme="g100"
-        />
-      </Column>
-      <Column style="display: grid; justify-content:center">
-        <PieChart
-          bind:data="{pieDataUnanswered}"
-          options="{{
-            title: 'Unanswered',
-            resizable: true,
-            pie: {
-              valueMapsTo: 'count',
-            },
-            height: '400px',
-          }}"
-          theme="g100"
-        />
-      </Column>
-    </Row>
+        /></Column
+      >
+      <Row style="justify-content: center;" class="styled-row">
+        <Column style="display: grid; justify-content:center">
+          <PieChart
+            bind:data="{pieDataTotal}"
+            options="{{
+              title: 'All questions',
+              resizable: true,
+              pie: {
+                labels: {
+                  enabled: false,
+                },
+                valueMapsTo: 'count',
+              },
+              height: '400px',
+            }}"
+            theme="g100"
+          />
+        </Column>
+        <Column style="display: grid; justify-content:center">
+          <PieChart
+            bind:data="{pieDataUnanswered}"
+            options="{{
+              title: 'Unanswered',
+              resizable: true,
+              pie: {
+                labels: {
+                  enabled: false,
+                },
+                valueMapsTo: 'count',
+              },
+              height: '400px',
+            }}"
+            theme="g100"
+          />
+        </Column>
+      </Row>
     </Row>
     <Row style="justify-content: center;" class="styled-row"
       ><h1 class="number-text">Top Contributors</h1></Row
@@ -256,18 +276,24 @@
             />
           </h2></Row
         >
-        <Row
-          ><DataTable
-            headers="{[
-              { key: 'name', value: 'User' },
-              { key: 'answers', value: 'Answers' },
-            ]}"
-            bind:rows="{topOverall}"
-          /></Row
-        >
+        <Row>
+          {#await topOverallPromise}
+            <DataTableSkeleton
+              headers="{tableHeaders}"
+              rows="{10}"
+            />
+          {:then topOverall}
+            <DataTable
+              headers="{tableHeaders}"
+              rows="{topOverall}"
+            />
+          {:catch error}
+            <p>Failed to fetch top contributors ${error.message}</p>
+          {/await}
+        </Row>
       </Column>
-      <Column style="display: grid; justify-content:center"
-        ><Row
+      <Column style="display: grid; justify-content:center">
+        <Row
           ><h2>
             Staff <CaretUp
               style="vertical-align:middle"
@@ -276,18 +302,24 @@
             />
           </h2></Row
         >
-        <Row
-          ><DataTable
-            headers="{[
-              { key: 'name', value: 'User' },
-              { key: 'answers', value: 'Answers' },
-            ]}"
-            bind:rows="{topStaff}"
-          /></Row
-        ></Column
-      ></Row
-    >
-  </Grid> 
+        {#await topStaffPromise}
+          <DataTableSkeleton
+            headers="{tableHeaders}"
+            rows="{10}"
+          />
+        {:then topStaff}
+          <Row
+            ><DataTable
+              headers="{tableHeaders}"
+              rows="{topStaff}"
+            /></Row
+          >
+        {:catch error}
+          <p>Failed to fetch top staff contributors</p>
+        {/await}
+      </Column>
+    </Row>
+  </Grid>
 </Content>
 
 <style>
