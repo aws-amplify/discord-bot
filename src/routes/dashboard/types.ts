@@ -6,8 +6,9 @@ export type Questions = {
 }
 
 export type Contributors = {
+  all: Contributor[],
   staff: Contributor[],
-  community: Contributor[],
+  // community: Contributor[],
 }
 
 export type Question = {

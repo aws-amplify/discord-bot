@@ -49,7 +49,7 @@
   let filteredContributors = filterAnswers(
     channels,
     [dates[0], today],
-    contributors.staff.concat(contributors.community)
+    contributors.all
   )
   let filteredStaffContributors = filterAnswers(
     channels,
@@ -57,7 +57,7 @@
     contributors.staff
   )
   let topOverallPromise = getTopContributors(
-    contributors.staff.concat(contributors.community),
+    contributors.all,
     gitHubStaff,
     9
   )
@@ -91,7 +91,7 @@
   $: filteredContributors = filterAnswers(
     channels,
     [dates[0], today],
-    contributors.staff.concat(contributors.community)
+    contributors.all
   )
   $: filteredStaffContributors = filterAnswers(
     channels,

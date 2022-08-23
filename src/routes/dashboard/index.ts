@@ -70,70 +70,71 @@ async function fetchHelpChannels(): Promise<string[]> {
   return []
 }
 
-async function getCommunityContributors(): Promise<Contributor[]> {
-  try {
-    const data = await prisma.discordUser.findMany({
-      where: {
-        answers: {
-          some: {
-            participation: {
-              participantRoles: {
-                some: {
-                  role: {
-                    accessLevelId: {
-                      notIn: [ACCESS_LEVELS.STAFF],
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      select: {
-        id: true,
-        answers: {
-          where: {
-            participation: {
-              participantRoles: {
-                some: {
-                  role: {
-                    accessLevelId: {
-                      notIn: [ACCESS_LEVELS.STAFF],
-                    },
-                  },
-                },
-              },
-            },
-          },
-          select: {
-            id: true,
-            createdAt: true,
-            question: {
-              select: {
-                channelName: true,
-              },
-            },
-          },
-        },
-      },
-    })
-    /** @ts-expect-error mutating return object to have correct return type */
-    return Promise.all(
-      data.map(async (user) => {
-        user.answers = user.answers.map((answer) => {
-          answer['channelName'] = answer.question?.channelName ?? ''
-          delete answer.question
-          return answer
-        })
-        return user
-      })
-    )
-  } catch (error) {
-    console.error(`Failed to fetch community contributors: ${error.message}`)
-  }
-  return []
-}
+/** Currently not displaying community contributors but leaving this here in case it's wanted in the future */
+// async function getCommunityContributors(): Promise<Contributor[]> {
+//   try {
+//     const data = await prisma.discordUser.findMany({
+//       where: {
+//         answers: {
+//           some: {
+//             participation: {
+//               participantRoles: {
+//                 some: {
+//                   role: {
+//                     accessLevelId: {
+//                       notIn: [ACCESS_LEVELS.STAFF],
+//                     },
+//                   },
+//                 },
+//               },
+//             },
+//           },
+//         },
+//       },
+//       select: {
+//         id: true,
+//         answers: {
+//           where: {
+//             participation: {
+//               participantRoles: {
+//                 every: {
+//                   role: {
+//                     accessLevelId: {
+//                       notIn: [ACCESS_LEVELS.STAFF],
+//                     },
+//                   },
+//                 },
+//               },
+//             },
+//           },
+//           select: {
+//             id: true,
+//             createdAt: true,
+//             question: {
+//               select: {
+//                 channelName: true,
+//               },
+//             },
+//           },
+//         },
+//       },
+//     })
+//     /** @ts-expect-error mutating return object to have correct return type */
+//     return Promise.all(
+//       data.map(async (user) => {
+//         user.answers = user.answers.map((answer) => {
+//           answer['channelName'] = answer.question?.channelName ?? ''
+//           delete answer.question
+//           return answer
+//         })
+//         return user
+//       })
+//     )
+//   } catch (error) {
+//     console.error(`Failed to fetch community contributors: ${error.message}`)
+//   }
+//   return []
+// }
 
 async function getStaffContributors(): Promise<Contributor[]> {
   try {
@@ -219,6 +220,90 @@ async function getStaffContributors(): Promise<Contributor[]> {
   return []
 }
 
+async function getAllContributors(): Promise<Contributor[]> {
+  try {
+    const data = await prisma.discordUser.findMany({
+      where: {
+        answers: {
+          some: {
+            participation: {
+              participantRoles: {
+                some: {
+                  role: {
+                    accessLevelId: {
+                      in: [ACCESS_LEVELS.STAFF, ACCESS_LEVELS.ADMIN, ACCESS_LEVELS.MEMBER, ACCESS_LEVELS.CONTRIBUTOR],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      select: {
+        id: true,
+        account: {
+          select: {
+            user: {
+              select: {
+                accounts: {
+                  where: {
+                    provider: 'github',
+                  },
+                  select: {
+                    providerAccountId: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        answers: {
+          where: {
+            participation: {
+              participantRoles: {
+                some: {
+                  role: {
+                    accessLevelId: {
+                      in: [ACCESS_LEVELS.STAFF],
+                    },
+                  },
+                },
+              },
+            },
+          },
+          select: {
+            id: true,
+            createdAt: true,
+            question: {
+              select: {
+                channelName: true,
+              },
+            },
+          },
+        },
+      },
+    })
+    /** @ts-expect-error mutating return object to have correct return type */
+    return Promise.all(
+      data.map(async (user) => {
+        user['githubId'] =
+          user.account?.user?.accounts[0]?.providerAccountId ?? null
+        delete user.account
+        user.answers = user.answers.map((answer) => {
+          answer['channelName'] = answer.question?.channelName ?? ''
+          delete answer.question
+          return answer
+        })
+        return user
+      })
+    )
+  } catch (error) {
+    console.error(`Failed to fetch all contributors: ${error.message}`)
+  }
+  return []
+}
+
 async function getStaffAnswers(): Promise<Question[]> {
   try {
     const data = await prisma.answer.findMany({
@@ -263,7 +348,7 @@ async function getCommunityAnswers(): Promise<Question[]> {
       where: {
         participation: {
           participantRoles: {
-            some: {
+            every: {
               role: {
                 accessLevelId: {
                   notIn: [ACCESS_LEVELS.STAFF],
@@ -314,8 +399,9 @@ export const GET: RequestHandler = async () => {
     body: {
       channels: await fetchHelpChannels(),
       contributors: {
+        all: await getAllContributors(),
         staff: await getStaffContributors(),
-        community: await getCommunityContributors(),
+        // community: await getCommunityContributors(),
       },
       gitHubStaff: await getGitHubMembers(),
       memberCount: guildPreview?.approximate_member_count,

@@ -83,7 +83,7 @@ function createFakeQuestions(
         title: faker.random.words(15),
         isSolved: faker.datatype.boolean(),
         url: 'https://discord.com/channels/976838371383083068/976838372205137982/999770893356122152',
-        createdAt: faker.date.recent(10),
+        createdAt: faker.date.recent(100),
         guild: {
           connectOrCreate: {
             where: {
