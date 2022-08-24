@@ -13,6 +13,7 @@
   import '@carbon/charts/styles.css'
   import { BarChartStacked, PieChart } from '@carbon/charts-svelte'
   import {
+    Button,
     Column,
     Content,
     DataTable,
@@ -22,7 +23,15 @@
     Tag,
     Tooltip,
   } from 'carbon-components-svelte'
-  import { ArrowUp, CalendarTools, CaretUp, Group } from 'carbon-icons-svelte'
+  import {
+    ArrowUp,
+    CalendarTools,
+    CaretUp,
+    CopyFile,
+    DocumentDownload,
+    Group,
+  } from 'carbon-icons-svelte'
+  import { toCSV } from './csv/downloadCSV';
   import { sortChannels } from './helpers/channels'
   import { filterAnswers, filterQuestions } from './helpers/filter'
   import { getTopContributors } from './helpers/contributors'
@@ -127,6 +136,7 @@
     contributors.staff
   )
 
+  /** @TODO check for divide by zero */
   $: total = filteredQuestions.get('aggregate')?.total?.length ?? ''
   $: unanswered = filteredQuestions.get('aggregate')?.unanswered?.length ?? ''
   $: unansweredPct =
@@ -184,10 +194,17 @@
       </Column>
     </Row>
     <Row class="date-container">
-      <Column style="max-width:min-content"
-        ><Tooltip triggerText="Questions" direction="top" icon="{CalendarTools}"
-          ><p>Filter by date and channel</p></Tooltip
+      <Column style="max-width:min-content">
+        <Row>
+        <Column><h1>Questions</h1></Column><Column
+          ><Button
+            iconDescription="Download csv"
+            kind="ghost"
+            icon="{DocumentDownload}"
+            on:click={() => toCSV(channels, filteredQuestions)}
+          /></Column
         >
+      </Row>
       </Column>
       <Column>
         <FilterMenu
@@ -267,10 +284,10 @@
       >
     </Row>
     <Row>
-      <Column sm={2} md={6} lg={8} class="styled-col"
+      <Column sm="{2}" md="{6}" lg="{8}" class="styled-col"
         ><ChannelHealth bind:filteredQuestions /></Column
       >
-      <Column sm={2} md={2} lg={4} class="styled-col">
+      <Column sm="{2}" md="{2}" lg="{4}" class="styled-col">
         <Row style="justify-content: center;" class="styled-col">
           <PieChart
             bind:data="{pieDataTotal}"
@@ -290,27 +307,27 @@
             }}"
             theme="g100"
           />
-          </Row>
-          <Row style="justify-content: center;" class="styled-col">
-            <PieChart
-              bind:data="{pieDataUnanswered}"
-              options="{{
-                color: {
-                  scale: chartColors,
+        </Row>
+        <Row style="justify-content: center;" class="styled-col">
+          <PieChart
+            bind:data="{pieDataUnanswered}"
+            options="{{
+              color: {
+                scale: chartColors,
+              },
+              title: 'Unanswered',
+              resizable: true,
+              pie: {
+                labels: {
+                  enabled: false,
                 },
-                title: 'Unanswered',
-                resizable: true,
-                pie: {
-                  labels: {
-                    enabled: false,
-                  },
-                  valueMapsTo: 'count',
-                },
-                height: '400px',
-              }}"
-              theme="g100"
-            />
-          </Row>
+                valueMapsTo: 'count',
+              },
+              height: '400px',
+            }}"
+            theme="g100"
+          />
+        </Row>
       </Column>
     </Row>
     <h1 style="margin-top:12px;" class="number-text">Top Contributors</h1>

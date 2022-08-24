@@ -51,8 +51,8 @@ export function getChannelHealth(questions: Questions) {
       const key = question.channelName
       return count[key] ? ++count[key] : (count[key] = 1), count
     }, {})
-    console.log(totalObj)
-    console.log(answeredObj)
+    // console.log(totalObj)
+    // console.log(answeredObj)
 
   const channelBreakdown = Object.entries(totalObj)
     .map(([channelName, count]) => {
@@ -70,6 +70,6 @@ export function getChannelHealth(questions: Questions) {
     })
     .sort((a, b) => a.percent - b.percent)
 
-  console.log(channelBreakdown)
+//   console.log(channelBreakdown)
   return channelBreakdown
 }
