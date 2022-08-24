@@ -1,12 +1,11 @@
-import type {
-  Contributor,
-  Question,
-  Questions
-} from '../types'
+import type { Contributor, Question, Questions } from '../types'
 
 function filterByDate(questions: Question[], dates: Date[]): Question[] {
-  return questions.filter((question) =>  new Date(question.createdAt) >= dates[0] &&
-  new Date(question.createdAt) < dates[1])
+  return questions.filter(
+    (question) =>
+      new Date(question.createdAt) >= dates[0] &&
+      new Date(question.createdAt) < dates[1]
+  )
 }
 
 function filterByChannel(channels: string[], questions: Question[]) {
@@ -35,7 +34,9 @@ function filterQuestionsByDate(
       ) ?? []
     const key = category as keyof Questions
     filteredQs[key] = questionsBetweenDates
-    datedQuestions.get('aggregate')![key] =  datedQuestions.get('aggregate')![key].concat(questionsBetweenDates)
+    datedQuestions.get('aggregate')![key] = datedQuestions
+      .get('aggregate')!
+      [key].concat(questionsBetweenDates)
   })
   return filteredQs
 }
@@ -44,10 +45,7 @@ function filterQuestionsByDate(
  * and ending at the next sequential date, or today for the last date
  * also keeps track of total number of questions for the overall time period
  */
-function binDates(
-  dates: Date[],
-  questions: Questions
-): Map<string, Questions> {
+function binDates(dates: Date[], questions: Questions): Map<string, Questions> {
   const today = new Date()
   const datedQuestions = new Map<string, Questions>([
     ['aggregate', { total: [], unanswered: [], staff: [], community: [] }],
@@ -78,7 +76,10 @@ export function filterQuestions(
 ): Map<string, Questions> {
   const filtered = Object.assign({}, questions)
   Object.entries(filtered).forEach(([category, categoryQuestions]) => {
-    filtered[category as keyof Questions] = filterByChannel(channels, categoryQuestions)
+    filtered[category as keyof Questions] = filterByChannel(
+      channels,
+      categoryQuestions
+    )
   })
   return binDates(dates, filtered)
 }
@@ -94,16 +95,4 @@ export function filterAnswers(
     newUser.answers = filterByDate(filtered, dates)
     return user
   })
-}
-
-export function sortChannels(questions: Question[]) {
-  const counts = questions
-      .reduce((count, question) => {
-        const key = question.channelName
-        return count[key] ? ++count[key] : (count[key] = 1), count
-      }, {})
-
-    return Object.entries(counts)
-      .map(([channelName, count]) => {return {group: channelName, count}})
-      .sort((a, b) => a.group.localeCompare(b.group))
 }

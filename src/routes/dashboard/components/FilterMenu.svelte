@@ -58,7 +58,7 @@
   $: dates = timeBetweenDates(frequency, [startDate, endDate])
 </script>
 
-<Row class="filter">
+<Row>
   <Column>
     <Dropdown
       class="frequency-selector"
@@ -86,7 +86,7 @@
       <DatePickerInput labelText="FROM" placeholder="mm/dd/yyyy" />
       <DatePickerInput labelText="TO" placeholder="mm/dd/yyyy" />
     </DatePicker>
-    <p style="font-weight:260; text-align:center;">{label}</p>
+    <p style="font-weight:300; font-size:14px">{label}</p>
   </Column>
   <Column
     ><MultiSelect

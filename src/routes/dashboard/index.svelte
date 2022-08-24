@@ -23,15 +23,18 @@
     Tooltip,
   } from 'carbon-components-svelte'
   import { ArrowUp, CalendarTools, CaretUp, Group } from 'carbon-icons-svelte'
-  import {
-    filterAnswers,
-    filterQuestions,
-    sortChannels,
-  } from './helpers/filter'
+  import { sortChannels } from './helpers/channels'
+  import { filterAnswers, filterQuestions } from './helpers/filter'
   import { getTopContributors } from './helpers/contributors'
   import { timeBetweenDates } from './helpers/dates'
   import FilterMenu from './components/FilterMenu.svelte'
-  import type { Contributors, GitHubUser, Questions } from './types'
+  import type {
+    Contributor,
+    Contributors,
+    GitHubUser,
+    Questions,
+  } from './types'
+  import ChannelHealth from './components/ChannelHealth.svelte'
 
   export let channels: string[]
   export let contributors: Contributors
@@ -45,13 +48,17 @@
   let endDate = today
   let startDate = new Date(today.getFullYear(), today.getMonth() - 3, 1)
   let dates: Date[] = timeBetweenDates('months', [startDate, endDate])
-  let filteredQuestions = filterQuestions(channels, dates, questions)
-  let filteredContributors = filterAnswers(
+  let filteredQuestions: Map<string, Questions> = filterQuestions(
+    channels,
+    dates,
+    questions
+  )
+  let filteredContributors: Contributor[] = filterAnswers(
     channels,
     [dates[0], today],
     contributors.all
   )
-  let filteredStaffContributors = filterAnswers(
+  let filteredStaffContributors: Contributor[] = filterAnswers(
     channels,
     [dates[0], today],
     contributors.staff
@@ -84,7 +91,6 @@
     }
   }, {})
 
-  console.log(chartColors)
   const tableHeaders = [
     { key: 'discord', value: 'Discord User' },
     { key: 'github', value: 'GitHub' },
@@ -162,17 +168,17 @@
 <Content>
   <Grid>
     <Row>
-      <Column class="styled-row" style="background: rgb(15, 98, 254, 0.1);">
+      <Column class="styled-col" style="background: rgb(15, 98, 254, 0.1);">
         <h1 class="number">
           {memberCount}
-          <ArrowUp size="{32}" color="var(--cds-interactive-01, #0f62fe)" />
+          <ArrowUp size="{32}" color="#0c4fcc" />
         </h1>
         <h4 class="number-text">Total Members</h4>
       </Column>
-      <Column class="styled-row" style="background: rgb(0, 255, 0, 0.1);">
+      <Column class="styled-col" style="background: rgb(0, 255, 0, 0.1);">
         <h1 class="number">
           {presenceCount}
-          <Group size="{32}" color="green" />
+          <Group size="{32}" color="#036b03" />
         </h1>
         <h4 class="number-text">Members Online</h4>
       </Column>
@@ -259,8 +265,13 @@
           theme="g100"
         /></Column
       >
-      <Row style="justify-content: center;" class="styled-row">
-        <Column style="display: grid; justify-content:center">
+    </Row>
+    <Row>
+      <Column sm={2} md={6} lg={8} class="styled-col"
+        ><ChannelHealth bind:filteredQuestions /></Column
+      >
+      <Column sm={2} md={2} lg={4} class="styled-col">
+        <Row style="justify-content: center;" class="styled-col">
           <PieChart
             bind:data="{pieDataTotal}"
             options="{{
@@ -279,34 +290,32 @@
             }}"
             theme="g100"
           />
-        </Column>
-        <Column style="display: grid; justify-content:center">
-          <PieChart
-            bind:data="{pieDataUnanswered}"
-            options="{{
-              color: {
-                scale: chartColors,
-              },
-              title: 'Unanswered',
-              resizable: true,
-              pie: {
-                labels: {
-                  enabled: false,
+          </Row>
+          <Row style="justify-content: center;" class="styled-col">
+            <PieChart
+              bind:data="{pieDataUnanswered}"
+              options="{{
+                color: {
+                  scale: chartColors,
                 },
-                valueMapsTo: 'count',
-              },
-              height: '400px',
-            }}"
-            theme="g100"
-          />
-        </Column>
-      </Row>
+                title: 'Unanswered',
+                resizable: true,
+                pie: {
+                  labels: {
+                    enabled: false,
+                  },
+                  valueMapsTo: 'count',
+                },
+                height: '400px',
+              }}"
+              theme="g100"
+            />
+          </Row>
+      </Column>
     </Row>
-    <Row style="justify-content: center;" class="styled-row"
-      ><h1 class="number-text">Top Contributors</h1></Row
-    >
-    <Row
-      ><Column style="display: grid; justify-content:center">
+    <h1 style="margin-top:12px;" class="number-text">Top Contributors</h1>
+    <Row>
+      <Column class="styled-col">
         <Row>
           <h2>
             Overall <CaretUp
@@ -322,11 +331,11 @@
           {:then topOverall}
             <DataTable headers="{tableHeaders}" rows="{topOverall}" />
           {:catch error}
-            <p>Failed to fetch top contributors ${error.message}</p>
+            <p>Failed to fetch top contributors: {error.message}</p>
           {/await}
         </Row>
       </Column>
-      <Column style="display: grid; justify-content:center">
+      <Column class="styled-col">
         <Row
           ><h2>
             Staff <CaretUp
@@ -341,7 +350,7 @@
         {:then topStaff}
           <Row><DataTable headers="{tableHeaders}" rows="{topStaff}" /></Row>
         {:catch error}
-          <p>Failed to fetch top staff contributors</p>
+          <p>Failed to fetch top staff contributors: {error.message}</p>
         {/await}
       </Column>
     </Row>
@@ -349,7 +358,7 @@
 </Content>
 
 <style>
-  :global(.styled-row) {
+  :global(.styled-col) {
     flex-direction: row;
     position: relative;
     left: unset;
@@ -357,6 +366,10 @@
     right: unset;
     margin: 6px;
     padding: 12px;
+  }
+
+  :global(.styled-row) {
+    flex-direction: col;
   }
 
   :global(.number-text) {
@@ -383,7 +396,8 @@
   }
 
   :global(.date-container .bx--tooltip__label) {
-    font-size: 50px;
-    font-weight: 280;
+    font-size: 36px;
+    font-weight: 300;
+    color: white;
   }
 </style>

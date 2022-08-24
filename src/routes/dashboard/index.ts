@@ -265,7 +265,7 @@ async function getAllContributors(): Promise<Contributor[]> {
                 some: {
                   role: {
                     accessLevelId: {
-                      in: [ACCESS_LEVELS.STAFF],
+                      in: [ACCESS_LEVELS.STAFF, ACCESS_LEVELS.ADMIN, ACCESS_LEVELS.MEMBER, ACCESS_LEVELS.CONTRIBUTOR],
                     },
                   },
                 },

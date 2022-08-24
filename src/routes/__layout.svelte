@@ -30,7 +30,7 @@
     SideNavDivider,
     ToastNotification,
   } from 'carbon-components-svelte'
-  import ChartPie from 'carbon-icons-svelte/lib/ChartPie.svelte'
+  import DashboardReference from 'carbon-icons-svelte/lib/DashboardReference.svelte'
   import Home from 'carbon-icons-svelte/lib/Home.svelte'
   import UserAdmin from 'carbon-icons-svelte/lib/UserAdmin.svelte'
   import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte'
@@ -124,7 +124,7 @@
         {/if}
         {#if $session?.user?.isStaff}
         <SideNavLink
-          icon="{ChartPie}"
+          icon="{DashboardReference}"
           text="Dashboard"
           href="/dashboard"
           isSelected="{$page.url.pathname === '/dashboard'}"
