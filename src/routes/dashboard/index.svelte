@@ -21,13 +21,10 @@
     Grid,
     Row,
     Tag,
-    Tooltip,
   } from 'carbon-components-svelte'
   import {
     ArrowUp,
-    CalendarTools,
     CaretUp,
-    CopyFile,
     DocumentDownload,
     Group,
   } from 'carbon-icons-svelte'
@@ -376,7 +373,7 @@
 
 <style>
   :global(.styled-col) {
-    flex-direction: row;
+    flex: 1;
     position: relative;
     left: unset;
     bottom: unset;
@@ -385,8 +382,9 @@
     padding: 12px;
   }
 
-  :global(.styled-row) {
-    flex-direction: col;
+  :globa(.column-container) {
+    display: flex;
+    width: 100%;
   }
 
   :global(.number-text) {
@@ -398,7 +396,6 @@
   }
 
   :global(.date-container) {
-    flex-direction: row;
     position: relative;
     margin-top: 6px;
     padding-top: 12px;

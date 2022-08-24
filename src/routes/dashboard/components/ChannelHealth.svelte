@@ -38,7 +38,6 @@
 
 <style>
   :global(.list-item) {
-    flex-direction: row;
     position: relative;
     left: unset;
     bottom: unset;
@@ -49,6 +48,10 @@
 
 
 ::-webkit-scrollbar-track {
+  display: none;
+}
+
+::-webkit-scrollbar-track:hover {
   display: none;
 }
 </style>
