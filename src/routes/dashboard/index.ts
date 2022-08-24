@@ -348,10 +348,10 @@ async function getCommunityAnswers(): Promise<Question[]> {
       where: {
         participation: {
           participantRoles: {
-            every: {
+            none: {
               role: {
                 accessLevelId: {
-                  notIn: [ACCESS_LEVELS.STAFF],
+                  in: [ACCESS_LEVELS.STAFF],
                 },
               },
             },
@@ -393,6 +393,10 @@ export const GET: RequestHandler = async () => {
   const guildPreview = (await api.get(
     Routes.guildPreview(guildId)
   )) as APIGuildPreview
+
+  console.log( (await getCommunityAnswers()).length)
+  console.log( (await getStaffAnswers()).length)
+  console.log((await prisma.answer.findMany()).length)
 
   return {
     status: 200,
