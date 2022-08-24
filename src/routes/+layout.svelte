@@ -1,21 +1,5 @@
-<script lang="ts" context="module">
-  import type { Load } from '@sveltejs/kit'
-
-  export const load: Load = async ({ session, fetch }) => {
-    if (session) {
-      return {
-        props: {
-          guilds: await (await fetch('/api/guilds')).json(),
-        },
-      }
-    }
-    return {
-      props: {},
-    }
-  }
-</script>
-
 <script lang="ts">
+  import type { LayoutData } from './$types'
   import {
     Header,
     SkipToContent,
@@ -35,19 +19,20 @@
   import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte'
   import LogoDiscord from 'carbon-icons-svelte/lib/LogoDiscord.svelte'
   import MessageQueue from 'carbon-icons-svelte/lib/MessageQueue.svelte'
-  import { session, page } from '$app/stores'
   import { afterNavigate } from '$app/navigation'
+  import { page } from '$app/stores'
   import Avatar from '$lib/Avatar.svelte'
   import LoginButton from '$lib/LoginButton.svelte'
   import GuildSwitcher from '$lib/GuildSwitcher.svelte'
-  import { notifications, user } from '$lib/store'
+  import { notifications, session } from '$lib/store'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
 
   import 'carbon-components-svelte/css/all.css'
   import '../app.css'
   import '../styles/sidenav.css'
 
-  export let guilds
+  export let data: LayoutData
+  $: ({ guilds } = data)
 
   let theme: CarbonTheme = 'g100'
 
@@ -88,7 +73,9 @@
             {/if}
             <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
             {#if !$session.user.github}
-              <HeaderPanelLink href="/profile/link">Link GitHub Account</HeaderPanelLink>
+              <HeaderPanelLink href="/profile/link"
+                >Link GitHub Account</HeaderPanelLink
+              >
             {:else}
               <p class="header-text">Github Account Linked</p>
             {/if}
@@ -160,12 +147,12 @@
     line-height: var(--cds-display-01-line-height);
     margin-bottom: var(--cds-layout-01);
   }
-  
+
   :global(.bx--header-panel--expanded) {
     height: min-content;
     padding-bottom: var(--cds-spacing-10);
   }
-  
+
   .header-text {
     font-size: var(--cds-productive-heading-01-font-size, 0.875rem);
     line-height: var(--cds-productive-heading-01-line-height, 1.28572);
@@ -175,7 +162,6 @@
     padding: 0.375rem var(--cds-spacing-05, 1rem);
     text-decoration: none;
   }
-
 
   div.ha--notification--container {
     position: fixed;

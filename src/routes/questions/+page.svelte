@@ -1,14 +1,5 @@
-<script context="module" lang="ts">
-  import type { Load } from '@sveltejs/kit'
-
-  export const load: Load = ({ props }) => {
-    return {
-      props,
-    }
-  }
-</script>
-
 <script lang="ts">
+  import type { PageData } from './$types'
   import {
     Content,
     Grid,
@@ -24,7 +15,8 @@
 
   const { match } = fuzzy
 
-  export let questions: Question[]
+  export let data: PageData
+  $: ({ questions } = data)
   let filtered: Question[] = questions
 
   let search = ''

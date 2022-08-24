@@ -1,7 +1,8 @@
+import { error } from '@sveltejs/kit'
 import { prisma } from '$lib/db'
-import type { RequestHandler } from '@sveltejs/kit'
+import type { PageServerLoad } from './$types'
 
-export const GET: RequestHandler = async ({ params }) => {
+export const load: PageServerLoad = async ({ params }) => {
   const question = await prisma.question.findUnique({
     where: {
       id: params.id,
@@ -9,13 +10,8 @@ export const GET: RequestHandler = async ({ params }) => {
   })
 
   if (question) {
-    return {
-      status: 200,
-      body: { question },
-    }
+    return { question }
   }
 
-  return {
-    status: 404,
-  }
+  error(404, 'Question not found')
 }

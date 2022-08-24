@@ -1,3 +1,4 @@
+import { json } from '@sveltejs/kit'
 import { prisma } from '$lib/db'
 import { ACCESS_LEVELS } from '$lib/constants'
 import type { RequestHandler } from '@sveltejs/kit'
@@ -107,24 +108,18 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     })
 
-    return {
-      status: 200,
-      body: config,
-    }
+    return json(config)
   } catch (error) {
     console.error('Unable to update configuration', error)
-    return {
-      status: 500,
-      body: [error],
-    }
+    return new Response([error], { status: 500 })
   }
 }
 
 export const DELETE: RequestHandler = async ({ request }) => {
   const { id } = await request.json()
-  return {
-    body: await prisma.configuration.delete({
+  return json(
+    await prisma.configuration.delete({
       where: { id },
-    }),
-  }
+    })
+  )
 }

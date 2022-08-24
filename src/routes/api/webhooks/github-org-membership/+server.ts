@@ -1,8 +1,9 @@
+import { json } from '@sveltejs/kit'
 import { addRole } from '$discord/roles/addRole'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { removeRole } from '$discord/roles/removeRole'
-import { verifyGithubWebhookEvent } from './_verifyWebhook'
+import { verifyGithubWebhookEvent } from '../_verifyWebhook'
 import type { RequestHandler } from '@sveltejs/kit'
 
 async function getDiscordUserId(ghUserId: string) {
@@ -37,16 +38,18 @@ export const POST: RequestHandler = async function post({ request }) {
   try {
     payload = await request.json()
   } catch (error) {
-    return {
-      status: 400,
-      body: {
+    return json(
+      {
         errors: [
           {
             message: `Invalid payload: ${error.message}`,
           },
         ],
       },
-    }
+      {
+        status: 400,
+      }
+    )
   }
 
   if (!import.meta.vitest) {
@@ -59,16 +62,18 @@ export const POST: RequestHandler = async function post({ request }) {
         sig256
       )
     ) {
-      return {
-        status: 403,
-        body: {
+      return json(
+        {
           errors: [
             {
               message: 'Unable to verify signature',
             },
           ],
         },
-      }
+        {
+          status: 403,
+        }
+      )
     }
   }
 
@@ -101,9 +106,7 @@ export const POST: RequestHandler = async function post({ request }) {
     /**
      * @TODO better error code? 412?
      */
-    return {
-      status: 400,
-    }
+    return new Response(undefined, { status: 400 })
   }
 
   const [{ discordRoleId: staffRoleId }] = config.roles
@@ -112,16 +115,18 @@ export const POST: RequestHandler = async function post({ request }) {
     guildMemberId = await getDiscordUserId(String(payload.membership.user.id))
   } catch (err) {
     console.error(err)
-    return {
-      status: 403,
-      body: {
+    return json(
+      {
         errors: [
           {
             message: 'Could not find Discord user',
           },
         ],
       },
-    }
+      {
+        status: 403,
+      }
+    )
   }
 
   switch (payload.action) {
@@ -136,13 +141,9 @@ export const POST: RequestHandler = async function post({ request }) {
   }
 
   if (!rolesApplied) {
-    return {
-      status: 400,
-    }
+    return new Response(undefined, { status: 400 })
   } else {
-    return {
-      status: 201,
-    }
+    return new Response(undefined, { status: 201 })
   }
 }
 

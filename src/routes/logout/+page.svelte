@@ -1,19 +1,9 @@
-<script context="module">
-  /** * @type {import('@sveltejs/kit').Load} */
-  export async function load({ session }) {
-    return {
-      props: {
-        isLoggedIn: !!session?.user,
-      },
-    }
-  }
-</script>
-
 <script lang="ts">
   import { Content, Grid, Row, Column } from 'carbon-components-svelte'
   import LogoutButton from '$lib/LogoutButton.svelte'
-
-  export let isLoggedIn: boolean
+  import type { PageLoadData } from './$types'
+  export let data: PageLoadData
+  $: ({ isLoggedIn } = data)
 </script>
 
 <Content>

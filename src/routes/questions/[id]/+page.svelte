@@ -1,18 +1,10 @@
-<script context="module" lang="ts">
-  /** @type {import('@sveltejs/kit').Load} */
-  export async function load({ props }) {
-    return {
-      props,
-    }
-  }
-</script>
-
 <script lang="ts">
+  import type { PageData } from './$types'
   import { Content, Link, Grid, Row, Column } from 'carbon-components-svelte'
-  import type { Question } from '@prisma/client'
   import Launch from 'carbon-icons-svelte/lib/Launch.svelte'
 
-  export let question: Question
+  export let data: PageData
+  $: ({ question } = data)
 
   let title =
     question.title.length > 64

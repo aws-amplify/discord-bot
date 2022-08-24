@@ -1,13 +1,3 @@
-<script lang="ts" context="module">
-  import type { Load } from '@sveltejs/kit'
-
-  export const load: Load = async ({ session }) => {
-    return {
-      props: {},
-    }
-  }
-</script>
-
 <script lang="ts">
   import { Content, Column, Grid, Row } from 'carbon-components-svelte'
   import { session } from '$app/stores'

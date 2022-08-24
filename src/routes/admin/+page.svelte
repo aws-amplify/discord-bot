@@ -1,4 +1,8 @@
 <script lang="ts">
+  import type { PageData } from './$types'
+  export let data: PageData
+  $: ({ commands, configure } = data)
+
   import {
     Checkbox,
     Form,
@@ -14,23 +18,6 @@
   import * as store from '$lib/store'
   import Command from '$lib/Command.svelte'
   import { guild, notifications } from '$lib/store'
-  import type { Configuration, Guild, Role } from '@prisma/client'
-  import type {
-    RESTGetAPIGuildRolesResult,
-    RESTGetAPIApplicationCommandResult,
-  } from 'discord-api-types/v10'
-  import type { Command as CommandType } from '$discord/commands'
-
-  export let commands: Array<
-    CommandType & { registration: RESTGetAPIApplicationCommandResult }
-  >
-  export let configure: {
-    config: Configuration & {
-      roles: Role[]
-    }
-    guild: Guild
-    roles: RESTGetAPIGuildRolesResult
-  }
 
   const roles = configure.roles.sort((a, b) => b.position - a.position)
 

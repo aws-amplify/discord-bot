@@ -15,7 +15,7 @@ export const GET: RequestHandler = ({ params }) => {
   const parsed = code.replace(/\.svg$/, '')
   const hex = parseFloat(parsed).toString(16)
   const color = `#${hex}`
-  return {
+  return new Response(svg(color), {
     headers: {
       // store for 365 days
       'cache-control': import.meta.env.PROD
@@ -25,6 +25,5 @@ export const GET: RequestHandler = ({ params }) => {
       // 'cache-control': 'public, max-age=2592000, immutable',
       'content-type': 'image/svg+xml',
     },
-    body: svg(color),
-  }
+  })
 }

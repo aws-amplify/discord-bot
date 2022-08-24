@@ -1,6 +1,6 @@
+import { json, type RequestHandler } from '@sveltejs/kit'
 import { EmbedBuilder } from 'discord.js'
-import { verifyGithubWebhookEvent } from './_verifyWebhook'
-import type { RequestHandler } from '@sveltejs/kit'
+import { verifyGithubWebhookEvent } from '../_verifyWebhook'
 
 function createReleaseMessage(payload) {
   const embed = new EmbedBuilder()
@@ -26,16 +26,18 @@ export const POST: RequestHandler = async function post({ request }) {
   try {
     payload = await request.json()
   } catch (error) {
-    return {
-      status: 400,
-      body: {
+    return json(
+      {
         errors: [
           {
             message: `Invalid payload: ${error.message}`,
           },
         ],
       },
-    }
+      {
+        status: 400,
+      }
+    )
   }
 
   if (!import.meta.vitest) {
@@ -48,21 +50,23 @@ export const POST: RequestHandler = async function post({ request }) {
         sig256
       )
     ) {
-      return {
-        status: 403,
-        body: {
+      return json(
+        {
           errors: [
             {
               message: 'Unable to verify signature',
             },
           ],
         },
-      }
+        {
+          status: 403,
+        }
+      )
     }
   }
 
   if (payload.action !== 'released') {
-    return { status: 204 }
+    return new Response(undefined, { status: 204 })
   }
 
   const message = createReleaseMessage(payload)
@@ -78,13 +82,9 @@ export const POST: RequestHandler = async function post({ request }) {
   // if response is not okay or if Discord did not return a 204
   if (!res.ok) {
     if (res.body) console.log(await res.json())
-    return {
-      status: 400,
-    }
+    return new Response(undefined, { status: 400 })
   } else {
-    return {
-      status: 201,
-    }
+    return new Response(undefined, { status: 201 })
   }
 }
 

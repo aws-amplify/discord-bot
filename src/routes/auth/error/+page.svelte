@@ -1,19 +1,9 @@
-<script lang="ts" context="module">
-  /** @type {import('@sveltejs/kit').Load} */
-  export function load({ url }) {
-    const { searchParams } = new URL(url)
-    return {
-      props: {
-        title: `${searchParams}`,
-      },
-    }
-  }
-</script>
-
 <script lang="ts">
+  import type { PageData } from './$types'
   import { Content } from 'carbon-components-svelte'
 
-  export let title
+  export let data: PageData
+  $: ({ title } = data)
 </script>
 
 <Content>
