@@ -40,8 +40,6 @@
     "next-auth": "^4.10.3",
     "prisma": "^4.1.1",
     "sass": "1.54.4",
-    "styles": "link:@carbon/styles",
-    "styles.css": "link:@carbon/charts/styles.css",
     "svelte": "3.49.0",
     "uuid": "^8.3.2"
   },
