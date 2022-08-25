@@ -98,9 +98,11 @@ pnpm scripts create-secrets -e next
 
 ## Setup
 
+Some of the bot features require a few manual configuration steps.
+
 ### Configuring a Github -> Discord Webhook
 
-In your Discord server:
+This is used for release notifications. Begin in your Discord server:
 
  1. Go to server settings (click on the server name -> **Server Settings**)
 
@@ -118,9 +120,9 @@ In your Discord server:
 
 ### Creating the GitHub Webhook
 
-You must be the owner of the GitHub repository to perform the following steps.
+Go to either the GitHub organization or repository that you wish to recieve release notifications for. You must be the owner of the organization or repository to perform the following steps.
 
- 1. Go to the desired GitHub repository, and click **Settings**
+ 1. Go to the desired GitHub organization/repository, and click **Settings**
 
  2. Click **Webhooks** -> **Add Webhook**
 
@@ -138,16 +140,15 @@ You must be the owner of the GitHub repository to perform the following steps.
 
 ### Configuring an organization membership webhook
 
-#### Create the GitHub webhook:
+Configuring this webhook will remove the Discord `staff`role when members leave your organization.
+
+#### Create the GitHub webhook
 
 You must be the owner of the GitHub organization to perform the following steps.
 
 1. Go to your GitHub organization, and click **Settings** -> **Webhooks** -> **Add Webhook**
 
-2. Under **Payload URL**  choose `http://localhost:3000/api/webhooks/github-org-membership`
-
-> **Note**
-> `localhost:3000` should be changed to your production URL
+2. Under **Payload URL**  choose `http://<your-production-url>/api/webhooks/github-org-membership`
 
 3. Under **Content type**, select `application/json`
 
@@ -159,9 +160,9 @@ You must be the owner of the GitHub organization to perform the following steps.
 
 ### Configuring a GitHub App
 
-You must be the owner of the GitHub organization to perform the following steps.
+A GitHub App is required to obtain the permissions necessary for many API calls. You must be the owner of the GitHub organization to perform the following steps.
 
-#### Creating the App:
+#### Creating the App
 
 1. Go to your GitHub organization, and click **Settings** -> **Developer Settings** -> **GitHub Apps**
 
@@ -169,10 +170,7 @@ You must be the owner of the GitHub organization to perform the following steps.
 
 3. For the homepage URL, put in the homepage of your website
 
-4. Under **Callback URL** put `http://localhost:3000/api/auth/callback/github`
-
-> **Note**
-> `localhost:3000` should be changed to your production URL
+4. Under **Callback URL** put `http://<your-production-url>/api/auth/callback/github`
 
 5. Select  **Expire user authorization tokens** AND **Request user authorization (OAuth) during installation**
 
