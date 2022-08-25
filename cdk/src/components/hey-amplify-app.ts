@@ -11,6 +11,7 @@ import * as route53 from 'aws-cdk-lib/aws-route53'
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import { v4 as uuid } from 'uuid'
+import { WAF } from './waf'
 import type * as s3 from 'aws-cdk-lib/aws-s3'
 import type { AmplifyAwsSubdomain } from './amplify-aws-subdomain'
 
@@ -196,6 +197,10 @@ export class HeyAmplifyApp extends Construct {
         ),
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
       },
+      // add Web Application Firewall (WAF)
+      webAclId: new WAF(this, 'WAF', {
+        name: 'WAF',
+      }).attrArn,
     })
 
     for (const listener of albFargateService.loadBalancer.listeners) {

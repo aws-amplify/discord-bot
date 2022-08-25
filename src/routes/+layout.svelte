@@ -14,6 +14,7 @@
     SideNavDivider,
     ToastNotification,
   } from 'carbon-components-svelte'
+  import DashboardReference from 'carbon-icons-svelte/lib/DashboardReference.svelte'
   import Home from 'carbon-icons-svelte/lib/Home.svelte'
   import UserAdmin from 'carbon-icons-svelte/lib/UserAdmin.svelte'
   import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte'
@@ -106,6 +107,14 @@
             text="Admin"
             href="/admin"
             isSelected="{$page.url.pathname === '/admin'}"
+          />
+        {/if}
+        {#if $session?.user?.isGuildOwner || $session?.user?.isAdmin || $session?.user?.isStaff}
+          <SideNavLink
+            icon="{DashboardReference}"
+            text="Dashboard"
+            href="/dashboard"
+            isSelected="{$page.url.pathname === '/dashboard'}"
           />
         {/if}
         <SideNavDivider />
