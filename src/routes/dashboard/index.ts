@@ -78,10 +78,10 @@ async function fetchHelpChannels(): Promise<string[]> {
 //           some: {
 //             participation: {
 //               participantRoles: {
-//                 some: {
+//                 none: {
 //                   role: {
 //                     accessLevelId: {
-//                       notIn: [ACCESS_LEVELS.STAFF],
+//                       in: [ACCESS_LEVELS.STAFF],
 //                     },
 //                   },
 //                 },
@@ -96,10 +96,10 @@ async function fetchHelpChannels(): Promise<string[]> {
 //           where: {
 //             participation: {
 //               participantRoles: {
-//                 every: {
+//                 none: {
 //                   role: {
 //                     accessLevelId: {
-//                       notIn: [ACCESS_LEVELS.STAFF],
+//                       in: [ACCESS_LEVELS.STAFF],
 //                     },
 //                   },
 //                 },
