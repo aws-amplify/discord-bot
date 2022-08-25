@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { Column, Grid, Row, Tile } from 'carbon-components-svelte'
+  import { Column, Grid, Row } from 'carbon-components-svelte'
   import { getChannelHealth } from '../helpers/channels'
+  import type { Questions } from '../types'
 
   export let filteredQuestions: Map<string, Questions>
 
@@ -47,13 +48,5 @@
   div {
     max-height: 90vh;
     overflow-y: scroll;
-  }
-
-  ::-webkit-scrollbar-track {
-    display: none;
-  }
-
-  ::-webkit-scrollbar-track:hover {
-    display: none;
   }
 </style>

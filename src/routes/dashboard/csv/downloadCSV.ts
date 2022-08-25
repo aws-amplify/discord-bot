@@ -19,9 +19,9 @@ function filterQuestionsMapByChannel(
   questionsMap: Map<string, Questions>
 ) {
   const filtered = new Map<string, Questions>()
-  questionsMap.forEach((questionsObj, date) => {
+  for (const [date, questionsObj] of questionsMap) {
     filtered.set(date, filterQuestionsByChannel(channel, questionsObj))
-  })
+  }
   return filtered
 }
 

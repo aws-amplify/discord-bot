@@ -38,6 +38,7 @@
   import { timeBetweenDates } from './helpers/dates'
   import FilterMenu from './components/FilterMenu.svelte'
   import ChannelHealth from './components/ChannelHealth.svelte'
+  import type { Contributor, Contributors, GitHubUser, Questions } from './types'
 
   export let channels: string[]
   export let contributors: Contributors
@@ -329,11 +330,15 @@
     <h1 style="margin-top:12px;" class="number-text">Top Contributors</h1>
     <Row>
       <Column class="styled-col">
-        <Row><h2>Overall<CaretUp
-          style="vertical-align:middle"
-          color="green"
-          size="{32}"
-        /></h2></Row>
+        <Row
+          ><h2>
+            Overall<CaretUp
+              style="vertical-align:middle"
+              color="green"
+              size="{32}"
+            />
+          </h2></Row
+        >
         <Row>
           {#await topOverallPromise}
             <DataTableSkeleton headers="{tableHeaders}" rows="{10}" />
@@ -355,11 +360,15 @@
         </Row>
       </Column>
       <Column class="styled-col">
-        <Row><h2>Staff<CaretUp
-          style="vertical-align:middle"
-          color="rgb(255, 153, 0, 0.6)"
-          size="{32}"
-        /></h2></Row>
+        <Row
+          ><h2>
+            Staff<CaretUp
+              style="vertical-align:middle"
+              color="rgb(255, 153, 0, 0.6)"
+              size="{32}"
+            />
+          </h2></Row
+        >
         {#await topStaffPromise}
           <DataTableSkeleton headers="{tableHeaders}" rows="{10}" />
         {:then topStaff}

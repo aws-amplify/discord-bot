@@ -8,6 +8,7 @@ import { isHelpChannel } from '$lib/discord/support'
 import type { RequestHandler } from '@sveltejs/kit'
 import type { APIPartialChannel, APIGuildPreview } from 'discord-api-types/v10'
 import type { TextChannel } from 'discord.js'
+import type { Contributor } from './types'
 
 const guildId = import.meta.env.VITE_DISCORD_GUILD_ID
 const GUILD_TEXT_CHANNEL = 0
