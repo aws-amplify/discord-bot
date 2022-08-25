@@ -1,5 +1,3 @@
-import type { Questions } from '../types'
-
 /** filters a questions object so it only contains questions with the relevant channel */
 function filterQuestionsByChannel(channel: string, questions: Questions) {
   const filtered = Object.assign({}, questions)

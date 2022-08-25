@@ -30,16 +30,10 @@
   } from 'carbon-icons-svelte'
   import { toCSV } from './csv/downloadCSV';
   import { sortChannels } from './helpers/channels'
-  import { filterAnswers, filterQuestions } from './helpers/filter'
+  import { filterAnswers, filterQuestionsByChannelAndDate } from './helpers/filter'
   import { getTopContributors } from './helpers/contributors'
   import { timeBetweenDates } from './helpers/dates'
   import FilterMenu from './components/FilterMenu.svelte'
-  import type {
-    Contributor,
-    Contributors,
-    GitHubUser,
-    Questions,
-  } from './types'
   import ChannelHealth from './components/ChannelHealth.svelte'
 
   export let channels: string[]
@@ -54,7 +48,7 @@
   let endDate = today
   let startDate = new Date(today.getFullYear(), today.getMonth() - 3, 1)
   let dates: Date[] = timeBetweenDates('months', [startDate, endDate])
-  let filteredQuestions: Map<string, Questions> = filterQuestions(
+  let filteredQuestions: Map<string, Questions> = filterQuestionsByChannelAndDate(
     channels,
     dates,
     questions
@@ -89,13 +83,13 @@
     '#6929c4',
     '#1192e8',
   ]
-  const chartColors = channels.reduce((accumulator, channel, idx) => {
-    return {
+  const chartColors = channels.reduce((accumulator, channel, idx) => (
+     {
       ...accumulator,
       [channel]:
         idx < colors.length - 1 ? colors[idx] : colors[idx % colors.length],
     }
-  }, {})
+  ), {})
 
   const tableHeaders = [
     { key: 'discord', value: 'Discord User' },
@@ -121,7 +115,7 @@
     return values
   }
 
-  $: filteredQuestions = filterQuestions(channels, dates, questions)
+  $: filteredQuestions = filterQuestionsByChannelAndDate(channels, dates, questions)
   $: filteredContributors = filterAnswers(
     channels,
     [dates[0], today],

@@ -51,7 +51,7 @@ function incrementDate(unit: string, start: Date): boolean {
 /** creates a list of dates representing each chunk of
  * time between start and end
  */
-export const timeBetweenDates = function (unit: string, dateRange: Date[]) {
+export function timeBetweenDates(unit: string, dateRange: Date[]) {
   const dates = []
   const start = new Date(dateRange[0])
   roundStartDate(unit, start)

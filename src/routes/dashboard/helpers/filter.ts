@@ -1,5 +1,3 @@
-import type { Contributor, Question, Questions } from '../types'
-
 function filterByDate(questions: Question[], dates: Date[]): Question[] {
   return questions.filter(
     (question) =>
@@ -25,19 +23,14 @@ function filterQuestionsByDate(
     community: [],
   } as Questions
 
-  Object.entries(questions).forEach(([category, categoryQuestions]) => {
-    const questionsBetweenDates =
-      categoryQuestions.filter(
-        (question: Question) =>
-          new Date(question.createdAt) >= dates[0] &&
-          new Date(question.createdAt) < dates[1]
-      ) ?? []
+  for (const [category, categoryQuestions] of Object.entries(questions)) {
+    const questionsBetweenDates = filterByDate(categoryQuestions, dates)
     const key = category as keyof Questions
     filteredQs[key] = questionsBetweenDates
     datedQuestions.get('aggregate')![key] = datedQuestions
       .get('aggregate')!
       [key].concat(questionsBetweenDates)
-  })
+  }
   return filteredQs
 }
 
@@ -69,7 +62,7 @@ function binDates(dates: Date[], questions: Questions): Map<string, Questions> {
 }
 
 /** filters categorized questions by channel and date */
-export function filterQuestions(
+export function filterQuestionsByChannelAndDate(
   channels: string[],
   dates: Date[],
   questions: Questions

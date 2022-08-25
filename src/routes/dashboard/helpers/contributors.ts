@@ -1,8 +1,6 @@
-import type { Contributor, GitHubUser } from '../types'
-
 export function getGitHubUsername(gitHubStaff: GitHubUser[], userId: string) {
   const user =
-    gitHubStaff[gitHubStaff.findIndex((user) => user.id === Number(userId))]
+    gitHubStaff.find((user) => user.id === Number(userId))
   if (user?.login) return user.login
   return ''
 }

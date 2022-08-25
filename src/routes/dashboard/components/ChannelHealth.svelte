@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Column, Grid, Row, Tile } from 'carbon-components-svelte'
   import { getChannelHealth } from '../helpers/channels'
-  import type { Questions } from '../types'
 
   export let filteredQuestions: Map<string, Questions>
 

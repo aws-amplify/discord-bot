@@ -1,31 +1,31 @@
-export type Questions = {
+type Questions = {
   total: Question[],
   unanswered: Question[],
   staff: Question[],
   community: Question[],
 }
 
-export type Contributors = {
+type Contributors = {
   all: Contributor[],
   staff: Contributor[],
   // community: Contributor[],
 }
 
-export type Question = {
+type Question = {
   channelName: string,
   createdAt: Date,
   id: string,
   isSolved?: boolean
 }
 
-export type Contributor = {
+type Contributor = {
   id: string,
   githubId?: string,
   discordUsername?: string,
   answers: Question[]
 }
 
-export type GitHubUser =  {
+type GitHubUser =  {
   login: string,
   id: number,
   node_id: string,
@@ -45,3 +45,11 @@ export type GitHubUser =  {
   type: string,
   site_admin: boolean,
 }
+
+module.exports = {
+  Questions,
+  Contributors,
+  Contributor,
+  Question,
+  GitHubUser
+};
