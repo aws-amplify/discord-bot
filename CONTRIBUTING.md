@@ -140,7 +140,7 @@ Go to either the GitHub organization or repository that you wish to recieve rele
 
 ### Configuring an organization membership webhook
 
-Configuring this webhook will remove the Discord `staff`role when members leave your organization.
+Configuring this webhook will remove the Discord `staff` role when members leave your organization.
 
 #### Create the GitHub webhook
 
