@@ -94,7 +94,6 @@ async function addDiscussion(discussion, userId: string, record: Question) {
   const githubDiscussion = {
     id: discussion?.createDiscussion?.discussion?.id,
     url: discussion?.createDiscussion?.discussion?.url,
-    createdBy: userId,
     Question: {
       connect: {
         id: record.id,
@@ -102,9 +101,10 @@ async function addDiscussion(discussion, userId: string, record: Question) {
     },
   }
   try {
-    await prisma.gitHubDiscussion.create({
+    const ghDiscussion = await prisma.gitHubDiscussion.create({
       data: githubDiscussion,
     })
+    console.log(`Successfully created new GitHub Discussion ${ghDiscussion.id}`)
   } catch (error) {
     console.error(`Failed to add discussion to db ${error.message}`)
   }
