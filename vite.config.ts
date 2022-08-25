@@ -42,6 +42,7 @@ const app: UserConfig = {
     esbuildOptions: {
       target: 'esnext',
     },
+    include: ['@carbon/charts'],
   },
   plugins: [sveltekit()],
   resolve: {
@@ -49,6 +50,9 @@ const app: UserConfig = {
       $discord: relative('./src/lib/discord'),
     },
   },
+  ssr: {
+		noExternal: ['@carbon/charts', 'carbon-components'],
+	},
 }
 
 /**
