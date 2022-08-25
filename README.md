@@ -6,9 +6,11 @@ This repository contains the source code for the [AWS Amplify Discord Server](ht
 
 - auto-threads "help" channels; if a channel follows the `<category>-help` naming convention messages will automatically get converted into threads
   - thread data is tracked by title, original poster ID, and whether the thread is solved (`GET /api/questions`)
-- command: `/giverole` - accepts a ROLE and USER argument to grant a role (NOTE: this command is disabled by default for `@everyone`)
+- command: `/admin mirror <repository>` accepts a REPOSITORY and posts the thread to GitHub Discussions
 - command: `/contribute` - accepts an Amplify project argument and returns the GitHub contribution URL
 - command: `/github` - accepts an Amplify project argument and returns the GitHub repository URL
+- command: `/giverole` - accepts a ROLE and USER argument to grant a role (NOTE: this command is disabled by default for `@everyone`)
+- command: `/login` sends an ephemeral link to login to GitHub and link accounts
 - command: `/thread` - command suite for thread owners
   - `/thread rename <title>` - allows thread owners to rename their threads
   - `/thread archive` - allows thread owners to optionally archive their thread
