@@ -9,30 +9,13 @@ export function sortChannels(questions: Question[]) {
     .sort((a, b) => a.group.localeCompare(b.group))
 }
 
-const percentColors = [
-  { percent: 0, color: { r: 0xff, g: 0x00, b: 0 } },
-  { percent: 50, color: { r: 0xff, g: 0xff, b: 0 } },
-  { percent: 100, color: { r: 0x00, g: 0xff, b: 0 } },
-]
-
 const getColor = (percent: number) => {
-  for (var i = 1; i < percentColors.length - 1; i++) {
-    if (percent < percentColors[i].percent) {
-      break
-    }
-  }
-  const lower = percentColors[i - 1]
-  const upper = percentColors[i]
-  const range = upper.percent - lower.percent
-  const rangepercent = Math.floor((percent - lower.percent) / range)
-  const percentLower = 1 - rangepercent
-  const percentUpper = rangepercent
-  const color = {
-    r: Math.floor(lower.color.r * percentLower + upper.color.r * percentUpper),
-    g: Math.floor(lower.color.g * percentLower + upper.color.g * percentUpper),
-    b: Math.floor(lower.color.b * percentLower + upper.color.b * percentUpper),
-  }
-  return 'rgb(' + [color.r, color.g, color.b, 0.4].join(',') + ')'
+  if (percent < 50) {
+    return 'rgb(255, 0, 0, 0.4)'
+  } else if (50 <= percent && percent < 60) {
+    return 'rgb(255, 255, 0, 0.4)'
+  } 
+  return 'rgb(0, 255, 0, 0.4'
 }
 
 export function getChannelHealth(questions: Questions) {
