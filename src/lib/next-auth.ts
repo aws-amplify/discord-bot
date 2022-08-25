@@ -140,10 +140,6 @@ async function toSvelteKitResponse(
     headers: {},
   }
 
-  /**
-   * @TODO remove "NextAuth.js" from error message
-   */
-
   headers?.forEach((header) => {
     response.headers[header.key] = header.value
   })
@@ -167,7 +163,11 @@ async function toSvelteKitResponse(
       response['body'] = { url: redirect }
     }
   } else {
-    response['body'] = body
+    if (status >= 400 && typeof body === 'string') {
+      response['body'] = body.replace(' by NextAuth.js', '')
+    } else {
+      response['body'] = body
+    }
   }
 
   return response

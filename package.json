@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@aws-crypto/sha256-js": "^2.0.1",
+    "@carbon/styles": "^1.11.0",
     "@discordjs/builders": "^1.1.0",
     "@discordjs/rest": "^1.0.1",
     "@faker-js/faker": "^7.3.0",
@@ -42,6 +43,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@carbon/charts": "^1.5.2",
+    "@carbon/charts-svelte": "^1.5.2",
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
     "@faker-js/faker": "^7.3.0",
@@ -60,6 +63,7 @@
     "carbon-components-svelte": "^0.67.6",
     "carbon-icons-svelte": "^11.2.0",
     "carbon-preprocess-svelte": "^0.9.1",
+    "d3": "^7.6.1",
     "eslint": "^8.21.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-svelte3": "^4.0.0",
