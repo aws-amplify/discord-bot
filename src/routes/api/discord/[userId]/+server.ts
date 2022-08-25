@@ -13,19 +13,25 @@ async function getDiscordUsername(userId: string) {
     if (guildMember?.nick) return guildMember.nick
     if (guildMember?.user?.username) return guildMember.user.username
   } catch (error) {
-    console.error(`Failed to fetch discord username: ${error.message}`)
+    // swallow unknown user errors (only comes up in testing)
+    if (error.message !== 'Unknown User') {
+      console.error(`Failed to fetch discord username: ${error.message}`)
+    }
   }
   return 'unknown'
 }
 
 export const GET: RequestHandler = async ({ params }) => {
   const { userId } = params
-  const result = await getDiscordUsername(userId)
-  return {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    status: 200, 
-    body: result,
+  if (!userId) {
+    return new Response(
+      // JSON.stringify({ errors: [{ message: 'Invalid User ID' }] }),
+      'Invalid User ID',
+      {
+        status: 400,
+      }
+    )
   }
+  const result = await getDiscordUsername(userId)
+  return new Response(result)
 }

@@ -1,13 +1,3 @@
-<script lang="ts" context="module">
-  import type { Load } from '@sveltejs/kit'
-
-  export const load: Load = ({ props }) => {
-    return {
-      props,
-    }
-  }
-</script>
-
 <script lang="ts">
   import '@carbon/styles/css/styles.css'
   import '@carbon/charts/styles.css'
@@ -38,15 +28,19 @@
   import { timeBetweenDates } from './helpers/dates'
   import FilterMenu from './components/FilterMenu.svelte'
   import ChannelHealth from './components/ChannelHealth.svelte'
-  import type { Contributor, Contributors, GitHubUser, Questions } from './types'
+  import type { Contributor, Questions } from './types'
+  import type { PageServerData } from './$types'
 
-  export let channels: string[]
-  export let contributors: Contributors
-  export let gitHubStaff: GitHubUser[]
-  export let memberCount: number
-  export let name: string
-  export let presenceCount: number
-  export let questions: Questions
+  export let data: PageServerData
+  let {
+    channels,
+    contributors,
+    gitHubStaff,
+    memberCount,
+    name,
+    presenceCount,
+    questions,
+  } = data
 
   let today = new Date()
   let endDate = today

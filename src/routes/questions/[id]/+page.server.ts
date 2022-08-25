@@ -7,6 +7,11 @@ export const load: PageServerLoad = async ({ params }) => {
     where: {
       id: params.id,
     },
+    select: {
+      title: true,
+      isSolved: true,
+      url: true,
+    },
   })
 
   if (question) {

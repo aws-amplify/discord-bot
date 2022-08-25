@@ -56,12 +56,22 @@ export const load: PageServerLoad = async ({ locals }) => {
   }
 
   const result: AdminPageReturn = {
-    commands,
+    commands: commands.map((c) =>
+      Object.assign(
+        {},
+        {
+          name: c.name,
+          description: c.description,
+          config: c.config?.toJSON?.() || c.config,
+          registration: c.registration,
+        }
+      )
+    ),
     configure: {
       accessLevels,
       guild,
       roles,
-      config,
+      config: JSON.stringify(config),
     },
   }
 

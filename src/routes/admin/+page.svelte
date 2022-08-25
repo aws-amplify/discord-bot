@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types'
   export let data: PageData
-  $: ({ commands, configure } = data)
+  const { commands, configure } = data
 
   import {
     Checkbox,

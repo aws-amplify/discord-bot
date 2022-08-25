@@ -4,7 +4,7 @@
   import Launch from 'carbon-icons-svelte/lib/Launch.svelte'
 
   export let data: PageData
-  $: ({ question } = data)
+  const { question } = data
 
   let title =
     question.title.length > 64
@@ -23,7 +23,7 @@
         <Link href="/questions">&larr; Back to Questions</Link>
         <h1>Question {question.isSolved ? '(Solved)' : ''}</h1>
         <p>
-          {title}
+          {question.title}
         </p>
         <Link href="{question.url}">View in Discord<Launch /></Link>
       </Column>
