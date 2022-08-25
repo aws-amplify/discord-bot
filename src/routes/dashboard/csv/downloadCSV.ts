@@ -1,48 +1,5 @@
 import type { Questions } from '../types'
 
-export function toCSV(channels: string[], questions: Map<string, Questions>) {
-  let csv =
-    'Channel,Number of Questions, Answered by Staff, Answered by Community, Unanswered,'
-
-  const sortedQs: Map<string, Map<string, Questions>> = reshape(
-    channels,
-    questions
-  )
-
-  const [first] = sortedQs.values()
-  if(!first) return /** @todo throw some error */
-  const columns = first.keys()
-  csv += Array.from(columns).join(',')
-  csv += '\n'
-
-  sortedQs.forEach((datesMap, channel) => {
-    csv += `${channel},`
-    datesMap.forEach((questionsObj, key) => {
-        const total = questionsObj.total?.length ?? 0
-        const staff = questionsObj.staff?.length ?? 0
-        const community = questionsObj.community?.length ?? 0
-        const unanswered = questionsObj.unanswered?.length ?? 0
-
-        if(key === 'aggregate') {
-            csv += `${total},`
-            csv += `${staff},`
-            csv += `${community},`
-            csv += `${unanswered},`
-        }
-        csv += total > 0 ? `${ Math.round(100* (staff + community) / total)}%,` : '0%,'
-    })
-    csv += '\n'
-  })
-
-  const hiddenElement = document.createElement('a')
-  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)
-  hiddenElement.target = '_blank'
-
-  hiddenElement.download = 'Questions.csv'
-  hiddenElement.click()
-  return
-}
-
 /** filters a questions object so it only contains questions with the relevant channel */
 function filterQuestionsByChannel(channel: string, questions: Questions) {
   const filtered = Object.assign({}, questions)
@@ -92,24 +49,55 @@ export function reshape(
   return sortedByChannel
 }
 
-// function download_csv_file() {
-//   //define the heading for each row of the data
-//   var csv = 'Name,Profession\n'
+/** retrieves dates from dataset, used as columns
+ * then loops over questions and counts/caculates percentages
+ * then writes to csv
+ */
+export function toCSV(channels: string[], questions: Map<string, Questions>) {
+  let csv =
+    'Channel,Number of Questions,Answered by Staff,Answered by Community,Unanswered,'
 
-//   //merge the data with CSV
-//   csvFileData.forEach(function (row) {
-//     csv += row.join(',')
-//     csv += '\n'
-//   })
+  const sortedQs: Map<string, Map<string, Questions>> = reshape(
+    channels,
+    questions
+  )
 
-//   //display the created CSV data on the web browser
-//   document.write(csv)
+  const [first] = sortedQs.values()
+  if (!first) {
+    console.error('Failed to download csv: no data')
+    return
+  }
+  const columns = first.keys()
+  csv += Array.from(columns).join(',')
+  csv += '\n'
 
-//   var hiddenElement = document.createElement('a')
-//   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)
-//   hiddenElement.target = '_blank'
+  sortedQs.forEach((datesMap, channel) => {
+    csv += `${channel},`
+    datesMap.forEach((questionsObj, key) => {
+      const total = questionsObj.total?.length ?? 0
+      const staff = questionsObj.staff?.length ?? 0
+      const community = questionsObj.community?.length ?? 0
+      const unanswered = questionsObj.unanswered?.length ?? 0
 
-//   //provide the name for the CSV file to be downloaded
-//   hiddenElement.download = 'Famous Personalities.csv'
-//   hiddenElement.click()
-// }
+      if (key === 'aggregate') {
+        csv += `${total},`
+        csv += `${staff},`
+        csv += `${community},`
+        csv += `${unanswered},`
+      }
+      csv +=
+        total > 0
+          ? `${Math.round((100 * (staff + community)) / total)}%,`
+          : '0%,'
+    })
+    csv += '\n'
+  })
+
+  const hiddenElement = document.createElement('a')
+  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)
+  hiddenElement.target = '_blank'
+
+  hiddenElement.download = 'Questions.csv'
+  hiddenElement.click()
+  return
+}

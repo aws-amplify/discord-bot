@@ -1,37 +1,17 @@
 import type { RequestHandler } from '@sveltejs/kit'
-import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
 import { Routes } from 'discord-api-types/v10'
 import { api } from '$discord'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { isHelpChannel } from '$lib/discord/support'
+import { authenticate } from '$lib/github/queries'
 import type { APIPartialChannel, APIGuildPreview } from 'discord-api-types/v10'
 import type { TextChannel } from 'discord.js'
 import type { Contributor, Question } from './types'
 
 const guildId = import.meta.env.VITE_DISCORD_GUILD_ID
 const GUILD_TEXT_CHANNEL = 0
-
-async function authenticate() {
-  const { privateKey } = JSON.parse(process.env.GITHUB_PRIVATE_KEY)
-  const auth = createAppAuth({
-    appId: process.env.GITHUB_APP_ID,
-    privateKey: privateKey,
-    clientId: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  })
-  try {
-    const { token } = await auth({
-      type: 'installation',
-      installationId: process.env.GITHUB_INSTALLATION_ID,
-    })
-    return token
-  } catch (err) {
-    console.error(`Error fetching installation token: ${err}`)
-  }
-  return null
-}
 
 export async function getGitHubMembers() {
   const token = await authenticate()

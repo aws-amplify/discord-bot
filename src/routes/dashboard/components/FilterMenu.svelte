@@ -19,13 +19,12 @@
 
   // filter by channel
   const channelDropdownItems: { id: string; text: string }[] = []
-  let i = 0
-  for (const channel of channels) {
+
+  for (const [idx, channel] of channels.entries()) {
     channelDropdownItems.push({
-      id: i.toString(),
+      id: idx.toString(),
       text: channel,
     })
-    i++
   }
 
   let channel_selectedIds = channelDropdownItems.map((item) => item.id)
@@ -50,7 +49,7 @@
   const frequencySpelling = () =>
     dates.length === 1 ? frequency.slice(0, -1) : frequency
 
-  $: label = `${dates.length} ${frequencySpelling()} (beginning ${dates[0].toDateString()})`
+  $: label = `${dates.length} ${frequencySpelling()} (beginning ${dates[0]?.toDateString() ?? ''})`
   $: frequency =
     frequencyDropdownItems.find((item) => item.id === frequency_selectedId)
       ?.value ?? ''
@@ -86,7 +85,7 @@
       <DatePickerInput labelText="FROM" placeholder="mm/dd/yyyy" />
       <DatePickerInput labelText="TO" placeholder="mm/dd/yyyy" />
     </DatePicker>
-    <p style="font-weight:300; font-size:14px">{label}</p>
+    <p>{label}</p>
   </Column>
   <Column
     ><MultiSelect
@@ -103,7 +102,12 @@
     background-color: var(--cds-ui-01, #f4f4f4);
   }
 
-  :global(.bx--list-box__menu-item, .bx--list-box__menu-item__option) {
+  :global(.frequency-selector .bx--list-box__menu-item, .bx--list-box__menu-item__option) {
     height: auto;
+  }
+
+  p {
+    font-weight:300; 
+    font-size:14px;
   }
 </style>

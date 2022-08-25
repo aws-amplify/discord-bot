@@ -89,7 +89,9 @@
             {/if}
             <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
             {#if !$session.user.github}
-              <HeaderPanelLink href="/profile/link">Link GitHub Account</HeaderPanelLink>
+              <HeaderPanelLink href="/profile/link"
+                >Link GitHub Account</HeaderPanelLink
+              >
             {:else}
               <p class="header-text">Github Account Linked</p>
             {/if}
@@ -122,14 +124,14 @@
             isSelected="{$page.url.pathname === '/admin'}"
           />
         {/if}
-        {#if $session?.user?.isStaff}
-        <SideNavLink
-          icon="{DashboardReference}"
-          text="Dashboard"
-          href="/dashboard"
-          isSelected="{$page.url.pathname === '/dashboard'}"
-        />
-      {/if}
+        {#if $session?.user?.isGuildOwner || $session?.user?.isAdmin || $session?.user?.isStaff}
+          <SideNavLink
+            icon="{DashboardReference}"
+            text="Dashboard"
+            href="/dashboard"
+            isSelected="{$page.url.pathname === '/dashboard'}"
+          />
+        {/if}
         <SideNavDivider />
         <SideNavLink
           icon="{LogoGithub}"
@@ -169,12 +171,12 @@
     line-height: var(--cds-display-01-line-height);
     margin-bottom: var(--cds-layout-01);
   }
-  
+
   :global(.bx--header-panel--expanded) {
     height: min-content;
     padding-bottom: var(--cds-spacing-10);
   }
-  
+
   .header-text {
     font-size: var(--cds-productive-heading-01-font-size, 0.875rem);
     line-height: var(--cds-productive-heading-01-line-height, 1.28572);
@@ -184,7 +186,6 @@
     padding: 0.375rem var(--cds-spacing-05, 1rem);
     text-decoration: none;
   }
-
 
   div.ha--notification--container {
     position: fixed;

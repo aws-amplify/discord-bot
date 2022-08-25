@@ -6,7 +6,6 @@
   export let filteredQuestions: Map<string, Questions>
 
   let data = getChannelHealth(filteredQuestions.get('aggregate')!)
-  console.log(data)
 
   $: data = getChannelHealth(filteredQuestions.get('aggregate')!)
 </script>
@@ -17,7 +16,7 @@
 
 <Grid class="styled-col" style="justify-content:center">
   <h1 class="number-text">Channel Health</h1>
-  <div style="max-height:100vh; overflow-y:scroll">
+  <div>
   <Column>
     {#each Object.values(data) as channel}
       <Row style="background:{channel.color}" class="list-item">
@@ -46,6 +45,10 @@
     padding: 4px 6px 4px 6px;
   }
 
+  div {
+    max-height:90vh; 
+    overflow-y:scroll;
+  }
 
 ::-webkit-scrollbar-track {
   display: none;

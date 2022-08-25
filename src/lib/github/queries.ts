@@ -108,7 +108,7 @@ const QUERY_GET_REPOSITORIES = gql`
   }
 `
 
-async function authenticate() {
+export async function authenticate() {
   const { privateKey } = JSON.parse(process.env.GITHUB_PRIVATE_KEY)
   const auth = createAppAuth({
     appId: process.env.GITHUB_APP_ID,

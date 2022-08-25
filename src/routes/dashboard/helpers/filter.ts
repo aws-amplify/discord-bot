@@ -41,8 +41,8 @@ function filterQuestionsByDate(
   return filteredQs
 }
 
-/** maps a start date to the number of questions in each category, beginning at the start date
- * and ending at the next sequential date, or today for the last date
+/** bins dates by mapping a start date to the number of questions in each category, beginning at the 
+ * start date and ending at the next sequential date, or today for the last date
  * also keeps track of total number of questions for the overall time period
  */
 function binDates(dates: Date[], questions: Questions): Map<string, Questions> {

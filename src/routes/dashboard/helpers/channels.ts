@@ -7,9 +7,7 @@ export function sortChannels(questions: Question[]) {
   }, {})
 
   return Object.entries(counts)
-    .map(([channelName, count]) => {
-      return { group: channelName, count }
-    })
+    .map(([channelName, count]) => ({ group: channelName, count }))
     .sort((a, b) => a.group.localeCompare(b.group))
 }
 
@@ -51,25 +49,27 @@ export function getChannelHealth(questions: Questions) {
       const key = question.channelName
       return count[key] ? ++count[key] : (count[key] = 1), count
     }, {})
-    // console.log(totalObj)
-    // console.log(answeredObj)
+  // console.log(totalObj)
+  // console.log(answeredObj)
 
   const channelBreakdown = Object.entries(totalObj)
     .map(([channelName, count]) => {
       const pct = answeredObj[channelName]
         ? Math.round(
-            100 * parseInt(answeredObj[channelName]) / parseInt(count)
+            (100 * parseInt(answeredObj[channelName])) / parseInt(count)
           )
         : 0
       return {
         channel: channelName,
         color: getColor(pct),
         percent: pct,
-        unanswered: answeredObj[channelName] ? count - answeredObj[channelName] : count
+        unanswered: answeredObj[channelName]
+          ? count - answeredObj[channelName]
+          : count,
       }
     })
     .sort((a, b) => a.percent - b.percent)
 
-//   console.log(channelBreakdown)
+  //   console.log(channelBreakdown)
   return channelBreakdown
 }
