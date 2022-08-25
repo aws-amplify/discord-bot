@@ -16,22 +16,22 @@
 <Grid class="styled-col" style="justify-content:center">
   <h1 class="number-text">Channel Health</h1>
   <div>
-  <Column>
-    {#each Object.values(data) as channel}
-      <Row style="background:{channel.color}" class="list-item">
-        <Column><h4>{channel.channel}</h4></Column>
-        <Column>
-          <Row><h2>{channel.percent}%</h2></Row>
-          <Row><p>answered</p></Row>
-        </Column>
-        <Column>
-          <Row><h2>{channel.unanswered}</h2></Row>
-          <Row><p>questions unanswered</p></Row>
-        </Column>
-      </Row>
-    {/each}
-  </Column>
-</div>
+    <Column>
+      {#each Object.values(data) as channel}
+        <Row style="background:{channel.color}" class="list-item">
+          <Column><h4>{channel.channel}</h4></Column>
+          <Column>
+            <Row><h2>{channel.percent}%</h2></Row>
+            <Row><p>answered</p></Row>
+          </Column>
+          <Column>
+            <Row><h2>{channel.unanswered}</h2></Row>
+            <Row><p>questions unanswered</p></Row>
+          </Column>
+        </Row>
+      {/each}
+    </Column>
+  </div>
 </Grid>
 
 <style>
@@ -45,15 +45,15 @@
   }
 
   div {
-    max-height:90vh; 
-    overflow-y:scroll;
+    max-height: 90vh;
+    overflow-y: scroll;
   }
 
-::-webkit-scrollbar-track {
-  display: none;
-}
+  ::-webkit-scrollbar-track {
+    display: none;
+  }
 
-::-webkit-scrollbar-track:hover {
-  display: none;
-}
+  ::-webkit-scrollbar-track:hover {
+    display: none;
+  }
 </style>

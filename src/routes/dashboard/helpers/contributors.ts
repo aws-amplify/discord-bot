@@ -22,19 +22,14 @@ export async function getTopContributors(
     }
     if (ghUsername) {
       name = await (
-        await fetch(`${import.meta.env.VITE_HOST}/api/github/${ghUsername}`, {
-          method: 'GET',
-        })
+        await fetch(`${import.meta.env.VITE_HOST}/api/github/${ghUsername}`)
       ).text()
     }
     result.push({
       id: contributor.id,
       discord: await (
         await fetch(
-          `${import.meta.env.VITE_HOST}/api/discord/${contributor.id}`, {
-            method: 'GET',
-          }
-        )
+          `${import.meta.env.VITE_HOST}/api/discord/${contributor.id}`)
       ).text(),
       github: ghUsername,
       name: name,

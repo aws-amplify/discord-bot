@@ -1,13 +1,13 @@
 /** filters a questions object so it only contains questions with the relevant channel */
 function filterQuestionsByChannel(channel: string, questions: Questions) {
   const filtered = Object.assign({}, questions)
-  Object.entries(questions).forEach(([category, categoryQuestions]) => {
+  for (const [category, categoryQuestions] of Object.entries(questions)) {
     filtered[category as keyof Questions] = categoryQuestions.filter(
       (question) => {
         return question.channelName === channel
       }
     )
-  })
+  }
   return filtered
 }
 
@@ -51,7 +51,10 @@ export function reshape(
  * then loops over questions and counts/caculates percentages
  * then writes to csv
  */
-export function toCSV(channels: string[], questions: Map<string, Questions>) {
+export function toCSVQuestions(
+  channels: string[],
+  questions: Map<string, Questions>
+) {
   let csv =
     'Channel,Number of Questions,Answered by Staff,Answered by Community,Unanswered,'
 
@@ -66,7 +69,17 @@ export function toCSV(channels: string[], questions: Map<string, Questions>) {
     return
   }
   const columns = first.keys()
-  csv += Array.from(columns).join(',')
+  for (const [idx, column] of Array.from(columns).entries()) {
+    if (idx != 0) {
+      csv +=
+        new Date(column).toDateString() != 'Invalid Date'
+          ? `% Answered for ${new Date(column).toDateString()},`
+          : column
+    } else {
+      csv += `${column},`
+    }
+  }
+
   csv += '\n'
 
   for (const [channel, datesMap] of sortedQs.entries()) {
@@ -78,10 +91,7 @@ export function toCSV(channels: string[], questions: Map<string, Questions>) {
       const unanswered = questionsObj.unanswered?.length ?? 0
 
       if (key === 'aggregate') {
-        csv += `${total},`
-        csv += `${staff},`
-        csv += `${community},`
-        csv += `${unanswered},`
+        csv += `${total},${staff},${community},${unanswered},`
       }
       csv +=
         total > 0
@@ -91,11 +101,37 @@ export function toCSV(channels: string[], questions: Map<string, Questions>) {
     csv += '\n'
   }
 
+  toCSV(csv, 'Questions')
+}
+
+export function toCSVContributors(
+  contributors: {
+    id: string
+    discord: string
+    github: string
+    name: string
+    answers: number
+  }[],
+  filename: string
+) {
+  let csv =
+    'Ranking,Discord Username,GitHub Username, Full Name, Number of Answers\n'
+
+  for (const [idx, contributor] of contributors.entries()) {
+    csv += `${idx + 1},${contributor?.discord},${contributor.github ?? ''},${
+      contributor.name ?? ''
+    },${contributor.answers}\n`
+  }
+
+  toCSV(csv, filename)
+}
+
+function toCSV(csv: string, filename: string) {
   const hiddenElement = document.createElement('a')
   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)
   hiddenElement.target = '_blank'
 
-  hiddenElement.download = 'Questions.csv'
+  hiddenElement.download = `${filename}.csv`
   hiddenElement.click()
   return
 }

@@ -28,9 +28,12 @@
     DocumentDownload,
     Group,
   } from 'carbon-icons-svelte'
-  import { toCSV } from './csv/downloadCSV';
+  import { toCSVContributors, toCSVQuestions } from './csv/downloadCSV'
   import { sortChannels } from './helpers/channels'
-  import { filterAnswers, filterQuestionsByChannelAndDate } from './helpers/filter'
+  import {
+    filterAnswers,
+    filterQuestionsByChannelAndDate,
+  } from './helpers/filter'
   import { getTopContributors } from './helpers/contributors'
   import { timeBetweenDates } from './helpers/dates'
   import FilterMenu from './components/FilterMenu.svelte'
@@ -48,11 +51,8 @@
   let endDate = today
   let startDate = new Date(today.getFullYear(), today.getMonth() - 3, 1)
   let dates: Date[] = timeBetweenDates('months', [startDate, endDate])
-  let filteredQuestions: Map<string, Questions> = filterQuestionsByChannelAndDate(
-    channels,
-    dates,
-    questions
-  )
+  let filteredQuestions: Map<string, Questions> =
+    filterQuestionsByChannelAndDate(channels, dates, questions)
   let filteredContributors: Contributor[] = filterAnswers(
     channels,
     [dates[0], today],
@@ -83,13 +83,14 @@
     '#6929c4',
     '#1192e8',
   ]
-  const chartColors = channels.reduce((accumulator, channel, idx) => (
-     {
+  const chartColors = channels.reduce(
+    (accumulator, channel, idx) => ({
       ...accumulator,
       [channel]:
         idx < colors.length - 1 ? colors[idx] : colors[idx % colors.length],
-    }
-  ), {})
+    }),
+    {}
+  )
 
   const tableHeaders = [
     { key: 'discord', value: 'Discord User' },
@@ -115,7 +116,11 @@
     return values
   }
 
-  $: filteredQuestions = filterQuestionsByChannelAndDate(channels, dates, questions)
+  $: filteredQuestions = filterQuestionsByChannelAndDate(
+    channels,
+    dates,
+    questions
+  )
   $: filteredContributors = filterAnswers(
     channels,
     [dates[0], today],
@@ -187,15 +192,15 @@
     <Row class="date-container">
       <Column style="max-width:min-content">
         <Row>
-        <Column><h1>Questions</h1></Column><Column
-          ><Button
-            iconDescription="Download csv"
-            kind="ghost"
-            icon="{DocumentDownload}"
-            on:click={() => toCSV(channels, filteredQuestions)}
-          /></Column
-        >
-      </Row>
+          <Column><h1>Questions</h1></Column><Column
+            ><Button
+              iconDescription="Download csv"
+              kind="ghost"
+              icon="{DocumentDownload}"
+              on:click="{() => toCSVQuestions(channels, filteredQuestions)}"
+            /></Column
+          >
+        </Row>
       </Column>
       <Column>
         <FilterMenu
@@ -324,39 +329,53 @@
     <h1 style="margin-top:12px;" class="number-text">Top Contributors</h1>
     <Row>
       <Column class="styled-col">
-        <Row>
-          <h2>
-            Overall <CaretUp
-              style="vertical-align:middle"
-              color="green"
-              size="{32}"
-            />
-          </h2></Row
-        >
+        <Row><h2>Overall<CaretUp
+          style="vertical-align:middle"
+          color="green"
+          size="{32}"
+        /></h2></Row>
         <Row>
           {#await topOverallPromise}
             <DataTableSkeleton headers="{tableHeaders}" rows="{10}" />
           {:then topOverall}
-            <DataTable headers="{tableHeaders}" rows="{topOverall}" />
+            <DataTable headers="{tableHeaders}" rows="{topOverall}">
+              <strong slot="description" style="font-size: 1rem">
+                Download table contents <Button
+                  iconDescription="Download CSV"
+                  kind="ghost"
+                  icon="{DocumentDownload}"
+                  on:click="{() => toCSVContributors(topOverall, 'Overall')}"
+                  style="vertical-align:middle"
+                />
+              </strong>
+            </DataTable>
           {:catch error}
             <p>Failed to fetch top contributors: {error.message}</p>
           {/await}
         </Row>
       </Column>
       <Column class="styled-col">
-        <Row
-          ><h2>
-            Staff <CaretUp
-              style="vertical-align:middle"
-              color="rgb(255, 153, 0, 0.6)"
-              size="{32}"
-            />
-          </h2></Row
-        >
+        <Row><h2>Staff<CaretUp
+          style="vertical-align:middle"
+          color="rgb(255, 153, 0, 0.6)"
+          size="{32}"
+        /></h2></Row>
         {#await topStaffPromise}
           <DataTableSkeleton headers="{tableHeaders}" rows="{10}" />
         {:then topStaff}
-          <Row><DataTable headers="{tableHeaders}" rows="{topStaff}" /></Row>
+          <Row
+            ><DataTable headers="{tableHeaders}" rows="{topStaff}">
+              <strong slot="description" style="font-size: 1rem">
+                Download table contents <Button
+                  iconDescription="Download CSV"
+                  kind="ghost"
+                  icon="{DocumentDownload}"
+                  on:click="{() => toCSVContributors(topStaff, 'Staff')}"
+                  style="vertical-align:middle"
+                />
+              </strong></DataTable
+            >
+          </Row>
         {:catch error}
           <p>Failed to fetch top staff contributors: {error.message}</p>
         {/await}
