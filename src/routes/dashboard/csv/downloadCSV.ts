@@ -71,9 +71,9 @@ export function toCSV(channels: string[], questions: Map<string, Questions>) {
   csv += Array.from(columns).join(',')
   csv += '\n'
 
-  sortedQs.forEach((datesMap, channel) => {
+  for (const [channel, datesMap] of sortedQs.entries()) {
     csv += `${channel},`
-    datesMap.forEach((questionsObj, key) => {
+    for (const [key, questionsObj] of datesMap.entries()) {
       const total = questionsObj.total?.length ?? 0
       const staff = questionsObj.staff?.length ?? 0
       const community = questionsObj.community?.length ?? 0
@@ -89,9 +89,9 @@ export function toCSV(channels: string[], questions: Map<string, Questions>) {
         total > 0
           ? `${Math.round((100 * (staff + community)) / total)}%,`
           : '0%,'
-    })
+    }
     csv += '\n'
-  })
+  }
 
   const hiddenElement = document.createElement('a')
   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)

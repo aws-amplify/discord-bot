@@ -12,27 +12,27 @@ export function sortChannels(questions: Question[]) {
 }
 
 const percentColors = [
-  { pct: 0, color: { r: 0xff, g: 0x00, b: 0 } },
-  { pct: 50, color: { r: 0xff, g: 0xff, b: 0 } },
-  { pct: 100, color: { r: 0x00, g: 0xff, b: 0 } },
+  { percent: 0, color: { r: 0xff, g: 0x00, b: 0 } },
+  { percent: 50, color: { r: 0xff, g: 0xff, b: 0 } },
+  { percent: 100, color: { r: 0x00, g: 0xff, b: 0 } },
 ]
 
-const getColor = (pct: number) => {
+const getColor = (percent: number) => {
   for (var i = 1; i < percentColors.length - 1; i++) {
-    if (pct < percentColors[i].pct) {
+    if (percent < percentColors[i].percent) {
       break
     }
   }
   const lower = percentColors[i - 1]
   const upper = percentColors[i]
-  const range = upper.pct - lower.pct
-  const rangePct = (pct - lower.pct) / range
-  const pctLower = 1 - rangePct
-  const pctUpper = rangePct
+  const range = upper.percent - lower.percent
+  const rangepercent = Math.floor((percent - lower.percent) / range)
+  const percentLower = 1 - rangepercent
+  const percentUpper = rangepercent
   const color = {
-    r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
-    g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
-    b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper),
+    r: Math.floor(lower.color.r * percentLower + upper.color.r * percentUpper),
+    g: Math.floor(lower.color.g * percentLower + upper.color.g * percentUpper),
+    b: Math.floor(lower.color.b * percentLower + upper.color.b * percentUpper),
   }
   return 'rgb(' + [color.r, color.g, color.b, 0.4].join(',') + ')'
 }
@@ -49,20 +49,18 @@ export function getChannelHealth(questions: Questions) {
       const key = question.channelName
       return count[key] ? ++count[key] : (count[key] = 1), count
     }, {})
-  // console.log(totalObj)
-  // console.log(answeredObj)
 
   const channelBreakdown = Object.entries(totalObj)
     .map(([channelName, count]) => {
-      const pct = answeredObj[channelName]
+      const percent = answeredObj[channelName]
         ? Math.round(
             (100 * parseInt(answeredObj[channelName])) / parseInt(count)
           )
         : 0
       return {
         channel: channelName,
-        color: getColor(pct),
-        percent: pct,
+        color: getColor(percent),
+        percent: percent,
         unanswered: answeredObj[channelName]
           ? count - answeredObj[channelName]
           : count,
@@ -70,6 +68,5 @@ export function getChannelHealth(questions: Questions) {
     })
     .sort((a, b) => a.percent - b.percent)
 
-  //   console.log(channelBreakdown)
   return channelBreakdown
 }

@@ -1,7 +1,7 @@
 import { Routes } from 'discord-api-types/v10'
-import type { APIGuildMember } from 'discord-api-types/v10'
 import { api } from '$lib/discord'
 import type { RequestHandler } from '@sveltejs/kit'
+import type { APIGuildMember } from 'discord-api-types/v10'
 
 const guildId = import.meta.env.VITE_DISCORD_GUILD_ID
 

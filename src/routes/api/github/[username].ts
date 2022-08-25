@@ -1,9 +1,8 @@
 import { Octokit } from '@octokit/rest'
-import { authenticate } from '$lib/github/queries'
 import type { RequestHandler } from '@sveltejs/kit'
+import { authenticate } from '../../dashboard/index'
 
 export const GET: RequestHandler = async ({ params }) => {
-
   try {
     const { username } = params
     const token = await authenticate()
