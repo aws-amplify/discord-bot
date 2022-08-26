@@ -34,7 +34,9 @@ async function getUser(message: Message) {
     const guildMember = await message.guild?.members.fetch(userId)
     const role = guildMember?.roles?.highest?.name ?? defaultRole
     const color = guildMember?.roles?.highest?.color ?? '91A6A6'
-    const roleIcon = `<img src="${import.meta.env.VITE_HOST}/api/p/color/${color}.svg" height="12px" width="12px" align="center" />`
+    const roleIcon = `<img src="${
+      import.meta.env.VITE_HOST
+    }/api/p/color/${color}.svg" height="12px" width="12px" align="center" />`
     userIdToUsername.set(`${userId}`, {
       username: `${faker.unique(faker.color.human)} ${faker.unique(
         faker.hacker.noun
@@ -50,8 +52,44 @@ async function getUser(message: Message) {
 
 async function createAnswer(answer: Message) {
   const user = await getUser(answer)
-  return `${user} ${answer.content}`
+  return `${user} ${formatContent(answer.content)}`
 }
+
+/** GitHub swallows the first line of a code blocks with no newline 
+ * between backticks and code, reformat to avoid this */
+ function formatContent(message: string) {
+  let formatted = message
+  let needle = '```'
+  let re = new RegExp(needle, 'gi')
+  
+  let results = new Array() 
+  while (re.exec(message)) {
+    results.push(re.lastIndex)
+  }
+
+  let increment = 0
+  console.log(results)
+  for(const index of results) {  
+    // add newline before
+    if(message.charAt(index + increment - 3) != '\n') {
+      console.log(index)
+      console.log(increment)
+      console.log(index + increment - 3)
+      console.log(formatted.charAt(index - 3 + increment))
+      console.log(formatted.slice(0, index + increment - 3 > 0 ? index + increment - 3  : 0))
+      console.log(formatted.slice(index - 3 + increment))
+      formatted = formatted.slice(0, index + increment - 3 > 0 ? index + increment - 3 : 0) + "\n" + formatted.slice(index + increment - 3 )
+      increment += 1
+    }
+  // add newline after
+    if(message.charAt(index + increment) != '\n') {
+      formatted = formatted.slice(0, index + increment) + "\n" + formatted.slice(index + increment)
+      increment += 1
+    }
+  }
+  return formatted
+}
+
 
 async function createDiscussionBody(
   messages: Map<string, Message>,
@@ -59,8 +97,10 @@ async function createDiscussionBody(
 ): Promise<string> {
   let body = ''
   for (const [id, message] of messages) {
+    console.log(message)
+
     const user = await getUser(message)
-    body += `${user} ${message.content}\n\n`
+    body += `${user} ${formatContent(message.content)}\n\n`
     if (message.attachments?.size) {
       message.attachments.forEach((attachment, id) => {
         body += `<img src="${attachment.attachment}" />\n\n`
@@ -90,7 +130,7 @@ export const config = new SlashCommandBuilder()
       )
   )
 
-async function addDiscussion(discussion, userId: string, record: Question) {
+async function addDiscussion(discussion, record: Question) {
   const githubDiscussion = {
     id: discussion?.createDiscussion?.discussion?.id,
     url: discussion?.createDiscussion?.discussion?.url,
@@ -198,7 +238,7 @@ export async function handler(
         mutationId: record.id,
       })
       if (postResponse)
-        addDiscussion(postResponse, interaction?.user?.id, record)
+        addDiscussion(postResponse, record)
       if (answerContent) {
         try {
           const answerResponse = await postAnswer({
