@@ -182,7 +182,7 @@ A GitHub App is required to obtain the permissions necessary for many API calls.
 
 <img src=./docs/guide/github-app-permissions.png width="900" >
 
-### Storing App IDs
+#### Storing App IDs
 
 Now you should be looking at the settings page for your app.
 
@@ -194,7 +194,7 @@ Now you should be looking at the settings page for your app.
 
 3. Select **Generate a new client secret**, then copy and store in `.env` as `GITHUB_CLIENT_SECRET`
 
-## Generating a Private Key
+#### Generating a Private Key
 
 1. Scroll to the bottom of the page and select **Generate a private key**
 
@@ -220,7 +220,7 @@ Now you should be looking at the settings page for your app.
 
 8. Now delete `private-key-pkcs8.key` as well
 
-## Installing App
+#### Installing App
 
 1. On the toolbar on the top left side of the screen, navigate to **Install App** (If you cannot see this, you likely do not have the correct organizational permissions)
 
@@ -230,7 +230,7 @@ Now you should be looking at the settings page for your app.
 
 4. Upon success, you should be redirected to your App's callback url
 
-## Getting Installation ID
+#### Getting Installation ID
 
 1. Finally, go back to your organization's page, and select **Settings** -> **GitHub Apps** (under Integrations)
 
@@ -245,6 +245,7 @@ Now you should be looking at the settings page for your app.
 4. Copy this ID and store in `.env` as `GITHUB_INSTALLATION_ID`
 
  <img src=./docs/guide/github-installation-id.png width="900">
+ 
 ## Deployment
 
 For the deployment we will work primarily in the [`cdk`](./cdk) directory, where the [AWS CDK CLI](https://www.npmjs.com/package/aws-cdk) is installed locally to the package.
