@@ -53,19 +53,18 @@
   ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
-}
+  }
 
-::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     visibility: hidden;
-}
-::-webkit-scrollbar-thumb {
+  }
+  ::-webkit-scrollbar-thumb {
     background: #ddd;
-    visibility:hidden;
-}
+    visibility: hidden;
+  }
 
-:hover::-webkit-scrollbar-thumb {
-    visibility:visible;
+  :hover::-webkit-scrollbar-thumb {
+    visibility: visible;
     border-radius: 6px;
-}
-
+  }
 </style>
