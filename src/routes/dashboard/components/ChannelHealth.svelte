@@ -49,4 +49,23 @@
     max-height: 90vh;
     overflow-y: scroll;
   }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    visibility: hidden;
+}
+::-webkit-scrollbar-thumb {
+    background: #ddd;
+    visibility:hidden;
+}
+
+:hover::-webkit-scrollbar-thumb {
+    visibility:visible;
+    border-radius: 6px;
+}
+
 </style>
