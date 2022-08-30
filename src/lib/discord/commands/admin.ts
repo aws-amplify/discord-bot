@@ -55,41 +55,42 @@ async function createAnswer(answer: Message) {
   return `${user} ${formatContent(answer.content)}`
 }
 
-/** GitHub swallows the first line of a code blocks with no newline 
+/** GitHub swallows the first line of a code blocks with no newline
  * between backticks and code, reformat to avoid this */
- function formatContent(message: string) {
+function formatContent(message: string) {
   let formatted = message
-  let needle = '```'
-  let re = new RegExp(needle, 'gi')
-  
-  let results = new Array() 
+  const needle = '```'
+  const re = new RegExp(needle, 'gi')
+
+  const results = []
   while (re.exec(message)) {
     results.push(re.lastIndex)
   }
 
   let increment = 0
-  console.log(results)
-  for(const index of results) {  
+  for (const index of results) {
     // add newline before
-    if(message.charAt(index + increment - 3) != '\n') {
-      console.log(index)
-      console.log(increment)
-      console.log(index + increment - 3)
-      console.log(formatted.charAt(index - 3 + increment))
-      console.log(formatted.slice(0, index + increment - 3 > 0 ? index + increment - 3  : 0))
-      console.log(formatted.slice(index - 3 + increment))
-      formatted = formatted.slice(0, index + increment - 3 > 0 ? index + increment - 3 : 0) + "\n" + formatted.slice(index + increment - 3 )
+    if (formatted.charAt(index + increment - 4).search(/\n/) === -1) {
+      formatted =
+        formatted.slice(
+          0,
+          index + increment - 3 > 0 ? index + increment - 3 : 0
+        ) +
+        '\n' +
+        formatted.slice(index + increment - 3)
       increment += 1
     }
-  // add newline after
-    if(message.charAt(index + increment) != '\n') {
-      formatted = formatted.slice(0, index + increment) + "\n" + formatted.slice(index + increment)
+    // add newline after
+    if (formatted.charAt(index + increment).search(/\n/) === -1) {
+      formatted =
+        formatted.slice(0, index + increment) +
+        '\n' +
+        formatted.slice(index + increment)
       increment += 1
     }
   }
   return formatted
 }
-
 
 async function createDiscussionBody(
   messages: Map<string, Message>,
@@ -97,8 +98,6 @@ async function createDiscussionBody(
 ): Promise<string> {
   let body = ''
   for (const [id, message] of messages) {
-    console.log(message)
-
     const user = await getUser(message)
     body += `${user} ${formatContent(message.content)}\n\n`
     if (message.attachments?.size) {
@@ -237,8 +236,7 @@ export async function handler(
         body,
         mutationId: record.id,
       })
-      if (postResponse)
-        addDiscussion(postResponse, record)
+      if (postResponse) addDiscussion(postResponse, record)
       if (answerContent) {
         try {
           const answerResponse = await postAnswer({
