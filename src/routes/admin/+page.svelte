@@ -104,6 +104,7 @@
     <Row>
       <Column>
         <div class="ha--section-wrapper">
+          <p>{import.meta.env.VITE_DISCORD_GUILD_ID}</p>
           <section>
             <Button disabled="{isSyncing}" on:click="{syncCommands}">
               Sync Commands
