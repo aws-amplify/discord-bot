@@ -85,8 +85,6 @@ export class HeyAmplifyApp extends Construct {
       secrets[name] = ecs.Secret.fromSsmParameter(param)
     }
 
-    // const loadBalancer = new elb.ApplicationLoadBalancer(this, 'Alb', {
-    // })
 
     const albFargateService =
       new ecs_patterns.ApplicationLoadBalancedFargateService(
