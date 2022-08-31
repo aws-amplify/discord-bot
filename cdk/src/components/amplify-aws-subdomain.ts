@@ -33,20 +33,13 @@ export class AmplifyAwsSubdomain extends Construct {
       }
     )
 
-    const isMainEnv = this.envName === 'main'
-
     // create a domain name scoped to the app env
-    const domainName = `${this.envName}.${hostedZoneName}`
+    const domainName = hostedZoneName
     const domainNames = [domainName]
-    if (isMainEnv) {
-      // if env name is "main", treat this as the default domain
-      domainNames.push(hostedZoneName)
-    }
 
     // create an env-specific certificate to later be applied to the CloudFront distribution
     const certificate = new acm.Certificate(this, 'Certificate', {
       domainName,
-      subjectAlternativeNames: isMainEnv ? [hostedZoneName] : undefined,
       validation: acm.CertificateValidation.fromDns(hostedZone),
     })
     // apply env-specific tag to certificate resource

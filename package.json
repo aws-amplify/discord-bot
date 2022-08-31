@@ -16,6 +16,7 @@
     "lint": "eslint .",
     "postinstall": "prisma generate",
     "setup": "pnpm install && pnpm build:lib && pnpm setup-test",
+    "setup-dev": "echo \"\nPNPM_STORE\"=$(pnpm store path) >> .env",
     "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push && vite build --mode test && vite build --mode server-test",
     "test": "vitest",
     "coverage": "vitest run --coverage"
@@ -51,8 +52,9 @@
     "@hey-amplify/scripts": "workspace:*",
     "@hey-amplify/support": "workspace:*",
     "@hey-amplify/tsconfig": "workspace:*",
+    "@hey-amplify/vite-plugin-server": "workspace:*",
     "@sveltejs/adapter-node": "1.0.0-next.87",
-    "@sveltejs/kit": "1.0.0-next.442",
+    "@sveltejs/kit": "1.0.0-next.447",
     "@types/cookie": "^0.5.1",
     "@types/express": "^4.17.13",
     "@types/node": "^18.7.13",
@@ -135,7 +137,7 @@
       "@typescript-eslint/no-non-null-assertion": "off"
     }
   },
-  "packageManager": "pnpm@7.1.0",
+  "packageManager": "pnpm@7.9.5",
   "pnpm": {
     "peerDependencyRules": {
       "ignoreMissing": [

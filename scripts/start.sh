@@ -8,9 +8,9 @@ then
   echo 'Database does not exist, pushing schema...'
   pnpm prisma db push
 else 
-  echo "Database already exists, migrating..."
+  echo "Database already exists"
   # run prisma migration on sqlite *.db file in EFS
-  pnpm prisma migrate deploy
+  # pnpm prisma migrate deploy
   # if [ $? -eq 1 ]; then
   #   echo "Migration failed, attempting to resolve"
   #   pnpm prisma migrate resolve
@@ -18,5 +18,10 @@ else
 fi
 cd -
 
-# start bot
-pnpm start
+# Run litestream with our app as the subprocess.
+if [ "$ENABLE_DATABASE_BACKUP" = 'true' ]
+then
+  exec litestream replicate -exec "pnpm start"
+else
+  pnpm start
+fi
