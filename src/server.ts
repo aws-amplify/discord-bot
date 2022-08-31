@@ -1,7 +1,7 @@
 import { createBot } from '$discord/client'
 import { init } from '$lib/db'
 // @ts-expect-error this file is externalized for build
-import { handler } from './handler.js'
+import { handler } from '$handler'
 import express from 'express'
 
 // export for e2e tests

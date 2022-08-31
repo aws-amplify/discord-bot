@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { sveltekit } from '@sveltejs/kit/vite'
@@ -51,8 +51,8 @@ const app: UserConfig = {
     },
   },
   ssr: {
-		noExternal: ['@carbon/charts', 'carbon-components'],
-	},
+    noExternal: ['@carbon/charts', 'carbon-components'],
+  },
 }
 
 /**
@@ -60,6 +60,10 @@ const app: UserConfig = {
  */
 const server: UserConfig = {
   mode: 'production',
+  define: {
+    $handler: './handler.js',
+    'import.meta.vitest': false,
+  },
   build: {
     target: 'esnext',
     outDir: 'build',
@@ -77,7 +81,7 @@ const server: UserConfig = {
       external: Object.keys(pkg.dependencies).concat('./handler.js'),
       output: {
         inlineDynamicImports: false,
-        preserveModules: true,
+        preserveModules: false, // don't generate build/lib
         preserveModulesRoot: 'src',
       },
     },
@@ -88,11 +92,25 @@ const server: UserConfig = {
       target: 'esnext',
     },
   },
+  plugins: [
+    {
+      closeBundle: async () => {
+        /**
+         * @TODO - vite-plugin-server to remove separate server config
+         * workaround for __SVELTEKIT_DEV__ artifact in output
+         */
+        const file = relative('./build/server.js')
+        const contents = await readFile(file, 'utf-8')
+        await writeFile(file, contents.replace('__SVELTEKIT_DEV__;', ''))
+      },
+    },
+  ],
   resolve: {
     // use same helper aliases as Svelte-Kit
     alias: {
       $lib: relative('./src/lib'),
       $discord: relative('./src/lib/discord'),
+      $app: relative('./.svelte-kit/runtime/app'), // TODO: cleanup - https://github.com/sveltejs/kit/blob/master/packages/kit/src/exports/vite/utils.js#L104,
     },
   },
 }
