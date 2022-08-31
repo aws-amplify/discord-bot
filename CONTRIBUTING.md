@@ -84,6 +84,12 @@ export default createCommand({
 })
 ``` -->
 
+## Creating new endpoints
+
+- refer to the [SvelteKit documentation](https://kit.svelte.dev/docs/routing#server)
+- New endpoints _must_ be created in `/api` if they are to be called externally (i.e. not a page load endpoint, which runs at build time)
+  - all routes under `/api` are rate-limited
+
 ## Creating Secrets in SSM
 
 **[scripts](./scripts)**

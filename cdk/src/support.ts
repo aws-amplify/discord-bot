@@ -8,5 +8,6 @@ import { loadEnv } from 'vite'
 export function getSvelteKitEnvironmentVariables(env: string) {
   return loadEnv(env, fileURLToPath(new URL('../..', import.meta.url)), [
     'VITE_',
+    'PUBLIC_',
   ])
 }

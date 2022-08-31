@@ -22,27 +22,27 @@ export class WAF extends wafv2.CfnWebACL {
         metricName: `${name}-waf`,
         sampledRequestsEnabled: false,
       },
-      scope: 'REGIONAL',
+      scope: 'CLOUDFRONT',
       name,
       rules: [
-        {
-          name: 'AWS-AWSManagedRulesCommonRuleSet',
-          priority: 1,
-          overrideAction: {
-            none: {},
-          },
-          statement: {
-            managedRuleGroupStatement: {
-              name: 'AWSManagedRulesCommonRuleSet',
-              vendorName: 'AWS',
-            },
-          },
-          visibilityConfig: {
-            cloudWatchMetricsEnabled: true,
-            metricName: 'common',
-            sampledRequestsEnabled: true,
-          },
-        },
+        // {
+        //   name: 'AWS-AWSManagedRulesCommonRuleSet',
+        //   priority: 1,
+        //   overrideAction: {
+        //     none: {},
+        //   },
+        //   statement: {
+        //     managedRuleGroupStatement: {
+        //       name: 'AWSManagedRulesCommonRuleSet',
+        //       vendorName: 'AWS',
+        //     },
+        //   },
+        //   visibilityConfig: {
+        //     cloudWatchMetricsEnabled: true,
+        //     metricName: 'common',
+        //     sampledRequestsEnabled: true,
+        //   },
+        // },
         {
           // rate-limit requests to the API
           name: 'RateLimit',
@@ -58,7 +58,9 @@ export class WAF extends wafv2.CfnWebACL {
                 byteMatchStatement: {
                   searchString: '/api/',
                   fieldToMatch: {
-                    singleHeader: ':path',
+                    singleHeader: {
+                      name: ':path',
+                    },
                   },
                   textTransformations: [
                     {
@@ -66,7 +68,7 @@ export class WAF extends wafv2.CfnWebACL {
                       type: 'URL_DECODE',
                     },
                   ],
-                  positionalConstraint: 'STARTING_WITH',
+                  positionalConstraint: 'STARTS_WITH',
                 },
               },
             },
