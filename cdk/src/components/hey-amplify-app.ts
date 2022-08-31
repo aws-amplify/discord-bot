@@ -85,7 +85,6 @@ export class HeyAmplifyApp extends Construct {
       secrets[name] = ecs.Secret.fromSsmParameter(param)
     }
 
-
     const albFargateService =
       new ecs_patterns.ApplicationLoadBalancedFargateService(
         this,
@@ -105,7 +104,12 @@ export class HeyAmplifyApp extends Construct {
             environment: {
               ...docker.environment,
               BUCKET_NAME: bucket.bucketName,
+              DATABASE_FILE_PATH: docker.environment!.DATABASE_URL.replace(
+                'file:',
+                ''
+              ),
               ENABLE_DATABASE_BACKUP: 'true',
+              AWS_REGION: process.env.CDK_DEFAULT_REGION as string,
             },
             enableLogging: true,
             secrets,
@@ -114,6 +118,9 @@ export class HeyAmplifyApp extends Construct {
           publicLoadBalancer: true, // needed for bridge to CF
         }
       )
+
+    // grant read/write to bucket for Litestream backups
+    bucket.grantReadWrite(albFargateService.service.taskDefinition.taskRole)
 
     albFargateService.targetGroup.setAttribute(
       'deregistration_delay.timeout_seconds',
