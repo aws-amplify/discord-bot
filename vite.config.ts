@@ -1,8 +1,9 @@
-import { readFile, writeFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig, loadEnv } from 'vite'
+import { server } from '@hey-amplify/vite-plugin-server'
 import type { UserConfig } from 'vitest/config'
 
 function relative(path) {
@@ -27,10 +28,7 @@ export function loadEnvVars(mode = 'development') {
 
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
 
-/**
- * Configuration to build the SvelteKit project.
- */
-const app: UserConfig = {
+const base: UserConfig = {
   build: {
     target: 'esnext',
   },
@@ -44,7 +42,7 @@ const app: UserConfig = {
     },
     include: ['@carbon/charts'],
   },
-  plugins: [sveltekit()],
+  plugins: [sveltekit(), server()],
   resolve: {
     alias: {
       $discord: relative('./src/lib/discord'),
@@ -55,71 +53,8 @@ const app: UserConfig = {
   },
 }
 
-/**
- * Configuration to build the server
- */
-const server: UserConfig = {
-  mode: 'production',
-  define: {
-    $handler: './handler.js',
-    'import.meta.vitest': false,
-  },
-  build: {
-    target: 'esnext',
-    outDir: 'build',
-    // do not erase Svelte-Kit build output
-    emptyOutDir: false,
-    lib: {
-      // only build server and supporting code (i.e. the bot client)
-      entry: './src/server.ts',
-      name: 'server',
-      formats: ['es'],
-      fileName: () => `[name].js`,
-    },
-    rollupOptions: {
-      // externalize dependencies and "./handler.js" for build
-      external: Object.keys(pkg.dependencies).concat('./handler.js'),
-      output: {
-        inlineDynamicImports: false,
-        preserveModules: false, // don't generate build/lib
-        preserveModulesRoot: 'src',
-      },
-    },
-    ssr: true,
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      target: 'esnext',
-    },
-  },
-  plugins: [
-    {
-      closeBundle: async () => {
-        /**
-         * @TODO - vite-plugin-server to remove separate server config
-         * workaround for __SVELTEKIT_DEV__ artifact in output
-         */
-        const file = relative('./build/server.js')
-        const contents = await readFile(file, 'utf-8')
-        await writeFile(file, contents.replace('__SVELTEKIT_DEV__;', ''))
-      },
-    },
-  ],
-  resolve: {
-    // use same helper aliases as Svelte-Kit
-    alias: {
-      $lib: relative('./src/lib'),
-      $discord: relative('./src/lib/discord'),
-      $app: relative('./.svelte-kit/runtime/app'), // TODO: cleanup - https://github.com/sveltejs/kit/blob/master/packages/kit/src/exports/vite/utils.js#L104,
-    },
-  },
-}
-
 export default defineConfig(({ mode }) => {
-  let config = app
-  if (mode === 'server' || mode === 'server-test') {
-    config = server
-  }
+  const config = base
   // apply general test config
   config.test = {
     globals: true,
@@ -134,7 +69,7 @@ export default defineConfig(({ mode }) => {
     ],
   }
   // `vitest` sets mode to test, load local environment variables for test
-  if (mode === 'test' || mode === 'server-test') {
+  if (mode === 'test') {
     loadEnvVars(mode)
   } else {
     // rely on Vite to load public env vars (i.e. prefixed with VITE_)

@@ -1,0 +1,3 @@
+{
+  "extends": "@hey-amplify/tsconfig/base.json"
+}

@@ -52,6 +52,7 @@
     "@hey-amplify/scripts": "workspace:*",
     "@hey-amplify/support": "workspace:*",
     "@hey-amplify/tsconfig": "workspace:*",
+    "@hey-amplify/vite-plugin-server": "workspace:*",
     "@sveltejs/adapter-node": "1.0.0-next.87",
     "@sveltejs/kit": "1.0.0-next.447",
     "@types/cookie": "^0.5.1",
