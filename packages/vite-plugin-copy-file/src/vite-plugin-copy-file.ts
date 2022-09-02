@@ -31,4 +31,5 @@ export const VitePluginCopyFile = (files: string | string[]): Plugin => {
   }
 }
 
-export default VitePluginCopyFile
+export const copy = VitePluginCopyFile
+export default copy
