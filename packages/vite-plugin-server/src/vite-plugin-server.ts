@@ -1,6 +1,4 @@
-import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
-import * as url from 'node:url'
 import express from 'express'
 import colors from 'kleur'
 import { build, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
@@ -27,6 +25,7 @@ const VitePluginServer = (options?: VitePluginServerOptions): Plugin => {
   return {
     name: 'vite-plugin-server',
     enforce: 'post',
+    // config: (c) => {},
     configResolved: (c) => {
       config = c
     },
@@ -65,61 +64,22 @@ const VitePluginServer = (options?: VitePluginServerOptions): Plugin => {
       // SvelteKit writes to .svelte-kit on `writeBundle`, and the adapter runs on `closeBundle`
       // we enforce this plugin on `post` to run after SvelteKit
       // https://github.com/sveltejs/kit/blob/master/packages/kit/src/exports/vite/index.js#L471
-      if (config.build.ssr) {
+      if (config.build.ssr || config.mode !== 'production') {
+        // checking `config.mode` is production may not be the best approach, but we do not want to execute this build in `test` mode (from Vitest)
         return
       }
 
       // TODO: dynamic outdir based on user config because SvelteKit is hiding this behind .svelte-kit/output
       const outDir = path.join(config.root, 'build')
-      // use the server template
-      const entry = url.fileURLToPath(
-        new url.URL('server.template.ts', import.meta.url)
-      )
-
-      const server_plugin = (): Plugin => ({
-        name: 'server_plugin',
-        buildStart: () => {
-          // we want the custom server messaging to output after SvelteKit adapter
-          console.log(colors.bold().cyan('> Building custom server'))
-        },
-        closeBundle: async () => {
-          const builtUserServerFile = path.join(
-            outDir,
-            `${path
-              .basename(userServerFile)
-              .replace(path.extname(userServerFile), '')}.js`
-          )
-          try {
-            // quick check to ensure it exists
-            await fs.access(builtUserServerFile)
-          } catch (error) {
-            // if it doesn't, bail out
-            // throw new Error('Built server file not detected in postbuild')
-            return
-          }
-
-          const contents = await fs.readFile(builtUserServerFile, 'utf-8')
-          await fs.writeFile(
-            builtUserServerFile,
-            contents.replace('$sveltekit_handler', './handler.js'),
-            'utf8'
-          )
-        },
-      })
 
       const server: UserConfig = {
         root: config.root,
         define: {
           ...(config.define || {}),
+          $sveltekit_handler: './handler.js',
         },
         resolve: {
-          alias: [
-            ...config.resolve.alias,
-            {
-              find: '$server',
-              replacement: userServerFile,
-            },
-          ],
+          alias: [...config.resolve.alias],
         },
         build: {
           outDir,
@@ -127,12 +87,11 @@ const VitePluginServer = (options?: VitePluginServerOptions): Plugin => {
           ssr: true,
           rollupOptions: {
             input: {
-              server: entry,
+              server: userServerFile,
             },
-            external: ['$sveltekit_handler'],
+            external: ['./handler.js'],
           },
         },
-        plugins: [server_plugin()],
       }
 
       try {
