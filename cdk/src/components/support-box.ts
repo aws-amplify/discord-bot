@@ -125,7 +125,7 @@ export class SupportBox extends Construct {
       const record = new route53.ARecord(this, 'AliasRecordSupport', {
         target: route53.RecordTarget.fromIpAddresses(instance.instancePublicIp),
         zone: subdomain.hostedZone,
-        recordName: `support.${this.envName}`,
+        recordName: `support`,
       })
 
       // outputs public IP of the instance

@@ -1,7 +1,7 @@
 import { createBot } from '$discord/client'
 import { init } from '$lib/db'
 // @ts-expect-error this file is externalized for build
-import { handler } from './handler.js'
+import { handler } from '$sveltekit_handler'
 import express from 'express'
 
 // export for e2e tests
@@ -17,6 +17,7 @@ app.get('/healthcheck', (req, res) => {
 app.use(handler)
 
 // export instance of server for e2e tests
+// export const server = {}
 export const server = app.listen(PORT, async () => {
   console.log(`listening on port ${PORT}`)
   await init()

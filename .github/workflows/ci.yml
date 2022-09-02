@@ -53,8 +53,11 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile --silent
       - run: pnpm lint
+      # build ./packages/*
+      - run: pnpm build:lib
+      # build SvelteKit app
       - run: pnpm build
         env:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
@@ -62,7 +65,7 @@ jobs:
       - run: pnpm prisma db push
         env:
           DATABASE_URL: 'file:data/test.db'
-      - run: pnpm test
+      - run: pnpm vitest run --silent
         env:
           DISCORD_WEBHOOK_URL_RELEASES: ${{ secrets.DISCORD_WEBHOOK_URL_RELEASES }}
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
