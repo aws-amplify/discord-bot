@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 export async function seed() {
   await prisma.user.upsert({
     where: {
-      email: 'esauerbo@amazon.com',
+      email: 'esauerbo@fake.com',
     },
     update: {},
     create: {
