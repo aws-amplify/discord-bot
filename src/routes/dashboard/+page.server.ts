@@ -1,5 +1,5 @@
 import { Routes } from 'discord-api-types/v10'
-import { api } from '$discord'
+import { api } from '$discord/api'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { isHelpChannel } from '$lib/discord/support'

@@ -67,6 +67,9 @@ export default defineConfig(({ mode }) => {
       'tests/setup/seed.ts',
       'tests/setup/github-secrets-enabled.ts',
     ],
+    env: {
+      SSR: 'true',
+    },
   }
   // `vitest` sets mode to test, load local environment variables for test
   if (mode === 'test') {

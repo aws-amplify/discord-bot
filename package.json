@@ -16,7 +16,7 @@
     "postinstall": "prisma generate",
     "setup": "pnpm install && pnpm build:lib && pnpm setup-test",
     "setup-dev": "echo \"\nPNPM_STORE\"=$(pnpm store path) >> .env",
-    "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push && vite build --mode test && vite build --mode server-test",
+    "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push && vite build",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },

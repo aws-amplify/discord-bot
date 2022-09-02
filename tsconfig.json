@@ -5,6 +5,7 @@
     "checkJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "importsNotUsedAsValues": "remove",
     "paths": {
       "$lib": ["src/lib"],
       "$lib/*": ["src/lib/*"],

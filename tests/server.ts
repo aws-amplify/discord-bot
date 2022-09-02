@@ -1,11 +1,10 @@
 // @vitest-environment node
-import type { Server } from 'node:http'
+import { type Server } from 'node:http'
 import { resolve } from 'node:path'
 import { EOL } from 'node:os'
 import { installPolyfills } from '@sveltejs/kit/node/polyfills'
 import glob from 'fast-glob'
 import request from 'supertest'
-import type { Session } from 'next-auth'
 import { prisma } from '$lib/db'
 import {
   mockedPublished,
@@ -21,6 +20,7 @@ import {
 } from './mock/github-webhook'
 import { verifyGithubWebhookEvent } from './../src/routes/api/webhooks/_verifyWebhook'
 import { ACCESS_LEVELS } from '$lib/constants'
+import type { Session } from 'next-auth'
 
 let config
 let staffRoleId: string
@@ -33,7 +33,7 @@ const session: Session = {
 beforeAll(async () => {
   installPolyfills() // we're in Node, so we need to polyfill `fetch` and `Request` etc
   try {
-    const build = await import('../build/server')
+    const build = await import('../build/server.js')
     // instead of adding a condition to open the server in the source code, we'll just close it here.
     // TODO: instead of "supertest", should we make actual requests to the server?
     ;(build.server as Server).close()
@@ -72,38 +72,6 @@ beforeAll(async () => {
 })
 
 const ROUTES_PATH = resolve('src/routes')
-const routes = await glob('**/*.(js|ts)', {
-  absolute: true,
-  cwd: ROUTES_PATH,
-  ignore: ['**/_*'],
-})
-
-function routify(path: string) {
-  return `${path
-    .replace(ROUTES_PATH, '')
-    .replace(/\.(js|ts)/, '')
-    .replace(/\/index$/, '')}`
-}
-
-function isDynamicRoute(route: string) {
-  return /\[.*?\]/.test(route)
-}
-
-// TODO: do we _need_ this?
-describe('Routes defined in Svelte-Kit app', async () => {
-  for await (const [route, mod] of routes.map(
-    (r) => <[string, Promise<any>]>[routify(r), import(r)]
-  )) {
-    if (!isDynamicRoute(route)) {
-      it(`should respond ${route}`, async () => {
-        const response = await request(app).get(route)
-        expect(response.status).toBeTruthy()
-        expect(response.status).not.toBe(404)
-      })
-      // TODO: `await mod()` to check for exposed methods, test exposed methods
-    }
-  }
-})
 
 describe('GET /healthcheck', () => {
   it('should return 200', async () => {

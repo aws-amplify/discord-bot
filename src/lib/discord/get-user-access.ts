@@ -1,9 +1,7 @@
-import { get as read } from 'svelte/store'
 import { Routes } from 'discord-api-types/v10'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
-import { guild as store } from '$lib/store'
-import { api } from './index'
+import { api } from './api'
 import type { APIGuild, APIGuildMember } from 'discord-api-types/v10'
 
 export async function getUserAccess(guildMemberId: string) {

@@ -80,7 +80,6 @@ export const POST: RequestHandler = async function post({ request }) {
   /**
    * @TODO match org from webhook with guild id's with this config
    */
-
   const config = await prisma.configuration.findUnique({
     where: {
       id: import.meta.env.VITE_DISCORD_GUILD_ID,
