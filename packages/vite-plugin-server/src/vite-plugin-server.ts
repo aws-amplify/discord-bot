@@ -3,22 +3,43 @@ import express from 'express'
 import colors from 'kleur'
 import { build, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 
+/**
+ * @TODO reinstate server template with support for using the following exports from a custom server file
+ * - `listener`: listener callback fn to customize xp
+ * - `server`: http server (returned from `app.listen()`)
+ * - `app`: Express application
+ */
+
 export type VitePluginServerOptions = {
   /**
    * The path to the server file (express).
    * @default "./src/server.ts"
    */
   server?: string
+  /**
+   * Enable server in dev mode (no guards for listener and port conflicts)
+   * @default true
+   */
+  dev?: boolean
 }
 
 export type ServerModule = {
   app: express.Express
 }
 
+const defaults = {
+  server: undefined,
+  dev: true,
+}
+
 const VitePluginServer = (options?: VitePluginServerOptions): Plugin => {
+  const opts = {
+    ...defaults,
+    ...(options || {}),
+  }
   const userServerFile = path.resolve(
     process.cwd(),
-    options?.server ?? './src/server.ts'
+    opts.server ?? './src/server.ts'
   )
   let config: ResolvedConfig
 
@@ -30,34 +51,36 @@ const VitePluginServer = (options?: VitePluginServerOptions): Plugin => {
       config = c
     },
     configureServer: async (viteDevServer) => {
-      viteDevServer.middlewares.use(async (req, res, next) => {
-        try {
-          const mod = (await viteDevServer.ssrLoadModule(
-            `/@fs/${userServerFile}`
-          )) as ServerModule
+      if (opts.dev) {
+        viteDevServer.middlewares.use(async (req, res, next) => {
+          try {
+            const mod = (await viteDevServer.ssrLoadModule(
+              `/@fs/${userServerFile}`
+            )) as ServerModule
 
-          /**
-           * Create the internal server wrapper
-           */
-          const server = express()
-          server.use((req, res, next) => {
-            // @ts-expect-error - attach Vite server to "virtual" server
-            req.viteServer = viteDevServer
-            next()
-          })
+            /**
+             * Create the internal server wrapper
+             */
+            const server = express()
+            server.use((req, res, next) => {
+              // @ts-expect-error - attach Vite server to "virtual" server
+              req.viteServer = viteDevServer
+              next()
+            })
 
-          server.use(mod.app)
-          // @ts-expect-error - express.handle exists
-          server.handle(req as any, res)
-          if (!res.writableEnded) {
-            next()
+            server.use(mod.app)
+            // @ts-expect-error - express.handle exists
+            server.handle(req as any, res)
+            if (!res.writableEnded) {
+              next()
+            }
+          } catch (error) {
+            viteDevServer.ssrFixStacktrace(error)
+            process.exitCode = 1
+            next(error)
           }
-        } catch (error) {
-          viteDevServer.ssrFixStacktrace(error)
-          process.exitCode = 1
-          next(error)
-        }
-      })
+        })
+      }
     },
     closeBundle: async () => {
       // we want to run _after_ SvelteKit's adapter runs successfully
