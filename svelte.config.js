@@ -23,8 +23,9 @@ const config = {
       mode: 'auto',
       directives: {
         'default-src': ['self'],
-        'img-src': ['self', 'data:'],
+        'img-src': ['self', 'data:', 'https://cdn.discordapp.com'],
         'script-src': ['self'],
+        'style-src': ['self', 'unsafe-inline'],
         // https://1.www.s81c.com/ is for Carbon fonts
         'font-src': ['self', 'https://1.www.s81c.com/', 'data:'],
       },
