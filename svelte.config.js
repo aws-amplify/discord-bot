@@ -18,6 +18,17 @@ const config = {
     files: {
       assets: resolve('public'),
     },
+
+    csp: {
+      mode: 'auto',
+      directives: {
+        'default-src': ['self'],
+        'img-src': ['self', 'data:'],
+        'script-src': ['self'],
+        // https://1.www.s81c.com/ is for Carbon fonts
+        'font-src': ['self', 'https://1.www.s81c.com/', 'data:'],
+      },
+    },
   },
 }
 
