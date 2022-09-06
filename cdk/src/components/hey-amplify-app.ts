@@ -170,6 +170,16 @@ export class HeyAmplifyApp extends Construct {
     // allow outbound connections to the filesystem
     albFargateService.service.connections.allowTo(filesystem, Port.tcp(2049))
 
+    // add WAF to the LoadBalancer
+    const waf = new WAF(this, 'WAFLoadBalancer', {
+      name: 'WAFLoadBalancer',
+      scope: 'REGIONAL',
+    })
+    waf.addAssociation(
+      'WebACLAssociationLoadBalancer',
+      albFargateService.loadBalancer.loadBalancerArn
+    )
+
     const xAmzSecurityTokenHeaderName = 'X-HeyAmplify-Security-Token'
     const xAmzSecurityTokenHeaderValue = uuid()
 
@@ -210,8 +220,8 @@ export class HeyAmplifyApp extends Construct {
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
       },
       // add Web Application Firewall (WAF)
-      webAclId: new WAF(this, 'WAF', {
-        name: 'WAF',
+      webAclId: new WAF(this, 'WAFCloudFront', {
+        name: 'WAFCloudFront',
       }).attrArn,
     })
 
