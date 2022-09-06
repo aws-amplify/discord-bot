@@ -1,55 +1,30 @@
 <script lang="ts">
   import type { PageData } from './$types'
   export let data: PageData
-  const { commands, configure } = data
+  let { commands, configure, discord, features, selectedTab } = data
+  // $: ({ commands, configure, discord, features } = data)
 
   import {
     Checkbox,
     Form,
     FormGroup,
+    TextInput,
     Content,
     Grid,
     Row,
     Column,
     Button,
+    Tabs,
+    Tab,
+    TabContent,
+    Toggle,
   } from 'carbon-components-svelte'
   import { get } from 'svelte/store'
   import { ACCESS_LEVELS } from '$lib/constants'
-  import * as store from '$lib/store'
-  import Command from '$lib/Command.svelte'
   import { guild, notifications } from '$lib/store'
+  import { tabs } from './tabs'
 
-  const roles = configure.roles.sort((a, b) => b.position - a.position)
-
-  let isSyncing = false
-  async function syncCommands() {
-    isSyncing = true
-    let data
-    try {
-      const response = await fetch('/api/admin/commands', {
-        method: 'POST',
-      })
-      if (response.ok && response.status === 200) {
-        data = await response.json()
-      }
-    } catch (error) {
-      store.notifications.add({
-        kind: 'error',
-        title: 'Error syncing commands',
-        subtitle: error.message,
-      })
-      console.error('Unable to sync commands', error)
-    }
-    isSyncing = false
-    if (data) {
-      store.notifications.add({
-        kind: 'success',
-        title: 'Successfully synced commands',
-        subtitle: '',
-      })
-    }
-    return data
-  }
+  const roles = discord.roles.sort((a, b) => b.position - a.position)
 
   async function onSubmit(event) {
     event.preventDefault()
@@ -57,7 +32,7 @@
 
     const body = {
       id: get(guild),
-      name: configure.guild.name,
+      name: discord.guild.name,
       adminRoles: [...form.adminRoles.querySelectorAll(':checked')].map(
         (node) => node.value
       ),
@@ -82,7 +57,7 @@
         notifications.add({
           kind: 'success',
           title: `Successfully ${
-            configure.config?.id ? 'updated' : 'created'
+            configure?.id ? 'updated' : 'created'
           } configuration`,
           subtitle: '',
         })
@@ -90,87 +65,262 @@
     } catch (error) {
       notifications.add({
         kind: 'error',
-        title: `Error ${
-          configure.config?.id ? 'updating' : 'creating'
-        } configuration`,
+        title: `Error ${configure?.id ? 'updating' : 'creating'} configuration`,
         subtitle: error.message,
       })
     }
   }
+
+  const toggleFeature = async (feature, enabled) => {
+    const body = {
+      configurationId: configure.id,
+      code: feature.code,
+      enabled,
+    }
+
+    try {
+      const res = await fetch(`/api/admin/feature`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      })
+      let data
+      try {
+        data = await res.json()
+        if (!data) {
+          // fallback to text for errors
+          data = await res.text()
+        }
+      } catch (error) {
+        notifications.add({
+          kind: 'error',
+          title: `Error ${enabled ? 'enabling' : 'disabling'} feature`,
+          subtitle: '',
+        })
+      }
+      if (data?.id) {
+        notifications.add({
+          kind: 'success',
+          title: `Successfully ${enabled ? 'enabled' : 'disabled'} ${
+            feature.name
+          }`,
+          subtitle: '',
+        })
+      }
+    } catch (error) {
+      notifications.add({
+        kind: 'error',
+        title: `Error ${enabled ? 'enabling' : 'disabling'} feature`,
+        subtitle: '',
+      })
+    }
+  }
+
+  const handleOnFeatureToggleChange = async (event, feature) => {
+    const { checked } = event.target
+    await toggleFeature(feature, checked)
+    /** @TODO throttling */
+    // throttle(toggleFeature(feature, checked), 5)
+  }
+
+  const handleOnFeatureSubmit = async (event, feature) => {
+    event.preventDefault()
+    const form = event.target
+    const data = new FormData(form)
+    console.log('submit', form, data)
+  }
+
+  const toggleCommand = async (command, enabled) => {
+    const body = new FormData()
+    if (!enabled) {
+      body.append('id', command.registration.id)
+    } else {
+      body.append('command', command)
+    }
+
+    try {
+      const res = await fetch(`/api/admin/commands`, {
+        method: enabled ? 'POST' : 'DELETE',
+        body,
+      })
+      let data
+      try {
+        data = await res.json()
+      } catch (error) {
+        notifications.add({
+          kind: 'error',
+          title: `Error ${enabled ? 'enabling' : 'disabling'} command`,
+          subtitle: '',
+        })
+      }
+      if (data?.id) {
+        notifications.add({
+          kind: 'success',
+          title: `Successfully ${enabled ? 'enabled' : 'disabled'} ${
+            command.name
+          }`,
+          subtitle: '',
+        })
+      }
+    } catch (error) {
+      notifications.add({
+        kind: 'error',
+        title: `Error ${enabled ? 'enabling' : 'disabling'} command`,
+        subtitle: '',
+      })
+    }
+  }
+
+  const handleOnCommandToggleSubmit = async (event, command) => {
+    event.preventDefault()
+    const form = event.target
+    const data = new FormData(form)
+    console.log('submit', form, data)
+  }
+
+  const handleOnCommandToggleChange = async (event, command) => {
+    const { checked } = event.target
+    await toggleCommand(command, checked)
+    /** @TODO throttling */
+  }
+
+  console.log('GOT', { configure, commands })
 </script>
 
 <Content>
   <Grid>
     <Row>
       <Column>
-        <div class="ha--section-wrapper">
-          <p>{import.meta.env.VITE_DISCORD_GUILD_ID}</p>
-          <section>
-            <Button disabled="{isSyncing}" on:click="{syncCommands}">
-              Sync Commands
-            </Button>
-            <h2>Commands:</h2>
-            {#each commands as command (command)}
-              {@const tags = [command.registration && 'Registered'].filter(
-                Boolean
-              )}
-              <Command {...command} tags="{tags}" />
-            {/each}
-          </section>
-          <section>
-            <h2>Configure</h2>
-            <!-- <pre><code>{JSON.stringify(guilds, null, 2)}</code></pre> -->
-            <Form on:submit="{onSubmit}">
-              <div class="ha--configure-roles">
-                <FormGroup id="adminRoles" legendText="Admin Roles">
-                  {#each roles as role}
-                    <Checkbox
-                      id="{`admin-${role.id}`}"
-                      labelText="{role.name}"
-                      checked="{configure.config?.roles?.some(
-                        (r) =>
-                          r.discordRoleId === role.id &&
-                          r.accessLevelId === ACCESS_LEVELS.ADMIN
-                      ) || false}"
-                      value="{role.id}"
-                    />
-                  {/each}
-                </FormGroup>
-                <FormGroup id="staffRoles" legendText="Staff Roles">
-                  {#each roles as role}
-                    <Checkbox
-                      id="{`staff-${role.id}`}"
-                      labelText="{role.name}"
-                      checked="{configure.config?.roles?.some(
-                        (r) =>
-                          r.discordRoleId === role.id &&
-                          r.accessLevelId === ACCESS_LEVELS.STAFF
-                      ) || false}"
-                      value="{role.id}"
-                    />
-                  {/each}
-                </FormGroup>
-                <FormGroup id="contributorRoles" legendText="Contributor Roles">
-                  {#each roles as role}
-                    <Checkbox
-                      id="{`contributor-${role.id}`}"
-                      labelText="{role.name}"
-                      checked="{configure.config?.roles?.some(
-                        (r) =>
-                          r.discordRoleId === role.id &&
-                          r.accessTypeId === ACCESS_LEVELS.CONTRIBUTOR
-                      ) || false}"
-                      value="{role.id}"
-                    />
-                  {/each}
-                </FormGroup>
+        <Tabs selected="{selectedTab}">
+          {#each tabs as tab}
+            <Tab label="{tab.title}" />
+          {/each}
+          <svelte:fragment slot="content">
+            <TabContent>
+              <div class="ha--section-wrapper">
+                <p>{$guild}</p>
+                <section>
+                  <!-- <Button disabled="{isSyncing}" on:click="{syncCommands}">
+                    Sync Commands
+                  </Button> -->
+                  <h2>Commands</h2>
+                  <ul class="ha--command-list">
+                    {#each commands as command (command)}
+                      {@const tags = [
+                        command.registration && 'Registered',
+                      ].filter(Boolean)}
+                      <li class="ha--command">
+                        <p>
+                          <span class="ha--command-name">{command.name}</span
+                          ><br />
+                          {command.description}
+                        </p>
+                        <form
+                          on:submit="{(e) =>
+                            handleOnCommandToggleSubmit(e, command)}"
+                        >
+                          <Toggle
+                            labelText="{`Enable/disable ${command.name}`}"
+                            hideLabel
+                            toggled="{!!command.registration}"
+                            on:change="{(e) =>
+                              handleOnCommandToggleChange(e, command)}"
+                          />
+                        </form>
+                      </li>
+                    {/each}
+                  </ul>
+                </section>
+                <section>
+                  <h2>Role Associations</h2>
+                  <!-- <pre><code>{JSON.stringify(guilds, null, 2)}</code></pre> -->
+                  <Form on:submit="{onSubmit}">
+                    <div class="ha--configure-roles">
+                      <FormGroup id="adminRoles" legendText="Admin Roles">
+                        {#each roles as role}
+                          <Checkbox
+                            id="{`admin-${role.id}`}"
+                            labelText="{role.name}"
+                            checked="{configure?.roles?.some(
+                              (r) =>
+                                r.accessLevelId === ACCESS_LEVELS.ADMIN &&
+                                r.discordRoleId === role.id
+                            ) || false}"
+                            value="{role.id}"
+                          />
+                        {/each}
+                      </FormGroup>
+                      <FormGroup id="staffRoles" legendText="Staff Roles">
+                        {#each roles as role}
+                          <Checkbox
+                            id="{`staff-${role.id}`}"
+                            labelText="{role.name}"
+                            checked="{configure?.roles?.some(
+                              (r) =>
+                                r.accessLevelId === ACCESS_LEVELS.STAFF &&
+                                r.discordRoleId === role.id
+                            ) || false}"
+                            value="{role.id}"
+                          />
+                        {/each}
+                      </FormGroup>
+                      <FormGroup
+                        id="contributorRoles"
+                        legendText="Contributor Roles"
+                      >
+                        {#each roles as role}
+                          <Checkbox
+                            id="{`contributor-${role.id}`}"
+                            labelText="{role.name}"
+                            checked="{configure?.roles?.some(
+                              (r) =>
+                                r.accessLevelId === ACCESS_LEVELS.CONTRIBUTOR &&
+                                r.discordRoleId === role.id
+                            ) || false}"
+                            value="{role.id}"
+                          />
+                        {/each}
+                      </FormGroup>
+                    </div>
+                    <Button type="submit">
+                      {configure?.id ? 'Update' : 'Create'} Configuration
+                    </Button>
+                  </Form>
+                </section>
               </div>
-              <Button type="submit">
-                {configure.config?.id ? 'Update' : 'Create'} Configuration
-              </Button>
-            </Form>
-          </section>
-        </div>
+            </TabContent>
+            <TabContent>
+              <div class="ha--feature-list">
+                {#each features as feature (feature)}
+                  <div class="ha--feature">
+                    <p>
+                      <span class="ha--feature-name">{feature.name}</span><br />
+                      {feature.description}
+                    </p>
+                    <form
+                      on:submit="{(e) => handleOnFeatureSubmit(e, feature)}"
+                    >
+                      <Toggle
+                        labelText="{feature.code}"
+                        hideLabel
+                        toggled="{configure.features.some(
+                          (f) => f.enabled && f.code === feature.code
+                        )}"
+                        on:change="{(e) =>
+                          handleOnFeatureToggleChange(e, feature)}"
+                      />
+                      {#each feature?.inputs || [] as input}
+                        <TextInput id="{input.code}" labelText="{input.name}" />
+                      {/each}
+                    </form>
+                  </div>
+                {/each}
+              </div>
+            </TabContent>
+          </svelte:fragment>
+        </Tabs>
       </Column>
     </Row>
   </Grid>
@@ -199,5 +349,26 @@
     .ha--configure-roles {
       grid-template-columns: repeat(2, 1fr);
     }
+  }
+
+  .ha--command-list,
+  .ha--feature-list {
+    display: grid;
+    grid-auto-flow: row;
+    grid-row-gap: var(--cds-spacing-05);
+  }
+
+  .ha--command,
+  .ha--feature {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: auto min-content;
+    grid-column-gap: var(--cds-spacing-05);
+    align-items: center;
+  }
+
+  .ha--command-name,
+  .ha--feature-name {
+    font-weight: bold;
   }
 </style>

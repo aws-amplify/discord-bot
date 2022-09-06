@@ -4,3 +4,7 @@ export const ACCESS_LEVELS = {
   CONTRIBUTOR: 'CONTRIBUTOR',
   MEMBER: 'MEMBER',
 }
+
+export const FEATURE_CODES = {
+  GITHUB: 'GITHUB',
+}

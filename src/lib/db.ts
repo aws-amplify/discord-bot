@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 import { ACCESS_LEVELS } from './constants'
+import { features } from './features/index'
 
 export const prisma = new PrismaClient()
+const DB_INIT_MESSAGE = '[database] init'
 
-// await prisma.$disconnect()
 export async function init() {
-  console.time('[database] init')
-
+  console.time(DB_INIT_MESSAGE)
   for (const level of Object.values(ACCESS_LEVELS)) {
     await prisma.accessLevel.upsert({
       where: {
@@ -18,5 +18,14 @@ export async function init() {
       update: {},
     })
   }
-  console.timeEnd('[database] init')
+  for (const feature of features) {
+    await prisma.feature.upsert({
+      where: {
+        code: feature.code,
+      },
+      create: feature,
+      update: feature,
+    })
+  }
+  console.timeEnd(DB_INIT_MESSAGE)
 }

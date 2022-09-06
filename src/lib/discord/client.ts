@@ -38,9 +38,10 @@ client.once('ready', async () => {
     }
   }
 
-  if (import.meta.env.DEV) {
-    await registerCommands()
-  }
+  await registerCommands(
+    commands,
+    Array.from(client.guilds.cache.values()).map((g) => g.id)
+  )
 })
 
 /**

@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { faker } from '@faker-js/faker'
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, PermissionFlagsBits } from 'discord.js'
 import { getUserAccess } from '$discord/get-user-access'
 import { prisma } from '$lib/db'
 import {
@@ -34,7 +34,9 @@ async function getUser(message: Message) {
     const guildMember = await message.guild?.members.fetch(userId)
     const role = guildMember?.roles?.highest?.name ?? defaultRole
     const color = guildMember?.roles?.highest?.color ?? '91A6A6'
-    const roleIcon = `<img src="${import.meta.env.VITE_HOST}/api/p/color/${color}.svg" height="12px" width="12px" align="center" />`
+    const roleIcon = `<img src="${
+      import.meta.env.VITE_HOST
+    }/api/p/color/${color}.svg" height="12px" width="12px" align="center" />`
     userIdToUsername.set(`${userId}`, {
       username: `${faker.unique(faker.color.human)} ${faker.unique(
         faker.hacker.noun
@@ -75,6 +77,7 @@ async function createDiscussionBody(
 export const config = new SlashCommandBuilder()
   .setName('admin')
   .setDescription('Commands for admins.')
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   .addSubcommand((subcommand) =>
     subcommand
       .setName('mirror')

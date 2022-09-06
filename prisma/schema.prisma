@@ -11,11 +11,12 @@ datasource db {
 }
 
 model Guild {
-  id            String         @id @unique
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @default(now())
+  id            String          @id @unique
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
   configuration Configuration?
   questions     Question[]
+  EventSchedule EventSchedule[]
 }
 
 model Question {
@@ -58,12 +59,65 @@ model DiscordRole {
 }
 
 model DiscordUser {
-  id             String          @id @unique
-  account        Account?        @relation(fields: [accountId], references: [id])
-  accountId      String?         @unique
-  participations Participation[]
+  id               String                 @id @unique
+  account          Account?               @relation(fields: [accountId], references: [id])
+  accountId        String?                @unique
+  participations   Participation[]
   // we are not storing roles on users because we want to capture point-in-time roles for participation records
-  answers        Answer[]
+  answers          Answer[]
+  attended         DiscordEventAttendee[]
+  createdEvents    DiscordEvent[]
+  createdSchedules EventSchedule[]
+}
+
+model EventSchedule {
+  id          String         @id @default(cuid())
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  guild       Guild          @relation(fields: [guildId], references: [id])
+  guildId     String
+  createdBy   DiscordUser    @relation(fields: [createdById], references: [id])
+  createdById String
+  event       DiscordEvent[]
+  /// cron expression
+  schedule    String
+  // @TODO - add a way to track the timezone of the event
+}
+
+model DiscordEvent {
+  id              String                 @id @unique
+  /// Title of the event
+  title           String
+  /// Description of the event (max 1000 characters)
+  description     String
+  /// Public image URL of the event
+  imageUrl        String?
+  /// Discord Channel ID or external URL
+  location        String?
+  /// The date and time of the event
+  start           DateTime
+  /// Track who creates the recurring event
+  createdBy       DiscordUser            @relation(fields: [createdById], references: [id])
+  createdById     String
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  schedule        EventSchedule?         @relation(fields: [scheduleId], references: [id])
+  scheduleId      String?
+  attendees       DiscordEventAttendee[]
+  eventScheduleId String
+}
+
+model DiscordEventAttendee {
+  event     DiscordEvent @relation(fields: [eventId], references: [id])
+  eventId   String
+  member    DiscordUser  @relation(fields: [memberId], references: [id])
+  memberId  String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  /// time spent attending the event (in minutes)
+  time      Int
+
+  @@unique([eventId, memberId])
 }
 
 model GitHubDiscussion {
@@ -112,16 +166,29 @@ model AccessLevelRole {
 
 // Configuration of each Discord server for the frontend access controls
 model Configuration {
-  // ID of Discord server
-  id                 String            @id @unique
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
+  /// ID of Discord server
+  id                 String                 @id @unique
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
   name               String
   roles              AccessLevelRole[]
   githubOrganization String?
-  guild              Guild             @relation(fields: [id], references: [id])
-  // "default" server configuration for the instance, in our case this will be the "AWS Amplify" Discord server. This will be the default choice for the server switcher
+  guild              Guild                  @relation(fields: [id], references: [id])
+  features           ConfigurationFeature[]
+  /// "default" server configuration for the instance, in our case this will be the "AWS Amplify" Discord server. This will be the default choice for the server switcher
   // isDefaultServer    Boolean                   @default(false)
+}
+
+model ConfigurationFeature {
+  id              String        @id @default(cuid())
+  configuration   Configuration @relation(fields: [configurationId], references: [id])
+  configurationId String
+  feature         Feature       @relation(fields: [featureCode], references: [code])
+  featureCode     String
+  /// whether the feature is enabled for this server
+  enabled         Boolean       @default(true)
+
+  @@unique([configurationId, featureCode])
 }
 
 // general audit log
@@ -132,6 +199,27 @@ model AuditLog {
   userId    String
   action    String
   data      String
+}
+
+// rough feature flag implementation
+model Feature {
+  // id             String                 @id @default(cuid())
+  /// the code of the feature/integration (e.g. GITHUB)
+  code           String                 @id @unique
+  name           String
+  description    String
+  configurations ConfigurationFeature[]
+  inputs         FeatureInputs[]
+}
+
+model FeatureInputs {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  feature     Feature  @relation(fields: [featureCode], references: [code])
+  featureCode String
+  name        String
+  secure      Boolean  @default(false)
 }
 
 // next-auth

@@ -97,7 +97,8 @@ export const commands = createCommandsMap([
 
 const c = commands
 export async function registerCommands(
-  commands: Map<string, any> = c
+  commands: Map<string, any> = c,
+  guilds?: string[]
 ): Promise<RESTPostAPIApplicationCommandsResult[] | undefined> {
   const payload = Array.from(commands.values()).map((c) => c.config.toJSON())
   let response
@@ -111,6 +112,24 @@ export async function registerCommands(
   } catch (error) {
     console.error('Error registering commands', error)
     throw new Error('Error registering commands')
+  }
+  if (guilds?.length) {
+    try {
+      console.log('Started refreshing guild (/) commands.')
+      for (const guild of guilds) {
+        await api.put(
+          Routes.applicationGuildCommands(
+            process.env.DISCORD_APP_ID as string,
+            guild
+          ),
+          payload
+        )
+      }
+      console.log('Successfully reloaded guild (/) commands.')
+    } catch (error) {
+      console.error('Error registering commands', error)
+      throw new Error('Error registering commands')
+    }
   }
   return response
 }
