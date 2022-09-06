@@ -18,10 +18,6 @@ app.use((req, res, next) => {
   res.header('X-Frame-Options', 'SameOrigin')
   res.header('X-XSS-Protection', '1; mode=block')
   res.header('X-Content-Type-Options', 'nosniff')
-  res.header(
-    'Content-Security-Policy',
-    "font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; script-src 'self' 'unsafe-inline'; default-src 'self';"
-  )
   next()
 })
 
