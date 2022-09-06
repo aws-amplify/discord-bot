@@ -9,6 +9,7 @@
     "start": "node build/server.js",
     "dev": "vite dev --port 3000",
     "dev:lib": "pnpm -r run build -w",
+    "docker": "PNPM_STORE=$(pnpm store path) docker compose up --build",
     "build": "vite build",
     "build:lib": "pnpm packages run build",
     "check": "prettier --check .",
