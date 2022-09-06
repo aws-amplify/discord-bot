@@ -22,7 +22,7 @@ const config = {
     csp: {
       mode: 'auto',
       directives: {
-        'default-src': 'self',
+        'default-src': ['self'],
         'img-src': ['self', 'data:'],
         'script-src': ['self'],
         // https://1.www.s81c.com/ is for Carbon fonts
