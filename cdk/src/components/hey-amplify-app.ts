@@ -247,9 +247,13 @@ export class HeyAmplifyApp extends Construct {
     }
 
     // enable access logging for load balancer
-    // albFargateService.loadBalancer.logAccessLogs(bucket, 'elb-access')
+    // albFargateService.loadBalancer.logAccessLogs(bucket, 'alb-access')
 
     // enable deletion protection for load balancer
+    albFargateService.loadBalancer.setAttribute(
+      'deletion_protection.enabled',
+      'true'
+    )
     albFargateService.loadBalancer.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
 
     // set up DNS record for the CloudFront distribution if subdomain exists
