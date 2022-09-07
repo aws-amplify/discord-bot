@@ -2,9 +2,9 @@ import type { RequestHandler } from '@sveltejs/kit'
 
 const svg = (color: string) => `
   <svg 
+    xmlns="http://www.w3.org/2000/svg"
     fill="${color}"
     viewBox="0 0 100 100"
-    xmlns="http://www.w3.org/2000/svg"
   >
     <circle cx="50%" cy="50%" r="40%" />
   </svg>
@@ -12,11 +12,14 @@ const svg = (color: string) => `
 
 export const GET: RequestHandler = ({ params }) => {
   const { code } = params
-  if (!code) {
-    return new Response('Not found', { status: 404 })
+  if (!code || !code.endsWith('.svg')) {
+    return new Response('Invalid request', { status: 400 })
   }
   const hex = code.replace(/\.svg$/, '')
   const color = `#${hex}`
+  if (!/^#[0-9a-f]{3,6}$/i.test(color)) {
+    return new Response('Invalid color', { status: 400 })
+  }
   return new Response(svg(color), {
     headers: {
       // store for 365 days
