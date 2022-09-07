@@ -32,6 +32,7 @@ importers:
       '@types/cookie': ^0.5.1
       '@types/express': ^4.17.13
       '@types/node': ^18.7.13
+      '@types/prettier': ^2.7.0
       '@types/supertest': ^2.0.12
       '@typescript-eslint/eslint-plugin': ^5.35.1
       '@typescript-eslint/parser': ^5.35.1
@@ -100,6 +101,7 @@ importers:
       '@types/cookie': 0.5.1
       '@types/express': 4.17.13
       '@types/node': 18.7.13
+      '@types/prettier': 2.7.0
       '@types/supertest': 2.0.12
       '@typescript-eslint/eslint-plugin': 5.35.1_ktjxjibzrfqejavile4bhmzhjq
       '@typescript-eslint/parser': 5.35.1_4rv7y5c6xz3vfxwhbrcxxi73bq
@@ -1853,6 +1855,10 @@ packages:
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
+    dev: true
+
+  /@types/prettier/2.7.0:
+    resolution: {integrity: sha512-RI1L7N4JnW5gQw2spvL7Sllfuf1SaHdrZpCHiBlCXjIlufi1SMNnbu2teze3/QE67Fg2tBlH7W+mi4hVNk4p0A==}
     dev: true
 
   /@types/pug/2.0.6:
