@@ -12,8 +12,10 @@ const svg = (color: string) => `
 
 export const GET: RequestHandler = ({ params }) => {
   const { code } = params
-  const parsed = code.replace(/\.svg$/, '')
-  const hex = parseFloat(parsed).toString(16)
+  if (!code) {
+    return new Response('Not found', { status: 404 })
+  }
+  const hex = code.replace(/\.svg$/, '')
   const color = `#${hex}`
   return new Response(svg(color), {
     headers: {
