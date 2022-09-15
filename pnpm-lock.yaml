@@ -128,7 +128,6 @@ importers:
 
   cdk:
     specifiers:
-      '@hey-amplify/cdk-lambda-events': workspace:*
       '@hey-amplify/support': workspace:*
       '@hey-amplify/tsconfig': workspace:*
       '@types/node': 18.7.16
@@ -141,7 +140,6 @@ importers:
       vite: ^3.1.0
       vite-node: ^0.23.1
     devDependencies:
-      '@hey-amplify/cdk-lambda-events': link:../packages/cdk-lambda-events
       '@hey-amplify/support': link:../packages/support
       '@hey-amplify/tsconfig': link:../packages/tsconfig
       '@types/node': 18.7.16
@@ -945,6 +943,10 @@ packages:
     dependencies:
       regenerator-runtime: 0.13.9
     dev: false
+
+  /@balena/dockerignore/1.0.2:
+    resolution: {integrity: sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q==}
+    dev: true
 
   /@carbon/charts-svelte/1.5.2_d3@7.6.1+svelte@3.49.0:
     resolution: {integrity: sha512-QUgWvjtoRAyby5XEMmxWKWtyGb0NOs0Ap6tvcs3cqemO9PKdoPLDXiaLg/p8MdecI+AyWOctU4BZ6NKR1EpQRw==}
@@ -2269,13 +2271,27 @@ packages:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: true
 
+  /at-least-node/1.0.0:
+    resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
+    engines: {node: '>= 4.0.0'}
+    dev: true
+
   /aws-cdk-lib/2.41.0_constructs@10.1.97:
     resolution: {integrity: sha512-wh6lDaarzb8B+43TMxEBg+yHcXU9omlUGJz9zSdgjrmeQWBV8SD0jIvrERhDFvQLmRY4Vzy7FXxkI0mU+adDHQ==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       constructs: ^10.0.0
     dependencies:
+      '@balena/dockerignore': 1.0.2
+      case: 1.6.3
       constructs: 10.1.97
+      fs-extra: 9.1.0
+      ignore: 5.2.0
+      jsonschema: 1.4.1
+      minimatch: 3.1.2
+      punycode: 2.1.1
+      semver: 7.3.7
+      yaml: 1.10.2
     dev: true
     bundledDependencies:
       - '@balena/dockerignore'
@@ -2439,6 +2455,11 @@ packages:
       - stylus
       - sugarss
       - svelte
+    dev: true
+
+  /case/1.6.3:
+    resolution: {integrity: sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==}
+    engines: {node: '>= 0.8.0'}
     dev: true
 
   /chai/4.3.6:
@@ -4100,6 +4121,16 @@ packages:
       universalify: 0.1.2
     dev: false
 
+  /fs-extra/9.1.0:
+    resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
+    engines: {node: '>=10'}
+    dependencies:
+      at-least-node: 1.0.0
+      graceful-fs: 4.2.10
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: true
+
   /fs.realpath/1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
@@ -4565,6 +4596,10 @@ packages:
   /jsonparse/1.3.1:
     resolution: {integrity: sha512-POQXvpdL69+CluYsillJ7SUhKvytYjW9vG/GKpnf+xP8UWgYEM/RaMzHHofbALDiKbbP1W8UEYmgGl39WkPZsg==}
     engines: {'0': node >= 0.2.0}
+    dev: true
+
+  /jsonschema/1.4.1:
+    resolution: {integrity: sha512-S6cATIPVv1z0IlxdN+zUk5EPjkGCdnhN4wVSBlvoUO1tOLJootbo9CquNJmbIh4yikWHiUedhRYrNPn1arpEmQ==}
     dev: true
 
   /jsonwebtoken/8.5.1:
