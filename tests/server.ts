@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 import { EOL } from 'node:os'
 import { installPolyfills } from '@sveltejs/kit/node/polyfills'
 import request from 'supertest'
+import prettier from 'prettier'
 import { prisma } from '$lib/db'
 import {
   mockedPublished,
@@ -281,5 +282,32 @@ describe('webhooks', () => {
         .set(addedPayloadUserDNE.headers)
       expect(response.status).toBe(403)
     })
+  })
+})
+
+describe('GET /api/p/color/[code]', () => {
+  it('should return 200 if color code is valid', async () => {
+    const response = await request(app).get('/api/p/color/f3f.svg')
+    expect(response.status).toBe(200)
+  })
+
+  it('should return an SVG if color code is valid', async () => {
+    const response = await request(app).get('/api/p/color/f3f.svg')
+    expect(response.headers['content-type']).toBe('image/svg+xml')
+    expect(prettier.format(response.body.toString())).toBe(
+      prettier.format(
+        '<svg xmlns="http://www.w3.org/2000/svg" fill="#f3f" viewBox="0 0 100 100"><circle cx="50%" cy="50%" r="40%"/></svg>'
+      )
+    )
+  })
+
+  it('should return 400 if ".svg" is not appended to the color code', async () => {
+    const response = await request(app).get('/api/p/color/f3f')
+    expect(response.status).toBe(400)
+  })
+
+  it('should return 400 if color code is invalid', async () => {
+    const response = await request(app).get('/api/p/color/zzz.svg')
+    expect(response.status).toBe(400)
   })
 })
