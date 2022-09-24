@@ -3,6 +3,10 @@ import * as wafv2 from 'aws-cdk-lib/aws-wafv2'
 
 type WAFProps = {
   name: string
+  /**
+   * @default "CLOUDFRONT"
+   */
+  scope?: wafv2.CfnWebACLProps['scope']
 }
 
 /**
@@ -14,7 +18,7 @@ type WAFProps = {
  */
 export class WAF extends wafv2.CfnWebACL {
   constructor(scope: Construct, id: string, props: WAFProps) {
-    const { name } = props
+    const { name, scope: wafScope } = props
     super(scope, id, {
       defaultAction: { allow: {} },
       visibilityConfig: {
@@ -22,7 +26,7 @@ export class WAF extends wafv2.CfnWebACL {
         metricName: `${name}-waf`,
         sampledRequestsEnabled: false,
       },
-      scope: 'CLOUDFRONT',
+      scope: wafScope || 'CLOUDFRONT',
       name,
       rules: [
         // {
@@ -44,7 +48,7 @@ export class WAF extends wafv2.CfnWebACL {
         //   },
         // },
         {
-          // rate-limit requests to the API
+          // rate-limit requests
           name: 'RateLimit',
           priority: 2,
           action: {
@@ -52,25 +56,25 @@ export class WAF extends wafv2.CfnWebACL {
           },
           statement: {
             rateBasedStatement: {
-              limit: 100,
+              limit: 500, // per 5 minutes
               aggregateKeyType: 'IP',
-              scopeDownStatement: {
-                byteMatchStatement: {
-                  searchString: '/api/',
-                  fieldToMatch: {
-                    singleHeader: {
-                      name: ':path',
-                    },
-                  },
-                  textTransformations: [
-                    {
-                      priority: 0,
-                      type: 'URL_DECODE',
-                    },
-                  ],
-                  positionalConstraint: 'STARTS_WITH',
-                },
-              },
+              // scopeDownStatement: {
+              //   byteMatchStatement: {
+              //     searchString: '/api/',
+              //     fieldToMatch: {
+              //       singleHeader: {
+              //         name: ':path',
+              //       },
+              //     },
+              //     textTransformations: [
+              //       {
+              //         priority: 0,
+              //         type: 'URL_DECODE',
+              //       },
+              //     ],
+              //     positionalConstraint: 'STARTS_WITH',
+              //   },
+              // },
             },
           },
           visibilityConfig: {
@@ -80,6 +84,13 @@ export class WAF extends wafv2.CfnWebACL {
           },
         },
       ],
+    })
+  }
+
+  public addAssociation(logicalId: string, resourceArn: string) {
+    return new wafv2.CfnWebACLAssociation(this, logicalId, {
+      resourceArn,
+      webAclArn: this.attrArn,
     })
   }
 }
