@@ -1,10 +1,24 @@
 <script lang="ts">
   import { Dropdown } from 'carbon-components-svelte'
+  import { browser } from '$app/environment'
   import { guild } from '$lib/store'
-  export let guilds: [{ id: string; text: string }]
-  let selected = guilds[0].id
 
-  $: guild.set(selected)
+  export let guilds: [{ id: string; text: string }]
+  export let selected = guilds[0].id
+
+  $: if (browser && $guild !== selected) {
+    const body = new FormData()
+    body.append('guild', selected)
+    fetch('/api/switch-guild', {
+      method: 'POST',
+      body,
+      redirect: 'follow',
+    }).then((res) => {
+      if (res.redirected) {
+        window.location.href = res.url
+      }
+    })
+  }
 </script>
 
 <div class="ha--guild-switcher">

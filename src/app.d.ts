@@ -10,6 +10,8 @@ interface User extends NextAuth.User {
 
 interface AppSession extends NextAuth.Session {
   user: User
+  // Guild ID of the guild the user is currently viewing
+  guild: string
 }
 
 // See https://kit.svelte.dev/docs/typescript

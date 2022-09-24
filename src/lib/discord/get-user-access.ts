@@ -4,9 +4,11 @@ import { prisma } from '$lib/db'
 import { api } from './api'
 import type { APIGuild, APIGuildMember } from 'discord-api-types/v10'
 
-export async function getUserAccess(guildMemberId: string) {
+export async function getUserAccess(
+  guildMemberId: string,
+  guildId: string = import.meta.env.VITE_DISCORD_GUILD_ID
+) {
   // const guildId =
-  const guildId = import.meta.env.VITE_DISCORD_GUILD_ID
   if (!guildId) {
     return {
       isGuildOwner: false,
