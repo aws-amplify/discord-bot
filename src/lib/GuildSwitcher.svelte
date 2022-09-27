@@ -1,12 +1,13 @@
 <script lang="ts">
   import { Dropdown } from 'carbon-components-svelte'
   import { browser } from '$app/environment'
-  import { guild } from '$lib/store'
+  import { guild, isSplashScreenActive } from '$lib/store'
 
   export let guilds: [{ id: string; text: string }]
   export let selected = guilds[0].id
 
   $: if (browser && $guild !== selected) {
+    isSplashScreenActive.set(true)
     const body = new FormData()
     body.append('guild', selected)
     fetch('/api/switch-guild', {

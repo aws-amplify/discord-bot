@@ -3,13 +3,16 @@ import {
   GatewayIntentBits,
   EmbedBuilder,
   ChannelType,
+  Events,
+  type Interaction,
+  type Message,
+  type StartThreadOptions,
+  type ThreadChannel,
 } from 'discord.js'
 import { prisma } from '$lib/db'
 import { commands, registerCommands } from './commands'
 import { PREFIXES } from './commands/thread'
 import { isHelpChannel, isThreadWithinHelpChannel } from './support'
-import type { Message, StartThreadOptions, ThreadChannel } from 'discord.js'
-import type { Question } from '@prisma/client'
 
 export const client = new Client({
   intents: [
@@ -20,7 +23,7 @@ export const client = new Client({
   ],
 })
 
-client.once('ready', async () => {
+client.once(Events.ClientReady, async () => {
   console.log('Bot Ready!')
   for (const guild of client.guilds.cache.values()) {
     try {
@@ -38,16 +41,19 @@ client.once('ready', async () => {
     }
   }
 
-  await registerCommands(
-    commands,
-    Array.from(client.guilds.cache.values()).map((g) => g.id)
-  )
+  for (const guild of client.guilds.cache.values()) {
+    try {
+      await registerCommands(commands, guild.id)
+    } catch (error) {
+      console.error(`Error registering commands for guild: ${guild.id}`, error)
+    }
+  }
 })
 
 /**
  * Create Guild model when bot joins a new guild
  */
-client.on('guildCreate', async (guild) => {
+client.on(Events.GuildCreate, async (guild) => {
   try {
     await prisma.guild.upsert({
       where: {
@@ -63,10 +69,10 @@ client.on('guildCreate', async (guild) => {
   }
 })
 
-client.on('messageUpdate', async (oldMessage, newMessage) => {
+client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
   if (oldMessage.author?.bot) return
   if (oldMessage.content === newMessage.content || !newMessage.content) return
-  if (oldMessage.channel.type !== ChannelType.GuildPublicThread) return
+  if (oldMessage.channel.type !== ChannelType.PublicThread) return
 
   // update answer contents if exists
   const answer = await prisma.answer.update({
@@ -83,7 +89,10 @@ client.on('messageUpdate', async (oldMessage, newMessage) => {
   console.log('Updated answer content:', answer.id)
 })
 
-client.on('messageCreate', async (message: Message) => {
+client.on(Events.MessageCreate, async (message: Message) => {
+  /**
+   * Automatically create a thread when new messages are posted to "help" channels
+   */
   if (
     !message.author.bot &&
     message.channel.type === ChannelType.GuildText &&
@@ -129,7 +138,7 @@ client.on('messageCreate', async (message: Message) => {
 
   // capture thread updates in public "help" channels
   if (
-    message.channel.type === ChannelType.GuildPublicThread &&
+    message.channel.type === ChannelType.PublicThread &&
     !message.author.bot &&
     isThreadWithinHelpChannel(message.channel)
   ) {
@@ -225,7 +234,7 @@ client.on('messageCreate', async (message: Message) => {
   }
 })
 
-client.on('interactionCreate', async (interaction) => {
+client.on(Events.InteractionCreate, async (interaction: Interaction) => {
   if (!interaction.isCommand()) return
   const { commandName } = interaction
   console.log('Handling interaction for command', commandName)
@@ -251,7 +260,7 @@ client.on('rateLimit', (info) => {
   )
 })
 
-client.on('threadUpdate', async (thread) => {
+client.on(Events.ThreadUpdate, async (thread) => {
   console.log(`Thread ${thread.id} updated`)
 })
 

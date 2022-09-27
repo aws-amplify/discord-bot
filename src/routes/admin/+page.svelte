@@ -11,6 +11,7 @@
     TextInput,
     Content,
     Grid,
+    InlineLoading,
     Row,
     Column,
     Button,
@@ -132,17 +133,21 @@
     console.log('submit', form, data)
   }
 
+  let togglingCommandId: string | null = null
   const toggleCommand = async (command, enabled) => {
+    if (command.id !== undefined) {
+      togglingCommandId = command.id
+    }
     const body = new FormData()
     if (!enabled) {
       body.append('id', command.registration.id)
     } else {
-      body.append('command', command)
+      body.append('command', command.name)
     }
 
     try {
       const res = await fetch(`/api/admin/commands`, {
-        method: enabled ? 'POST' : 'DELETE',
+        method: enabled ? 'PUT' : 'DELETE',
         body,
       })
       let data
@@ -155,7 +160,7 @@
           subtitle: '',
         })
       }
-      if (data?.id) {
+      if (res.status === 200 || data?.id) {
         notifications.add({
           kind: 'success',
           title: `Successfully ${enabled ? 'enabled' : 'disabled'} ${
@@ -171,6 +176,7 @@
         subtitle: '',
       })
     }
+    togglingCommandId = null
   }
 
   const handleOnCommandToggleSubmit = async (event, command) => {
@@ -185,8 +191,6 @@
     await toggleCommand(command, checked)
     /** @TODO throttling */
   }
-
-  console.log('GOT', { configure, commands })
 </script>
 
 <Content>
@@ -221,9 +225,15 @@
                           on:submit="{(e) =>
                             handleOnCommandToggleSubmit(e, command)}"
                         >
+                          <!-- <InlineLoading
+                            status="{togglingCommandId !== command.id
+                              ? 'inactive'
+                              : 'active'}"
+                          /> -->
                           <Toggle
                             labelText="{`Enable/disable ${command.name}`}"
                             hideLabel
+                            disabled="{togglingCommandId === command.id}"
                             toggled="{!!command.registration}"
                             on:change="{(e) =>
                               handleOnCommandToggleChange(e, command)}"
@@ -370,5 +380,12 @@
   .ha--command-name,
   .ha--feature-name {
     font-weight: bold;
+  }
+
+  .ha--command form {
+    display: grid;
+    grid-auto-flow: column;
+    grid-column-gap: var(--cds-spacing-05);
+    align-items: center;
   }
 </style>

@@ -7,12 +7,14 @@ import * as selectAnswer from './commands/select-answer'
 import * as thread from './commands/thread'
 import * as q from './commands/q'
 import { api } from './api'
-import { Routes } from 'discord-api-types/v10'
+import {
+  Routes,
+  type RESTPostAPIApplicationGuildCommandsResult,
+} from 'discord-api-types/v10'
 import type {
   SlashCommandBuilder,
   ContextMenuCommandBuilder,
 } from '@discordjs/builders'
-import type { RESTPostAPIApplicationCommandsResult } from 'discord-api-types/v10'
 import type {
   ChatInputCommandInteraction,
   ContextMenuCommandInteraction,
@@ -98,38 +100,58 @@ export const commands = createCommandsMap([
 const c = commands
 export async function registerCommands(
   commands: Map<string, any> = c,
-  guilds?: string[]
-): Promise<RESTPostAPIApplicationCommandsResult[] | undefined> {
+  guild: string
+): Promise<RESTPostAPIApplicationGuildCommandsResult | undefined> {
   const payload = Array.from(commands.values()).map((c) => c.config.toJSON())
+
   let response
   try {
-    console.log('Started refreshing application (/) commands.')
+    console.log(`Started refreshing guild slash (/) commands for ${guild}.`)
     response = (await api.put(
-      Routes.applicationCommands(process.env.DISCORD_APP_ID as string),
+      Routes.applicationGuildCommands(
+        process.env.DISCORD_APP_ID as string,
+        guild
+      ),
       payload
-    )) as RESTPostAPIApplicationCommandsResult[]
-    console.log('Successfully reloaded application (/) commands.')
+    )) as RESTPostAPIApplicationGuildCommandsResult
+    console.log(
+      `Successfully refreshing guild slash (/) commands for ${guild}.`
+    )
   } catch (error) {
-    console.error('Error registering commands', error)
+    console.error(
+      `Error refreshing guild slash (/) commands for ${guild}`,
+      error
+    )
     throw new Error('Error registering commands')
   }
-  if (guilds?.length) {
-    try {
-      console.log('Started refreshing guild (/) commands.')
-      for (const guild of guilds) {
-        await api.put(
-          Routes.applicationGuildCommands(
-            process.env.DISCORD_APP_ID as string,
-            guild
-          ),
-          payload
-        )
-      }
-      console.log('Successfully reloaded guild (/) commands.')
-    } catch (error) {
-      console.error('Error registering commands', error)
-      throw new Error('Error registering commands')
-    }
+  return response
+}
+
+export async function registerCommand(
+  command: any,
+  guild: string
+): Promise<RESTPostAPIApplicationGuildCommandsResult | undefined> {
+  // const payload = command.config.toJSON()
+  const payload = command
+  let response
+  try {
+    console.log(`Started registering guild slash (/) command for ${guild}.`)
+    response = (await api.put(
+      Routes.applicationGuildCommands(
+        process.env.DISCORD_APP_ID as string,
+        guild
+      ),
+      payload
+    )) as RESTPostAPIApplicationGuildCommandsResult
+    console.log(
+      `Successfully registering guild slash (/) commands for ${guild}`
+    )
+  } catch (error) {
+    console.error(
+      `Error registering guild slash (/) commands for ${guild}`,
+      error
+    )
+    throw new Error('Error registering commands')
   }
   return response
 }

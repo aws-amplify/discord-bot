@@ -114,15 +114,20 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   }
 
   const result: AdminPageReturn = {
-    commands: commands.map((c) => ({
-      name: c.name,
-      description: c.description,
-      config: c.config?.toJSON?.() || c.config,
-      registration: apiCommands.find((a) => a.name === c.name),
-    })),
+    commands: commands.map((c) => {
+      const registration = apiCommands.find((cmd) => cmd.name === c.name)
+      return {
+        id: registration?.id,
+        name: c.name,
+        description: c.description,
+        config: c.config?.toJSON?.() || c.config,
+        registration,
+      }
+    }),
     discord: {
       guild,
       roles,
+      config: JSON.parse(JSON.stringify(config)),
     },
     configure: {
       ...config,
