@@ -24,7 +24,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
   }
 
   const stored = commands.get(command)
-  if (stored) return new Response('Invalid command', { status: 400 })
+  if (!stored) return new Response('Invalid command', { status: 400 })
 
   const list = await registerCommand(
     stored.config.toJSON(),
