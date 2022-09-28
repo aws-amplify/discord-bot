@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
-import { ACCESS_LEVELS } from './constants'
-import { features, types as featureTypes } from './features/index'
+import { ACCESS_LEVELS, FEATURE_TYPES } from './constants'
+import { integrations, types as featureTypes } from './features/index'
+import { createCommandFeatures } from './discord/commands'
 
 export const prisma = new PrismaClient()
 const DB_INIT_MESSAGE = '[database] init'
@@ -25,13 +26,42 @@ export async function init() {
       update: {},
     })
   }
-  for (const feature of features) {
+  // initialize feature integrations
+  for (const integration of integrations) {
+    const toUpsert = {
+      name: integration.name,
+      description: integration.description,
+      code: integration.code,
+      type: {
+        connect: {
+          code: integration.type,
+        },
+      },
+    }
     await prisma.feature.upsert({
       where: {
-        code: feature.code,
+        code: integration.code,
       },
-      create: feature,
-      update: feature,
+      create: toUpsert,
+      update: toUpsert,
+    })
+  }
+  // initialize feature commands
+  for (const command of createCommandFeatures()) {
+    const toUpsert = {
+      ...command,
+      type: {
+        connect: {
+          code: FEATURE_TYPES.COMMAND,
+        },
+      },
+    }
+    await prisma.feature.upsert({
+      where: {
+        code: toUpsert.code,
+      },
+      create: toUpsert,
+      update: toUpsert,
     })
   }
   console.timeEnd(DB_INIT_MESSAGE)

@@ -11,10 +11,15 @@ import {
   type Guild,
 } from 'discord.js'
 import { prisma } from '$lib/db'
-import { commands } from './commands'
+import {
+  commands,
+  createCommandFeatures,
+  syncRegisteredCommandsForGuild,
+} from './commands'
 import { PREFIXES } from './commands/thread'
 import { isHelpChannel, isThreadWithinHelpChannel } from './support'
-import { features } from '../features/index'
+import { integrations } from '$lib/features/index'
+import { FEATURE_TYPES } from '$lib/constants'
 
 export const client = new Client({
   intents: [
@@ -37,7 +42,13 @@ const initGuild = async (guild: Guild) => {
           name: guild.name,
           // initialize guild with all features disabled (commands, integrations, etc.)
           features: {
-            connectOrCreate: features.map((f) => ({
+            connectOrCreate: [
+              ...integrations,
+              ...createCommandFeatures().map((c) => ({
+                ...c,
+                type: FEATURE_TYPES.COMMAND,
+              })),
+            ].map((f) => ({
               where: {
                 configurationId_featureCode: {
                   configurationId: guild.id,
@@ -72,6 +83,7 @@ client.once(Events.ClientReady, async () => {
   for (const guild of client.guilds.cache.values()) {
     try {
       await initGuild(guild)
+      await syncRegisteredCommandsForGuild(guild.id)
     } catch (error) {
       console.error('Error upserting guild', error)
     }
@@ -84,6 +96,7 @@ client.once(Events.ClientReady, async () => {
 client.on(Events.GuildCreate, async (guild: Guild) => {
   try {
     await initGuild(guild)
+    await syncRegisteredCommandsForGuild(guild.id)
   } catch (error) {
     console.error('Error upserting guild', error)
   }

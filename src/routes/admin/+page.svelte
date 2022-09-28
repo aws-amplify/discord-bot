@@ -150,17 +150,7 @@
         method: enabled ? 'PUT' : 'DELETE',
         body,
       })
-      let data
-      try {
-        data = await res.json()
-      } catch (error) {
-        notifications.add({
-          kind: 'error',
-          title: `Error ${enabled ? 'enabling' : 'disabling'} command`,
-          subtitle: '',
-        })
-      }
-      if (res.status === 200 || data?.id) {
+      if (res.status === 200) {
         notifications.add({
           kind: 'success',
           title: `Successfully ${enabled ? 'enabled' : 'disabled'} ${
@@ -168,11 +158,19 @@
           }`,
           subtitle: '',
         })
+      } else {
+        notifications.add({
+          kind: 'error',
+          title: `Error ${enabled ? 'enabling' : 'disabling'} ${command.name}`,
+          subtitle: '',
+        })
       }
     } catch (error) {
       notifications.add({
         kind: 'error',
-        title: `Error ${enabled ? 'enabling' : 'disabling'} command`,
+        title: `Error ${enabled ? 'enabling' : 'disabling'} command ${
+          command.name
+        }`,
         subtitle: '',
       })
     }
