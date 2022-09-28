@@ -23,8 +23,11 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     return new Response('Invalid body', { status: 400 })
   }
 
+  const stored = commands.get(command)
+  if (stored) return new Response('Invalid command', { status: 400 })
+
   const list = await registerCommand(
-    commands.get(command),
+    stored.config.toJSON(),
     locals.session.guild
   )
 

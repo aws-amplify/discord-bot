@@ -5,6 +5,6 @@ export const tabs = [
   },
   {
     id: 1,
-    title: 'Features',
+    title: 'Integrations',
   },
 ]

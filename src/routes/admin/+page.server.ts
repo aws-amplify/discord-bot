@@ -20,6 +20,7 @@ import { prisma } from '$lib/db'
 import { type PageServerLoad } from './$types'
 import { api } from '../api/_discord'
 import { tabs } from './tabs'
+import { FEATURE_TYPES } from '$lib/constants'
 
 type AdminPageReturn = {
   commands: Array<
@@ -137,7 +138,13 @@ export const load: PageServerLoad = async ({ locals, url }) => {
         ...f.feature,
       })),
     },
-    features: await prisma.feature.findMany(),
+    integrations: await prisma.feature.findMany({
+      where: {
+        type: {
+          code: FEATURE_TYPES.INTEGRATION,
+        },
+      },
+    }),
     selectedTab,
   }
 

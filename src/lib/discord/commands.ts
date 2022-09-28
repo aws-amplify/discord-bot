@@ -23,6 +23,7 @@ import type {
 
 export type Command = {
   name: string
+  code: string
   description: string
   config: SlashCommandBuilder | ContextMenuCommandBuilder
   handle: (
@@ -35,6 +36,7 @@ function createCommandsMap(commands: any[]) {
   for (const command of commands) {
     const stored = {
       name: command.config.name,
+      code: `COMMAND_${command.config.name.replace('-', '').toUpperCase()}`,
       description: command.config?.description,
       config: command.config,
       _handler: command.handler,
@@ -97,12 +99,19 @@ export const commands = createCommandsMap([
   q,
 ])
 
+export const features = Array.from(commands.values()).map((c) => ({
+  code: c.code,
+  name: c.name,
+  description: c.description || `Command ${c.name}`,
+}))
+
 const c = commands
+
 export async function registerCommands(
-  commands: Map<string, any> = c,
+  commands: Command[] = Array.from(c.values()),
   guild: string
 ): Promise<RESTPostAPIApplicationGuildCommandsResult | undefined> {
-  const payload = Array.from(commands.values()).map((c) => c.config.toJSON())
+  const payload = commands.map((c) => c.config.toJSON())
 
   let response
   try {
@@ -128,11 +137,11 @@ export async function registerCommands(
 }
 
 export async function registerCommand(
-  command: any,
+  command: Command,
   guild: string
 ): Promise<RESTPostAPIApplicationGuildCommandsResult | undefined> {
   // const payload = command.config.toJSON()
-  const payload = command
+  const payload = command.config.toJSON()
   let response
   try {
     console.log(`Started registering guild slash (/) command for ${guild}.`)

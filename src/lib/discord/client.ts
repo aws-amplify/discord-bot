@@ -8,11 +8,13 @@ import {
   type Message,
   type StartThreadOptions,
   type ThreadChannel,
+  type Guild,
 } from 'discord.js'
 import { prisma } from '$lib/db'
-import { commands, registerCommands } from './commands'
+import { commands } from './commands'
 import { PREFIXES } from './commands/thread'
 import { isHelpChannel, isThreadWithinHelpChannel } from './support'
+import { features } from '../features/index'
 
 export const client = new Client({
   intents: [
@@ -23,29 +25,55 @@ export const client = new Client({
   ],
 })
 
+const initGuild = async (guild: Guild) => {
+  return prisma.guild.upsert({
+    where: {
+      id: guild.id,
+    },
+    create: {
+      id: guild.id,
+      configuration: {
+        create: {
+          name: guild.name,
+          // initialize guild with all features disabled (commands, integrations, etc.)
+          features: {
+            connectOrCreate: features.map((f) => ({
+              where: {
+                configurationId_featureCode: {
+                  configurationId: guild.id,
+                  featureCode: f.code,
+                },
+              },
+              create: {
+                enabled: false,
+                feature: {
+                  connect: {
+                    code: f.code,
+                  },
+                },
+              },
+            })),
+          },
+        },
+      },
+    },
+    update: {
+      configuration: {
+        update: {
+          name: guild.name,
+        },
+      },
+    },
+  })
+}
+
 client.once(Events.ClientReady, async () => {
   console.log('Bot Ready!')
   for (const guild of client.guilds.cache.values()) {
     try {
-      await prisma.guild.upsert({
-        where: {
-          id: guild.id,
-        },
-        create: {
-          id: guild.id,
-        },
-        update: {},
-      })
+      await initGuild(guild)
     } catch (error) {
       console.error('Error upserting guild', error)
-    }
-  }
-
-  for (const guild of client.guilds.cache.values()) {
-    try {
-      await registerCommands(commands, guild.id)
-    } catch (error) {
-      console.error(`Error registering commands for guild: ${guild.id}`, error)
     }
   }
 })
@@ -53,17 +81,9 @@ client.once(Events.ClientReady, async () => {
 /**
  * Create Guild model when bot joins a new guild
  */
-client.on(Events.GuildCreate, async (guild) => {
+client.on(Events.GuildCreate, async (guild: Guild) => {
   try {
-    await prisma.guild.upsert({
-      where: {
-        id: guild.id,
-      },
-      create: {
-        id: guild.id,
-      },
-      update: {},
-    })
+    await initGuild(guild)
   } catch (error) {
     console.error('Error upserting guild', error)
   }

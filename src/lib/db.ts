@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { ACCESS_LEVELS } from './constants'
-import { features } from './features/index'
+import { features, types as featureTypes } from './features/index'
 
 export const prisma = new PrismaClient()
 const DB_INIT_MESSAGE = '[database] init'
@@ -15,6 +15,13 @@ export async function init() {
       create: {
         name: level,
       },
+      update: {},
+    })
+  }
+  for (const featureType of featureTypes) {
+    await prisma.featureType.upsert({
+      where: featureType,
+      create: featureType,
       update: {},
     })
   }

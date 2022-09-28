@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types'
   export let data: PageData
-  let { commands, configure, discord, features, selectedTab } = data
+  let { commands, configure, discord, integrations, selectedTab } = data
   // $: ({ commands, configure, discord, features } = data)
 
   import {
@@ -133,10 +133,10 @@
     console.log('submit', form, data)
   }
 
-  let togglingCommandId: string | null = null
+  let togglingCommandIds: string[] = []
   const toggleCommand = async (command, enabled) => {
     if (command.id !== undefined) {
-      togglingCommandId = command.id
+      togglingCommandIds.push(command.id)
     }
     const body = new FormData()
     if (!enabled) {
@@ -176,7 +176,7 @@
         subtitle: '',
       })
     }
-    togglingCommandId = null
+    togglingCommandIds = togglingCommandIds.filter((id) => id !== command.id)
   }
 
   const handleOnCommandToggleSubmit = async (event, command) => {
@@ -233,7 +233,9 @@
                           <Toggle
                             labelText="{`Enable/disable ${command.name}`}"
                             hideLabel
-                            disabled="{togglingCommandId === command.id}"
+                            disabled="{togglingCommandIds.some(
+                              (id) => id === command.id
+                            )}"
                             toggled="{!!command.registration}"
                             on:change="{(e) =>
                               handleOnCommandToggleChange(e, command)}"
@@ -302,11 +304,12 @@
               </div>
             </TabContent>
             <TabContent>
-              <div class="ha--feature-list">
-                {#each features as feature (feature)}
-                  <div class="ha--feature">
+              <div class="ha--integration-list">
+                {#each integrations as feature (feature)}
+                  <div class="ha--integration">
                     <p>
-                      <span class="ha--feature-name">{feature.name}</span><br />
+                      <span class="ha--integration-name">{feature.name}</span
+                      ><br />
                       {feature.description}
                     </p>
                     <form
@@ -362,14 +365,14 @@
   }
 
   .ha--command-list,
-  .ha--feature-list {
+  .ha--integration-list {
     display: grid;
     grid-auto-flow: row;
     grid-row-gap: var(--cds-spacing-05);
   }
 
   .ha--command,
-  .ha--feature {
+  .ha--integration {
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: auto min-content;
@@ -378,7 +381,7 @@
   }
 
   .ha--command-name,
-  .ha--feature-name {
+  .ha--integration-name {
     font-weight: bold;
   }
 
