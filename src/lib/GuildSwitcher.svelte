@@ -10,11 +10,13 @@
     isSplashScreenActive.set(true)
     const body = new FormData()
     body.append('guild', selected)
-    fetch('/api/switch-guild', {
+    body.append('redirect', window.location.pathname)
+    const request = new Request('/api/switch-guild', {
       method: 'POST',
       body,
       redirect: 'follow',
-    }).then((res) => {
+    })
+    fetch(request).then((res) => {
       if (res.redirected) {
         window.location.href = res.url
       }
