@@ -143,24 +143,20 @@ export async function registerCommand(
   // const payload = command.config.toJSON()
   const payload = command.config.toJSON()
   let response
+  const messaging = `registering guild slash (/) command ${command.name} for ${guild}.`
   try {
-    console.log(`Started registering guild slash (/) command for ${guild}.`)
-    response = (await api.put(
+    console.log(`Started ${messaging}`)
+    response = (await api.post(
       Routes.applicationGuildCommands(
         process.env.DISCORD_APP_ID as string,
         guild
       ),
       payload
     )) as RESTPostAPIApplicationGuildCommandsResult
-    console.log(
-      `Successfully registering guild slash (/) commands for ${guild}`
-    )
+    console.log(`Successfully ${messaging}`)
   } catch (error) {
-    console.error(
-      `Error registering guild slash (/) commands for ${guild}`,
-      error
-    )
-    throw new Error('Error registering commands')
+    console.error(`Error ${messaging}`, error)
+    throw new Error(`Error ${messaging}`)
   }
   return response
 }
