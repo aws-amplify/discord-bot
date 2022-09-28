@@ -26,6 +26,7 @@ model Question {
   threadId            String            @unique
   ownerId             String
   channelName         String
+  // tags applied to forum channel posts (by ID)
   threadMetaUpdatedAt DateTime          @default(now())
   title               String
   isSolved            Boolean           @default(false)
@@ -37,6 +38,15 @@ model Question {
   githubDiscussionId  String?           @unique
   // participants        DiscordUser[]
   participation       Participation[]
+  tags                QuestionTag?      @relation(fields: [tagId], references: [id])
+  tagId               String?
+}
+
+model QuestionTag {
+  // discord forum post tag id
+  id        String     @id
+  name      String     @unique
+  questions Question[]
 }
 
 model Participation {
@@ -205,13 +215,22 @@ model AuditLog {
 model Feature {
   // id             String                 @id @default(cuid())
   /// the code of the feature/integration (e.g. GITHUB)
-  code           String                 @id @unique
-  name           String
-  description    String
-  configurations ConfigurationFeature[]
-  inputs         FeatureInputs[]
+  code            String                 @id @unique
+  type            FeatureType            @relation(fields: [featureTypeCode], references: [code])
+  name            String
+  description     String
+  configurations  ConfigurationFeature[]
+  inputs          FeatureInputs[]
+  featureTypeCode String
 }
 
+/// type of feature (e.g. INTEGRATION, COMMAND)
+model FeatureType {
+  code     String    @id @unique
+  features Feature[]
+}
+
+// inputs used to create features (e.g. GitHub OAuth App ID)
 model FeatureInputs {
   id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
