@@ -25,7 +25,7 @@
   import Avatar from '$lib/Avatar.svelte'
   import LoginButton from '$lib/LoginButton.svelte'
   import GuildSwitcher from '$lib/GuildSwitcher.svelte'
-  import { notifications, session } from '$lib/store'
+  import { notifications, session, guild } from '$lib/store'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
 
   import 'carbon-components-svelte/css/all.css'
@@ -33,7 +33,9 @@
   import '../styles/sidenav.css'
 
   export let data: LayoutData
-  $: ({ guilds } = data)
+  let { guilds, selectedGuild } = data
+  $: ({ guilds, selectedGuild } = data)
+  $: guild.set(selectedGuild)
 
   let theme: CarbonTheme = 'g100'
 
@@ -43,6 +45,8 @@
   afterNavigate(() => {
     if (isUserPanelOpen) isUserPanelOpen = false
   })
+
+  // $: console.log('SESSION FROM LAYOUT', $session, $page.data.session)
 </script>
 
 <Theme bind:theme>
@@ -59,9 +63,9 @@
 
     <HeaderUtilities>
       {#if $session?.user}
-        <!-- {#if guilds.length > 1}
-          <GuildSwitcher guilds="{guilds}" />
-        {/if} -->
+        {#if guilds.length > 1}
+          <GuildSwitcher guilds="{guilds}" bind:selected="{selectedGuild}" />
+        {/if}
         <HeaderAction
           aria-label="User settings"
           bind:isOpen="{isUserPanelOpen}"
