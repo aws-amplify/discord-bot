@@ -55,6 +55,6 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     await unregisterCommand(id, locals.session.guild)
     return new Response('success', { status: 200 })
   } catch (error) {
-    return new Response(undefined, { status: 500 })
+    return new Response('Something went wrong unregistering the command', { status: 500 })
   }
 }
