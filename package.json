@@ -15,7 +15,7 @@
     "check": "prettier --check .",
     "lint": "eslint .",
     "postinstall": "prisma generate",
-    "setup": "pnpm install && pnpm build:lib && pnpm setup-test",
+    "setup-dev": "prisma db push && pnpm install && svelte-kit sync && pnpm build:lib",
     "setup-docker": "echo \"\nPNPM_STORE\"=$(pnpm store path) >> .env && docker -v",
     "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push && vite build",
     "test": "vitest",
