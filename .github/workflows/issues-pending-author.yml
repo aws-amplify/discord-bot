@@ -3,7 +3,7 @@ on:
   issue_comment:
     types: [created]
 env:
-  PENDING_RESPONSE_LABEL: pending-author
+  PENDING_RESPONSE_LABEL: 'pending: author'
 jobs:
   issue_commented:
     if: ${{ !github.event.issue.pull_request && contains(github.event.issue.labels.*.name, env.PENDING_RESPONSE_LABEL) }}
