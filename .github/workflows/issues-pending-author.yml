@@ -6,7 +6,9 @@ env:
   PENDING_RESPONSE_LABEL: 'pending: author'
 jobs:
   issue_commented:
-    if: ${{ !github.event.issue.pull_request && contains(github.event.issue.labels.*.name, env.PENDING_RESPONSE_LABEL) }}
+    if: |
+      !github.event.issue.pull_request && 
+      contains(github.event.issue.labels.*.name, 'pending: author')
     runs-on: ubuntu-latest
     steps:
       - uses: siegerts/pending-author-response@v1
