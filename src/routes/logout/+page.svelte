@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Content, Grid, Row, Column } from 'carbon-components-svelte'
   import LogoutButton from '$lib/LogoutButton.svelte'
-  import type { PageLoadData } from './$types'
-  export let data: PageLoadData
+  import type { PageServerData } from './$types'
+  export let data: PageServerData
   $: ({ isLoggedIn } = data)
 </script>
 
@@ -10,7 +10,6 @@
   <Grid>
     <Row>
       <Column>
-        <!-- <h1>Hey, Amplify!</h1> -->
         {#if isLoggedIn}
           <h1>Logout</h1>
           <p>Are you sure you want to log out?</p>
