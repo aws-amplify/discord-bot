@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types'
 
-export const load: PageServerLoad = ({ session }) => {
+export const load: PageServerLoad = ({ locals }) => {
   return {
-    isLoggedIn: !!session?.user,
+    isLoggedIn: !!locals.session?.user,
   }
 }

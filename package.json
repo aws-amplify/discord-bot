@@ -15,8 +15,8 @@
     "check": "prettier --check .",
     "lint": "eslint .",
     "postinstall": "prisma generate",
-    "setup": "pnpm install && pnpm build:lib && pnpm setup-test",
-    "setup-dev": "echo \"\nPNPM_STORE\"=$(pnpm store path) >> .env",
+    "setup-dev": "pnpm install && prisma db push && svelte-kit sync && pnpm build:lib",
+    "setup-docker": "echo \"\nPNPM_STORE\"=$(pnpm store path) >> .env && docker -v",
     "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push && vite build",
     "test": "vitest",
     "coverage": "vitest run --coverage"
@@ -138,7 +138,7 @@
       "@typescript-eslint/no-non-null-assertion": "off"
     }
   },
-  "packageManager": "pnpm@7.9.5",
+  "packageManager": "pnpm@7.13.1",
   "pnpm": {
     "peerDependencyRules": {
       "ignoreMissing": [

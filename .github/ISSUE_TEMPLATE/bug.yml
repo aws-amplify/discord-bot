@@ -1,0 +1,16 @@
+name: Bug
+description: File a bug report.
+title: 'bug: '
+labels: ['needs: triage']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    attributes:
+      label: Describe the bug
+      description: A clear and concise of the bug you are experiencing. Be sure to include the relevant details such as the affected command, URL, etc.
+    validations:
+      required: true
