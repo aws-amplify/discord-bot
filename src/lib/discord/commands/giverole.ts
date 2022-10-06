@@ -1,39 +1,66 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import type {
-  Role,
-  User,
-  InteractionReplyOptions,
-  ChatInputCommandInteraction,
+import {
+  EmbedBuilder,
+  type Role,
+  type User,
+  type InteractionReplyOptions,
+  type ChatInputCommandInteraction,
 } from 'discord.js'
+import * as MESSAGES from './_messages'
 
 export async function handler(
   interaction: ChatInputCommandInteraction
 ): Promise<InteractionReplyOptions | string> {
   const { member: caller, guild } = interaction
+  if (!caller || !guild) return MESSAGES.SOMETHING_WENT_WRONG
 
-  const { role, user } = interaction.options.data.reduce(
-    (acc, current, index, source) => {
-      return {
-        ...acc,
-        [current.name]: current[current.name],
-      }
-    },
-    {}
-  ) as { role: Role; user: User }
+  const role = interaction.options.getRole('role', true) as Role
+  const targetMember = interaction.options.getUser('user', true) as User
 
-  if (user.bot) {
-    return 'This command does not support adding roles to bots.'
+  const embed = new EmbedBuilder()
+  embed.setTitle('/giverole')
+  embed.setDescription(MESSAGES.SOMETHING_WENT_WRONG)
+  const result: InteractionReplyOptions = { embeds: [embed], ephemeral: true }
+
+  // reject the command if the role is managed by a bot
+  if (role.tags?.botId) {
+    embed.setDescription(
+      'This command does not support adding bot roles to members'
+    )
+    return result
   }
 
-  if (caller.user.id === user.id) {
-    return `This command does not support adding roles to yourself.`
+  // reject the command if the target member is a bot
+  if (targetMember.bot) {
+    embed.setDescription('This command does not support adding roles to bots.')
+    return result
   }
 
-  if (guild.members.cache.get(user.id).roles.add(role)) {
-    return `Successfully added role \`${role.name}\` to ${user.username}#${user.discriminator}.`
+  // reject the command if the caller is attempting to add roles to themselves
+  if (caller.user.id === targetMember.id) {
+    embed.setDescription(
+      `This command does not support adding roles to yourself.`
+    )
+    return result
   }
 
-  return '🤢 something went wrong'
+  let added
+  try {
+    // attempt adding the role to the target member
+    added = await guild.members.cache.get(targetMember.id)?.roles.add(role)
+  } catch (error) {
+    console.error('Error adding role to member', error)
+    return result
+  }
+  if (added) {
+    embed.setDescription(
+      `Added \`${role.name}\`\nto \`${targetMember.username}#${targetMember.discriminator}\``
+    )
+    return result
+  }
+
+  // catch-all return "something went wrong" response
+  return result
 }
 
 export const config = new SlashCommandBuilder()
