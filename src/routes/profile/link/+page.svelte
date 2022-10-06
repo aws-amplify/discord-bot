@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Content, Column, Grid, Row } from 'carbon-components-svelte'
-  import { session } from '$app/stores'
+  import { session } from '$lib/store'
   import LoginButton from '$lib/LoginButton.svelte'
 
   let formGitHub
