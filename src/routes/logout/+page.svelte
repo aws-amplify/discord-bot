@@ -10,7 +10,6 @@
   <Grid>
     <Row>
       <Column>
-        <!-- <h1>Hey, Amplify!</h1> -->
         {#if isLoggedIn}
           <h1>Logout</h1>
           <p>Are you sure you want to log out?</p>
