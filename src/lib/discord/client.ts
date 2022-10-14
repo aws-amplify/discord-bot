@@ -273,8 +273,5 @@ process.on('SIGINT', () => {
 })
 
 if (import.meta.hot) {
-  import.meta.hot.dispose(() => {
-    console.log('destroying client')
-    client?.destroy()
-  })
+  import.meta.hot.decline()
 }
