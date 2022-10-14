@@ -49,6 +49,11 @@ export async function handler(
     },
   })
   const embed = new EmbedBuilder()
+  if (!questions?.length) {
+    embed.setTitle('No questions found')
+    embed.setDescription('No questions have been asked in this server yet')
+    return
+  }
   embed.setTitle('Latest questions')
   embed.addFields(createQuestionEmbedFields(questions))
   embed.setFooter({
