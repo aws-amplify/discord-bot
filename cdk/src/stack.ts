@@ -58,6 +58,51 @@ export class HeyAmplifyStack extends Stack {
       vpcName: `vpc-${this.appName}-${this.envName}`,
     })
 
+    const nacl = new ec2.NetworkAcl(this, 'NetworkAcl', {
+      vpc,
+    })
+
+    nacl.addEntry('Ingress', {
+      cidr: ec2.AclCidr.anyIpv4(),
+      ruleNumber: 99,
+      traffic: ec2.AclTraffic.tcpPort(80),
+      direction: ec2.TrafficDirection.INGRESS,
+    })
+    nacl.addEntry('IngressHTTPS', {
+      cidr: ec2.AclCidr.anyIpv4(),
+      ruleNumber: 98,
+      traffic: ec2.AclTraffic.tcpPort(443),
+      direction: ec2.TrafficDirection.INGRESS,
+    })
+    nacl.addEntry('EgressHTTP', {
+      cidr: ec2.AclCidr.anyIpv4(),
+      ruleNumber: 1,
+      traffic: ec2.AclTraffic.tcpPort(80),
+      direction: ec2.TrafficDirection.EGRESS,
+    })
+    nacl.addEntry('EgressHTTPS', {
+      cidr: ec2.AclCidr.anyIpv4(),
+      ruleNumber: 2,
+      traffic: ec2.AclTraffic.tcpPort(443),
+      direction: ec2.TrafficDirection.EGRESS,
+    })
+    nacl.addEntry('IngressLoadBalancer', {
+      cidr: ec2.AclCidr.anyIpv4(),
+      ruleNumber: 97,
+      traffic: ec2.AclTraffic.tcpPortRange(1024, 65535),
+      direction: ec2.TrafficDirection.INGRESS,
+    })
+    nacl.addEntry('EgressLoadBalancer', {
+      cidr: ec2.AclCidr.anyIpv4(),
+      ruleNumber: 3,
+      traffic: ec2.AclTraffic.tcpPortRange(1024, 65535),
+      direction: ec2.TrafficDirection.EGRESS,
+    })
+
+    for (const subnet of vpc.publicSubnets) {
+      subnet.associateNetworkAcl('PublicSubnetNetworkAcl', nacl)
+    }
+
     const cluster = new ecs.Cluster(this, `Cluster`, {
       vpc,
       containerInsights: true,
@@ -80,8 +125,7 @@ export class HeyAmplifyStack extends Stack {
        * @TODO enable bucket encryption when supported by litestream (sqlite backup solution)
        * https://github.com/benbjohnson/litestream/issues/88
        */
-      bucketKeyEnabled: true,
-      encryption: s3.BucketEncryption.KMS,
+      encryption: s3.BucketEncryption.S3_MANAGED,
       enforceSSL: true,
       versioned: true,
       // if env is destroyed, keep the bucket

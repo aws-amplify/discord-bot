@@ -99,82 +99,75 @@
   }
 </script>
 
-<Content>
-  <Grid>
-    <Row>
-      <Column>
-        <div class="ha--section-wrapper">
-          <p>{import.meta.env.VITE_DISCORD_GUILD_ID}</p>
-          <section>
-            <Button disabled="{isSyncing}" on:click="{syncCommands}">
-              Sync Commands
-            </Button>
-            <h2>Commands:</h2>
-            {#each commands as command (command)}
-              {@const tags = [command.registration && 'Registered'].filter(
-                Boolean
-              )}
-              <Command {...command} tags="{tags}" />
-            {/each}
-          </section>
-          <section>
-            <h2>Configure</h2>
-            <!-- <pre><code>{JSON.stringify(guilds, null, 2)}</code></pre> -->
-            <Form on:submit="{onSubmit}">
-              <div class="ha--configure-roles">
-                <FormGroup id="adminRoles" legendText="Admin Roles">
-                  {#each roles as role}
-                    <Checkbox
-                      id="{`admin-${role.id}`}"
-                      labelText="{role.name}"
-                      checked="{configure.config?.roles?.some(
-                        (r) =>
-                          r.discordRoleId === role.id &&
-                          r.accessLevelId === ACCESS_LEVELS.ADMIN
-                      ) || false}"
-                      value="{role.id}"
-                    />
-                  {/each}
-                </FormGroup>
-                <FormGroup id="staffRoles" legendText="Staff Roles">
-                  {#each roles as role}
-                    <Checkbox
-                      id="{`staff-${role.id}`}"
-                      labelText="{role.name}"
-                      checked="{configure.config?.roles?.some(
-                        (r) =>
-                          r.discordRoleId === role.id &&
-                          r.accessLevelId === ACCESS_LEVELS.STAFF
-                      ) || false}"
-                      value="{role.id}"
-                    />
-                  {/each}
-                </FormGroup>
-                <FormGroup id="contributorRoles" legendText="Contributor Roles">
-                  {#each roles as role}
-                    <Checkbox
-                      id="{`contributor-${role.id}`}"
-                      labelText="{role.name}"
-                      checked="{configure.config?.roles?.some(
-                        (r) =>
-                          r.discordRoleId === role.id &&
-                          r.accessTypeId === ACCESS_LEVELS.CONTRIBUTOR
-                      ) || false}"
-                      value="{role.id}"
-                    />
-                  {/each}
-                </FormGroup>
-              </div>
-              <Button type="submit">
-                {configure.config?.id ? 'Update' : 'Create'} Configuration
-              </Button>
-            </Form>
-          </section>
-        </div>
-      </Column>
-    </Row>
-  </Grid>
-</Content>
+
+<div class="ha--section-wrapper">
+  <p>{import.meta.env.VITE_DISCORD_GUILD_ID}</p>
+  <section>
+    <Button disabled="{isSyncing}" on:click="{syncCommands}">
+      Sync Commands
+    </Button>
+    <h2>Commands:</h2>
+    {#each commands as command (command)}
+      {@const tags = [command.registration && 'Registered'].filter(
+        Boolean
+      )}
+      <Command {...command} tags="{tags}" />
+    {/each}
+  </section>
+  <section>
+    <h2>Configure</h2>
+    <!-- <pre><code>{JSON.stringify(guilds, null, 2)}</code></pre> -->
+    <Form on:submit="{onSubmit}">
+      <div class="ha--configure-roles">
+        <FormGroup id="adminRoles" legendText="Admin Roles">
+          {#each roles as role}
+            <Checkbox
+              id="{`admin-${role.id}`}"
+              labelText="{role.name}"
+              checked="{configure.config?.roles?.some(
+                (r) =>
+                  r.discordRoleId === role.id &&
+                  r.accessLevelId === ACCESS_LEVELS.ADMIN
+              ) || false}"
+              value="{role.id}"
+            />
+          {/each}
+        </FormGroup>
+        <FormGroup id="staffRoles" legendText="Staff Roles">
+          {#each roles as role}
+            <Checkbox
+              id="{`staff-${role.id}`}"
+              labelText="{role.name}"
+              checked="{configure.config?.roles?.some(
+                (r) =>
+                  r.discordRoleId === role.id &&
+                  r.accessLevelId === ACCESS_LEVELS.STAFF
+              ) || false}"
+              value="{role.id}"
+            />
+          {/each}
+        </FormGroup>
+        <FormGroup id="contributorRoles" legendText="Contributor Roles">
+          {#each roles as role}
+            <Checkbox
+              id="{`contributor-${role.id}`}"
+              labelText="{role.name}"
+              checked="{configure.config?.roles?.some(
+                (r) =>
+                  r.discordRoleId === role.id &&
+                  r.accessTypeId === ACCESS_LEVELS.CONTRIBUTOR
+              ) || false}"
+              value="{role.id}"
+            />
+          {/each}
+        </FormGroup>
+      </div>
+      <Button type="submit">
+        {configure.config?.id ? 'Update' : 'Create'} Configuration
+      </Button>
+    </Form>
+  </section>
+</div>
 
 <style>
   section {

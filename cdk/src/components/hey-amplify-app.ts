@@ -2,6 +2,8 @@ import { Construct } from 'constructs'
 import { Port } from 'aws-cdk-lib/aws-ec2'
 import * as cdk from 'aws-cdk-lib'
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
+import * as events from 'aws-cdk-lib/aws-events'
+import * as targets from 'aws-cdk-lib/aws-events-targets'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns'
 import * as efs from 'aws-cdk-lib/aws-efs'
@@ -9,6 +11,7 @@ import * as elb from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as route53 from 'aws-cdk-lib/aws-route53'
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets'
+import * as sns from 'aws-cdk-lib/aws-sns'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import { v4 as uuid } from 'uuid'
 import { WAF } from './waf'
@@ -94,6 +97,7 @@ export class HeyAmplifyApp extends Construct {
           cpu: 256,
           memoryLimitMiB: 512,
           desiredCount: 1,
+          circuitBreaker: { rollback: true },
           taskImageOptions: {
             containerName: docker.name,
             image: ecs.ContainerImage.fromAsset(docker.context, {
@@ -108,7 +112,7 @@ export class HeyAmplifyApp extends Construct {
                 'file:',
                 ''
               ),
-              ENABLE_DATABASE_BACKUP: 'true',
+              ENABLE_DATABASE_BACKUP: 'true', // this is set to `true` so we can build the container locally without backups auto-enabled
               AWS_REGION: process.env.CDK_DEFAULT_REGION as string,
             },
             enableLogging: true,
@@ -175,6 +179,16 @@ export class HeyAmplifyApp extends Construct {
     // allow outbound connections to the filesystem
     albFargateService.service.connections.allowTo(filesystem, Port.tcp(2049))
 
+    // add WAF to the LoadBalancer
+    const waf = new WAF(this, 'WAFLoadBalancer', {
+      name: 'WAFLoadBalancer',
+      scope: 'REGIONAL',
+    })
+    waf.addAssociation(
+      'WebACLAssociationLoadBalancer',
+      albFargateService.loadBalancer.loadBalancerArn
+    )
+
     const xAmzSecurityTokenHeaderName = 'X-HeyAmplify-Security-Token'
     const xAmzSecurityTokenHeaderValue = uuid()
 
@@ -215,8 +229,8 @@ export class HeyAmplifyApp extends Construct {
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
       },
       // add Web Application Firewall (WAF)
-      webAclId: new WAF(this, 'WAF', {
-        name: 'WAF',
+      webAclId: new WAF(this, 'WAFCloudFront', {
+        name: 'WAFCloudFront',
       }).attrArn,
     })
 
@@ -241,10 +255,47 @@ export class HeyAmplifyApp extends Construct {
       })
     }
 
+    /**
+     * Set up alarms
+     */
+    const restartTopic = new sns.Topic(this, 'ContainerRestarts', {
+      displayName: 'ContainerRestarts',
+    })
+
+    const restartRuleTarget = new targets.SnsTopic(restartTopic, {
+      message: events.RuleTargetInput.fromText(
+        `Container restarted in ${process.env.CDK_DEFAULT_REGION as string}`
+      ),
+    })
+
+    /**
+     * Set up event rule for container restarts
+     */
+    const restartRule = new events.Rule(this, 'RestartRule', {
+      eventPattern: {
+        source: ['aws.ecs'],
+        detailType: ['ECS Task State Change'],
+        region: [process.env.CDK_DEFAULT_REGION as string],
+        detail: {
+          lastStatus: ['STOPPED'],
+          desiredStatus: ['RUNNING'],
+          clusterArn: [cluster.clusterArn],
+          taskDefinitionArn: [
+            albFargateService.service.taskDefinition.taskDefinitionArn,
+          ],
+        },
+      },
+      targets: [restartRuleTarget],
+    })
+
     // enable access logging for load balancer
-    // albFargateService.loadBalancer.logAccessLogs(bucket, 'elb-access')
+    albFargateService.loadBalancer.logAccessLogs(bucket, 'alb-access')
 
     // enable deletion protection for load balancer
+    albFargateService.loadBalancer.setAttribute(
+      'deletion_protection.enabled',
+      'true'
+    )
     albFargateService.loadBalancer.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
 
     // set up DNS record for the CloudFront distribution if subdomain exists

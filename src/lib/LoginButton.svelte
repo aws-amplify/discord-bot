@@ -8,7 +8,7 @@
   export let provider: Provider
   export let buttonText = ''
 
-  let redirect = global?.window?.location?.href || import.meta.env.VITE_HOST
+  const redirect = import.meta.env.VITE_HOST
 </script>
 
 <form action="{`/api/auth/signin/${provider}`}" method="POST">

@@ -1,0 +1,17 @@
+name: New Command
+description: Request a new Discord slash command
+title: 'command: '
+labels: ['needs: triage', 'category: command']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this request!
+  - type: input
+    id: name
+    attributes:
+      label: Name of the command
+      description: 'For example: giverole, ping'
+    validations:
+      required: true

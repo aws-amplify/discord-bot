@@ -1,7 +1,7 @@
 {
   "name": "@aws-amplify/discord-bot",
   "type": "module",
-  "version": "0.8.0-next.1",
+  "version": "0.8.0-next.3",
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
@@ -9,13 +9,14 @@
     "start": "node build/server.js",
     "dev": "vite dev --port 3000",
     "dev:lib": "pnpm -r run build -w",
+    "docker": "PNPM_STORE=$(pnpm store path) docker compose up --build",
     "build": "vite build",
     "build:lib": "pnpm packages run build",
     "check": "prettier --check .",
     "lint": "eslint .",
     "postinstall": "prisma generate",
-    "setup": "pnpm install && pnpm build:lib && pnpm setup-test",
-    "setup-dev": "echo \"\nPNPM_STORE\"=$(pnpm store path) >> .env",
+    "setup-dev": "pnpm install && prisma db push && svelte-kit sync && pnpm build:lib",
+    "setup-docker": "echo \"\nPNPM_STORE\"=$(pnpm store path) >> .env && docker -v",
     "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push && vite build",
     "test": "vitest",
     "coverage": "vitest run --coverage"
@@ -57,6 +58,7 @@
     "@types/cookie": "^0.5.1",
     "@types/express": "^4.17.13",
     "@types/node": "^18.7.13",
+    "@types/prettier": "^2.7.0",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.35.1",
     "@typescript-eslint/parser": "^5.35.1",
@@ -136,7 +138,7 @@
       "@typescript-eslint/no-non-null-assertion": "off"
     }
   },
-  "packageManager": "pnpm@7.9.5",
+  "packageManager": "pnpm@7.13.1",
   "pnpm": {
     "peerDependencyRules": {
       "ignoreMissing": [

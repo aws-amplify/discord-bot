@@ -42,7 +42,7 @@ const base: UserConfig = {
     },
     include: ['@carbon/charts'],
   },
-  plugins: [sveltekit(), server()],
+  plugins: [sveltekit(), server({ dev: false })],
   resolve: {
     alias: {
       $discord: relative('./src/lib/discord'),
