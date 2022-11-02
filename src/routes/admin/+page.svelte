@@ -3,28 +3,17 @@
     Checkbox,
     Form,
     FormGroup,
-    TextInput,
-    Content,
-    Grid,
-    InlineLoading,
-    Row,
-    Column,
     Button,
-    Tabs,
-    Tab,
-    TabContent,
     Toggle,
   } from 'carbon-components-svelte'
   import { get } from 'svelte/store'
   import { ACCESS_LEVELS } from '$lib/constants'
   import { guild, notifications } from '$lib/store'
-  import { tabs } from './tabs'
-  import { createIntegrationHrefFromCode } from './breadcrumbs'
   import type { PageServerData } from './$types'
 
   export let data: PageServerData
-  let { commands, configure, discord, integrations, selectedTab } = data
-  $: ({ commands, configure, discord, integrations, features } = data)
+  let { commands, configure, discord } = data
+  $: ({ commands, configure, discord, features } = data)
 
   const roles = discord.roles.sort((a, b) => b.position - a.position)
 
@@ -71,67 +60,6 @@
         subtitle: error.message,
       })
     }
-  }
-
-  const toggleFeature = async (feature, enabled) => {
-    const body = {
-      configurationId: configure.id,
-      code: feature.code,
-      enabled,
-    }
-
-    try {
-      const res = await fetch(`/api/admin/feature`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      })
-      let data
-      try {
-        data = await res.json()
-        if (!data) {
-          // fallback to text for errors
-          data = await res.text()
-        }
-      } catch (error) {
-        notifications.add({
-          kind: 'error',
-          title: `Error ${enabled ? 'enabling' : 'disabling'} feature`,
-          subtitle: '',
-        })
-      }
-      if (data?.id) {
-        notifications.add({
-          kind: 'success',
-          title: `Successfully ${enabled ? 'enabled' : 'disabled'} ${
-            feature.name
-          }`,
-          subtitle: '',
-        })
-      }
-    } catch (error) {
-      notifications.add({
-        kind: 'error',
-        title: `Error ${enabled ? 'enabling' : 'disabling'} feature`,
-        subtitle: '',
-      })
-    }
-  }
-
-  const handleOnFeatureToggleChange = async (event, feature) => {
-    const { checked } = event.target
-    await toggleFeature(feature, checked)
-    /** @TODO throttling */
-    // throttle(toggleFeature(feature, checked), 5)
-  }
-
-  const handleOnFeatureSubmit = async (event, feature) => {
-    event.preventDefault()
-    const form = event.target
-    const data = new FormData(form)
-    console.log('submit', form, data)
   }
 
   let togglingCommandIds: string[] = []
@@ -203,136 +131,93 @@
   }
 </script>
 
-<Tabs selected="{selectedTab}">
-  {#each tabs as tab}
-    <Tab label="{tab.title}" />
-  {/each}
-  <svelte:fragment slot="content">
-    <TabContent>
-      <div class="ha--section-wrapper">
-        <p>{$guild}</p>
-        <section>
-          <!-- <Button disabled="{isSyncing}" on:click="{syncCommands}">
+<div class="ha--section-wrapper">
+  <p>{$guild}</p>
+  <section>
+    <!-- <Button disabled="{isSyncing}" on:click="{syncCommands}">
                     Sync Commands
                   </Button> -->
-          <h2>Commands</h2>
-          <ul class="ha--command-list">
-            {#each commands as command (command)}
-              {@const tags = [command.registration && 'Registered'].filter(
-                Boolean
-              )}
-              <li class="ha--command">
-                <p>
-                  <span class="ha--command-name">{command.name}</span><br />
-                  {command.description}
-                </p>
-                <form
-                  on:submit="{(e) => handleOnCommandToggleSubmit(e, command)}"
-                >
-                  <!-- <InlineLoading
+    <h2>Commands</h2>
+    <ul class="ha--command-list">
+      {#each commands as command (command)}
+        {@const tags = [command.registration && 'Registered'].filter(Boolean)}
+        <li class="ha--command">
+          <p>
+            <span class="ha--command-name">{command.name}</span><br />
+            {command.description}
+          </p>
+          <form on:submit="{(e) => handleOnCommandToggleSubmit(e, command)}">
+            <!-- <InlineLoading
                             status="{togglingCommandId !== command.id
                               ? 'inactive'
                               : 'active'}"
                           /> -->
-                  <Toggle
-                    labelText="{`Enable/disable ${command.name}`}"
-                    hideLabel
-                    disabled="{togglingCommandIds.some(
-                      (id) => id === command.id
-                    )}"
-                    toggled="{!!command.registration}"
-                    on:change="{(e) => handleOnCommandToggleChange(e, command)}"
-                  />
-                </form>
-              </li>
-            {/each}
-          </ul>
-        </section>
-        <section>
-          <h2>Role Associations</h2>
-          <!-- <pre><code>{JSON.stringify(guilds, null, 2)}</code></pre> -->
-          <Form on:submit="{onSubmit}">
-            <div class="ha--configure-roles">
-              <FormGroup id="adminRoles" legendText="Admin Roles">
-                {#each roles as role}
-                  <Checkbox
-                    id="{`admin-${role.id}`}"
-                    labelText="{role.name}"
-                    checked="{configure?.roles?.some(
-                      (r) =>
-                        r.accessLevelId === ACCESS_LEVELS.ADMIN &&
-                        r.discordRoleId === role.id
-                    ) || false}"
-                    value="{role.id}"
-                  />
-                {/each}
-              </FormGroup>
-              <FormGroup id="staffRoles" legendText="Staff Roles">
-                {#each roles as role}
-                  <Checkbox
-                    id="{`staff-${role.id}`}"
-                    labelText="{role.name}"
-                    checked="{configure?.roles?.some(
-                      (r) =>
-                        r.accessLevelId === ACCESS_LEVELS.STAFF &&
-                        r.discordRoleId === role.id
-                    ) || false}"
-                    value="{role.id}"
-                  />
-                {/each}
-              </FormGroup>
-              <FormGroup id="contributorRoles" legendText="Contributor Roles">
-                {#each roles as role}
-                  <Checkbox
-                    id="{`contributor-${role.id}`}"
-                    labelText="{role.name}"
-                    checked="{configure?.roles?.some(
-                      (r) =>
-                        r.accessLevelId === ACCESS_LEVELS.CONTRIBUTOR &&
-                        r.discordRoleId === role.id
-                    ) || false}"
-                    value="{role.id}"
-                  />
-                {/each}
-              </FormGroup>
-            </div>
-            <Button type="submit">
-              {configure?.id ? 'Update' : 'Create'} Configuration
-            </Button>
-          </Form>
-        </section>
+            <Toggle
+              labelText="{`Enable/disable ${command.name}`}"
+              hideLabel
+              disabled="{togglingCommandIds.some((id) => id === command.id)}"
+              toggled="{!!command.registration}"
+              on:change="{(e) => handleOnCommandToggleChange(e, command)}"
+            />
+          </form>
+        </li>
+      {/each}
+    </ul>
+  </section>
+  <section>
+    <h2>Role Associations</h2>
+    <!-- <pre><code>{JSON.stringify(guilds, null, 2)}</code></pre> -->
+    <Form on:submit="{onSubmit}">
+      <div class="ha--configure-roles">
+        <FormGroup id="adminRoles" legendText="Admin Roles">
+          {#each roles as role}
+            <Checkbox
+              id="{`admin-${role.id}`}"
+              labelText="{role.name}"
+              checked="{configure?.roles?.some(
+                (r) =>
+                  r.accessLevelId === ACCESS_LEVELS.ADMIN &&
+                  r.discordRoleId === role.id
+              ) || false}"
+              value="{role.id}"
+            />
+          {/each}
+        </FormGroup>
+        <FormGroup id="staffRoles" legendText="Staff Roles">
+          {#each roles as role}
+            <Checkbox
+              id="{`staff-${role.id}`}"
+              labelText="{role.name}"
+              checked="{configure?.roles?.some(
+                (r) =>
+                  r.accessLevelId === ACCESS_LEVELS.STAFF &&
+                  r.discordRoleId === role.id
+              ) || false}"
+              value="{role.id}"
+            />
+          {/each}
+        </FormGroup>
+        <FormGroup id="contributorRoles" legendText="Contributor Roles">
+          {#each roles as role}
+            <Checkbox
+              id="{`contributor-${role.id}`}"
+              labelText="{role.name}"
+              checked="{configure?.roles?.some(
+                (r) =>
+                  r.accessLevelId === ACCESS_LEVELS.CONTRIBUTOR &&
+                  r.discordRoleId === role.id
+              ) || false}"
+              value="{role.id}"
+            />
+          {/each}
+        </FormGroup>
       </div>
-    </TabContent>
-    <TabContent>
-      <div class="ha--integration-list">
-        {#each integrations as feature (feature)}
-          <div class="ha--integration">
-            <p>
-              <span class="ha--integration-name">{feature.name}</span><br />
-              {feature.description}
-            </p>
-            <form on:submit="{(e) => handleOnFeatureSubmit(e, feature)}">
-              <Toggle
-                labelText="{feature.code}"
-                hideLabel
-                toggled="{configure.features.some(
-                  (f) => f.enabled && f.code === feature.code
-                )}"
-                on:change="{(e) => handleOnFeatureToggleChange(e, feature)}"
-              />
-              {#each feature?.inputs || [] as input}
-                <TextInput id="{input.code}" labelText="{input.name}" />
-              {/each}
-            </form>
-            <a href="{createIntegrationHrefFromCode(feature.code)}">
-              Visit {feature.name}
-            </a>
-          </div>
-        {/each}
-      </div>
-    </TabContent>
-  </svelte:fragment>
-</Tabs>
+      <Button type="submit">
+        {configure?.id ? 'Update' : 'Create'} Configuration
+      </Button>
+    </Form>
+  </section>
+</div>
 
 <style>
   section {
