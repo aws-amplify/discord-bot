@@ -52,7 +52,44 @@ async function getUser(message: Message) {
 
 async function createAnswer(answer: Message) {
   const user = await getUser(answer)
-  return `${user} ${answer.content}`
+  return `${user} ${formatContent(answer.content)}`
+}
+
+/** GitHub swallows the first line of a code blocks with no newline
+ * between backticks and code, reformat to avoid this */
+function formatContent(message: string) {
+  let formatted = message
+  const needle = '```'
+  const re = new RegExp(needle, 'gi')
+
+  const results = []
+  while (re.exec(message)) {
+    results.push(re.lastIndex)
+  }
+
+  let increment = 0
+  for (const index of results) {
+    // add newline before
+    if (formatted.charAt(index + increment - 4).search(/\n/) === -1) {
+      formatted =
+        formatted.slice(
+          0,
+          index + increment - 3 > 0 ? index + increment - 3 : 0
+        ) +
+        '\n' +
+        formatted.slice(index + increment - 3)
+      increment += 1
+    }
+    // add newline after
+    if (formatted.charAt(index + increment).search(/\n/) === -1) {
+      formatted =
+        formatted.slice(0, index + increment) +
+        '\n' +
+        formatted.slice(index + increment)
+      increment += 1
+    }
+  }
+  return formatted
 }
 
 async function createDiscussionBody(
@@ -62,7 +99,7 @@ async function createDiscussionBody(
   let body = ''
   for (const [id, message] of messages) {
     const user = await getUser(message)
-    body += `${user} ${message.content}\n\n`
+    body += `${user} ${formatContent(message.content)}\n\n`
     if (message.attachments?.size) {
       message.attachments.forEach((attachment, id) => {
         body += `<img src="${attachment.attachment}" />\n\n`
@@ -93,7 +130,7 @@ export const config = new SlashCommandBuilder()
       )
   )
 
-async function addDiscussion(discussion, userId: string, record: Question) {
+async function addDiscussion(discussion, record: Question) {
   const githubDiscussion = {
     id: discussion?.createDiscussion?.discussion?.id,
     url: discussion?.createDiscussion?.discussion?.url,
@@ -200,8 +237,7 @@ export async function handler(
         body,
         mutationId: record.id,
       })
-      if (postResponse)
-        addDiscussion(postResponse, interaction?.user?.id, record)
+      if (postResponse) addDiscussion(postResponse, record)
       if (answerContent) {
         try {
           const answerResponse = await postAnswer({
