@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit'
-import type { LayoutLoad } from './$types'
+import type { LayoutServerLoad } from './$types'
 
-export const load: LayoutLoad = async ({ parent }) => {
+export const load: LayoutServerLoad = async ({ parent }) => {
   const { session } = await parent()
   if (
     session?.user?.isAdmin ||
