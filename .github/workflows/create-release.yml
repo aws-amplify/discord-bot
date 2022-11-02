@@ -32,7 +32,7 @@ jobs:
           else
             version=$(pnpm version ${{ github.event.inputs.type }} --preid next --no-git-tag-version)
           fi
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
       - run: echo "::debug::version is ${{ steps.version.outputs.version }}"
       - run: echo "::notice title="releasing"::${{ steps.version.outputs.version }}"
       - if: ${{ steps.version.outputs.version == '' }}
@@ -42,7 +42,7 @@ jobs:
       #     node-version-file: '.nvmrc'
       #     cache: 'pnpm'
       - id: branch
-        run: echo "::set-output name=name::release/${{ steps.version.outputs.version }}"
+        run: echo "name=release/${{ steps.version.outputs.version }}" >> $GITHUB_OUTPUT
       - name: Create release branch
         run: git checkout -b ${{ steps.branch.outputs.name }}
       # this is not required when pnpm is creating the git tag
@@ -54,7 +54,7 @@ jobs:
       - id: pr
         run: |
           url=$(gh pr create --title "release: ${{ steps.version.outputs.version }}" --body "Automated PR created to release a new version of the project")
-          echo ::set-output name=link::$url
+          echo "link=$url" >> $GITHUB_OUTPUT
 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
