@@ -80,6 +80,10 @@ const initGuild = async (guild: Guild) => {
 
 client.once(Events.ClientReady, async () => {
   console.log('Bot Ready!')
+  if (import.meta.env.DEV) {
+    // delete all global commands
+    await client.application?.commands.set([])
+  }
   for (const guild of client.guilds.cache.values()) {
     try {
       await initGuild(guild)
