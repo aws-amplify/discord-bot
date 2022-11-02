@@ -244,15 +244,10 @@ export async function syncRegisteredCommandsForGuild(
     throw new Error('Error fetching registered commands')
   }
 
-  console.log(registeredCommands)
-
   for (const storedCommand of storedCommands) {
     const registerCommand = registeredCommands.find(
       (r) => createCommandCode(r.name) === storedCommand.featureCode
     )
-
-    console.log('stored is', storedCommand)
-    console.log('registered is', registerCommand)
 
     // disable commands not registered but enabled in db
     if (!registerCommand && storedCommand.enabled) {
