@@ -25,7 +25,13 @@
   import Avatar from '$lib/Avatar.svelte'
   import LoginButton from '$lib/LoginButton.svelte'
   import GuildSwitcher from '$lib/GuildSwitcher.svelte'
-  import { notifications, session } from '$lib/store'
+  import {
+    notifications,
+    session,
+    guild,
+    isSplashScreenActive,
+  } from '$lib/store'
+  import SplashScreen from '$lib/SplashScreen.svelte'
   import type { CarbonTheme } from 'carbon-components-svelte/types/Theme/Theme.svelte'
 
   import 'carbon-components-svelte/css/all.css'
@@ -33,7 +39,9 @@
   import '../styles/sidenav.css'
 
   export let data: LayoutData
-  $: ({ guilds } = data)
+  let { guilds, selectedGuild } = data
+  $: ({ guilds, selectedGuild } = data)
+  $: guild.set(selectedGuild)
 
   let theme: CarbonTheme = 'g100'
 
@@ -43,104 +51,112 @@
   afterNavigate(() => {
     if (isUserPanelOpen) isUserPanelOpen = false
   })
+
+  // $: console.log('SESSION FROM LAYOUT', $session, $page.data.session)
 </script>
 
+<svelte:head>
+  <title>Hey, Amplify!</title>
+</svelte:head>
+
 <Theme bind:theme>
-  <Header href="/" bind:isSideNavOpen>
-    <div slot="skip-to-content">
-      <SkipToContent />
+  <SplashScreen isActive="{$isSplashScreenActive}">
+    <Header href="/" bind:isSideNavOpen>
+      <div slot="skip-to-content">
+        <SkipToContent />
+      </div>
+
+      <span slot="platform" class="ha--platform--container">
+        <img src="/logo.svg" alt="AWS Amplify Logo" />
+        <span class="ha--platform-name">AWS Amplify Discord Bot</span>
+        <!-- <code>v{process.env.VERSION || ''}</code> -->
+      </span>
+
+      <HeaderUtilities>
+        {#if $session?.user}
+          {#if guilds.length > 1}
+            <GuildSwitcher guilds="{guilds}" bind:selected="{selectedGuild}" />
+          {/if}
+          <HeaderAction
+            aria-label="User settings"
+            bind:isOpen="{isUserPanelOpen}"
+            transition="{{ duration: 200 }}"
+          >
+            <Avatar slot="icon" url="{$session.user.image}" />
+            <HeaderPanelLinks class="ha--panel-user">
+              {#if $session.user.isAdmin}
+                <HeaderPanelLink href="/admin">Admin</HeaderPanelLink>
+              {/if}
+              <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
+              {#if !$session.user.github}
+                <HeaderPanelLink href="/profile/link"
+                  >Link GitHub Account</HeaderPanelLink
+                >
+              {:else}
+                <p class="header-text">Github Account Linked</p>
+              {/if}
+            </HeaderPanelLinks>
+          </HeaderAction>
+        {:else}
+          <LoginButton provider="{'discord'}" />
+        {/if}
+      </HeaderUtilities>
+
+      <SideNav bind:isOpen="{isSideNavOpen}" rail>
+        <SideNavItems>
+          <SideNavLink
+            icon="{Home}"
+            text="Home"
+            href="/"
+            isSelected="{$page.url.pathname === '/'}"
+          />
+          <SideNavLink
+            icon="{MessageQueue}"
+            text="Questions"
+            href="/questions"
+            isSelected="{$page.url.pathname === '/questions'}"
+          />
+          {#if $session?.user?.isAdmin}
+            <SideNavLink
+              icon="{UserAdmin}"
+              text="Admin"
+              href="/admin"
+              isSelected="{$page.url.pathname === '/admin'}"
+            />
+          {/if}
+          {#if $session?.user?.isGuildOwner || $session?.user?.isAdmin || $session?.user?.isStaff}
+            <SideNavLink
+              icon="{DashboardReference}"
+              text="Dashboard"
+              href="/dashboard"
+              isSelected="{$page.url.pathname === '/dashboard'}"
+            />
+          {/if}
+          <SideNavDivider />
+          <SideNavLink
+            icon="{LogoGithub}"
+            text="GitHub"
+            href="https://github.com/aws-amplify/discord-bot"
+            target="_blank"
+          />
+          <SideNavLink
+            icon="{LogoDiscord}"
+            text="Join us on Discord"
+            href="https://discord.gg/invite/amplify"
+            target="_blank"
+          />
+        </SideNavItems>
+      </SideNav>
+    </Header>
+
+    <slot />
+
+    <div class="ha--notification--container">
+      {#each $notifications as notification}
+        <ToastNotification {...notification} />
+      {/each}
     </div>
-
-    <span slot="platform" class="ha--platform--container">
-      <img src="/logo.svg" alt="AWS Amplify Logo" />
-      <span class="ha--platform-name">AWS Amplify Discord Bot</span>
-      <!-- <code>v{process.env.VERSION || ''}</code> -->
-    </span>
-
-    <HeaderUtilities>
-      {#if $session?.user}
-        <!-- {#if guilds.length > 1}
-          <GuildSwitcher guilds="{guilds}" />
-        {/if} -->
-        <HeaderAction
-          aria-label="User settings"
-          bind:isOpen="{isUserPanelOpen}"
-          transition="{{ duration: 200 }}"
-        >
-          <Avatar slot="icon" url="{$session.user.image}" />
-          <HeaderPanelLinks>
-            {#if $session.user.isAdmin}
-              <HeaderPanelLink href="/admin">Admin</HeaderPanelLink>
-            {/if}
-            <HeaderPanelLink href="/logout">Logout</HeaderPanelLink>
-            {#if !$session.user.github}
-              <HeaderPanelLink href="/profile/link"
-                >Link GitHub Account</HeaderPanelLink
-              >
-            {:else}
-              <p class="header-text">Github Account Linked</p>
-            {/if}
-          </HeaderPanelLinks>
-        </HeaderAction>
-      {:else}
-        <LoginButton provider="{'discord'}" />
-      {/if}
-    </HeaderUtilities>
-
-    <SideNav bind:isOpen="{isSideNavOpen}" rail>
-      <SideNavItems>
-        <SideNavLink
-          icon="{Home}"
-          text="Home"
-          href="/"
-          isSelected="{$page.url.pathname === '/'}"
-        />
-        <SideNavLink
-          icon="{MessageQueue}"
-          text="Questions"
-          href="/questions"
-          isSelected="{$page.url.pathname === '/questions'}"
-        />
-        {#if $session?.user?.isAdmin}
-          <SideNavLink
-            icon="{UserAdmin}"
-            text="Admin"
-            href="/admin"
-            isSelected="{$page.url.pathname === '/admin'}"
-          />
-        {/if}
-        {#if $session?.user?.isGuildOwner || $session?.user?.isAdmin || $session?.user?.isStaff}
-          <SideNavLink
-            icon="{DashboardReference}"
-            text="Dashboard"
-            href="/dashboard"
-            isSelected="{$page.url.pathname === '/dashboard'}"
-          />
-        {/if}
-        <SideNavDivider />
-        <SideNavLink
-          icon="{LogoGithub}"
-          text="GitHub"
-          href="https://github.com/aws-amplify/discord-bot"
-          target="_blank"
-        />
-        <SideNavLink
-          icon="{LogoDiscord}"
-          text="Join us on Discord"
-          href="https://discord.gg/invite/amplify"
-          target="_blank"
-        />
-      </SideNavItems>
-    </SideNav>
-  </Header>
-
-  <slot />
-
-  <div class="ha--notification--container">
-    {#each $notifications as notification}
-      <ToastNotification {...notification} />
-    {/each}
-  </div>
+  </SplashScreen>
 </Theme>
 
 <style>
@@ -157,9 +173,15 @@
     margin-bottom: var(--cds-layout-01);
   }
 
-  :global(.bx--header-panel--expanded) {
-    height: min-content;
-    padding-bottom: var(--cds-spacing-10);
+  :global(.bx--header-panel--expanded),
+  :global(.bx--header-panel) {
+    height: fit-content;
+    border-bottom: 1px solid #393939;
+  }
+
+  :global(ul.bx--switcher__item) {
+    height: auto;
+    margin-bottom: var(--cds-spacing-04, 1rem);
   }
 
   .header-text {
@@ -198,6 +220,11 @@
     .ha--platform-name {
       display: inline-block;
     }
+  }
+
+  .ha--panel-user {
+    height: fit-content;
+    border-bottom: 1px solid #393939;
   }
 
   img {

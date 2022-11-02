@@ -18,7 +18,8 @@
     "strict": true,
     "target": "esnext",
     "sourceMap": false,
-    "inlineSourceMap": true
+    "inlineSourceMap": true,
+    "importsNotUsedAsValues": "remove"
   },
   "exclude": ["node_modules"]
 }

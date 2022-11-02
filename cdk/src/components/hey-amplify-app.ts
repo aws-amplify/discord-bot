@@ -2,6 +2,8 @@ import { Construct } from 'constructs'
 import { Port } from 'aws-cdk-lib/aws-ec2'
 import * as cdk from 'aws-cdk-lib'
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
+import * as events from 'aws-cdk-lib/aws-events'
+import * as targets from 'aws-cdk-lib/aws-events-targets'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns'
 import * as efs from 'aws-cdk-lib/aws-efs'
@@ -9,6 +11,7 @@ import * as elb from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as route53 from 'aws-cdk-lib/aws-route53'
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets'
+import * as sns from 'aws-cdk-lib/aws-sns'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import { v4 as uuid } from 'uuid'
 import { WAF } from './waf'
@@ -94,6 +97,7 @@ export class HeyAmplifyApp extends Construct {
           cpu: 256,
           memoryLimitMiB: 512,
           desiredCount: 1,
+          circuitBreaker: { rollback: true },
           taskImageOptions: {
             containerName: docker.name,
             image: ecs.ContainerImage.fromAsset(docker.context, {
@@ -101,7 +105,16 @@ export class HeyAmplifyApp extends Construct {
               // https://github.com/aws/aws-cdk/issues/14395
               buildArgs: docker.environment,
             }),
-            environment: docker.environment,
+            environment: {
+              ...docker.environment,
+              BUCKET_NAME: bucket.bucketName,
+              DATABASE_FILE_PATH: docker.environment!.DATABASE_URL.replace(
+                'file:',
+                ''
+              ),
+              ENABLE_DATABASE_BACKUP: 'true', // this is set to `true` so we can build the container locally without backups auto-enabled
+              AWS_REGION: process.env.CDK_DEFAULT_REGION as string,
+            },
             enableLogging: true,
             secrets,
             containerPort: 3000,
@@ -109,6 +122,9 @@ export class HeyAmplifyApp extends Construct {
           publicLoadBalancer: true, // needed for bridge to CF
         }
       )
+
+    // grant read/write to bucket for Litestream backups
+    bucket.grantReadWrite(albFargateService.service.taskDefinition.taskRole)
 
     albFargateService.targetGroup.setAttribute(
       'deregistration_delay.timeout_seconds',
@@ -136,6 +152,11 @@ export class HeyAmplifyApp extends Construct {
       docker.name
     ) as ecs.ContainerDefinition
 
+    cdk.Tags.of(container).add(
+      'app:version',
+      this.node.tryGetContext('version')
+    )
+
     // mount the filesystem
     container.addMountPoints({
       containerPath: filesystemMountPoint,
@@ -157,6 +178,16 @@ export class HeyAmplifyApp extends Construct {
 
     // allow outbound connections to the filesystem
     albFargateService.service.connections.allowTo(filesystem, Port.tcp(2049))
+
+    // add WAF to the LoadBalancer
+    const waf = new WAF(this, 'WAFLoadBalancer', {
+      name: 'WAFLoadBalancer',
+      scope: 'REGIONAL',
+    })
+    waf.addAssociation(
+      'WebACLAssociationLoadBalancer',
+      albFargateService.loadBalancer.loadBalancerArn
+    )
 
     const xAmzSecurityTokenHeaderName = 'X-HeyAmplify-Security-Token'
     const xAmzSecurityTokenHeaderValue = uuid()
@@ -198,8 +229,8 @@ export class HeyAmplifyApp extends Construct {
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
       },
       // add Web Application Firewall (WAF)
-      webAclId: new WAF(this, 'WAF', {
-        name: 'WAF',
+      webAclId: new WAF(this, 'WAFCloudFront', {
+        name: 'WAFCloudFront',
       }).attrArn,
     })
 
@@ -224,10 +255,47 @@ export class HeyAmplifyApp extends Construct {
       })
     }
 
+    /**
+     * Set up alarms
+     */
+    const restartTopic = new sns.Topic(this, 'ContainerRestarts', {
+      displayName: 'ContainerRestarts',
+    })
+
+    const restartRuleTarget = new targets.SnsTopic(restartTopic, {
+      message: events.RuleTargetInput.fromText(
+        `Container restarted in ${process.env.CDK_DEFAULT_REGION as string}`
+      ),
+    })
+
+    /**
+     * Set up event rule for container restarts
+     */
+    const restartRule = new events.Rule(this, 'RestartRule', {
+      eventPattern: {
+        source: ['aws.ecs'],
+        detailType: ['ECS Task State Change'],
+        region: [process.env.CDK_DEFAULT_REGION as string],
+        detail: {
+          lastStatus: ['STOPPED'],
+          desiredStatus: ['RUNNING'],
+          clusterArn: [cluster.clusterArn],
+          taskDefinitionArn: [
+            albFargateService.service.taskDefinition.taskDefinitionArn,
+          ],
+        },
+      },
+      targets: [restartRuleTarget],
+    })
+
     // enable access logging for load balancer
-    // albFargateService.loadBalancer.logAccessLogs(bucket, 'elb-access')
+    albFargateService.loadBalancer.logAccessLogs(bucket, 'alb-access')
 
     // enable deletion protection for load balancer
+    albFargateService.loadBalancer.setAttribute(
+      'deletion_protection.enabled',
+      'true'
+    )
     albFargateService.loadBalancer.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
 
     // set up DNS record for the CloudFront distribution if subdomain exists
@@ -237,42 +305,17 @@ export class HeyAmplifyApp extends Construct {
           new route53Targets.CloudFrontTarget(distribution)
         ),
         zone: subdomain.hostedZone,
-        recordName: this.envName,
+      })
+
+      new route53.CnameRecord(this, 'CnameRecordApp', {
+        recordName: 'www',
+        zone: subdomain.hostedZone,
+        domainName: subdomain.domainName,
       })
 
       new cdk.CfnOutput(this, 'HeyAmplifyAppURL', {
         value: record.domainName,
       })
-    }
-
-    /**
-     * if DATABASE_URL is a SQLite database, create a backup solution
-     * @TODO litestream is causing conflicts with prisma, locking the database and throwing disk I/O errors, revisit with backups on cron
-     */
-    if (docker.environment?.DATABASE_URL?.startsWith('file:')) {
-      // create backup infrastructure, Litestream sidecar
-      // const litestreamContainer =
-      //   albFargateService.service.taskDefinition.addContainer('db-backup', {
-      //     image: ecs.ContainerImage.fromRegistry('litestream/litestream'),
-      //     environment: {
-      //       BUCKET_NAME: bucket.bucketName,
-      //     },
-      //     logging: new ecs.AwsLogDriver({
-      //       streamPrefix: 'backup',
-      //     }),
-      //     command: [
-      //       'replicate',
-      //       `${docker.environment.DATABASE_URL.replace('file:', '')}`,
-      //       `s3://${bucket.bucketName}/backups`,
-      //     ],
-      //   })
-      // bucket.grantReadWrite(albFargateService.service.taskDefinition.taskRole)
-      // // mount the filesystem
-      // litestreamContainer.addMountPoints({
-      //   containerPath: filesystemMountPoint,
-      //   sourceVolume: volumeName,
-      //   readOnly: false,
-      // })
     }
   }
 }

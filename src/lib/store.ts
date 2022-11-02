@@ -15,3 +15,5 @@ export const session = derived(page, ($page) => {
 export const guild: Writable<string> = writable(
   import.meta.env.VITE_DISCORD_GUILD_ID
 )
+
+export const isSplashScreenActive = writable(false)

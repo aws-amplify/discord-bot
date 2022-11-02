@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig, loadEnv } from 'vite'
+import { server } from '@hey-amplify/vite-plugin-server'
 import type { UserConfig } from 'vitest/config'
 
 function relative(path) {
@@ -27,10 +28,7 @@ export function loadEnvVars(mode = 'development') {
 
 const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
 
-/**
- * Configuration to build the SvelteKit project.
- */
-const app: UserConfig = {
+const base: UserConfig = {
   build: {
     target: 'esnext',
   },
@@ -44,64 +42,19 @@ const app: UserConfig = {
     },
     include: ['@carbon/charts'],
   },
-  plugins: [sveltekit()],
+  plugins: [sveltekit(), server({ dev: false })],
   resolve: {
     alias: {
       $discord: relative('./src/lib/discord'),
     },
   },
   ssr: {
-		noExternal: ['@carbon/charts', 'carbon-components'],
-	},
-}
-
-/**
- * Configuration to build the server
- */
-const server: UserConfig = {
-  mode: 'production',
-  build: {
-    target: 'esnext',
-    outDir: 'build',
-    // do not erase Svelte-Kit build output
-    emptyOutDir: false,
-    lib: {
-      // only build server and supporting code (i.e. the bot client)
-      entry: './src/server.ts',
-      name: 'server',
-      formats: ['es'],
-      fileName: () => `[name].js`,
-    },
-    rollupOptions: {
-      // externalize dependencies and "./handler.js" for build
-      external: Object.keys(pkg.dependencies).concat('./handler.js'),
-      output: {
-        inlineDynamicImports: false,
-        preserveModules: true,
-        preserveModulesRoot: 'src',
-      },
-    },
-    ssr: true,
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      target: 'esnext',
-    },
-  },
-  resolve: {
-    // use same helper aliases as Svelte-Kit
-    alias: {
-      $lib: relative('./src/lib'),
-      $discord: relative('./src/lib/discord'),
-    },
+    noExternal: ['@carbon/charts', 'carbon-components'],
   },
 }
 
 export default defineConfig(({ mode }) => {
-  let config = app
-  if (mode === 'server' || mode === 'server-test') {
-    config = server
-  }
+  const config = base
   // apply general test config
   config.test = {
     globals: true,
@@ -114,9 +67,12 @@ export default defineConfig(({ mode }) => {
       'tests/setup/seed.ts',
       'tests/setup/github-secrets-enabled.ts',
     ],
+    env: {
+      SSR: 'true',
+    },
   }
   // `vitest` sets mode to test, load local environment variables for test
-  if (mode === 'test' || mode === 'server-test') {
+  if (mode === 'test') {
     loadEnvVars(mode)
   } else {
     // rely on Vite to load public env vars (i.e. prefixed with VITE_)

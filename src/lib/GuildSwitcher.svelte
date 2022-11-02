@@ -1,10 +1,27 @@
 <script lang="ts">
   import { Dropdown } from 'carbon-components-svelte'
-  import { guild } from '$lib/store'
-  export let guilds: [{ id: string; text: string }]
-  let selected = guilds[0].id
+  import { browser } from '$app/environment'
+  import { guild, isSplashScreenActive } from '$lib/store'
 
-  $: guild.set(selected)
+  export let guilds: [{ id: string; text: string }]
+  export let selected = guilds[0].id
+
+  $: if (browser && $guild !== selected) {
+    isSplashScreenActive.set(true)
+    const body = new FormData()
+    body.append('guild', selected)
+    body.append('redirect', window.location.pathname)
+    const request = new Request('/api/switch-guild', {
+      method: 'POST',
+      body,
+      redirect: 'follow',
+    })
+    fetch(request).then((res) => {
+      if (res.redirected) {
+        window.location.href = res.url
+      }
+    })
+  }
 </script>
 
 <div class="ha--guild-switcher">

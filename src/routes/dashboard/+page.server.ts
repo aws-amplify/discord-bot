@@ -1,24 +1,24 @@
-import { Routes } from 'discord-api-types/v10'
-import { api } from '$discord'
+import { type ForumChannel, type TextChannel } from 'discord.js'
+import {
+  Routes,
+  type APIPartialChannel,
+  type APIGuildPreview,
+} from 'discord-api-types/v10'
+import { api } from '$discord/api'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { isHelpChannel } from '$lib/discord/support'
 import { getGitHubMembers } from './helpers/github'
-import type { APIPartialChannel, APIGuildPreview } from 'discord-api-types/v10'
-import type { TextChannel } from 'discord.js'
-import type {
-  Contributor,
-  Contributors,
-  GitHubUser,
-  Question,
-  Questions,
+import {
+  type Contributor,
+  type Contributors,
+  type GitHubUser,
+  type Question,
+  type Questions,
 } from './types'
-import type { PageServerLoad } from './$types'
+import { type PageServerLoad } from './$types'
 
-const guildId = import.meta.env.VITE_DISCORD_GUILD_ID
-const GUILD_TEXT_CHANNEL = 0
-
-async function fetchHelpChannels(): Promise<string[]> {
+async function fetchHelpChannels(guildId: string): Promise<string[]> {
   try {
     const allChannels = (await api.get(
       Routes.guildChannels(guildId)
@@ -26,10 +26,8 @@ async function fetchHelpChannels(): Promise<string[]> {
     if (allChannels?.length) {
       /** @ts-expect-error checking to make sure not undefined */
       return allChannels
-        .filter(
-          (channel: APIPartialChannel) =>
-            channel.type === GUILD_TEXT_CHANNEL &&
-            isHelpChannel(channel as TextChannel)
+        .filter((channel: APIPartialChannel) =>
+          isHelpChannel(channel as TextChannel | ForumChannel)
         )
         .map((channel) => channel.name)
     }
@@ -105,11 +103,16 @@ async function fetchHelpChannels(): Promise<string[]> {
 //   return []
 // }
 
-async function getStaffContributors(): Promise<Contributor[]> {
+async function getStaffContributors(guildId: string): Promise<Contributor[]> {
   try {
     const data = await prisma.discordUser.findMany({
       where: {
         answers: {
+          every: {
+            question: {
+              guildId,
+            },
+          },
           some: {
             participation: {
               participantRoles: {
@@ -190,11 +193,16 @@ async function getStaffContributors(): Promise<Contributor[]> {
   return []
 }
 
-async function getAllContributors(): Promise<Contributor[]> {
+async function getAllContributors(guildId: string): Promise<Contributor[]> {
   try {
     const data = await prisma.discordUser.findMany({
       where: {
         answers: {
+          every: {
+            question: {
+              guildId,
+            },
+          },
           some: {
             participation: {
               participantRoles: {
@@ -285,10 +293,13 @@ async function getAllContributors(): Promise<Contributor[]> {
   return []
 }
 
-async function getStaffAnswers(): Promise<Question[]> {
+async function getStaffAnswers(guildId: string): Promise<Question[]> {
   try {
     const data = await prisma.answer.findMany({
       where: {
+        question: {
+          guildId,
+        },
         participation: {
           participantRoles: {
             some: {
@@ -324,10 +335,13 @@ async function getStaffAnswers(): Promise<Question[]> {
   return []
 }
 
-async function getCommunityAnswers(): Promise<Question[]> {
+async function getCommunityAnswers(guildId: string): Promise<Question[]> {
   try {
     const data = await prisma.answer.findMany({
       where: {
+        question: {
+          guildId,
+        },
         participation: {
           participantRoles: {
             none: {
@@ -363,7 +377,9 @@ async function getCommunityAnswers(): Promise<Question[]> {
   return []
 }
 
-export const load: PageServerLoad = async (): Promise<{
+export const load: PageServerLoad = async ({
+  locals,
+}): Promise<{
   channels: string[]
   contributors: Contributors
   gitHubStaff: GitHubUser[]
@@ -372,8 +388,12 @@ export const load: PageServerLoad = async (): Promise<{
   presenceCount: number
   questions: Questions
 }> => {
+  const guildId = locals.session.guild
   const questions = (
     await prisma.question.findMany({
+      where: {
+        guildId,
+      },
       select: {
         id: true,
         createdAt: true,
@@ -391,10 +411,10 @@ export const load: PageServerLoad = async (): Promise<{
   )) as APIGuildPreview
 
   return {
-    channels: await fetchHelpChannels(),
+    channels: await fetchHelpChannels(guildId),
     contributors: {
-      all: await getAllContributors(),
-      staff: await getStaffContributors(),
+      all: await getAllContributors(guildId),
+      staff: await getStaffContributors(guildId),
       // community: await getCommunityContributors(),
     },
     gitHubStaff: await getGitHubMembers(),
@@ -404,8 +424,8 @@ export const load: PageServerLoad = async (): Promise<{
     questions: {
       total: questions,
       unanswered: questions.filter((question) => !question.isSolved),
-      staff: await getStaffAnswers(),
-      community: await getCommunityAnswers(),
+      staff: await getStaffAnswers(guildId),
+      community: await getCommunityAnswers(guildId),
     },
   }
 }

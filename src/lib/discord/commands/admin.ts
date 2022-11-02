@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { faker } from '@faker-js/faker'
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, PermissionFlagsBits } from 'discord.js'
 import { getUserAccess } from '$discord/get-user-access'
 import { prisma } from '$lib/db'
 import {
@@ -114,6 +114,7 @@ async function createDiscussionBody(
 export const config = new SlashCommandBuilder()
   .setName('admin')
   .setDescription('Commands for admins.')
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   .addSubcommand((subcommand) =>
     subcommand
       .setName('mirror')

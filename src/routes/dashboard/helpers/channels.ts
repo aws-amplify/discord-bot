@@ -1,3 +1,5 @@
+import { type Question, type Questions } from '../types'
+
 export function sortChannels(questions: Question[]) {
   const counts = questions.reduce((count, question) => {
     const key = question.channelName
@@ -14,7 +16,7 @@ const getColor = (percent: number) => {
     return 'rgb(255, 0, 0, 0.4)'
   } else if (50 <= percent && percent < 60) {
     return 'rgb(255, 255, 0, 0.4)'
-  } 
+  }
   return 'rgb(0, 255, 0, 0.4'
 }
 

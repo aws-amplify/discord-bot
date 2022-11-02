@@ -1,4 +1,8 @@
-import type { TextChannel, ThreadChannel } from 'discord.js'
+import {
+  type ForumChannel,
+  type TextChannel,
+  type ThreadChannel,
+} from 'discord.js'
 
 export function generateResponse(content, embeds?) {
   return {
@@ -9,7 +13,7 @@ export function generateResponse(content, embeds?) {
   }
 }
 
-export function isHelpChannel(channel: TextChannel) {
+export function isHelpChannel(channel: TextChannel | ForumChannel) {
   return channel.name.startsWith('help-') || channel.name.endsWith('-help')
 }
 

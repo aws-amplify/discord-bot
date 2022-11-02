@@ -5,7 +5,7 @@ import type { RequestHandler } from '@sveltejs/kit'
  */
 export const GET: RequestHandler = async ({ locals }) => {
   if (!locals.session?.user?.isAdmin) {
-    return new Response(undefined, { status: 403 })
+    return new Response('Forbidden', { status: 403 })
   }
 
   return new Response('ok')

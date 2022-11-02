@@ -53,8 +53,11 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile --silent
       - run: pnpm lint
+      # build ./packages/*
+      - run: pnpm build:lib
+      # build SvelteKit app
       - run: pnpm build
         env:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
