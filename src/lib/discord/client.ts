@@ -169,7 +169,7 @@ client.on(Events.MessageCreate, async (message: Message) => {
     thread.send({ embeds: [embed] })
   }
 
-  // capture thread updates in public "help" channels
+  // capture thread updates in public "help" channels (also backfills existing threads)
   if (
     message.channel.type === ChannelType.PublicThread &&
     !message.author.bot &&
