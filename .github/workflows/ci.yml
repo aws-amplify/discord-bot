@@ -10,10 +10,6 @@ on:
       - opened
       - synchronize
       - labeled
-  # for automatically-created release branches
-  pull_request:
-    branches:
-      - main
 # cancel in-progress runs on new commits to same PR (gitub.event.number)
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
