@@ -11,16 +11,16 @@ import {
   type RESTGetAPIGuildRolesResult,
   type RESTGetAPIApplicationCommandResult,
 } from 'discord-api-types/v10'
+import { env } from '$env/dynamic/private'
 import {
   commands as bank,
   type Command as CommandType,
 } from '$discord/commands'
-import { env } from '$env/dynamic/private'
 import { prisma } from '$lib/db'
+import { FEATURE_TYPES } from '$lib/constants'
 import { type PageServerLoad } from './$types'
 import { api } from '../api/_discord'
 import { tabs } from './tabs'
-import { FEATURE_TYPES } from '$lib/constants'
 
 type AdminPageReturn = {
   commands: Array<
@@ -59,17 +59,17 @@ type AdminPageReturn = {
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const commands = Array.from(bank.values())
-  const id = locals.session.guild
+  const guildId = locals.session.guild
 
   // get guild info
-  const guild = (await api.get(Routes.guild(id))) as Guild
+  const guild = (await api.get(Routes.guild(guildId))) as Guild
   // get list of roles from guild
   const roles = (await api.get(
-    Routes.guildRoles(id)
+    Routes.guildRoles(guildId)
   )) as RESTGetAPIGuildRolesResult
-  // get list of API commands registered to this guild
+  // get list of commands registered to this guild
   const apiCommands = (await api.get(
-    Routes.applicationGuildCommands(env.DISCORD_APP_ID, id)
+    Routes.applicationGuildCommands(env.DISCORD_APP_ID, guildId)
   )) as RESTGetAPIApplicationGuildCommandsResult
 
   const tab = url.searchParams.get('tab')
@@ -81,7 +81,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   }
 
   const config = await prisma.configuration.findUnique({
-    where: { id },
+    where: { id: guildId },
     include: {
       roles: {
         select: {

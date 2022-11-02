@@ -1,3 +1,5 @@
+import { type Contributor, type Question, type Questions } from '../types'
+
 function filterByDate(questions: Question[], dates: Date[]): Question[] {
   return questions.filter(
     (question) =>
@@ -34,7 +36,8 @@ function filterQuestionsByDate(
   return filteredQs
 }
 
-/** bins dates by mapping a start date to the number of questions in each category, beginning at the 
+/**
+ * bins dates by mapping a start date to the number of questions in each category, beginning at the
  * start date and ending at the next sequential date, or today for the last date
  * also keeps track of total number of questions for the overall time period
  */
@@ -68,12 +71,12 @@ export function filterQuestionsByChannelAndDate(
   questions: Questions
 ): Map<string, Questions> {
   const filtered = Object.assign({}, questions)
-  Object.entries(filtered).forEach(([category, categoryQuestions]) => {
+  for (const [category, categoryQuestions] of Object.entries(questions)) {
     filtered[category as keyof Questions] = filterByChannel(
       channels,
       categoryQuestions
     )
-  })
+  }
   return binDates(dates, filtered)
 }
 

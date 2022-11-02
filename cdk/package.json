@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "synth": "cdk synth",
-    "deploy": "cdk deploy"
+    "deploy": "cdk deploy",
+    "deploy-github-actions": "cdk deploy --app \"vite-node src/app-github-actions.ts\""
   },
   "devDependencies": {
     "@hey-amplify/support": "workspace:*",

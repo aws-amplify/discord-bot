@@ -28,13 +28,13 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
   const stored = commands.get(command)
   if (!stored) return new Response('Invalid command', { status: 400 })
 
-  const list = await registerCommand(stored, locals.session.guild)
+  const registered = await registerCommand(stored, locals.session.guild)
 
-  if (!list) {
-    return new Response(undefined, { status: 500 })
+  if (!registered) {
+    return new Response('Unable to register command', { status: 500 })
   }
 
-  return json({ list })
+  return json(registered)
 }
 
 export const DELETE: RequestHandler = async ({ request, locals }) => {
@@ -55,6 +55,12 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     await unregisterCommand(id, locals.session.guild)
     return new Response('success', { status: 200 })
   } catch (error) {
-    return new Response('Something went wrong unregistering the command', { status: 500 })
+    console.error(
+      `Something went wrong unregistering command ${id} for guild ${locals.session.guild}`,
+      error
+    )
+    return new Response('Something went wrong unregistering the command', {
+      status: 500,
+    })
   }
 }

@@ -13,6 +13,7 @@ import {
   type ContextMenuCommandInteraction,
   type InteractionReplyOptions,
 } from 'discord.js'
+import { env } from '$env/dynamic/private'
 import { prisma } from '$lib/db'
 import { FEATURE_TYPES } from '$lib/constants'
 import * as admin from './commands/admin'
@@ -132,10 +133,7 @@ export async function registerCommands(
   try {
     console.log(`Started refreshing guild slash (/) commands for ${guild}.`)
     response = (await api.put(
-      Routes.applicationGuildCommands(
-        process.env.DISCORD_APP_ID as string,
-        guild
-      ),
+      Routes.applicationGuildCommands(env.DISCORD_APP_ID as string, guild),
       payload
     )) as RESTPostAPIApplicationGuildCommandsResult
     console.log(
@@ -185,10 +183,7 @@ export async function registerCommand(
   try {
     console.log(`Started ${messaging}`)
     response = (await api.post(
-      Routes.applicationGuildCommands(
-        process.env.DISCORD_APP_ID as string,
-        guild
-      ),
+      Routes.applicationGuildCommands(env.DISCORD_APP_ID as string, guild),
       payload
     )) as RESTPostAPIApplicationGuildCommandsResult
     console.log(`Successfully ${messaging}`)
@@ -239,10 +234,7 @@ export async function syncRegisteredCommandsForGuild(
   let registeredCommands = []
   try {
     registeredCommands = (await api.get(
-      Routes.applicationGuildCommands(
-        process.env.DISCORD_APP_ID as string,
-        guildId
-      )
+      Routes.applicationGuildCommands(env.DISCORD_APP_ID as string, guildId)
     )) as RESTGetAPIApplicationGuildCommandsResult
   } catch (error) {
     console.error(
@@ -286,7 +278,7 @@ export async function syncRegisteredCommandsForGuild(
 export async function unregisterCommand(commandId: string, guildId: string) {
   const registered = (await api.get(
     Routes.applicationGuildCommand(
-      process.env.DISCORD_APP_ID as string,
+      env.DISCORD_APP_ID as string,
       guildId,
       commandId
     )
@@ -294,7 +286,7 @@ export async function unregisterCommand(commandId: string, guildId: string) {
   try {
     await api.delete(
       Routes.applicationGuildCommand(
-        process.env.DISCORD_APP_ID as string,
+        env.DISCORD_APP_ID as string,
         guildId,
         commandId
       )

@@ -48,7 +48,8 @@ function incrementDate(unit: string, start: Date): boolean {
   }
 }
 
-/** creates a list of dates representing each chunk of
+/**
+ * creates a list of dates representing each chunk of
  * time between start and end
  */
 export function timeBetweenDates(unit: string, dateRange: Date[]) {
