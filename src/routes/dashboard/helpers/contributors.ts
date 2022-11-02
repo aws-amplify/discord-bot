@@ -1,6 +1,7 @@
+import { type GitHubUser, type Contributor } from '../types'
+
 export function getGitHubUsername(gitHubStaff: GitHubUser[], userId: string) {
-  const user =
-    gitHubStaff.find((user) => user.id === Number(userId))
+  const user = gitHubStaff.find((user) => user.id === Number(userId))
   if (user?.login) return user.login
   return ''
 }
@@ -29,7 +30,8 @@ export async function getTopContributors(
       id: contributor.id,
       discord: await (
         await fetch(
-          `${import.meta.env.VITE_HOST}/api/discord/${contributor.id}`)
+          `${import.meta.env.VITE_HOST}/api/discord/${contributor.id}`
+        )
       ).text(),
       github: ghUsername,
       name: name,

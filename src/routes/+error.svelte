@@ -1,6 +1,10 @@
 <script lang="ts">
   import { page } from '$app/stores'
   import { Content, Grid, Row, Column } from 'carbon-components-svelte'
+
+  if (import.meta.env.DEV) {
+    console.error('Error', $page.error)
+  }
 </script>
 
 <Content>

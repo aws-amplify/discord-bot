@@ -1,14 +1,21 @@
-import cookie from 'cookie'
 import { type RequestHandler } from '@sveltejs/kit'
+import cookie from 'cookie'
+import { z } from 'zod'
+
+const schema = z.object({
+  guildId: z.string().min(1),
+})
 
 const APP_COOKIE_BASE = 'hey-amplify'
 const GUILD_COOKIE = `${APP_COOKIE_BASE}.guild`
 
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals, url }) => {
   let guildId
+  let redirect
   try {
     const data = await request.formData()
     guildId = data.get('guild')
+    redirect = data.get('redirect') || '/'
   } catch (error) {
     return new Response('Invalid FormData', { status: 400 })
   }
@@ -26,7 +33,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         httpOnly: true,
       })
     )
-    headers.set('Location', '/')
+    headers.set('Location', redirect)
     return new Response('ok', { headers, status: 307 })
   }
 

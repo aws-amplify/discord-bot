@@ -1,45 +1,104 @@
 import { error } from '@sveltejs/kit'
-import { Routes } from 'discord-api-types/v10'
-import { commands as bank } from '$discord/commands'
-import { prisma } from '$lib/db'
-import { api } from '../api/_discord'
-import type { Configuration, Guild, DiscordRole } from '@prisma/client'
-import type {
-  RESTGetAPIGuildRolesResult,
-  RESTGetAPIApplicationCommandResult,
+import {
+  type Configuration,
+  type Guild,
+  type DiscordRole,
+  type Feature,
+} from '@prisma/client'
+import {
+  Routes,
+  type RESTGetAPIApplicationGuildCommandsResult,
+  type RESTGetAPIGuildRolesResult,
+  type RESTGetAPIApplicationCommandResult,
 } from 'discord-api-types/v10'
-import type { Command as CommandType } from '$discord/commands'
-import type { PageServerLoad } from './$types'
+import { env } from '$env/dynamic/private'
+import {
+  commands as bank,
+  type Command as CommandType,
+} from '$discord/commands'
+import { prisma } from '$lib/db'
+import { FEATURE_TYPES } from '$lib/constants'
+import { type PageServerLoad } from './$types'
+import { api } from '../api/_discord'
+import { tabs } from './tabs'
 
 type AdminPageReturn = {
   commands: Array<
     CommandType & { registration: RESTGetAPIApplicationCommandResult }
   >
+  discord: {
+    /**
+     * The Discord Guild instance
+     */
+    guild: Guild
+    /**
+     * List of roles from the Discord API
+     */
+    roles: RESTGetAPIGuildRolesResult
+  }
   configure: {
     config: Configuration & {
       roles: DiscordRole[]
     }
-    guild: Guild
-    roles: RESTGetAPIGuildRolesResult
+    /**
+     * List of features configured for the guild
+     */
+    features: Feature[]
   }
+  /**
+   * List of available features from Database
+   */
+  features: ({
+    enabled: boolean
+  } & Feature)[]
+  /**
+   * Tab ID to display on load
+   */
+  selectedTab: number
 }
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals, url }) => {
   const commands = Array.from(bank.values())
-  const id = import.meta.env.VITE_DISCORD_GUILD_ID
+  const guildId = locals.session.guild
 
-  const guild = (await api.get(Routes.guild(id))) as Guild
+  // get guild info
+  const guild = (await api.get(Routes.guild(guildId))) as Guild
+  // get list of roles from guild
   const roles = (await api.get(
-    Routes.guildRoles(id)
+    Routes.guildRoles(guildId)
   )) as RESTGetAPIGuildRolesResult
+  // get list of commands registered to this guild
+  const apiCommands = (await api.get(
+    Routes.applicationGuildCommands(env.DISCORD_APP_ID, guildId)
+  )) as RESTGetAPIApplicationGuildCommandsResult
+
+  const tab = url.searchParams.get('tab')
+  let selectedTab = tabs[0].id
+  if (tab) {
+    selectedTab =
+      tabs.find((t) => t.title.toLowerCase() === tab.toLowerCase())?.id ||
+      selectedTab
+  }
 
   const config = await prisma.configuration.findUnique({
-    where: { id },
+    where: { id: guildId },
     include: {
       roles: {
         select: {
           accessLevelId: true, // i.e. "name"
           discordRoleId: true,
+        },
+      },
+      features: {
+        select: {
+          enabled: true,
+          feature: {
+            select: {
+              code: true,
+              name: true,
+              description: true,
+            },
+          },
         },
       },
     },
@@ -51,28 +110,42 @@ export const load: PageServerLoad = async ({ locals }) => {
     throw error(403)
   }
 
-  if (!commands || !roles) {
+  if (!commands?.length || !roles) {
     throw error(500)
   }
 
   const result: AdminPageReturn = {
-    commands: commands.map((c) =>
-      Object.assign(
-        {},
-        {
-          name: c.name,
-          description: c.description,
-          config: c.config?.toJSON?.() || c.config,
-          registration: c.registration,
-        }
-      )
-    ),
-    configure: {
-      accessLevels,
+    commands: commands.map((c) => {
+      const registration = apiCommands.find((cmd) => cmd.name === c.name)
+      return {
+        id: registration?.id,
+        name: c.name,
+        description: c.description,
+        config: c.config?.toJSON?.() || c.config,
+        registration,
+      }
+    }),
+    discord: {
       guild,
       roles,
-      config: JSON.stringify(config),
+      config: JSON.parse(JSON.stringify(config)),
     },
+    configure: {
+      ...config,
+      accessLevels,
+      features: config?.features?.map((f) => ({
+        enabled: f.enabled,
+        ...f.feature,
+      })),
+    },
+    integrations: await prisma.feature.findMany({
+      where: {
+        type: {
+          code: FEATURE_TYPES.INTEGRATION,
+        },
+      },
+    }),
+    selectedTab,
   }
 
   return result
