@@ -31,6 +31,7 @@ jobs:
     needs: verify-run
     if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == true }}
     uses: ./.github/workflows/release-env.yml
+    secrets: inherit
     with:
       env: next
       version: ${{ needs.verify-run.outputs.version }}
@@ -39,6 +40,7 @@ jobs:
     needs: verify-run
     if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == false }}
     uses: ./.github/workflows/release-env.yml
+    secrets: inherit
     with:
       env: main
       version: ${{ needs.verify-run.outputs.version }}
