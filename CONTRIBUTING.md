@@ -264,7 +264,111 @@ if (import.meta.vitest) {
 
 When `pnpm test` is run from the project root, the newly added test is executed alongside the e2e tests.
 
-## Docker
+## Releasing
+
+1. developer creates a PR from their fork
+2. maintainers review and add the `run-ci` label to [run the CI pipeline](./.github/workflows/ci.yml) and get the apporpriate status check
+3. after PR requirements are met, maintainers merge to `main`
+4. maintainers manually run the [`create-release`](./.github/workflows/create-release.yml) action with the desired version release (major, minor, patch, prerelease)
+5. maintainers review and merge the automatically-created PR
+6. GitHub Actions run [`release`](./.github/workflows/release.yml) action using the version specified in the PR title
+
+This process uses one branch, `main`, and relies on the created releases and git tags to showcase the latest source code available in each environment (release -> `main` vs prerelease -> `next`).
+
+```mermaid
+flowchart TD
+    dev[staff runs `create-release` action]
+    createPrerelease[prerelease]
+    createPatch[patch]
+    createMinor[minor]
+    createMajor[major]
+
+    dev-->createPrerelease
+    dev-->createPatch
+    dev-->createMinor
+    dev-->createMajor
+    createPrerelease-->create-release
+    createPatch-->create-release
+    createMinor-->create-release
+    createMajor-->create-release
+
+    subgraph create-release["create-release action"]
+        pnpm[pnpm sets new version based on release type]
+        releaseBranch[creates release branch]
+        commitsChanges[commits changes from pnpm]
+        pushesChanges[pushes changes to branch]
+        createsPR[creates PR]
+        releaseCi[CI runs automatically]
+
+        pnpm-->releaseBranch
+        releaseBranch-->commitsChanges
+        commitsChanges-->pushesChanges
+        pushesChanges-->createsPR
+        createsPR-->releaseCi
+    end
+
+    staffReviewReleasePR[staff reviews and merges release PR]
+    releaseCi-->staffReviewReleasePR
+    staffReviewReleasePR-->|automatically triggers|releaseAction
+
+    subgraph releaseAction[release action]
+
+        raVerifyRun["verifies run (see workflow for details)"]
+        raExtract[extracts version from PR title]
+        raPrerelease[runs prerelease workflow for `next` env]
+        raRelease[runs release workflow for `main` env]
+
+        raVerifyRun-->|if verified|raExtract
+        raVerifyRun-->|if not verified|exit
+        raExtract-->|if prerelease|raPrerelease
+        raExtract-->|if not prerelease|raRelease
+        raPrerelease-->|uses|reusableReleaseEnv
+        raRelease-->|uses|reusableReleaseEnv
+
+        subgraph reusableReleaseEnv[reusable release-env workflow]
+            rrConfigureAws[configure AWS credentials]
+            rrSetup[setup pnpm, node, install dependencies]
+            rrCdkSynth[cdk synth with env, version]
+            rrCdkDeploy[cdk deploy with env, version]
+            rrGhRelease[GitHub CLI creates release with notes]
+
+            rrConfigureAws-->rrSetup
+            rrSetup-->rrCdkSynth
+            rrCdkSynth-->rrCdkDeploy
+            rrCdkDeploy-->rrGhRelease
+        end
+
+        reusableReleaseEnv-->exit
+
+        exit
+    end
+
+    releaseAction-->released
+    released[released]
+```
+
+### Creating Secrets in SSM
+
+**[scripts](./packages/scripts)**
+
+Create secrets in SSM Parameter Store with the `scripts` helper! Rename `.env.sample` to `.env.next` and create secrets with the following command:
+
+```bash
+pnpm scripts create-secrets -e next
+```
+
+**NOTE:** dotenv files are loaded using Vite's `loadEnv` and `local` dotenv files are not supported when creating secrets. Additionally, we must be sure to pass a valid environment name such as `main` or `next`
+
+### Deployment
+
+For the deployment we will work primarily in the [`cdk`](./cdk) directory, where the [AWS CDK CLI](https://www.npmjs.com/package/aws-cdk) is installed locally to the package.
+
+1. if not already done, bootstrap the environment with `pnpm cdk bootstrap`
+2. ensure we are able to synthesize the stack: `pnpm cdk synth`
+   1. alternatively we can synthesize an environment-specific stack: `pnpm cdk synth -c env=next`
+3. deploy the stack with `pnpm cdk deploy`
+
+### Docker
 
 Build individual apps using [`docker compose`](https://docs.docker.com/compose/):
 
