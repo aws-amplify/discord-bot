@@ -10,11 +10,11 @@ then
 else 
   echo "Database already exists"
   # run prisma migration on sqlite *.db file in EFS
-  # pnpm prisma migrate deploy
-  # if [ $? -eq 1 ]; then
-  #   echo "Migration failed, attempting to resolve"
-  #   pnpm prisma migrate resolve
-  # fi
+  pnpm prisma migrate deploy
+  if [ $? -eq 1 ]; then
+    echo "Migration failed, attempting to resolve"
+    pnpm prisma migrate resolve
+  fi
 fi
 cd -
 
