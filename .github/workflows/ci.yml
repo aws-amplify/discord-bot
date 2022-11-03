@@ -61,6 +61,8 @@ jobs:
       - run: pnpm build -l silent
         env:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          VITE_HOST: ${{ secrets.VITE_HOST }}
+          VITE_NEXTAUTH_URL: ${{ secrets.VITE_NEXTAUTH_URL }}
           VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
       - run: pnpm prisma db push
         env:
@@ -77,4 +79,6 @@ jobs:
           GITHUB_PRIVATE_KEY: ${{ secrets.GH_PRIVATE_KEY }}
           GITHUB_INSTALLATION_ID: ${{ secrets.GH_INSTALLATION_ID }}
           GITHUB_ORG_LOGIN: ${{ secrets.GH_ORG_LOGIN }}
+          VITE_HOST: ${{ secrets.VITE_HOST }}
+          VITE_NEXTAUTH_URL: ${{ secrets.VITE_NEXTAUTH_URL }}
           VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
