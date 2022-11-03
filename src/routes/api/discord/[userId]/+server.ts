@@ -3,9 +3,7 @@ import { api } from '$discord/api'
 import type { RequestHandler } from '@sveltejs/kit'
 import type { APIGuildMember } from 'discord-api-types/v10'
 
-const guildId = import.meta.env.VITE_DISCORD_GUILD_ID
-
-async function getDiscordUsername(userId: string) {
+async function getDiscordUsername(userId: string, guildId: string) {
   try {
     const guildMember = (await api.get(Routes.guildMember(guildId, userId))) as
       | APIGuildMember
@@ -21,7 +19,7 @@ async function getDiscordUsername(userId: string) {
   return 'unknown'
 }
 
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ params, locals }) => {
   const { userId } = params
   if (!userId) {
     return new Response(
@@ -32,6 +30,6 @@ export const GET: RequestHandler = async ({ params }) => {
       }
     )
   }
-  const result = await getDiscordUsername(userId)
+  const result = await getDiscordUsername(userId, locals.session.guild)
   return new Response(result)
 }

@@ -1,10 +1,10 @@
 import { prisma } from '$lib/db'
 import type { PageServerLoad } from './$types'
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
   const questions = await prisma.question.findMany({
     where: {
-      guildId: import.meta.env.VITE_DISCORD_GUILD_ID,
+      guildId: locals.session.guild,
     },
     select: {
       id: true,

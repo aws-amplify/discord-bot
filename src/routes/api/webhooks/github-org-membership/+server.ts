@@ -32,7 +32,8 @@ async function getDiscordUserId(ghUserId: string) {
   throw new Error(`Discord account not found for GitHub user ${ghUserId}`)
 }
 
-export const POST: RequestHandler = async function post({ request }) {
+export const POST: RequestHandler = async function post({ request, locals }) {
+  const guildId = locals.session.guild
   let rolesApplied, guildMemberId
   let payload
   try {
@@ -82,7 +83,7 @@ export const POST: RequestHandler = async function post({ request }) {
    */
   const config = await prisma.configuration.findUnique({
     where: {
-      id: import.meta.env.VITE_DISCORD_GUILD_ID,
+      id: guildId,
     },
     select: {
       id: true,
