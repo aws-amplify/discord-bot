@@ -39,7 +39,7 @@ const handleSession: Handle = async ({ event, resolve }) => {
  * Add additional user data to the session
  */
 const handleSessionUser: Handle = async ({ event, resolve }) => {
-  const { session } = event.locals
+  const session = event.locals.session || {}
 
   let savedGuild = null
   const cookies = event.request.headers.get('cookie')
@@ -48,7 +48,7 @@ const handleSessionUser: Handle = async ({ event, resolve }) => {
     savedGuild = parsed['hey-amplify.guild']
   }
 
-  if (!session.guild) {
+  if (!session?.guild) {
     if (savedGuild) {
       session.guild = savedGuild
     } else {
