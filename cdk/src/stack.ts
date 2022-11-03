@@ -111,6 +111,7 @@ export class HeyAmplifyStack extends Stack {
 
     const filesystem = new efs.FileSystem(this, 'Filesystem', {
       vpc,
+      enableAutomaticBackups: true,
     })
 
     let subdomain: AmplifyAwsSubdomain | undefined
