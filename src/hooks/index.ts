@@ -48,15 +48,15 @@ const handleSessionUser: Handle = async ({ event, resolve }) => {
     savedGuild = parsed['hey-amplify.guild']
   }
 
-  if (session?.user) {
-    if (!session.guild) {
-      if (savedGuild) {
-        session.guild = savedGuild
-      } else {
-        session.guild = import.meta.env.VITE_DISCORD_GUILD_ID
-      }
+  if (!session.guild) {
+    if (savedGuild) {
+      session.guild = savedGuild
+    } else {
+      session.guild = import.meta.env.VITE_DISCORD_GUILD_ID
     }
+  }
 
+  if (session?.user) {
     event.locals.session = session
     const user = await prisma.user.findUnique({
       where: {
