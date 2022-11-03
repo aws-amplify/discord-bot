@@ -29,7 +29,6 @@ jobs:
             return context.payload.pull_request.title.replace(/release\: /, '');
   prerelease:
     needs: verify-run
-    if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == true }}
     uses: ./.github/workflows/release-env.yml
     secrets: inherit
     with:
