@@ -78,6 +78,14 @@ export class GitHubActionsStack extends cdk.Stack {
               actions: ['sts:AssumeRole'],
               resources: [`arn:aws:iam::${this.account}:role/cdk-*`],
             }),
+            new iam.PolicyStatement({
+              effect: iam.Effect.ALLOW,
+              actions: ['ssm:GetParametersByPath'],
+              resources: [
+                // allow access to all "setup" parameters in the account
+                `arn:aws:ssm:*:${this.account}:parameter/app/*/_setup/*`,
+              ],
+            }),
           ],
         }),
       },

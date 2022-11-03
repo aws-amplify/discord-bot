@@ -44,7 +44,7 @@ export function createSecretKey(
 export function loadSecrets(
   envName = '_local',
   envDir: string = process.cwd(),
-  envPrefix: string | string[] = ['DISCORD_', 'GITHUB_', 'PUBLIC_']
+  envPrefix: string | string[] = ['DISCORD_', 'GITHUB_', 'PUBLIC_', 'NEXTAUTH_']
 ): Record<string, string> {
   let prefixes = envPrefix
   if (prefixes) {
