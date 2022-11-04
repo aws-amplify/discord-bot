@@ -97,7 +97,8 @@ export async function isContributor(
 export async function applyRoles(
   userId: string,
   ghUserId: string,
-  accessToken: string
+  accessToken: string,
+  guildId: string = import.meta.env.VITE_DISCORD_GUILD_ID
 ) {
   let discUserId
   let staffResponse = true
@@ -126,7 +127,7 @@ export async function applyRoles(
 
   const config = await prisma.configuration.findUnique({
     where: {
-      id: import.meta.env.VITE_DISCORD_GUILD_ID,
+      id: guildId,
     },
     select: {
       id: true,
