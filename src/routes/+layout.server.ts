@@ -3,6 +3,7 @@ import { Routes, type APIGuild } from 'discord-api-types/v10'
 import { type LayoutServerLoad } from './$types'
 
 export const load: LayoutServerLoad = async ({ locals }) => {
+  const defaultGuildId = locals.session?.guild
   const botGuilds = (await api.get(Routes.userGuilds())) as APIGuild[]
 
   const guilds = []
@@ -11,11 +12,12 @@ export const load: LayoutServerLoad = async ({ locals }) => {
       await api.get(Routes.guildMember(guild.id, locals.session.user.id))
       guilds.push(guild)
     } catch (error) {
-      // user is not a member of this guild
+      // user is not a member of this guild, this messaging can be safely ignored but is available for debugging
+      console.warn(
+        `[ignore] Error fetching guild member for ${guild.id}: ${error}`
+      )
     }
   }
-
-  const defaultGuildId = import.meta.env.VITE_DISCORD_GUILD_ID
 
   return {
     session: locals.session,
@@ -26,6 +28,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
         ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
         : null,
     })),
+    // falling back to `defaultGuildId` assumes the bot is at least a member of the default guild
     selectedGuild:
       guilds.find((g) => g.id === locals?.session?.guild)?.id || defaultGuildId,
   }
