@@ -7,15 +7,18 @@ export const load: LayoutServerLoad = async ({ locals }) => {
   const botGuilds = (await api.get(Routes.userGuilds())) as APIGuild[]
 
   const guilds = []
-  for (const guild of botGuilds) {
-    try {
-      await api.get(Routes.guildMember(guild.id, locals.session.user.id))
-      guilds.push(guild)
-    } catch (error) {
-      // user is not a member of this guild, this messaging can be safely ignored but is available for debugging
-      console.warn(
-        `[ignore] Error fetching guild member for ${guild.id}: ${error}`
-      )
+  // only attempt to fetch guild memberships if the user is logged in
+  if (locals.session?.user) {
+    for (const guild of botGuilds) {
+      try {
+        await api.get(Routes.guildMember(guild.id, locals.session.user.id))
+        guilds.push(guild)
+      } catch (error) {
+        // user is not a member of this guild, this messaging can be safely ignored but is available for debugging
+        console.warn(
+          `[ignore] Error fetching guild member for ${guild.id}: ${error}`
+        )
+      }
     }
   }
 
