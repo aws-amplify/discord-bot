@@ -58,7 +58,7 @@ jobs:
       # build ./packages/*
       - run: pnpm build:lib
       # build SvelteKit app and Server
-      - run: pnpm build -l silent
+      - run: pnpm build --logLevel silent
         env:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
