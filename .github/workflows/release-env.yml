@@ -57,6 +57,9 @@ jobs:
           VITE_HOST: ${{ secrets.VITE_HOST }}
       - name: release
         run: |
+          # exit early when performing a sequential release (next -> main)
+          if [ ${{ inputs.env }} != main ]; then exit 0; fi
+          # otherwise proceed with creating GitHub release and git tag
           if [ ${{ inputs.is-prerelease }} == true ]
           then
             url=$(gh release create ${{ inputs.version }} --generate-notes --prerelease)
