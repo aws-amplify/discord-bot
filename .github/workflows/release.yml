@@ -36,9 +36,7 @@ jobs:
       version: ${{ needs.verify-run.outputs.version }}
       is-prerelease: true
   release:
-    needs:
-      - verify-run
-      - prerelase
+    needs: [verify-run, prerelease]
     if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == false }}
     uses: ./.github/workflows/release-env.yml
     secrets: inherit
