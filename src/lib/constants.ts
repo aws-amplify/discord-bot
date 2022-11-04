@@ -16,3 +16,6 @@ export const FEATURE_TYPES = {
   COMMAND: 'COMMAND',
   INTEGRATION: 'INTEGRATION',
 }
+
+export const APP_COOKIE_BASE = 'hey-amplify'
+export const GUILD_COOKIE = `${APP_COOKIE_BASE}.guild`

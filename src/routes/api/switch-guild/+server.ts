@@ -1,13 +1,11 @@
 import { type RequestHandler } from '@sveltejs/kit'
 import cookie from 'cookie'
 import { z } from 'zod'
+import { GUILD_COOKIE } from '$lib/constants'
 
 const schema = z.object({
   guildId: z.string().min(1),
 })
-
-const APP_COOKIE_BASE = 'hey-amplify'
-const GUILD_COOKIE = `${APP_COOKIE_BASE}.guild`
 
 export const POST: RequestHandler = async ({ request, locals, url }) => {
   let guildId

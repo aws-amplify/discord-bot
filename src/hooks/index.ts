@@ -5,6 +5,7 @@ import { createBot } from '$discord/client'
 import { prisma, init } from '$lib/db'
 import { getUserAccess } from '$discord/get-user-access'
 import { getServerSession, options } from '$lib/next-auth'
+import { GUILD_COOKIE } from '$lib/constants'
 
 // only load the bot if we're in development (on first request to the server), otherwise the bot will be loaded onto the Node/Express server
 if (import.meta.env.MODE === 'development') {
@@ -48,15 +49,11 @@ const handleSessionUser: Handle = async ({ event, resolve }) => {
     savedGuild = parsed['hey-amplify.guild']
   }
 
-  if (session?.user) {
-    if (!session.guild) {
-      if (savedGuild) {
-        session.guild = savedGuild
-      } else {
-        session.guild = import.meta.env.VITE_DISCORD_GUILD_ID
-      }
-    }
+  let activeGuild = import.meta.env.VITE_DISCORD_GUILD_ID
+  if (savedGuild) activeGuild = savedGuild
 
+  if (session?.user) {
+    if (!session.guild) session.guild = activeGuild
     event.locals.session = session
     const user = await prisma.user.findUnique({
       where: {
@@ -93,7 +90,21 @@ const handleSessionUser: Handle = async ({ event, resolve }) => {
     }
   }
 
-  return resolve(event)
+  const response = await resolve(event)
+
+  // set initial guild cookie
+  if (!savedGuild) {
+    response.headers.append(
+      'Set-Cookie',
+      cookie.serialize(GUILD_COOKIE, activeGuild, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7, // 1 week
+        httpOnly: true,
+      })
+    )
+  }
+
+  return response
 }
 
 /**
