@@ -51,6 +51,10 @@ jobs:
           pnpm --filter ./cdk run deploy \
             --context env=${{ inputs.env }} \
             --context version=${{ inputs.version }}
+        env:
+          VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
+          VITE_NEXTAUTH_URL: ${{ secrets.VITE_NEXTAUTH_URL }}
+          VITE_HOST: ${{ secrets.VITE_HOST }}
       - name: release
         run: |
           # exit early when performing a sequential release (next -> main)
