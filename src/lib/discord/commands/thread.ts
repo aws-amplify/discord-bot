@@ -98,7 +98,7 @@ export async function handler(
 
     // rename the thread
     const [{ value: title }] = args.rename.options
-    const name = `${parseTitlePrefix(channel.name) || ''}${title.slice(0, 140)}`
+    const name = `${parseTitlePrefix(channel.name) || ''}${title.slice(0, 90)}`
     if (await channel.setName(name)) {
       try {
         await prisma.question.update({

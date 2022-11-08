@@ -136,7 +136,7 @@ client.on(Events.MessageCreate, async (message: Message) => {
     isHelpChannel(message.channel)
   ) {
     const options: StartThreadOptions = {
-      name: `${PREFIXES.open}${message.content.slice(0, 140)}...`,
+      name: `${PREFIXES.open}${message.content.slice(0, 90)}...`,
       autoArchiveDuration: 60,
     }
     const thread: ThreadChannel = await message.startThread(options)
@@ -310,6 +310,11 @@ process.on('SIGINT', () => {
   console.log('destroying client')
   client?.destroy()
   process.exit(0)
+})
+
+process.on('exit', () => {
+  console.log('destroying client')
+  client?.destroy()
 })
 
 if (import.meta.hot) {
