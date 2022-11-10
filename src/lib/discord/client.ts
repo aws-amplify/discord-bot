@@ -111,19 +111,26 @@ client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
   if (oldMessage.content === newMessage.content || !newMessage.content) return
   if (oldMessage.channel.type !== ChannelType.PublicThread) return
 
-  // update answer contents if exists
-  const answer = await prisma.answer.update({
-    where: {
-      id: oldMessage.id,
-    },
-    data: {
-      content: newMessage.content,
-    },
-    select: {
-      id: true,
-    },
-  })
-  console.log('Updated answer content:', answer.id)
+  // ensure message is within a help channel thread
+  if (isThreadWithinHelpChannel(oldMessage.channel)) {
+    // update answer contents if exists
+    try {
+      const answer = await prisma.answer.update({
+        where: {
+          id: oldMessage.id,
+        },
+        data: {
+          content: newMessage.content,
+        },
+        select: {
+          id: true,
+        },
+      })
+      console.log('Updated answer content:', answer.id)
+    } catch (error) {
+      console.error(`Error updating answer (${oldMessage.id}) content:`, error)
+    }
+  }
 })
 
 client.on(Events.MessageCreate, async (message: Message) => {
