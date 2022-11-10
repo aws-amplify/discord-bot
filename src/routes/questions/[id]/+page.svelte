@@ -25,7 +25,10 @@
         <p>
           {question.title}
         </p>
-        <Link href="{question.url}">View in Discord<Launch /></Link>
+        <Link href="{question.url?.replace(/^https/, 'discord')}">
+          View in Discord
+          <Launch />
+        </Link>
       </Column>
     </Row>
   </Grid>
