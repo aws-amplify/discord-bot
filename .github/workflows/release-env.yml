@@ -33,7 +33,7 @@ jobs:
           role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
           aws-region: ${{ inputs.aws-region }}
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'

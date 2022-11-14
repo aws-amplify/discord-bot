@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: true
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2
       - name: set git config for pnpm version, git push
         run: |
           git config --global user.name "GitHub Actions"
