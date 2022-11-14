@@ -46,6 +46,10 @@ export class DiscordApi extends REST implements IDiscordApi {
     return this._request('POST', url, payload)
   }
 
+  public patch(url: string, payload?: unknown): Promise<unknown> {
+    return this._request('PATCH', url, payload)
+  }
+
   public put(url: string, payload?: unknown): Promise<unknown> {
     return this._request('PUT', url, payload)
   }
