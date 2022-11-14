@@ -52,43 +52,28 @@ function createCommandsMap(commands: any[]) {
         interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction
       ) => {
         const somethingWentWrongResponse = '🤕 Something went wrong'
+        let response
         try {
-          const response = await command.handler(interaction)
-          if (response) {
-            if (interaction.deferred) {
-              return await interaction.editReply(response)
-            }
-            return await interaction.reply(response)
-          }
+          response = await command.handler(interaction)
         } catch (error) {
           console.error(
             `Error handling command ${command.config.name} for ${interaction.user.id}:`,
             error
           )
-          if (interaction.deferred) {
-            return await interaction.editReply({
-              content: somethingWentWrongResponse,
-            })
-          } else {
-            return await interaction.reply({
-              ephemeral: true,
-              content: somethingWentWrongResponse,
-            })
-          }
         }
-        if (!interaction.replied) {
-          // should not make it here...
-          if (interaction.deferred) {
-            await interaction.editReply({
-              content: somethingWentWrongResponse,
-            })
-          } else {
-            await interaction.reply({
-              ephemeral: true,
-              content: somethingWentWrongResponse,
-            })
-          }
+
+        let toRespond = response
+        if (!response) {
+          console.warn(
+            `No response received from command handler for ${command.config.name}`
+          )
+          toRespond = { content: somethingWentWrongResponse }
         }
+
+        if (interaction.deferred) {
+          return await interaction.editReply(toRespond)
+        }
+        return await interaction.reply(toRespond)
       },
     }
     map.set(command.config.name, stored)
@@ -252,13 +237,14 @@ export async function syncRegisteredCommandsForGuild(
     throw new Error('Error fetching registered commands')
   }
 
+  const commandsToPatch = []
+
   for (const storedCommand of storedCommands) {
-    const registerCommand = registeredCommands.find(
+    const registeredCommand = registeredCommands.find(
       (r) => createCommandCode(r.name) === storedCommand.featureCode
     )
-
     // disable commands not registered but enabled in db
-    if (!registerCommand && storedCommand.enabled) {
+    if (!registeredCommand && storedCommand.enabled) {
       await prisma.configurationFeature.update({
         where: {
           id: storedCommand.id,
@@ -269,7 +255,7 @@ export async function syncRegisteredCommandsForGuild(
       })
     }
     // enable commands registered but disabled in db
-    if (registerCommand && !storedCommand.enabled) {
+    if (registeredCommand && !storedCommand.enabled) {
       await prisma.configurationFeature.update({
         where: {
           id: storedCommand.id,
@@ -279,6 +265,23 @@ export async function syncRegisteredCommandsForGuild(
         },
       })
     }
+    // sync commands with Discord
+    if (registeredCommand && storedCommand.enabled) {
+      const command = commands.get(registeredCommand.name)
+      commandsToPatch.push(command.config.toJSON())
+    }
+  }
+  // start refreshing commands with Discord
+  try {
+    await api.put(
+      Routes.applicationGuildCommands(
+        process.env.DISCORD_APP_ID as string,
+        guildId
+      ),
+      commandsToPatch
+    )
+  } catch (error) {
+    console.error('Error refreshing commands with Discord', error)
   }
   console.info('Finished', messaging)
 }
