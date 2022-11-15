@@ -20,13 +20,10 @@ jobs:
       version: ${{ steps.version.outputs.result }}
       is-prerelease: ${{ contains(steps.version.outputs.result, 'next') }}
     steps:
-      - name: extract-version
-        id: version
-        uses: actions/github-script@0.2.0
+      - id: version
+        uses: ./.github/actions/extract-version-from-branch
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            return context.payload.pull_request.title.replace(/release\: /, '');
+          branch: ${{ github.head_ref }}
   prerelease:
     needs: verify-run
     uses: ./.github/workflows/release-env.yml

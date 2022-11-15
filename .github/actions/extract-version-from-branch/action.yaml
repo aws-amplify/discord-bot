@@ -1,0 +1,22 @@
+# used to extract the version from a release branch
+# "release/1.0.0-next.0" -> "1.0.0-next.0"
+name: extract-version-from-branch
+description: Extracts version from a branch name
+inputs:
+  branch:
+    description: branch name (e.g. head_ref)
+    required: true
+outputs:
+  version:
+    description: extracted version
+    value: ${{ steps.version.outputs.result }}
+runs:
+  using: 'composite'
+  steps:
+    - name: extract-version
+      id: version
+      shell: bash
+      run: |
+        branch=${{ inputs.branch }}
+        version=${branch#release/}
+        echo "version=$version" >> $GITHUB_OUTPUT
