@@ -20,6 +20,9 @@ jobs:
       version: ${{ steps.extract-version.outputs.version }}
       is-prerelease: ${{ contains(steps.extract-version.outputs.version, 'next') }}
     steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - id: extract-version
         uses: ./.github/actions/extract-version-from-branch
         with:

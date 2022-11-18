@@ -8,8 +8,13 @@ on:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    # We run cleanup action only if:
+    #   1. PR comes from internal branch (i.e. not a fork)
+    #   2. PR is NOT merged
+    #   3. PR branch name begins with "release/"
     if: |
       github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.merged == false &&
       startsWith(github.event.pull_request.head.ref, 'release/')
     steps:
       - uses: actions/checkout@v3
