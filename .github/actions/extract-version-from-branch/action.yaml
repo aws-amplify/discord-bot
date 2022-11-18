@@ -9,12 +9,12 @@ inputs:
 outputs:
   version:
     description: extracted version
-    value: ${{ steps.version.outputs.result }}
+    value: ${{ steps.extract-version.outputs.version }}
 runs:
   using: 'composite'
   steps:
     - name: extract-version
-      id: version
+      id: extract-version
       shell: bash
       run: |
         branch=${{ inputs.branch }}
