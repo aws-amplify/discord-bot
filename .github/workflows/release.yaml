@@ -17,10 +17,10 @@ jobs:
       github.event.pull_request.merged == true && 
       startsWith(github.event.pull_request.head.ref, 'release/')
     outputs:
-      version: ${{ steps.version.outputs.result }}
-      is-prerelease: ${{ contains(steps.version.outputs.result, 'next') }}
+      version: ${{ steps.extract-version.outputs.version }}
+      is-prerelease: ${{ contains(steps.extract-version.outputs.version, 'next') }}
     steps:
-      - id: version
+      - id: extract-version
         uses: ./.github/actions/extract-version-from-branch
         with:
           branch: ${{ github.head_ref }}
