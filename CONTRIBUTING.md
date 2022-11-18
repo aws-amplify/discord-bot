@@ -132,7 +132,7 @@ Go to either the GitHub organization or repository that you wish to recieve rele
 3. Under **Payload URL** , paste in the Discord Webhook URL from before with `/github` appended to the end
 4. Under **Content type**, select `application/json`
 5. Create a **Secret** and store it in `.env` as `GITHUB_RELEASES_WEBHOOK_SECRET`
-6. Select  **Let me select individual events** then choose `releases`
+6. Select **Let me select individual events** then choose `releases`
 7. Click **Add Webhook**
 
 <img src=./docs/guide/github-webhook.png width="900" >
@@ -146,10 +146,10 @@ Configuring this webhook will remove the Discord `staff` role when members leave
 You must be the owner of the GitHub organization to perform the following steps.
 
 1. Go to your GitHub organization, and click **Settings** -> **Webhooks** -> **Add Webhook**
-2. Under **Payload URL**  choose `http://<your-production-url>/api/webhooks/github-org-membership`
+2. Under **Payload URL** choose `http://<your-production-url>/api/webhooks/github-org-membership`
 3. Under **Content type**, select `application/json`
 4. Create a **Secret** and store in in `.env` as `GITHUB_ORG_WEBHOOK_SECRET`
-5. Select  **Let me select individual events** then choose `Organizations`
+5. Select **Let me select individual events** then choose `Organizations`
 6. **Add Webhook**
 
 ### Configuring a GitHub App
@@ -162,7 +162,7 @@ A GitHub App is required to obtain the permissions necessary for many API calls.
 2. Select **New GitHub App**
 3. For the homepage URL, put in the homepage of your website
 4. Under **Callback URL** put `http://<your-production-url>/api/auth/callback/github`
-5. Select  **Expire user authorization tokens** AND **Request user authorization (OAuth) during installation**
+5. Select **Expire user authorization tokens** AND **Request user authorization (OAuth) during installation**
 6. Under **Webhook** deselect **Active**
 7. Scroll down to **Organization Permissions** and under **Members** select `Read-only`
 8. **Create GitHub App**
@@ -218,8 +218,8 @@ Now you should be looking at the settings page for your app.
    ```
 
 4. Copy this ID and store in `.env` as `GITHUB_INSTALLATION_ID`
-  <img src=./docs/guide/github-installation-id.png width="900">
- 
+   <img src=./docs/guide/github-installation-id.png width="900">
+
 ## Deployment
 
 For the deployment we will work primarily in the [`cdk`](./cdk) directory, where the [AWS CDK CLI](https://www.npmjs.com/package/aws-cdk) is installed locally to the package.
@@ -267,11 +267,11 @@ When `pnpm test` is run from the project root, the newly added test is executed 
 ## Releasing
 
 1. developer creates a PR from their fork
-2. maintainers review and add the `run-ci` label to [run the CI pipeline](./.github/workflows/ci.yml) and get the apporpriate status check
+2. maintainers review and add the `run-ci` label to [run the CI pipeline](./.github/workflows/ci.yaml) and get the apporpriate status check
 3. after PR requirements are met, maintainers merge to `main`
-4. maintainers manually run the [`create-release`](./.github/workflows/create-release.yml) action with the desired version release (major, minor, patch, prerelease)
+4. maintainers manually run the [`create-release`](./.github/workflows/create-release.yaml) action with the desired version release (major, minor, patch, prerelease)
 5. maintainers review and merge the automatically-created PR
-6. GitHub Actions run [`release`](./.github/workflows/release.yml) action using the version specified in the PR title
+6. GitHub Actions run [`release`](./.github/workflows/release.yaml) action using the version specified in the PR title
 
 This process uses one branch, `main`, and relies on the created releases and git tags to showcase the latest source code available in each environment (release -> `main` vs prerelease -> `next`).
 
