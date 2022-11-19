@@ -1,3 +1,5 @@
+export const AMPLIFY_ORANGE = '#ff9900'
+
 export const ACCESS_LEVELS = {
   ADMIN: 'ADMIN',
   STAFF: 'STAFF',
@@ -10,11 +12,22 @@ export const ACCESS_LEVELS = {
  */
 export const FEATURE_CODES = {
   GITHUB: 'GITHUB',
+  AUDIT_LOG: 'AUDIT_LOG',
 }
 
 export const FEATURE_TYPES = {
+  /**
+   * Discord Commands
+   */
   COMMAND: 'COMMAND',
+  /**
+   * Integrations with third party services (i.e. not Discord)
+   */
   INTEGRATION: 'INTEGRATION',
+  /**
+   * General built-in components
+   */
+  COMPONENT: 'COMPONENT',
 }
 
 export const APP_COOKIE_BASE = 'hey-amplify'
