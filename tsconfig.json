@@ -1,25 +1,25 @@
 {
-  "extends": "./.svelte-kit/tsconfig.json",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Default",
   "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "importsNotUsedAsValues": "remove",
-    "paths": {
-      "$lib": ["src/lib"],
-      "$lib/*": ["src/lib/*"],
-      "$discord": ["src/lib/discord"],
-      "$discord/*": ["src/lib/discord/*"]
-    },
+    "inlineSources": false,
+    "isolatedModules": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "preserveWatchOutput": true,
     "skipLibCheck": true,
-    "sourceMap": true,
-    "strict": true
+    "strict": true,
+    "target": "esnext",
+    "sourceMap": false,
+    "inlineSourceMap": true,
+    "importsNotUsedAsValues": "remove"
   },
-  "include": [
-    "./src/**/*.ts",
-    "./src/**/*.svelte",
-    "./tests/**/*.ts",
-    "./scripts/**/*.ts"
-  ]
+  "exclude": ["node_modules"]
 }
