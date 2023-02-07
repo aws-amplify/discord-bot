@@ -1,16 +1,18 @@
+# general ignores
 .DS_Store
 node_modules
 *.log
 
+# ignore all env files except the sample
 .env
 .env.*
 !.env.sample
-cypress.env.json
 
+# notes
 notes.md
 
-/prisma/data
-/.svelte-kit
-/build
+# ignore all build directories
+build
 
-packages/**/build
+# ignore all turbo dot-directories
+.turbo
