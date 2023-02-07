@@ -1,6 +1,6 @@
 import { Routes } from 'discord-api-types/v10'
-import { ACCESS_LEVELS } from '$lib/constants'
-import { prisma } from '$lib/db'
+import { ACCESS_LEVELS } from '@hey-amplify/constants'
+import { prisma } from '@hey-amplify/prisma'
 import { api } from './api'
 import type { APIGuild, APIGuildMember } from 'discord-api-types/v10'
 

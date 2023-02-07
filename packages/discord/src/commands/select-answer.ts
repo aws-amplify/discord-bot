@@ -1,6 +1,6 @@
 import { ContextMenuCommandBuilder } from '@discordjs/builders'
 import { ApplicationCommandType, EmbedBuilder } from 'discord.js'
-import { prisma } from '$lib/db'
+import { prisma } from '@hey-amplify/prisma'
 import { isAdminOrStaff } from '../is-admin-or-staff'
 import type {
   GuildMember,

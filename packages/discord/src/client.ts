@@ -10,7 +10,7 @@ import {
   type ThreadChannel,
   type Guild,
 } from 'discord.js'
-import { prisma } from '$lib/db'
+import { prisma } from '@hey-amplify/prisma'
 import {
   commands,
   createCommandFeatures,
@@ -19,7 +19,7 @@ import {
 import { PREFIXES } from './commands/thread'
 import { isHelpChannel, isThreadWithinHelpChannel } from './support'
 import { integrations } from '$lib/features/index'
-import { FEATURE_TYPES } from '$lib/constants'
+import { FEATURE_TYPES } from '@hey-amplify/constants'
 
 export const client = new Client({
   intents: [

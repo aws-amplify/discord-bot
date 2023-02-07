@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import { faker } from '@faker-js/faker'
 import { EmbedBuilder, PermissionFlagsBits } from 'discord.js'
 import { getUserAccess } from '$discord/get-user-access'
-import { prisma } from '$lib/db'
+import { prisma } from '@hey-amplify/prisma'
 import {
   postDiscussion,
   postAnswer,

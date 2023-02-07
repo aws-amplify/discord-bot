@@ -4,7 +4,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
 } from '@discordjs/builders'
-import { prisma } from '$lib/db'
+import { prisma } from '@hey-amplify/prisma'
 import type {
   ButtonInteraction,
   ChatInputCommandInteraction,

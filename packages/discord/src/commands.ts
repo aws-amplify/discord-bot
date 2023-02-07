@@ -13,8 +13,8 @@ import {
   type ContextMenuCommandInteraction,
   type InteractionReplyOptions,
 } from 'discord.js'
-import { prisma } from '$lib/db'
-import { FEATURE_TYPES } from '$lib/constants'
+import { prisma } from '@hey-amplify/prisma'
+import { FEATURE_TYPES } from '@hey-amplify/constants'
 import * as admin from './commands/admin'
 import * as contribute from './commands/contribute'
 import * as github from './commands/github'
