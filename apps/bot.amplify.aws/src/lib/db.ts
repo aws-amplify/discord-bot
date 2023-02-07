@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@hey-amplify/prisma'
 import { ACCESS_LEVELS, FEATURE_TYPES } from './constants'
 import { integrations, types as featureTypes } from './features/index'
 import { createCommandFeatures } from './discord/commands'
 
-export const prisma = new PrismaClient()
 const DB_INIT_MESSAGE = '[database] init'
 
 export async function init() {
