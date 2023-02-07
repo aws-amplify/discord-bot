@@ -1,0 +1,21 @@
+{
+  "name": "@hey-amplify/discord-bot",
+  "type": "module",
+  "version": "2.0.0-next.0",
+  "description": "A Discord bot for the AWS Amplify community",
+  "scripts": {
+    "start": "node bin/bot.js",
+    "build": "tsup",
+    "dev": "vite-node bin/bot.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.4.0",
+    "@hey-amplify/discord": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^6.5.0",
+    "typescript": "^4.9.5",
+    "vite": "^4.1.1",
+    "vite-node": "^0.28.4"
+  }
+}
