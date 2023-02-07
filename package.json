@@ -5,17 +5,13 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "packages": "pnpm --filter \"./packages/**\"",
     "dev": "turbo run dev",
-    "docker": "PNPM_STORE=$(pnpm store path) docker compose up --build",
     "build": "turbo run build",
-    "build-lib": "pnpm packages run build",
     "check": "prettier --check .",
     "lint": "eslint .",
-    "setup-dev": "pnpm install && prisma db push && svelte-kit sync && pnpm build:lib",
-    "setup-docker": "echo \"\nPNPM_STORE\"=$(pnpm store path) >> .env && docker -v",
-    "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push && vite build",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "setup-dev": "pnpm install",
+    "setup-test": ""
   },
   "devDependencies": {
     "@commitlint/cli": "^17.4.2",
