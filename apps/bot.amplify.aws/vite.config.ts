@@ -40,11 +40,6 @@ export default defineConfig(({ mode }) => {
       include: ['@carbon/charts'],
     },
     plugins: [sveltekit()],
-    resolve: {
-      alias: {
-        $discord: relative('./src/lib/discord'),
-      },
-    },
     ssr: {
       noExternal: ['@carbon/charts', 'carbon-components'],
     },
