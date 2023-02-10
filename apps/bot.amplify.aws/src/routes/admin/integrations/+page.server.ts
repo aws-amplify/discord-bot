@@ -1,5 +1,5 @@
 import { prisma } from '$lib/db'
-import { FEATURE_TYPES } from '$lib/constants'
+import { FEATURE_TYPES } from '@hey-amplify/constants'
 import { type PageServerLoad } from './$types'
 import { createIntegrationHrefFromCode } from '../breadcrumbs'
 

@@ -4,8 +4,8 @@ import {
   type APIPartialChannel,
   type APIGuildPreview,
 } from 'discord-api-types/v10'
-import { api } from '$discord/api'
-import { ACCESS_LEVELS } from '$lib/constants'
+import { api } from '@hey-amplify/discord'
+import { ACCESS_LEVELS } from '@hey-amplify/constants'
 import { prisma } from '$lib/db'
 import { isHelpChannel } from '$lib/discord/support'
 import { getGitHubMembers } from './helpers/github'

@@ -1,7 +1,7 @@
 import { type RequestHandler } from '@sveltejs/kit'
 import cookie from 'cookie'
 import { z } from 'zod'
-import { GUILD_COOKIE } from '$lib/constants'
+import { GUILD_COOKIE } from '@hey-amplify/constants'
 
 const schema = z.object({
   guildId: z.string().min(1),

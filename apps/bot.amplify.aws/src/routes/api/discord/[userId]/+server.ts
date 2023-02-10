@@ -1,5 +1,5 @@
 import { Routes } from 'discord-api-types/v10'
-import { api } from '$discord/api'
+import { api } from '@hey-amplify/discord'
 import type { RequestHandler } from '@sveltejs/kit'
 import type { APIGuildMember } from 'discord-api-types/v10'
 

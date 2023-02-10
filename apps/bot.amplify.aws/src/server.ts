@@ -1,4 +1,4 @@
-import { createBot } from '$discord/client'
+import { createBot } from '@hey-amplify/discord'
 import { init } from '$lib/db'
 // @ts-expect-error this file is externalized for build
 import { handler } from '$sveltekit_handler'

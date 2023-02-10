@@ -1,4 +1,4 @@
-import { api } from '$discord/api'
+import { api } from '@hey-amplify/discord'
 import { Routes, type APIGuild } from 'discord-api-types/v10'
 import { type LayoutServerLoad } from './$types'
 
