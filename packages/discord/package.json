@@ -20,7 +20,9 @@
     "@discordjs/builders": "^1.4.0",
     "@discordjs/rest": "^1.5.0",
     "@hey-amplify/constants": "workspace:*",
-    "@hey-amplify/prisma": "workspace:*",
+    "@hey-amplify/features": "workspace:*",
+    "@hey-amplify/github": "workspace:*",
+    "@hey-amplify/prisma-client": "workspace:*",
     "discord.js": "^14.4.0",
     "discord-api-types": "^0.37.31"
   },

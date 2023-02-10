@@ -13,7 +13,7 @@ import {
   type ContextMenuCommandInteraction,
   type InteractionReplyOptions,
 } from 'discord.js'
-import { prisma } from '@hey-amplify/prisma'
+import { prisma } from './prisma'
 import { FEATURE_TYPES } from '@hey-amplify/constants'
 import * as admin from './commands/admin'
 import * as contribute from './commands/contribute'

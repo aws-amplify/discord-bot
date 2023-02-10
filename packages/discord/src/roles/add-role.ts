@@ -1,5 +1,5 @@
-import { api } from '$discord/api'
 import { Routes } from 'discord-api-types/v10'
+import { api } from '../api'
 
 /** applies a role to a given user */
 export async function addRole(roleId: string, guildId: string, userId: string) {

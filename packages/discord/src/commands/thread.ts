@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { EmbedBuilder, MessageType } from 'discord.js'
-import { prisma } from '@hey-amplify/prisma'
+import { prisma } from '../prisma'
 import { isThreadWithinHelpChannel } from '../support'
 import { isAdminOrStaff } from '../is-admin-or-staff'
 import type {

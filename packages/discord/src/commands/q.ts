@@ -4,14 +4,14 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
 } from '@discordjs/builders'
-import { prisma } from '@hey-amplify/prisma'
+import { prisma } from '../prisma'
 import type {
   ButtonInteraction,
   ChatInputCommandInteraction,
   InteractionReplyOptions,
   TextBasedChannel,
 } from 'discord.js'
-import type { Question } from '@prisma/client'
+import type { Question } from '@hey-amplify/prisma-client'
 
 function epoch(date: Date): number {
   return Math.floor(date.getTime() / 1000)

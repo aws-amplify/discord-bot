@@ -1,14 +1,14 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { faker } from '@faker-js/faker'
 import { EmbedBuilder, PermissionFlagsBits } from 'discord.js'
-import { getUserAccess } from '../get-user-access   '
-import { prisma } from '@hey-amplify/prisma'
+import { getUserAccess } from '../get-user-access'
+import { prisma } from '../prisma'
 import {
   postDiscussion,
   postAnswer,
   markAnswered,
   lockDiscussion,
-} from '$lib/github/queries'
+} from '@hey-amplify/github'
 import { repositoriesWithDiscussions as repositories } from './_repositories'
 import { isThreadWithinHelpChannel } from '../support'
 import type {
@@ -17,7 +17,7 @@ import type {
   InteractionReplyOptions,
   ThreadChannel,
 } from 'discord.js'
-import type { Question } from '@prisma/client'
+import type { Question } from '@hey-amplify/prisma-client'
 
 const userIdToUsername = new Map<string, User>()
 
