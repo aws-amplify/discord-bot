@@ -1,9 +1,8 @@
 import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
-import { addRole } from '$discord/roles/addRole'
-import { removeRole } from '$discord/roles/removeRole'
-import { ACCESS_LEVELS } from '$lib/constants'
-import { prisma } from '$lib/db'
+import { addRole, removeRole } from '@hey-amplify/discord'
+import { ACCESS_LEVELS } from '@hey-amplify/constants'
+import { prisma } from './prisma'
 
 /**
  * returns true if the user is a member of that org
