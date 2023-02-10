@@ -1,0 +1,27 @@
+{
+  "name": "@hey-amplify/features",
+  "private": true,
+  "type": "module",
+  "version": "2.0.0-next.0",
+  "description": "A Discord bot for the AWS Amplify community",
+  "exports": {
+    ".": {
+      "import": "./build/index.js",
+      "types": "./build/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "build/index.d.ts",
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup"
+  },
+  "dependencies": {
+    "@hey-amplify/constants": "workspace:*",
+    "@hey-amplify/prisma-client": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^6.5.0",
+    "typescript": "^4.9.5"
+  }
+}
