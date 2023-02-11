@@ -50,6 +50,7 @@
     "carbon-icons-svelte": "^11.2.0",
     "carbon-preprocess-svelte": "^0.9.1",
     "d3": "^7.6.1",
+    "discord.js": "^14.7.1",
     "jsdom": "^20.0.0",
     "svelte-check": "^3.0.3",
     "svelte-preprocess": "^5.0.1",

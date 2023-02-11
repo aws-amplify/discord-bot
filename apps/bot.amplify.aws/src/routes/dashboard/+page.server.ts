@@ -1,22 +1,21 @@
-import { type ForumChannel, type TextChannel } from 'discord.js'
 import {
   Routes,
   type APIPartialChannel,
   type APIGuildPreview,
 } from 'discord-api-types/v10'
-import { api } from '@hey-amplify/discord'
+import { api, isHelpChannel } from '@hey-amplify/discord'
 import { ACCESS_LEVELS } from '@hey-amplify/constants'
 import { prisma } from '$lib/db'
-import { isHelpChannel } from '$lib/discord/support'
 import { getGitHubMembers } from './helpers/github'
-import {
-  type Contributor,
-  type Contributors,
-  type GitHubUser,
-  type Question,
-  type Questions,
+import type { ForumChannel, TextChannel } from 'discord.js'
+import type {
+  Contributor,
+  Contributors,
+  GitHubUser,
+  Question,
+  Questions,
 } from './types'
-import { type PageServerLoad } from './$types'
+import type { PageServerLoad } from './$types'
 
 async function fetchHelpChannels(guildId: string): Promise<string[]> {
   try {
