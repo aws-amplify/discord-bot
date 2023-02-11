@@ -1,0 +1,15 @@
+{
+  "name": "@hey-amplify/type-helpers",
+  "version": "2.0.0-next.0",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./index.d.ts",
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  }
+}

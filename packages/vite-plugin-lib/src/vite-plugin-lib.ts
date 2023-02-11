@@ -1,5 +1,4 @@
 import * as path from 'node:path'
-import * as url from 'node:url'
 import glob from 'fast-glob'
 import dts from 'vite-plugin-dts'
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
@@ -20,11 +19,16 @@ export type VitePluginLibOptions = {
    * @default "@hey-amplify/tsconfig/base.json"
    */
   tsconfig?: string
+  /**
+   * whether to enable DTS generation
+   */
+  dts?: boolean
 }
 
 export const VitePluginLib = (
   options: VitePluginLibOptions = {
     entry: './src/index.ts',
+    dts: false,
   }
 ): Plugin => {
   let config: ResolvedConfig
@@ -75,11 +79,13 @@ export const VitePluginLib = (
   }
 }
 
-export const lib = (options: VitePluginLibOptions): Plugin[] => [
-  VitePluginLib(options),
-  dts({
-    tsConfigFilePath: options?.tsconfig || path.resolve('tsconfig.json'),
-    copyDtsFiles: true,
-  }),
-]
+export const lib = (options?: VitePluginLibOptions): Plugin[] =>
+  [
+    VitePluginLib(options),
+    options?.dts &&
+      dts({
+        tsConfigFilePath: options?.tsconfig || path.resolve('tsconfig.json'),
+        copyDtsFiles: true,
+      }),
+  ].filter(Boolean) as Plugin[]
 export default lib

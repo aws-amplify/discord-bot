@@ -11,6 +11,7 @@
     "./package.json": "./package.json",
     "./schema.prisma": "./schema.prisma"
   },
+  "types": "./build/generated/client/index.d.ts",
   "scripts": {
     "build": "prisma generate",
     "db-push": "prisma db push",
