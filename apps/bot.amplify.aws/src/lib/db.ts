@@ -1,7 +1,7 @@
 import { PrismaClient } from '@hey-amplify/prisma-client'
 import { ACCESS_LEVELS, FEATURE_TYPES } from './constants'
-import { integrations, types as featureTypes } from './features/index'
-import { createCommandFeatures } from './discord/commands'
+import { integrations, types as featureTypes } from '@hey-amplify/features'
+import { createCommandFeatures } from '@hey-amplify/discord'
 
 export const prisma = new PrismaClient()
 

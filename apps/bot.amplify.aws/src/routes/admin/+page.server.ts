@@ -1,12 +1,6 @@
 import { FEATURE_TYPES } from '@hey-amplify/constants'
 import { error } from '@sveltejs/kit'
 import {
-  type Configuration,
-  type Guild,
-  type DiscordRole,
-  type Feature,
-} from '@prisma/client'
-import {
   Routes,
   type RESTGetAPIApplicationGuildCommandsResult,
   type RESTGetAPIGuildRolesResult,
@@ -18,9 +12,15 @@ import {
   type Command as CommandType,
 } from '@hey-amplify/discord'
 import { prisma } from '$lib/db'
-import { type PageServerLoad } from './$types'
 import { api } from '../api/_discord'
 import { tabs } from './tabs'
+import type {
+  Configuration,
+  Guild,
+  DiscordRole,
+  Feature,
+} from '@hey-amplify/prisma-client'
+import type { PageServerLoad } from './$types'
 
 type AdminPageReturn = {
   commands: Array<

@@ -6,7 +6,7 @@ import DiscordProvider from 'next-auth/providers/discord'
 import GithubProvider from 'next-auth/providers/github'
 import { prisma } from '$lib/db'
 import getFormBody from './support/get-form-body'
-import { applyRoles } from './github/apply-roles'
+import { applyRoles } from './apply-roles'
 import type { NextAuthOptions, NextAuthAction } from 'next-auth'
 import type {
   OutgoingResponse as NextAuthResponse,

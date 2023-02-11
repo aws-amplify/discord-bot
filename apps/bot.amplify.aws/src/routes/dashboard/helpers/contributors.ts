@@ -1,4 +1,4 @@
-import { type GitHubUser, type Contributor } from '../types'
+import type { GitHubUser, Contributor } from '../types'
 
 export function getGitHubUsername(gitHubStaff: GitHubUser[], userId: string) {
   const user = gitHubStaff.find((user) => user.id === Number(userId))

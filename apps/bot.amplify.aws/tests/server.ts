@@ -1,6 +1,4 @@
 // @vitest-environment node
-import { type Server } from 'node:http'
-import { resolve } from 'node:path'
 import { EOL } from 'node:os'
 import { installPolyfills } from '@sveltejs/kit/node/polyfills'
 import request from 'supertest'
@@ -19,6 +17,7 @@ import {
 } from './mock/github-webhook'
 import { verifyGithubWebhookEvent } from './../src/routes/api/webhooks/_verifyWebhook'
 import { ACCESS_LEVELS } from '$lib/constants'
+import type { Server } from 'node:http'
 import type { Session } from 'next-auth'
 
 let config

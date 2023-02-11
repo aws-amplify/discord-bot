@@ -1,7 +1,6 @@
-import { type Feature } from '@prisma/client'
-import { type RequestHandler } from '@sveltejs/kit'
 import { prisma } from '$lib/db'
-import { FEATURE_CODES } from '@hey-amplify/constants'
+import type { FEATURE_CODES } from '@hey-amplify/constants'
+import type { RequestHandler } from '@sveltejs/kit'
 
 type Payload = {
   /**

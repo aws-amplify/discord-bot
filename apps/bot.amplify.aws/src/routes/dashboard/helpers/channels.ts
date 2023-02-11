@@ -1,4 +1,4 @@
-import { type Question, type Questions } from '../types'
+import type { Question, Questions } from '../types'
 
 export function sortChannels(questions: Question[]) {
   const counts = questions.reduce((count, question) => {
