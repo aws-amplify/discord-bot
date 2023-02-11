@@ -19,16 +19,19 @@
   "dependencies": {
     "@discordjs/builders": "^1.4.0",
     "@discordjs/rest": "^1.5.0",
+    "@faker-js/faker": "^7.6.0",
+    "@hey-amplify/prisma-client": "workspace:*",
+    "discord-api-types": "^0.37.31",
+    "discord.js": "^14.4.0"
+  },
+  "devDependencies": {
     "@hey-amplify/constants": "workspace:*",
     "@hey-amplify/features": "workspace:*",
     "@hey-amplify/github": "workspace:*",
-    "@hey-amplify/prisma-client": "workspace:*",
-    "discord.js": "^14.4.0",
-    "discord-api-types": "^0.37.31"
-  },
-  "devDependencies": {
+    "@hey-amplify/type-helpers": "workspace:*",
     "tsup": "^6.5.0",
     "typescript": "^4.9.5",
+    "vite": "^4.1.1",
     "vitest": "^0.28.4"
   }
 }

@@ -1,4 +1,4 @@
-import { getRepos } from '../../github/queries'
+import { getRepos } from '@hey-amplify/github'
 
 const nameToAlias = new Map<string, string>([
   ['amplify-cli', 'cli'],
@@ -24,21 +24,25 @@ async function fetchRepositories() {
     if (organization?.repositories?.edges?.length) {
       const repos = organization.repositories.edges
       return repos
-      .filter((repo) => nameToAlias.get(repo.node.name))
-      .reduce((accumulator, repo) => {
-        return { ...accumulator, [alias(repo.node.name)]: repo.node.url }
-      }, {})
+        .filter((repo) => nameToAlias.get(repo.node.name))
+        .reduce((accumulator, repo) => {
+          return { ...accumulator, [alias(repo.node.name)]: repo.node.url }
+        }, {})
     }
-  } catch (error) {
-    console.error(`Error fetching repositories: ${error.message}`)
+  } catch (cause) {
+    console.error(`Error fetching repositories`, { cause })
   }
   return {}
 }
 
 const containsQA = (category: Category) =>
   category?.name === process.env.GITHUB_DISCUSSION_CATEGORY
-const getQAIdx = (categories: Category[]) => (categories.findIndex((category) => category.name === process.env.GITHUB_DISCUSSION_CATEGORY))
-const getDiscussion = ({ nodes }: {nodes: Category[]}) => nodes[getQAIdx(nodes)]
+const getQAIdx = (categories: Category[]) =>
+  categories.findIndex(
+    (category) => category.name === process.env.GITHUB_DISCUSSION_CATEGORY
+  )
+const getDiscussion = ({ nodes }: { nodes: Category[] }) =>
+  nodes[getQAIdx(nodes)]
 
 /** Return repositories that have the Q&A category on Discussions enabled */
 async function fetchRepositoriesWithDiscussions() {
@@ -61,12 +65,10 @@ async function fetchRepositoriesWithDiscussions() {
           (obj, repo: Repository) => ({ ...obj, [alias(repo.name)]: repo }),
           {}
         )
-        return res
+      return res
     }
-  } catch (error) {
-    console.error(
-      `Error fetching repositories with discussions: ${error.message}`
-    )
+  } catch (cause) {
+    console.error(`Error fetching repositories with discussions`, { cause })
   }
   return {}
 }

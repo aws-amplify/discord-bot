@@ -1,10 +1,11 @@
-import {
-  type ForumChannel,
-  type TextChannel,
-  type ThreadChannel,
+import type {
+  ForumChannel,
+  TextChannel,
+  ThreadChannel,
+  Embed,
 } from 'discord.js'
 
-export function generateResponse(content, embeds?) {
+export function generateResponse(content: string, embeds?: Embed[]) {
   return {
     tts: false,
     content,

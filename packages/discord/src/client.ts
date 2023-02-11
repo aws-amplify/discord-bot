@@ -199,7 +199,7 @@ client.on(Events.MessageCreate, async (message: Message) => {
         create: {
           ownerId: (
             await message.channel.fetchStarterMessage()
-          ).author.id as string,
+          )?.author.id as string,
           threadId: message.channel.id,
           channelName: message.channel.parent!.name,
           title: message.channel.name,
@@ -323,10 +323,3 @@ process.on('exit', () => {
   console.log('destroying client')
   client?.destroy()
 })
-
-if (import.meta.hot) {
-  import.meta.hot.dispose(() => {
-    console.log('destroying client')
-    client?.destroy()
-  })
-}

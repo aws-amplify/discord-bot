@@ -2,5 +2,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "lib": ["esnext"]
-  }
+  },
+  "include": ["src/**/*", "tests/**/*", "env.d.ts"]
 }
