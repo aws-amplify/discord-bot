@@ -1,11 +1,11 @@
 {
   "name": "@hey-amplify/prisma-client",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "version": "1.0.0",
   "exports": {
     ".": {
-      "import": "./build/generated/client/index.js",
+      "default": "./build/generated/client/index.js",
       "types": "./build/generated/client/index.d.ts"
     },
     "./package.json": "./package.json",
