@@ -1,2 +1,4 @@
 export * from './queries'
-export * from './apply-roles'
+export * from './fetch-org-repos'
+export * from './is-contributor'
+export * from './is-org-member'

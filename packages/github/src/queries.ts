@@ -1,5 +1,6 @@
 import { graphql } from '@octokit/graphql'
 import { createAppAuth } from '@octokit/auth-app'
+import type { GraphQlQueryResponseData } from '@octokit/graphql'
 
 const gql = String.raw
 
@@ -128,13 +129,14 @@ async function authenticate() {
 export async function getRepos() {
   try {
     const request = await authenticate()
-    const { organization } = await request(QUERY_GET_REPOSITORIES, {
+    const { organization } = (await request(QUERY_GET_REPOSITORIES, {
       login: process.env.GITHUB_ORG_LOGIN,
-    })
+    })) as GraphQlQueryResponseData
     if (organization) return organization
-  } catch (error) {
+  } catch (cause) {
     throw new Error(
-      `Failed to fetch repos for org ${process.env.GITHUB_ORG_LOGIN}: ${error.message}`
+      `Failed to fetch repos for org ${process.env.GITHUB_ORG_LOGIN}`,
+      { cause }
     )
   }
 }
@@ -164,8 +166,8 @@ export async function postDiscussion({
       clientMutationId: mutationId,
     })
     return response
-  } catch (error) {
-    throw new Error(`Failed to post discussion: ${error.message}`)
+  } catch (cause) {
+    throw new Error(`Failed to post discussion`, { cause })
   }
 }
 
@@ -188,8 +190,8 @@ export async function postAnswer({
       clientMutationId: clientMutationId,
     })
     return response
-  } catch (error) {
-    throw new Error(`Failed to post answer: ${error.message}`)
+  } catch (cause) {
+    throw new Error(`Failed to post answer`, { cause })
   }
 }
 
@@ -208,8 +210,8 @@ export async function markAnswered({
       clientMutationId: clientMutationId,
     })
     return response
-  } catch (error) {
-    throw new Error(`Failed to mark solution as answered: ${error.message}`)
+  } catch (cause) {
+    throw new Error(`Failed to mark solution as answered`, { cause })
   }
 }
 
@@ -228,7 +230,7 @@ export async function lockDiscussion({
       clientMutationId: clientMutationId,
     })
     return response
-  } catch (error) {
-    throw new Error(`Failed to lock discussion: ${error.message}`)
+  } catch (cause) {
+    throw new Error(`Failed to lock discussion`, { cause })
   }
 }

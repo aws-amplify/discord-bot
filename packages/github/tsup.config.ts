@@ -11,5 +11,5 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  target: 'node',
+  target: 'node18',
 })
