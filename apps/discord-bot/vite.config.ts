@@ -1,4 +1,5 @@
 import { resolve } from 'node:path'
+import { builtinModules } from 'node:module'
 import { loadEnv } from 'vite'
 import { defineConfig } from 'vitest/config'
 import pkg from './package.json' assert { type: 'json' }
@@ -27,10 +28,13 @@ export default defineConfig(({ mode }) => {
         name: 'discord-bot',
         formats: ['es'],
       },
+      minify: !isDev,
       outDir: 'build',
       rollupOptions: {
-        external: Object.keys(pkg.dependencies || {}),
+        input: 'discord-bot.ts',
+        external: [...builtinModules, ...Object.keys(pkg.dependencies || {})],
       },
+      ssr: true,
     },
     test: {
       globals: true,

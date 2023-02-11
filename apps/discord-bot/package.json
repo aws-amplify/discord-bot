@@ -1,5 +1,5 @@
 {
-  "name": "@hey-amplify/discord-bot",
+  "name": "@aws-amplify/discord-bot",
   "type": "module",
   "version": "2.0.0-next.0",
   "description": "A Discord bot for the AWS Amplify community",
