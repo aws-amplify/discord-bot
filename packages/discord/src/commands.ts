@@ -13,17 +13,17 @@ import {
   type ContextMenuCommandInteraction,
   type InteractionReplyOptions,
 } from 'discord.js'
-import { prisma } from './prisma'
+import { prisma } from './prisma.js'
 import { FEATURE_TYPES } from '@hey-amplify/constants'
-import * as admin from './commands/admin'
-import * as contribute from './commands/contribute'
-import * as github from './commands/github'
-import * as giverole from './commands/giverole'
-import * as login from './commands/login'
-import * as selectAnswer from './commands/select-answer'
-import * as thread from './commands/thread'
-import * as q from './commands/q'
-import { api } from './api'
+import * as admin from './commands/admin.js'
+import * as contribute from './commands/contribute.js'
+import * as github from './commands/github.js'
+import * as giverole from './commands/giverole.js'
+import * as login from './commands/login.js'
+import * as selectAnswer from './commands/select-answer.js'
+import * as thread from './commands/thread.js'
+import * as q from './commands/q.js'
+import { api } from './api.js'
 
 export type Command = {
   name: string

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { repositories } from './_repositories'
+import { repositories } from './_repositories.js'
 import type {
   ChatInputCommandInteraction,
   InteractionReplyOptions,

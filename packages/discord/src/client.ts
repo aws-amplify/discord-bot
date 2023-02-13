@@ -10,14 +10,14 @@ import {
   type ThreadChannel,
   type Guild,
 } from 'discord.js'
-import { prisma } from './prisma'
+import { prisma } from './prisma.js'
 import {
   commands,
   createCommandFeatures,
   syncRegisteredCommandsForGuild,
-} from './commands'
-import { PREFIXES } from './commands/thread'
-import { isHelpChannel, isThreadWithinHelpChannel } from './support'
+} from './commands.js'
+import { PREFIXES } from './commands/thread.js'
+import { isHelpChannel, isThreadWithinHelpChannel } from './support.js'
 import { integrations } from '@hey-amplify/features'
 import { FEATURE_TYPES } from '@hey-amplify/constants'
 

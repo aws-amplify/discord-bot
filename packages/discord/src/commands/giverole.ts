@@ -6,7 +6,7 @@ import {
   type InteractionReplyOptions,
   type ChatInputCommandInteraction,
 } from 'discord.js'
-import * as MESSAGES from './_messages'
+import * as MESSAGES from './_messages.js'
 
 export async function handler(
   interaction: ChatInputCommandInteraction

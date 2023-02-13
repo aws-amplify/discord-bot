@@ -1,5 +1,5 @@
 import { ACCESS_LEVELS } from '@hey-amplify/constants'
-import { prisma } from './prisma'
+import { prisma } from './prisma.js'
 import type { GuildMember } from 'discord.js'
 
 export async function isAdminOrStaff(user: GuildMember) {

@@ -20,7 +20,6 @@
     "@discordjs/builders": "^1.4.0",
     "@discordjs/rest": "^1.5.0",
     "@faker-js/faker": "^7.6.0",
-    "@hey-amplify/prisma-client": "workspace:*",
     "discord-api-types": "^0.37.33",
     "discord.js": "^14.7.1"
   },
@@ -29,9 +28,13 @@
     "@hey-amplify/features": "workspace:*",
     "@hey-amplify/github": "workspace:*",
     "@hey-amplify/type-helpers": "workspace:*",
+    "@hey-amplify/prisma-client": "workspace:*",
     "tsup": "^6.6.0",
     "typescript": "^4.9.5",
     "vite": "^4.1.1",
     "vitest": "^0.28.4"
+  },
+  "peerDependencies": {
+    "@hey-amplify/prisma-client": "workspace:*"
   }
 }

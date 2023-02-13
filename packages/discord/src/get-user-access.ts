@@ -1,7 +1,7 @@
 import { Routes } from 'discord-api-types/v10'
 import { ACCESS_LEVELS } from '@hey-amplify/constants'
-import { prisma } from './prisma'
-import { api } from './api'
+import { prisma } from './prisma.js'
+import { api } from './api.js'
 import type { APIGuild, APIGuildMember } from 'discord-api-types/v10'
 
 export async function getUserAccess(

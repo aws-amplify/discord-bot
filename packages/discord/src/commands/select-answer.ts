@@ -1,12 +1,12 @@
 import { ContextMenuCommandBuilder } from '@discordjs/builders'
 import { ApplicationCommandType, EmbedBuilder } from 'discord.js'
-import { prisma } from '../prisma'
-import { isAdminOrStaff } from '../is-admin-or-staff'
+import { prisma } from '../prisma.js'
+import { isAdminOrStaff } from '../is-admin-or-staff.js'
 import type {
   GuildMember,
   MessageContextMenuCommandInteraction,
 } from 'discord.js'
-import { parseTitle, parseTitlePrefix, PREFIXES } from './thread'
+import { parseTitle, parseTitlePrefix, PREFIXES } from './thread.js'
 
 export const config = new ContextMenuCommandBuilder()
   .setName('select-answer')

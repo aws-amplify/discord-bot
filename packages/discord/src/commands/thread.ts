@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { EmbedBuilder, MessageType } from 'discord.js'
-import { prisma } from '../prisma'
-import { isThreadWithinHelpChannel } from '../support'
-import { isAdminOrStaff } from '../is-admin-or-staff'
+import { prisma } from '../prisma.js'
+import { isThreadWithinHelpChannel } from '../support.js'
+import { isAdminOrStaff } from '../is-admin-or-staff.js'
 import type {
   ChatInputCommandInteraction,
   GuildMember,
