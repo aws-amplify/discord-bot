@@ -5,14 +5,14 @@ import { loadEnv } from 'vite'
 // this isn't being used, but it's here to show that it's possible
 // discord package will need to migrate away from import.meta.env to build with tsup
 
-export default defineConfig(({ mode }) => {
-  const isDev = mode === 'development'
+export default defineConfig((options) => {
+  const isDev = !!options.watch
   const envDir = resolve('../../')
   return {
     // statically replace 'import.meta.env' with actual values
     // define: loadEnv(mode, envDir, 'VITE_'),
-    env: isDev && loadEnv(mode, envDir, ['DISCORD_', 'GITHUB_']),
-    entry: ['discord-bot.ts'],
+    env: isDev && loadEnv('development', envDir, ['DISCORD_', 'GITHUB_']),
+    entry: ['discord-bot.ts', 'env.ts'],
     format: ['esm'],
     outDir: 'build',
     dts: false,
