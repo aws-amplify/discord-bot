@@ -7,7 +7,7 @@
     Toggle,
   } from 'carbon-components-svelte'
   import { get } from 'svelte/store'
-  import { ACCESS_LEVELS } from '@hey-amplify/constants'
+  import { ACCESS_LEVELS } from '$lib/constants'
   import { guild, notifications } from '$lib/store'
   import type { PageServerData } from './$types'
 

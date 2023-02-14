@@ -4,7 +4,7 @@ import {
   type APIGuildPreview,
 } from 'discord-api-types/v10'
 import { api, isHelpChannel } from '@hey-amplify/discord'
-import { ACCESS_LEVELS } from '@hey-amplify/constants'
+import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { getGitHubMembers } from './helpers/github'
 import type { ForumChannel, TextChannel } from 'discord.js'

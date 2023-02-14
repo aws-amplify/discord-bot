@@ -1,6 +1,6 @@
 import cookie from 'cookie'
 import { z } from 'zod'
-import { GUILD_COOKIE } from '@hey-amplify/constants'
+import { GUILD_COOKIE } from '$lib/constants'
 import type { RequestHandler } from '@sveltejs/kit'
 
 const schema = z.object({

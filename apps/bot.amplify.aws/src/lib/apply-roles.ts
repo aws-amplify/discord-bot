@@ -1,6 +1,6 @@
 import { addRole, removeRole } from '@hey-amplify/discord'
 import { isOrgMember, isContributor, fetchOrgRepos } from '@hey-amplify/github'
-import { ACCESS_LEVELS } from '@hey-amplify/constants'
+import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from './db'
 
 /** driver code that checks github membership/contribution status and applies roles */

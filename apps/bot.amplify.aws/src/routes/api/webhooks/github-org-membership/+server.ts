@@ -1,5 +1,5 @@
 import { addRole, removeRole } from '@hey-amplify/discord'
-import { ACCESS_LEVELS } from '@hey-amplify/constants'
+import { ACCESS_LEVELS } from '$lib/constants'
 import { json } from '@sveltejs/kit'
 import { prisma } from '$lib/db'
 import { verifyGithubWebhookEvent } from '../_verifyWebhook'

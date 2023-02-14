@@ -1,16 +1,10 @@
-import { GUILD_COOKIE } from '@hey-amplify/constants'
-import { createBot, getUserAccess } from '@hey-amplify/discord'
+import { GUILD_COOKIE } from '$lib/constants'
+import { getUserAccess } from '@hey-amplify/discord'
 import { sequence } from '@sveltejs/kit/hooks'
 import cookie from 'cookie'
 import { prisma, init } from '$lib/db'
 import { getServerSession, options } from '$lib/next-auth'
 import type { Handle } from '@sveltejs/kit'
-
-// only load the bot if we're in development (on first request to the server), otherwise the bot will be loaded onto the Node/Express server
-if (import.meta.env.MODE === 'development') {
-  await init()
-  await createBot()
-}
 
 function isApiRoute(pathname: URL['pathname']) {
   return pathname.startsWith('/api')

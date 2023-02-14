@@ -1,4 +1,4 @@
-import { FEATURE_TYPES } from '@hey-amplify/constants'
+import { FEATURE_TYPES } from '$lib/constants'
 import { error } from '@sveltejs/kit'
 import {
   Routes,
