@@ -36,6 +36,11 @@ export default defineConfig(({ mode }) => {
     define: {
       'import.meta.vitest': 'undefined',
     },
+    build: {
+      rollupOptions: {
+        external: ['@hey-amplify/prisma-client'],
+      },
+    },
     optimizeDeps: {
       include: ['@carbon/charts'],
     },
