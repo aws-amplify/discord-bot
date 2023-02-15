@@ -3,7 +3,7 @@ import { getUserAccess } from '@hey-amplify/discord'
 import { sequence } from '@sveltejs/kit/hooks'
 import cookie from 'cookie'
 import { prisma, init } from '$lib/db'
-import { getServerSession, options } from '$lib/next-auth'
+import { handle as handleAuth } from '$lib/next-auth'
 import type { Handle } from '@sveltejs/kit'
 
 function isApiRoute(pathname: URL['pathname']) {
@@ -17,16 +17,6 @@ function isApiAdminRoute(pathname: URL['pathname']) {
 function isPublicApiRoute(pathname: URL['pathname']) {
   const publicRoutes = ['/api/auth', '/api/p', '/api/webhooks']
   return publicRoutes.some((route) => pathname.startsWith(route))
-}
-
-/**
- * Get session from NextAuth.js
- */
-const handleSession: Handle = async ({ event, resolve }) => {
-  const session = await getServerSession(event.request, options)
-  // @ts-expect-error - apply NextAuth.js session directly to session locals
-  event.locals.session = session
-  return resolve(event)
 }
 
 /**
@@ -123,7 +113,8 @@ const handleApiAuth: Handle = async ({ event, resolve }) => {
 }
 
 export const handle = sequence(
-  handleSession, // get session from NextAuth.js
+  handleAuth,
+  // handleSession, // get session from NextAuth.js
   handleSessionUser, // add user details to session locals
   handleApiAuth // protect API routes
 )

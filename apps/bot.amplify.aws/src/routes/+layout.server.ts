@@ -23,7 +23,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
   }
 
   return {
-    session: locals.session,
+    session: await locals.getSession(),
     guilds: guilds.map((guild) => ({
       id: guild.id,
       text: guild.name,
