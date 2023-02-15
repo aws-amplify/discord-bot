@@ -14,11 +14,13 @@ const config = {
     // You can create optimized builds for different platforms by
     // specifying a different adapter
     adapter: adapter(),
-
+    env: {
+      dir: '../../',
+    },
     files: {
       assets: resolve('public'),
     },
-
+    // https://kit.svelte.dev/docs/configuration#csp
     csp: {
       mode: 'auto',
       directives: {

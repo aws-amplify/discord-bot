@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
     loadEnvVars()
   }
   const config: UserConfig = {
-    envDir: '.',
+    envDir: '../../',
     define: {
       'import.meta.vitest': 'undefined',
     },
