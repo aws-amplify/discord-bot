@@ -35,6 +35,8 @@ This repository contains the source code for the [AWS Amplify Discord Server](ht
 4. Run the application with `pnpm dev`
 5. As the server owner navigate to `http://localhost:3000/`, log in, and visit `/admin` to configure the instance
 
+Once you are finished working with the Discord Bot you will want to stop the database container with `pnpm stop-db`
+
 ### Setting up a Discord Bot
 
 <!-- TODO: screenshots -->

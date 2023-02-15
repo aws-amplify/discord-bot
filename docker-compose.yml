@@ -2,16 +2,30 @@ version: '3.9'
 services:
   bot:
     image: bot
-    container_name: bot-local
+    container_name: local
     build:
-      context: .
+      context: apps/discord-bot
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
     volumes:
-      - ./prisma/data:/data
-      - $PNPM_STORE:/root/.local/share/pnpm/store/v3
+      - ./packages/prisma/data:/data
+      # - $PNPM_STORE:/root/.local/share/pnpm/store/v3
     env_file:
       - .env
     environment:
       - DATABASE_URL=file:/data/local.db
+  # MariaDB Database to use with local development
+  db:
+    image: mariadb
+    environment:
+      - MARIADB_USER=example-user
+      - MARIADB_PASSWORD=top-secret
+      - MARIADB_ROOT_PASSWORD=super-top-secret
+    ports:
+      - 3306:3306
+  db-admin:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

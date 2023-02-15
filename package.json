@@ -5,13 +5,18 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
+    "start-db": "docker compose up db db-admin",
+    "start-frontend": "pnpm --filter @aws-amplify/discord-bot-frontend run start",
+    "start-bot": "pnpm --filter @aws-amplify/discord-bot run start",
+    "stop-db": "docker compose down",
     "dev": "turbo run dev",
     "build": "turbo run build",
     "check": "prettier --check .",
     "lint": "eslint .",
     "test": "turbo run test",
-    "setup-dev": "pnpm install",
-    "setup-test": ""
+    "push-db": "prisma db push --schema packages/prisma-client/schema.prisma",
+    "setup-dev": "pnpm install && pnpm start-db --detach && pnpm push-db",
+    "setup-test": "echo 'no setup required :)'"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.4.2",
@@ -28,6 +33,7 @@
     "lint-staged": "^13.1.0",
     "prettier": "^2.8.3",
     "prettier-plugin-svelte": "^2.9.0",
+    "prisma": "^4.10.1",
     "turbo": "^1.7.3",
     "typescript": "^4.9.5",
     "vite-node": "^0.28.4"
