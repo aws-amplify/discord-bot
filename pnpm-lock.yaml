@@ -96,6 +96,7 @@ importers:
       '@aws-crypto/sha256-js': 3.0.0
       '@carbon/styles': 1.22.0
       '@discordjs/rest': 1.5.0
+      '@hey-amplify/discord': link:../../packages/discord
       '@hey-amplify/prisma-client': link:../../packages/prisma-client
       '@next-auth/prisma-adapter': 1.0.5
       '@octokit/auth-app': 4.0.9
@@ -112,7 +113,6 @@ importers:
       '@carbon/charts': 1.6.4_d3@7.8.2
       '@carbon/charts-svelte': 1.6.4_d3@7.8.2+svelte@3.55.1
       '@hey-amplify/constants': link:../../packages/constants
-      '@hey-amplify/discord': link:../../packages/discord
       '@hey-amplify/features': link:../../packages/features
       '@hey-amplify/github': link:../../packages/github
       '@hey-amplify/support': link:../../packages/support

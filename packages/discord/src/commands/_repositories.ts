@@ -73,13 +73,15 @@ async function fetchRepositoriesWithDiscussions() {
   return {}
 }
 
-export const repositories = new Map<string, string>(
-  Object.entries(await fetchRepositories())
-)
+// export const repositories = new Map<string, string>(
+//   Object.entries(await fetchRepositories())
+// )
+export const repositories = new Map<string, string>()
+export const repositoriesWithDiscussions = new Map<string, Repository>()
 
-export const repositoriesWithDiscussions = new Map<string, Repository>(
-  Object.entries(await fetchRepositoriesWithDiscussions())
-)
+// export const repositoriesWithDiscussions = new Map<string, Repository>(
+//   Object.entries(await fetchRepositoriesWithDiscussions())
+// )
 
 type Repository = {
   name: string

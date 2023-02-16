@@ -10,11 +10,12 @@ import {
   GITHUB_CLIENT_SECRET,
 } from '$env/static/private'
 import { prisma } from '$lib/db'
-import { applyRoles } from './apply-roles'
+// import { applyRoles } from './apply-roles'
 import type { ServerLoadEvent } from '@sveltejs/kit'
 
 export const handle = SvelteKitAuth({
   adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GitHub({ clientId: GITHUB_CLIENT_ID, clientSecret: GITHUB_CLIENT_SECRET }),
     Discord({

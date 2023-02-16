@@ -14,7 +14,7 @@ function relative(path) {
 export function loadEnvVars(mode = 'development') {
   Object.assign(
     process.env,
-    loadEnv(mode, relative('.'), [
+    loadEnv(mode, relative('../../'), [
       'DISCORD_',
       'GITHUB_',
       'DATABASE_',
@@ -36,17 +36,26 @@ export default defineConfig(({ mode }) => {
     define: {
       'import.meta.vitest': 'undefined',
     },
-    build: {
-      rollupOptions: {
-        external: ['@hey-amplify/prisma-client'],
-      },
-    },
     optimizeDeps: {
-      include: ['@carbon/charts'],
+      include: [
+        '@carbon/charts',
+        '@hey-amplify/prisma-client',
+        '@hey-amplify/discord',
+      ],
     },
     plugins: [sveltekit()],
     ssr: {
-      noExternal: ['@carbon/charts', 'carbon-components'],
+      external: [
+        '@hey-amplify/prisma-client',
+        '@hey-amplify/discord',
+        'discord.js',
+      ],
+      noExternal: [
+        '@carbon/charts',
+        'carbon-components',
+        // '@hey-amplify/discord',
+        // '@hey-amplify/prisma-client',
+      ],
     },
     test: {
       globals: true,
