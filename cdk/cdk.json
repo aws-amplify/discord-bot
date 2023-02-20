@@ -1,7 +1,7 @@
 {
-  "app": "vite-node src/app.ts",
+  "app": "vite-node bin/app.ts",
   "watch": {
-    "include": ["src/**"]
+    "include": ["lib/**"]
   },
   "context": {
     "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,

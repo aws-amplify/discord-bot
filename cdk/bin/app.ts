@@ -1,8 +1,8 @@
 import 'source-map-support/register.js'
 import { getSecrets } from '@hey-amplify/support'
 import * as cdk from 'aws-cdk-lib'
-import { HeyAmplifyStack } from './stack'
-import { pkg } from './pkg'
+import { HeyAmplifyStack } from '../lib/stack'
+import { pkg } from '../lib/pkg'
 
 const app = new cdk.App({
   context: {

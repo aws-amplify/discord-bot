@@ -5,7 +5,7 @@
   "scripts": {
     "synth": "cdk synth",
     "deploy": "cdk deploy",
-    "deploy-github-actions": "cdk deploy --app \"vite-node src/app-github-actions.ts\""
+    "deploy-github-actions": "cdk deploy --app \"vite-node bin/app-github-actions.ts\""
   },
   "devDependencies": {
     "@hey-amplify/support": "workspace:*",
