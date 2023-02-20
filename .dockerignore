@@ -5,7 +5,16 @@ node_modules
 /cdk
 /docs
 /tests
+/scripts
 .vscode
+
+# ignore git
+.git*
+.github
+.git-hooks
+
+# no dotfiles in general
+.*
 
 # no builds
 **/build

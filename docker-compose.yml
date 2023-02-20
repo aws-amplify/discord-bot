@@ -1,20 +1,5 @@
 version: '3.9'
 services:
-  bot:
-    image: bot
-    container_name: local
-    build:
-      context: apps/discord-bot
-      dockerfile: Dockerfile
-    ports:
-      - '3000:3000'
-    volumes:
-      - ./packages/prisma/data:/data
-      # - $PNPM_STORE:/root/.local/share/pnpm/store/v3
-    env_file:
-      - .env
-    environment:
-      - DATABASE_URL=file:/data/local.db
   # MariaDB Database to use with local development
   db:
     image: mariadb
@@ -29,3 +14,30 @@ services:
     restart: always
     ports:
       - 8080:8080
+  # Monorepo builder
+  workspace:
+    image: workspace
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=mysql://example-user:top-secret@db:3306/hey-amplify
+      - PNPM_STORE_PATH=$$(pnpm store path)
+  discord-bot-frontend:
+    image: discord-bot-frontend
+    build:
+      context: ./apps/bot.amplify.aws
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+  discord-bot:
+    image: discord-bot
+    build:
+      context: ./apps/discord-bot
+      dockerfile: Dockerfile
+    env_file:
+      - .env
