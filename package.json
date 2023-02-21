@@ -9,7 +9,7 @@
     "start-frontend": "pnpm --filter @aws-amplify/discord-bot-frontend run start",
     "start-bot": "pnpm --filter @aws-amplify/discord-bot run start",
     "stop-db": "docker compose down",
-    "db": "pnpm start-db -d && pnpm push-db && pnpm studio",
+    "db": "pnpm start-db -d && pnpm push-db && pnpm studio && pnpm stop-db",
     "dev": "turbo run dev",
     "build": "turbo run build",
     "check": "prettier --check .",
