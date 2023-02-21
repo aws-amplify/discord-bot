@@ -9,6 +9,7 @@
     "start-frontend": "pnpm --filter @aws-amplify/discord-bot-frontend run start",
     "start-bot": "pnpm --filter @aws-amplify/discord-bot run start",
     "stop-db": "docker compose down",
+    "db": "pnpm start-db -d && pnpm push-db && pnpm studio",
     "dev": "turbo run dev",
     "build": "turbo run build",
     "check": "prettier --check .",
@@ -16,7 +17,8 @@
     "test": "turbo run test",
     "push-db": "prisma db push --schema packages/prisma-client/schema.prisma",
     "setup-dev": "pnpm install && pnpm start-db --detach && pnpm push-db",
-    "setup-test": "echo 'no setup required :)'"
+    "setup-test": "echo 'no setup required :)'",
+    "studio": "prisma studio --schema packages/prisma-client/schema.prisma"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.4.2",

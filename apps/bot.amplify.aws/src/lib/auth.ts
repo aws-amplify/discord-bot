@@ -7,14 +7,14 @@ enum AuthProviders {
 type Provider = 'discord' | 'github'
 
 export async function getCsrfToken(): Promise<string> {
-  const res = await fetch('/api/auth/csrf')
+  const res = await fetch('/auth/csrf')
   const { csrfToken } = await res.json()
   return csrfToken
 }
 
 export async function signIn(provider: Provider) {
   const url = new URL(
-    `/api/auth/signin/${provider}`,
+    `/auth/signin/${provider}`,
     import.meta.env.VITE_NEXTAUTH_URL
   )
 

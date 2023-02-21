@@ -11,7 +11,7 @@
   const redirect = import.meta.env.VITE_HOST
 </script>
 
-<form action="{`/api/auth/signin/${provider}`}" method="POST">
+<form action="{`/auth/signin/${provider}`}" method="POST">
   {#await getCsrfToken() then csrfToken}
     <input type="hidden" name="csrfToken" value="{csrfToken}" />
   {/await}

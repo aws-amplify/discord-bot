@@ -242,7 +242,7 @@ model FeatureInputs {
   secure      Boolean  @default(false)
 }
 
-// next-auth
+// auth.js
 model Account {
   id                       String       @id @default(cuid())
   type                     String
@@ -250,7 +250,7 @@ model Account {
   providerAccountId        String
   refresh_token            String?
   access_token             String?
-  expires_at               Int?
+  expires_in               Int?
   refresh_token_expires_in Int?
   token_type               String?
   scope                    String?
@@ -263,7 +263,7 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-// next-auth
+// auth.js
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -272,7 +272,7 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-// next-auth
+// auth.js
 model User {
   id            String    @id @default(cuid())
   name          String?

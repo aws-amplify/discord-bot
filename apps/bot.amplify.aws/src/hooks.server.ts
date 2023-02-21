@@ -113,8 +113,8 @@ const handleApiAuth: Handle = async ({ event, resolve }) => {
 }
 
 export const handle = sequence(
-  handleAuth,
+  handleAuth
   // handleSession, // get session from NextAuth.js
-  handleSessionUser, // add user details to session locals
-  handleApiAuth // protect API routes
+  // handleSessionUser, // add user details to session locals
+  // handleApiAuth // protect API routes
 )
