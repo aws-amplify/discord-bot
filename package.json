@@ -18,7 +18,10 @@
     "push-db": "prisma db push --schema packages/prisma-client/schema.prisma",
     "setup-dev": "pnpm install && pnpm start-db --detach && pnpm push-db",
     "setup-test": "echo 'no setup required :)'",
-    "studio": "prisma studio --schema packages/prisma-client/schema.prisma"
+    "studio": "prisma studio --schema packages/prisma-client/schema.prisma",
+    "docker-build-workspace": "docker compose build workspace",
+    "docker-build-apps": "docker compose build discord-bot discord-bot-frontend",
+    "docker-build": "pnpm docker-build-workspace && pnpm docker-build-apps"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.4.2",
