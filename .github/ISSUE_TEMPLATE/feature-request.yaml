@@ -1,0 +1,16 @@
+name: Feature Request
+description: Request a new feature for the Discord Bot project
+labels: ['needs: triage']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this request!
+  - type: textarea
+    id: request
+    attributes:
+      label: Describe the Feature
+      description: 'Describe the feature you would like to see including tentative designs, expectations, etc.'
+    validations:
+      required: true
