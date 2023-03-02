@@ -8,6 +8,10 @@ RUN tar -C /usr/local/bin -xzf /tmp/litestream.tar.gz
 FROM --platform=linux/amd64 node:18-alpine
 WORKDIR /usr/src
 
+# @todo - remove this after upgrading prisma to ~4.8.0
+# https://github.com/prisma/prisma/issues/16553#issuecomment-1353302617
+RUN apk add --update --no-cache openssl1.1-compat
+
 # Copy executable & Litestream from builder.
 COPY --from=builder /usr/local/bin/litestream /usr/local/bin/litestream
 # Copy litestream config
