@@ -154,12 +154,12 @@ export class HeyAmplifyStack extends Stack {
       filesystemMountPoint,
     })
 
-    new SupportBox(this, 'SupportBox', {
-      bucket,
-      filesystem,
-      subdomain,
-      vpc,
-    })
+    // new SupportBox(this, 'SupportBox', {
+    //   bucket,
+    //   filesystem,
+    //   subdomain,
+    //   vpc,
+    // })
   }
 
   /**
