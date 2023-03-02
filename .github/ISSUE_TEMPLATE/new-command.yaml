@@ -15,3 +15,10 @@ body:
       description: 'For example: giverole, ping'
     validations:
       required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Command's Usage
+      description: 'Describe the command you would like to see including sampel usage, tentative designs, expectations, etc.'
+    validations:
+      required: true
