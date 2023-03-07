@@ -23,7 +23,7 @@
   )
   $: availableTags = Array.from(
     new Set(questions.map(({ tags }) => tags.map(({ name }) => name)).flat())
-  )
+  ).sort((a, b) => a.localeCompare(b))
 
   $: statusFilter = ['solved', 'unsolved']
   $: channelFilter = availableChannels
@@ -79,8 +79,13 @@
     .filter((question) => {
       if (
         statusFilter.includes(question.isSolved ? 'solved' : 'unsolved') &&
-        channelFilter.includes(question.channelName)
+        channelFilter.includes(question.channelName) &&
+        question.tags.some(({ name }) => tagFilter.includes(name))
       ) {
+        return true
+      }
+      // handle the case of text channel questions where there are no tags
+      if (tagFilter.length === 0 && question.tags.length === 0) {
         return true
       }
       return false
