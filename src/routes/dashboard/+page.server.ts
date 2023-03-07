@@ -399,6 +399,11 @@ export const load: PageServerLoad = async ({
         createdAt: true,
         channelName: true,
         isSolved: true,
+        tags: {
+          select: {
+            name: true,
+          },
+        },
       },
     })
   ).map((question) => {
@@ -412,6 +417,9 @@ export const load: PageServerLoad = async ({
 
   return {
     channels: await fetchHelpChannels(guildId),
+    tags: Array.from(
+      new Set(questions.map(({ tags }) => tags.map(({ name }) => name)).flat())
+    ).sort((a, b) => a.localeCompare(b)),
     contributors: {
       all: await getAllContributors(guildId),
       staff: await getStaffContributors(guildId),
