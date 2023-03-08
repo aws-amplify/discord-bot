@@ -11,6 +11,11 @@ export const load: PageServerLoad = async () => {
       title: true,
       isSolved: true,
       channelName: true,
+      tags: {
+        select: {
+          name: true,
+        },
+      },
     },
   })
 
