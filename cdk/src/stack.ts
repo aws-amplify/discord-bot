@@ -74,12 +74,6 @@ export class HeyAmplifyStack extends Stack {
       traffic: ec2.AclTraffic.tcpPort(443),
       direction: ec2.TrafficDirection.INGRESS,
     })
-    nacl.addEntry('IngressSSH', {
-      cidr: ec2.AclCidr.anyIpv4(),
-      ruleNumber: 100,
-      traffic: ec2.AclTraffic.tcpPort(22),
-      direction: ec2.TrafficDirection.INGRESS,
-    })
     nacl.addEntry('EgressHTTP', {
       cidr: ec2.AclCidr.anyIpv4(),
       ruleNumber: 1,
@@ -163,7 +157,6 @@ export class HeyAmplifyStack extends Stack {
     new SupportBox(this, 'SupportBox', {
       bucket,
       filesystem,
-      subdomain,
       vpc,
     })
   }
