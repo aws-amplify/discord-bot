@@ -1,9 +1,12 @@
 import { Stack, Tags } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
+import * as cdk from 'aws-cdk-lib'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as iam from 'aws-cdk-lib/aws-iam'
+import * as route53 from 'aws-cdk-lib/aws-route53'
 import type * as s3 from 'aws-cdk-lib/aws-s3'
 import type * as efs from 'aws-cdk-lib/aws-efs'
+import type { AmplifyAwsSubdomain } from './amplify-aws-subdomain'
 
 export interface SupportBoxProps {
   /**
@@ -15,6 +18,11 @@ export interface SupportBoxProps {
    * Filesystem to be used for storing the mounting to ec2 instance
    */
   filesystem: efs.FileSystem
+
+  /**
+   * Subdomain (if exists) establishes `support` subdomain
+   */
+  subdomain: AmplifyAwsSubdomain | undefined
 
   /**
    * VPC
