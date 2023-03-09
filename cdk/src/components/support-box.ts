@@ -1,12 +1,9 @@
 import { Stack, Tags } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
-import * as cdk from 'aws-cdk-lib'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as iam from 'aws-cdk-lib/aws-iam'
-import * as route53 from 'aws-cdk-lib/aws-route53'
 import type * as s3 from 'aws-cdk-lib/aws-s3'
 import type * as efs from 'aws-cdk-lib/aws-efs'
-import type { AmplifyAwsSubdomain } from './amplify-aws-subdomain'
 
 export interface SupportBoxProps {
   /**
@@ -18,11 +15,6 @@ export interface SupportBoxProps {
    * Filesystem to be used for storing the mounting to ec2 instance
    */
   filesystem: efs.FileSystem
-
-  /**
-   * Subdomain (if exists) establishes `support` subdomain
-   */
-  subdomain: AmplifyAwsSubdomain | undefined
 
   /**
    * VPC
@@ -40,7 +32,7 @@ export class SupportBox extends Construct {
   constructor(scope: Construct, id: string, props: SupportBoxProps) {
     super(scope, id)
 
-    const { bucket, filesystem, subdomain, vpc } = props
+    const { bucket, filesystem, vpc } = props
 
     Tags.of(this).add('app:name', this.appName)
     Tags.of(this).add('app:env', this.envName)
@@ -57,12 +49,6 @@ export class SupportBox extends Construct {
         allowAllOutbound: true,
         securityGroupName: 'support-box-sg',
       }
-    )
-
-    securityGroup.addIngressRule(
-      ec2.Peer.anyIpv4(),
-      ec2.Port.tcp(22),
-      'Allows SSH access from Internet'
     )
 
     const instance = new ec2.Instance(this, 'Instance', {
@@ -119,24 +105,5 @@ export class SupportBox extends Construct {
     )
 
     bucket.grantReadWrite(instance.role)
-
-    // set up DNS record for the CloudFront distribution if subdomain exists
-    if (subdomain) {
-      const record = new route53.ARecord(this, 'AliasRecordSupport', {
-        target: route53.RecordTarget.fromIpAddresses(instance.instancePublicIp),
-        zone: subdomain.hostedZone,
-        recordName: `support`,
-      })
-
-      // outputs public IP of the instance
-      new cdk.CfnOutput(this, 'DomainOutput', {
-        value: record.domainName,
-      })
-    } else {
-      // outputs public IP of the instance
-      new cdk.CfnOutput(this, 'IPOutput', {
-        value: instance.instancePublicIp,
-      })
-    }
   }
 }
