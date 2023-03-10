@@ -40,7 +40,7 @@ export class SupportBox extends Construct {
   constructor(scope: Construct, id: string, props: SupportBoxProps) {
     super(scope, id)
 
-    const { bucket, filesystem, vpc } = props
+    const { bucket, filesystem, subdomain, vpc } = props
 
     Tags.of(this).add('app:name', this.appName)
     Tags.of(this).add('app:env', this.envName)
@@ -57,6 +57,12 @@ export class SupportBox extends Construct {
         allowAllOutbound: true,
         securityGroupName: 'support-box-sg',
       }
+    )
+
+    securityGroup.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(22),
+      'Allows SSH access from Internet'
     )
 
     const instance = new ec2.Instance(this, 'Instance', {
@@ -113,5 +119,24 @@ export class SupportBox extends Construct {
     )
 
     bucket.grantReadWrite(instance.role)
+
+    // set up DNS record for the CloudFront distribution if subdomain exists
+    if (subdomain) {
+      const record = new route53.ARecord(this, 'AliasRecordSupport', {
+        target: route53.RecordTarget.fromIpAddresses(instance.instancePublicIp),
+        zone: subdomain.hostedZone,
+        recordName: `support`,
+      })
+
+      // outputs public IP of the instance
+      new cdk.CfnOutput(this, 'DomainOutput', {
+        value: record.domainName,
+      })
+    } else {
+      // outputs public IP of the instance
+      new cdk.CfnOutput(this, 'IPOutput', {
+        value: instance.instancePublicIp,
+      })
+    }
   }
 }
