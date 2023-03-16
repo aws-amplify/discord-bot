@@ -1,11 +1,14 @@
 #syntax=docker/dockerfile:1.4
 # FROM --platform=linux/amd64 node:18-alpine as pnpm-builder
-FROM node:18-alpine as pnpm-builder
-RUN apk add --no-cache libc6-compat
-RUN apk update
+ARG NODE_VERSION="18.14.2"
+ARG ALPINE_VERSION="3.17"
+ARG PNPM_VERSION="7.25.0"
+ARG PLATFORM="linux/amd64"
+FROM --platform=${PLATFORM} node:${NODE_VERSION}-alpine${ALPINE_VERSION} as pnpm-builder
+# RUN apk add --no-cache libc6-compat
+# RUN apk update
 WORKDIR /workspace
 # Install pnpm
-ARG PNPM_VERSION=7.25.0
 RUN npm install --global pnpm@${PNPM_VERSION}
 # pnpm fetch only requires lockfile, but we'll need to build workspaces
 COPY pnpm*.yaml ./
