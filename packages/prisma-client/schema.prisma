@@ -27,7 +27,6 @@ model Question {
   threadId            String            @unique
   ownerId             String
   channelName         String
-  // tags applied to forum channel posts (by ID)
   threadMetaUpdatedAt DateTime          @default(now())
   title               String
   isSolved            Boolean           @default(false)
@@ -37,10 +36,9 @@ model Question {
   guildId             String
   githubDiscussion    GitHubDiscussion? @relation(fields: [githubDiscussionId], references: [id])
   githubDiscussionId  String?           @unique
-  // participants        DiscordUser[]
   participation       Participation[]
-  tags                QuestionTag?      @relation(fields: [tagId], references: [id])
-  tagId               String?
+  // tags applied to forum channel posts (by ID)
+  tags                QuestionTag[]
 }
 
 model QuestionTag {
