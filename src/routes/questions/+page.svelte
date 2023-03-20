@@ -21,9 +21,13 @@
   $: availableChannels = Array.from(
     new Set(questions.map(({ channelName }) => channelName))
   )
+  $: availableTags = Array.from(
+    new Set(questions.map(({ tags }) => tags.map(({ name }) => name)).flat())
+  ).sort((a, b) => a.localeCompare(b))
 
   $: statusFilter = ['solved', 'unsolved']
   $: channelFilter = availableChannels
+  $: tagFilter = availableTags
 
   function handleFilterByStatus(event: CustomEvent) {
     statusFilter = event.detail.selectedIds
@@ -31,6 +35,10 @@
 
   function handleFilterByChannel(event: CustomEvent) {
     channelFilter = event.detail.selectedIds
+  }
+
+  function handleFilterByTag(event: CustomEvent) {
+    tagFilter = event.detail.selectedIds
   }
 
   const sortByFields = {
@@ -71,8 +79,13 @@
     .filter((question) => {
       if (
         statusFilter.includes(question.isSolved ? 'solved' : 'unsolved') &&
-        channelFilter.includes(question.channelName)
+        channelFilter.includes(question.channelName) &&
+        question.tags.some(({ name }) => tagFilter.includes(name))
       ) {
+        return true
+      }
+      // handle the case of text channel questions where there are no tags
+      if (tagFilter.length === 0 && question.tags.length === 0) {
         return true
       }
       return false
@@ -130,6 +143,24 @@
               on:select="{handleFilterByChannel}"
             />
           </div>
+          <MultiSelect
+            titleText="Filter by tags"
+            label="{tagFilter.length === availableTags.length
+              ? 'All tags'
+              : tagFilter.length === 0
+              ? 'Filter by tags'
+              : tagFilter.join(', ')}"
+            name="tags"
+            items="{availableTags.map((name) => ({
+              id: name,
+              text: name,
+            }))}"
+            selectedIds="{availableTags}"
+            itemToString="{(item) => item?.text}"
+            placeholder="All tags"
+            size="xl"
+            on:select="{handleFilterByTag}"
+          />
           <Dropdown
             titleText="Sort by"
             items="{[
