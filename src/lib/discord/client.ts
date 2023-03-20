@@ -356,10 +356,7 @@ client.on(Events.ThreadUpdate, async (oldThread, newThread) => {
 
     // try updating/creating the question
     try {
-      console.log('Updating question', newThread.id, {
-        tagsApplied,
-        tagsRemoved,
-      })
+      console.log('Updating question', newThread.id)
       record = await prisma.question.upsert({
         where: {
           threadId: oldThread.id,
