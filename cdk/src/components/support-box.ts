@@ -91,6 +91,7 @@ export class SupportBox extends Construct {
         generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2,
       }),
       securityGroup,
+      requireImdsv2: true,
     })
 
     // TODO: fix this
