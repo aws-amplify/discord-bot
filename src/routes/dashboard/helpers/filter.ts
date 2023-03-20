@@ -1,16 +1,7 @@
+import { filterQuestionsByChannel } from './filter-questions-by-channel'
+import { filterQuestionsByDateRange } from './filter-questions-by-date-range'
+import { filterQuestionsByTag } from './filter-questions-by-tag'
 import { type Contributor, type Question, type Questions } from '../types'
-
-function filterByDate(questions: Question[], dates: Date[]): Question[] {
-  return questions.filter(
-    (question) =>
-      new Date(question.createdAt) >= dates[0] &&
-      new Date(question.createdAt) < dates[1]
-  )
-}
-
-function filterByChannel(channels: string[], questions: Question[]) {
-  return questions.filter((question) => channels.includes(question.channelName))
-}
 
 /** counts the number of questions between two dates in each category */
 function filterQuestionsByDate(
@@ -26,7 +17,10 @@ function filterQuestionsByDate(
   } as Questions
 
   for (const [category, categoryQuestions] of Object.entries(questions)) {
-    const questionsBetweenDates = filterByDate(categoryQuestions, dates)
+    const questionsBetweenDates = filterQuestionsByDateRange(
+      categoryQuestions,
+      dates
+    )
     const key = category as keyof Questions
     filteredQs[key] = questionsBetweenDates
     datedQuestions.get('aggregate')![key] = datedQuestions
@@ -66,16 +60,20 @@ function binDates(dates: Date[], questions: Questions): Map<string, Questions> {
 
 /** filters categorized questions by channel and date */
 export function filterQuestionsByChannelAndDate(
+  questions: Questions,
   channels: string[],
-  dates: Date[],
-  questions: Questions
+  tags: string[],
+  dates: Date[]
 ): Map<string, Questions> {
   const filtered = Object.assign({}, questions)
   for (const [category, categoryQuestions] of Object.entries(questions)) {
-    filtered[category as keyof Questions] = filterByChannel(
-      channels,
-      categoryQuestions
+    const filteredByChannel = filterQuestionsByChannel(
+      categoryQuestions,
+      channels
     )
+    const filteredByTag = filterQuestionsByTag(filteredByChannel, tags)
+    const key = category as keyof Questions
+    filtered[key] = filteredByTag
   }
   return binDates(dates, filtered)
 }
@@ -87,8 +85,8 @@ export function filterAnswers(
 ): Contributor[] {
   return contributors.map((user) => {
     const newUser = Object.assign({}, user)
-    const filtered = filterByChannel(channels, user.answers)
-    newUser.answers = filterByDate(filtered, dates)
+    const filtered = filterQuestionsByChannel(user.answers, channels)
+    newUser.answers = filterQuestionsByDateRange(filtered, dates)
     return user
   })
 }

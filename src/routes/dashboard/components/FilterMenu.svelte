@@ -14,6 +14,7 @@
   export let startDate: Date
   export let endDate: Date
   export let channels: string[]
+  export let tags: string[]
 
   const dateOptions = {
     weekday: 'long',
@@ -21,6 +22,8 @@
     month: 'long',
     day: 'numeric',
   }
+
+  const availableTags = tags
 
   // filter by channel
   const channelDropdownItems: { id: string; text: string }[] = []
@@ -33,6 +36,7 @@
   }
 
   let channel_selectedIds = channelDropdownItems.map((item) => item.id)
+  let tag_selectedIds = tags
 
   // filter by date
   let frequency_selectedId = '2'
@@ -67,10 +71,15 @@
     dates = timeBetweenDates(frequency, d.detail.selectedDates)
   }
 
-  const getChannels = (channel_selectedIds: string[]) =>
-    channel_selectedIds.map(
+  const getChannels = (channel_selectedIds: string[]) => {
+    return channel_selectedIds.map(
       (id) => channelDropdownItems.find((item) => item.id === id)?.text
     )
+  }
+
+  const getTags = (tag_selectedIds: string[]) => {
+    return tag_selectedIds.map((id) => availableTags.find((tag) => tag === id))
+  }
 
   const frequencySpelling = () =>
     dates.length === 1 ? frequency.slice(0, -1) : frequency
@@ -82,6 +91,7 @@
     frequencyDropdownItems.find((item) => item.id === frequency_selectedId)
       ?.value ?? ''
   $: channels = getChannels(channel_selectedIds)
+  $: tags = getTags(tag_selectedIds)
   $: dates = timeBetweenDates(frequency, [startDate, endDate])
 </script>
 
@@ -115,12 +125,28 @@
     </DatePicker>
     <p>{label}</p>
   </Column>
-  <Column
-    ><MultiSelect
+  <Column>
+    <MultiSelect
       class="frequency-selector"
       items="{channelDropdownItems}"
-      titleText="Channel"
+      titleText="Filter by Channel"
       bind:selectedIds="{channel_selectedIds}"
+    />
+    <MultiSelect
+      titleText="Filter by tags"
+      label="{tag_selectedIds.length === availableTags.length
+        ? 'All tags'
+        : tag_selectedIds.length === 0
+        ? 'Filter by tags'
+        : tag_selectedIds.join(', ')}"
+      name="tags"
+      items="{availableTags.map((name) => ({
+        id: name,
+        text: name,
+      }))}"
+      bind:selectedIds="{tag_selectedIds}"
+      itemToString="{(item) => item?.text}"
+      placeholder="All tags"
     />
   </Column>
 </Row>
