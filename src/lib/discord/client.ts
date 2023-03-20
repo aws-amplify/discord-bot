@@ -20,6 +20,7 @@ import { PREFIXES } from './commands/thread'
 import { isHelpChannel, isThreadWithinHelpChannel } from './support'
 import { integrations } from '$lib/features/index'
 import { FEATURE_TYPES } from '$lib/constants'
+import type { Question } from '@prisma/client'
 
 export const client = new Client({
   intents: [
@@ -322,8 +323,129 @@ client.on('rateLimit', (info) => {
   )
 })
 
-client.on(Events.ThreadUpdate, async (thread) => {
-  console.log(`Thread ${thread.id} updated`)
+/**
+ * Listen for thread updates. This is important to keep questions in sync -- for example, when a post's tags are updated
+ */
+client.on(Events.ThreadUpdate, async (oldThread, newThread) => {
+  console.debug('[client:events:ThreadUpdate] ThreadUpdate started')
+  /**
+   * capture updates to threads within help channels (i.e. "questions")
+   * - if the thread is new or does not exist in the database, create a new question
+   * - update question with tags
+   */
+  if (isThreadWithinHelpChannel(newThread)) {
+    const isSolved = newThread.name.startsWith(PREFIXES.solved)
+    const title = newThread.name.replace(PREFIXES.solved, '')
+
+    // capture tags (only applies to forum channel posts)
+    let tagsApplied = undefined
+    let tagsRemoved = undefined
+    if (newThread?.parent?.type === ChannelType.GuildForum) {
+      const appliedTagIds = newThread.appliedTags
+      // get all tags currently applied to the thread
+      tagsApplied = newThread.parent.availableTags
+        .filter((tag) => appliedTagIds.includes(tag.id))
+        .map(({ id, name }) => ({ id, name }))
+      // get the tags that were removed
+      tagsRemoved = oldThread.appliedTags.filter(
+        (id) => !appliedTagIds.includes(id)
+      )
+    }
+
+    let record: Question
+
+    // try updating/creating the question
+    try {
+      console.log('Updating question', newThread.id, {
+        tagsApplied,
+        tagsRemoved,
+      })
+      record = await prisma.question.upsert({
+        where: {
+          threadId: oldThread.id,
+        },
+        update: {
+          channelName: newThread.parent!.name,
+          threadId: newThread.id,
+          title,
+          url: newThread.url,
+          createdAt: newThread.createdAt as Date,
+          isSolved,
+          tags: {
+            connectOrCreate: tagsApplied?.map(({ id, name }) => ({
+              where: { id },
+              create: { id, name },
+            })),
+            disconnect: tagsRemoved?.map((id) => ({ id })),
+          },
+        },
+        // backfill if necessary (this is the same as the update)
+        create: {
+          channelName: newThread.parent!.name,
+          threadId: newThread.id,
+          title,
+          url: newThread.url,
+          createdAt: newThread.createdAt as Date,
+          ownerId: (await newThread.fetchStarterMessage())!.author.id,
+          guild: {
+            connect: {
+              id: newThread.guild?.id,
+            },
+          },
+          isSolved,
+          tags: {
+            connectOrCreate: tagsApplied?.map(({ id, name }) => ({
+              where: { id },
+              create: { id, name },
+            })),
+          },
+        },
+      })
+    } catch (cause) {
+      throw new Error(`Unable to update thread ${newThread.id} in database`, {
+        cause,
+      })
+    }
+
+    // update the participants (we do this after the question is created/updated to ensure the question exists in the database and has a valid ID to create the participation records with)
+    if (record) {
+      console.log('Updating participants', newThread.id)
+      try {
+        await prisma.question.update({
+          where: {
+            id: record.id,
+          },
+          data: {
+            participation: {
+              connectOrCreate: newThread.messages.cache.map((message) => ({
+                where: {
+                  questionId_participantId: {
+                    questionId: record.id,
+                    participantId: message.author.id,
+                  },
+                },
+                create: {
+                  participant: {
+                    connectOrCreate: {
+                      where: { id: message.author.id },
+                      create: {
+                        id: message.author.id,
+                      },
+                    },
+                  },
+                },
+              })),
+            },
+          },
+        })
+      } catch (cause) {
+        throw new Error('Unable to update participants', { cause })
+      }
+      console.log('Successfully updated participants')
+    }
+    console.log(`Thread ${oldThread.id} updated`)
+    console.debug('[client:events:ThreadUpdate] finished')
+  }
 })
 
 export function createBot(token = process.env.DISCORD_BOT_TOKEN) {
