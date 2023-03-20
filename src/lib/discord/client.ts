@@ -335,7 +335,9 @@ client.on(Events.ThreadUpdate, async (oldThread, newThread) => {
    */
   if (isThreadWithinHelpChannel(newThread)) {
     const isSolved = newThread.name.startsWith(PREFIXES.solved)
-    const title = newThread.name.replace(PREFIXES.solved, '')
+    const title = newThread.name
+      .replace(PREFIXES.solved, '')
+      .replace(PREFIXES.open, '')
 
     // capture tags (only applies to forum channel posts)
     let tagsApplied = undefined
