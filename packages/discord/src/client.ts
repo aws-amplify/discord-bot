@@ -190,7 +190,7 @@ client.on(Events.MessageCreate, async (message: Message) => {
   ) {
     let record
     // const messages = await message.channel.messages.fetch()
-    let tags = []
+    let tags: Record<string, string>[] = []
     if (message.channel.parent?.type === ChannelType.GuildForum) {
       const appliedTagIds = message.channel.appliedTags
       tags = message.channel.parent.availableTags
