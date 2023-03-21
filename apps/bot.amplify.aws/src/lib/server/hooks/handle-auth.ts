@@ -12,13 +12,13 @@ import {
 import { get } from 'svelte/store'
 import { prisma } from '$lib/db'
 import { guild } from '$lib/store'
-import type { AppSession } from '../app'
+import type { AppSession } from '../../../app'
 
 /**
  * @todo use session callback to extend session?
  * @todo port in changes to apply roles in discord based on GitHub org membership (if integration is enabled)
  */
-export const handle = SvelteKitAuth({
+export const handleAuth = SvelteKitAuth({
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   providers: [

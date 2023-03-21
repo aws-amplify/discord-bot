@@ -3,10 +3,11 @@ import { getUserAccess } from '@hey-amplify/discord'
 import { sequence } from '@sveltejs/kit/hooks'
 import cookie from 'cookie'
 import { prisma, init } from '$lib/db'
-import { handle as handleAuth } from '$lib/next-auth'
 import type { Handle } from '@sveltejs/kit'
-import { handleApiAuth } from '$lib/hooks/handle-api-auth'
-import { handleSavedGuild } from '$lib/hooks/handle-saved-guild'
+import { handleAuth } from '$lib/server/hooks/handle-auth'
+import { handleApiAuth } from '$lib/server/hooks/handle-api-auth'
+import { handleSavedGuild } from '$lib/server/hooks/handle-saved-guild'
+import { handleSetSessionLocals } from '$lib/server/hooks/handle-set-session-locals'
 
 /**
  * Add additional user data to the session
@@ -82,6 +83,7 @@ const handleSessionUser: Handle = async ({ event, resolve }) => {
 export const handle = sequence(
   handleSavedGuild,
   handleAuth,
+  handleSetSessionLocals,
   // handleSession, // get session from NextAuth.js
   // handleSessionUser, // add user details to session locals
   handleApiAuth // protect API routes

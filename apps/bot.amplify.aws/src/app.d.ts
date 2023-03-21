@@ -6,6 +6,7 @@ interface User extends Auth.User {
   id: string
   isAdmin: boolean
   isStaff: boolean
+  isGuildOwner: boolean
 }
 
 interface AppSession extends Auth.Session {
