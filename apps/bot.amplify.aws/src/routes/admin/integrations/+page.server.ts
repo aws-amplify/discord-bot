@@ -6,7 +6,7 @@ import type { PageServerLoad } from './$types'
 export const load: PageServerLoad = async ({ locals }) => {
   const integrations = await prisma.configurationFeature.findMany({
     where: {
-      configurationId: locals.session.guild,
+      configurationId: locals.guild,
       feature: {
         type: {
           code: FEATURE_TYPES.INTEGRATION,

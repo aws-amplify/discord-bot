@@ -387,7 +387,7 @@ export const load: PageServerLoad = async ({
   presenceCount: number
   questions: Questions
 }> => {
-  const guildId = locals.session.guild
+  const guildId = locals.guild
   const questions = (
     await prisma.question.findMany({
       where: {

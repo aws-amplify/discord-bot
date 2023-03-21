@@ -3,7 +3,7 @@ import { Routes, type APIGuild } from 'discord-api-types/v10'
 import type { LayoutServerLoad } from './$types'
 
 export const load: LayoutServerLoad = async ({ locals }) => {
-  const defaultGuildId = locals.session?.guild
+  const defaultGuildId = locals?.guild
   const botGuilds = (await api.get(Routes.userGuilds())) as APIGuild[]
 
   const guilds = []
@@ -33,6 +33,6 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     })),
     // falling back to `defaultGuildId` assumes the bot is at least a member of the default guild
     selectedGuild:
-      guilds.find((g) => g.id === locals?.session?.guild)?.id || defaultGuildId,
+      guilds.find((g) => g.id === locals?.guild)?.id || defaultGuildId,
   }
 }
