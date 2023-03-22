@@ -150,7 +150,7 @@ export class HeyAmplifyStack extends Stack {
         context: PROJECT_ROOT,
         dockerfile: 'Dockerfile',
         environment: {
-          DATABASE_URL: `file:${filesystemMountPoint}/${this.envName}.db`,
+          DATABASE_URL: `file:${filesystemMountPoint}/${this.envName}.db?connection_limit=1`,
           ...getSvelteKitEnvironmentVariables(this.envName),
         },
       },
