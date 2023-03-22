@@ -29,6 +29,7 @@ new HeyAmplifyStack(app, `${name}-${env}`, {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
+  terminationProtection: true,
   // stack relies on `subdomain` being truthy to determine if it should create a subdomain
   subdomain:
     Object.keys(setup).length > 0

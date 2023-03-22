@@ -39,6 +39,7 @@
     memberCount,
     name,
     presenceCount,
+    tags,
     questions,
   } = data
 
@@ -47,7 +48,7 @@
   let startDate = new Date(today.getFullYear(), today.getMonth() - 3, 1)
   let dates: Date[] = timeBetweenDates('months', [startDate, endDate])
   let filteredQuestions: Map<string, Questions> =
-    filterQuestionsByChannelAndDate(channels, dates, questions)
+    filterQuestionsByChannelAndDate(questions, channels, [], dates)
   let filteredContributors: Contributor[] = filterAnswers(
     channels,
     [dates[0], today],
@@ -111,10 +112,14 @@
     return values
   }
 
+  /**
+   * filtered questions by category ("all", "unanswered", "staff", "community")
+   */
   $: filteredQuestions = filterQuestionsByChannelAndDate(
+    questions,
     channels,
-    dates,
-    questions
+    tags,
+    dates
   )
   $: filteredContributors = filterAnswers(
     channels,
@@ -189,11 +194,11 @@
         <Row>
           <Column><h1>Questions</h1></Column><Column
             ><Button
-              iconDescription="Download csv"
+              iconDescription="Download CSV"
               kind="ghost"
               icon="{DocumentDownload}"
               on:click="{() => toCSVQuestions(channels, filteredQuestions)}"
-            /></Column
+            />Download CSV</Column
           >
         </Row>
       </Column>
@@ -201,6 +206,7 @@
         <FilterMenu
           bind:dates
           bind:channels
+          bind:tags
           today="{today}"
           startDate="{startDate}"
           endDate="{endDate}"
