@@ -56,7 +56,7 @@ export class WAF extends wafv2.CfnWebACL {
           },
           statement: {
             rateBasedStatement: {
-              limit: 500, // per 5 minutes
+              limit: 1000, // per 5 minutes
               aggregateKeyType: 'IP',
               // scopeDownStatement: {
               //   byteMatchStatement: {
