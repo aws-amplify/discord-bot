@@ -114,13 +114,6 @@ export const handler = async (
   const embed = new EmbedBuilder()
   embed.setColor('#ff9900')
 
-  // is the channel already marked as solved?
-  const prefix = parseTitlePrefix(channel.name)
-  if (prefix !== PREFIXES.solved) {
-    const title = parseTitle(channel.name)
-    await channel.setName(`${PREFIXES.solved}${title}`)
-  }
-
   let updated = false
   try {
     await prisma.question.update({
@@ -133,6 +126,23 @@ export const handler = async (
     embed.setDescription(
       'Something went wrong updating the question on our end.'
     )
+  }
+
+  // is the channel already marked as solved?
+  const prefix = parseTitlePrefix(channel.name)
+  if (prefix !== PREFIXES.solved) {
+    const title = parseTitle(channel.name)
+    try {
+      await channel.setName(`${PREFIXES.solved}${title}`)
+    } catch (error) {
+      console.error(
+        `Unable to update thread name for question ${record?.id}`,
+        error
+      )
+      embed.setDescription(
+        'Something went wrong updating the thread name on our end.'
+      )
+    }
   }
 
   if (updated) {
