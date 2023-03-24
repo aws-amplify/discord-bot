@@ -1,11 +1,11 @@
 import { getMonday } from './get-monday'
-import type { Question } from '../types'
+import type { TimePeriod, Question } from '../types'
 
 export type GroupByDateOptions = {
   /**
    * @default 'week'
    */
-  period?: 'day' | 'week' | 'month' | 'year'
+  period?: TimePeriod
 }
 
 /**
@@ -23,6 +23,7 @@ export function groupQuestionsByDate(
           const day = date.toLocaleDateString('en-US', {
             month: 'numeric',
             day: 'numeric',
+            year: 'numeric',
           })
           if (acc[day]) {
             acc[day].push(question)
@@ -36,6 +37,7 @@ export function groupQuestionsByDate(
           const weekOf = monday.toLocaleDateString('en-US', {
             month: 'numeric',
             day: 'numeric',
+            year: 'numeric',
           })
           if (acc[weekOf]) {
             acc[weekOf].push(question)
@@ -45,7 +47,10 @@ export function groupQuestionsByDate(
           break
         }
         case 'month': {
-          const month = date.toLocaleDateString('en-US', { month: 'long' })
+          const month = date.toLocaleDateString('en-US', {
+            month: 'long',
+            year: 'numeric',
+          })
           if (acc[month]) {
             acc[month].push(question)
           } else {
