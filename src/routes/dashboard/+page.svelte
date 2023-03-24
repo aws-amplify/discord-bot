@@ -1,6 +1,4 @@
 <script lang="ts">
-  import '@carbon/styles/css/styles.css'
-  import '@carbon/charts/styles.css'
   import { BarChartStacked, PieChart } from '@carbon/charts-svelte'
   import {
     Button,
@@ -24,6 +22,8 @@
     filterAnswers,
     filterQuestionsByChannelAndDate,
   } from './helpers/filter'
+  import { filterQuestions } from './helpers/filter-questions'
+  import { groupQuestions } from './helpers/group-questions'
   import { getTopContributors } from './helpers/contributors'
   import { timeBetweenDates } from './helpers/dates'
   import FilterMenu from './components/FilterMenu.svelte'
@@ -32,16 +32,7 @@
   import type { PageServerData } from './$types'
 
   export let data: PageServerData
-  let {
-    channels,
-    contributors,
-    gitHubStaff,
-    memberCount,
-    name,
-    presenceCount,
-    tags,
-    questions,
-  } = data
+  let { channels, contributors, gitHubStaff, guild, tags, questions } = data
 
   let today = new Date()
   let endDate = today
@@ -174,34 +165,39 @@
 <Content>
   <Grid>
     <Row>
+      <Column>
+        <h1>Questions Dashboard</h1>
+      </Column>
+      <Column>
+        <div style:display="flex" style:justify-content="flex-end">
+          <Button
+            iconDescription="Download CSV"
+            kind="ghost"
+            icon="{DocumentDownload}"
+            on:click="{() => toCSVQuestions(channels, filteredQuestions)}"
+          >
+            Download CSV
+          </Button>
+        </div>
+      </Column>
+    </Row>
+    <Row>
       <Column class="styled-col" style="background: rgb(15, 98, 254, 0.1);">
         <h1 class="number">
-          {memberCount}
+          {guild.totalMemberCount}
           <ArrowUp size="{32}" color="#0c4fcc" />
         </h1>
         <h4 class="number-text">Total Members</h4>
       </Column>
       <Column class="styled-col" style="background: rgb(0, 255, 0, 0.1);">
         <h1 class="number">
-          {presenceCount}
+          {guild.onlineMemberCount}
           <Group size="{32}" color="#036b03" />
         </h1>
         <h4 class="number-text">Members Online</h4>
       </Column>
     </Row>
     <Row class="date-container">
-      <Column style="max-width:min-content">
-        <Row>
-          <Column><h1>Questions</h1></Column><Column
-            ><Button
-              iconDescription="Download CSV"
-              kind="ghost"
-              icon="{DocumentDownload}"
-              on:click="{() => toCSVQuestions(channels, filteredQuestions)}"
-            />Download CSV</Column
-          >
-        </Row>
-      </Column>
       <Column>
         <FilterMenu
           bind:dates
@@ -228,11 +224,18 @@
       <Column class="split-counts" style="color:rgb(15, 98, 254)">
         <h1 class="number">
           {community}
-          <Tag style="background-color:rgb(15, 98, 254, 0.6)"
-            >{communityPct}</Tag
-          >
+          <Tag style="background-color:rgb(15, 98, 254, 0.6)">
+            {communityPct}
+          </Tag>
         </h1>
         <h4 class="number-text">Answered by Community</h4>
+      </Column>
+      <Column class="split-counts">
+        <h1 class="number">
+          {parseInt(total, 10) - parseInt(staff, 10) - parseInt(community, 10)}
+          <!-- <Tag>{communityPct}</Tag> -->
+        </h1>
+        <h4 class="number-text">Solved without answer</h4>
       </Column>
       <Column class="split-counts" style="color: rgb(255, 0, 0);">
         <h1 class="number">
