@@ -3,10 +3,24 @@ import { filterQuestionsByChannel } from './filter-questions-by-channel'
 import { filterQuestionsByTag } from './filter-questions-by-tag'
 import type { Question } from '../types'
 
+type DateRange = [Date, Date]
 type FilterOptions = {
-  dates?: Date[]
+  /**
+   * Date range to filter by, requires a start date and an end date
+   */
+  dates?: DateRange
+  /**
+   * Channels to filter by
+   */
   channels?: string[]
+  /**
+   * Post tags to filter by
+   */
   tags?: string[]
+  /**
+   * @default undefined
+   */
+  isSolved?: boolean
 }
 
 export function filterQuestions(questions: Question[], options: FilterOptions) {
@@ -20,6 +34,11 @@ export function filterQuestions(questions: Question[], options: FilterOptions) {
   }
   if (options.tags) {
     filtered = filterQuestionsByTag(filtered, options.tags)
+  }
+  if (options.isSolved !== undefined) {
+    filtered = filtered.filter(
+      (question) => question.isSolved === options.isSolved
+    )
   }
 
   return filtered
