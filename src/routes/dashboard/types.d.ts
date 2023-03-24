@@ -1,4 +1,9 @@
-import type { Question as PrismaQuestion, QuestionTag } from '@prisma/client'
+import type {
+  Answer as PrismaAnswer,
+  Question as PrismaQuestion,
+  AccessLevelRole,
+  QuestionTag,
+} from '@prisma/client'
 
 export type Questions = {
   total: Question[]
@@ -18,6 +23,13 @@ export type Question = Pick<
   'channelName' | 'createdAt' | 'id' | 'isSolved'
 > & {
   tags: QuestionTag[]
+  answer: Pick<PrismaAnswer, 'id'> & {
+    participation: {
+      participantRoles: {
+        role: AccessLevelRole
+      }[]
+    }
+  }
 }
 
 export type Contributor = {

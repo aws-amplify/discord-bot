@@ -15,7 +15,7 @@ export function groupQuestionsByDate(
   questions: Question[],
   options?: GroupByDateOptions
 ) {
-  const grouped: Record<string, Question[]> = questions.reduce(
+  const grouped = questions.reduce<Record<string, Question[]>>(
     (acc, question) => {
       const date = new Date(question.createdAt)
       switch (options?.period ?? 'week') {
@@ -65,7 +65,7 @@ export function groupQuestionsByDate(
       }
       return acc
     },
-    {} as Record<string, Question[]>
+    {}
   )
 
   return grouped
