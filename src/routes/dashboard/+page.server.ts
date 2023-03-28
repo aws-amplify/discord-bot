@@ -1,3 +1,4 @@
+import { error } from '@sveltejs/kit'
 import { Routes } from 'discord-api-types/v10'
 import { api } from '$discord/api'
 import { ACCESS_LEVELS } from '$lib/constants'
@@ -111,6 +112,8 @@ export const load: PageServerLoad = async ({ locals }) => {
             name: true,
           },
         },
+        title: true,
+        url: true,
         answer: {
           select: {
             id: true,
@@ -132,16 +135,30 @@ export const load: PageServerLoad = async ({ locals }) => {
     return question
   })
 
+  if (!questions.length) {
+    throw error(400, 'No questions found for this guild.')
+  }
+
   const guildPreview = (await api.get(
     Routes.guildPreview(guildId)
   )) as APIGuildPreview
 
   return {
+    allQuestions: questions,
     allHelpChannels: await fetchHelpChannels(guildId),
     // availableHelpChannels: questions.map(({ channelName }) => channelName),
+    /**
+     * @deprecated
+     */
     tags: Array.from(
       new Set(questions.map(({ tags }) => tags.map(({ name }) => name)).flat())
     ).sort((a, b) => a.localeCompare(b)),
+    availableTags: Array.from(
+      new Set(questions.map(({ tags }) => tags.map(({ name }) => name)).flat())
+    ).sort((a, b) => a.localeCompare(b)),
+    /**
+     * @deprecated
+     */
     contributors: {
       all: await getAllContributors(guildId),
       staff: await getStaffContributors(guildId),
@@ -152,6 +169,9 @@ export const load: PageServerLoad = async ({ locals }) => {
       totalMemberCount: guildPreview?.approximate_member_count,
       onlineMemberCount: guildPreview?.approximate_presence_count,
     },
+    /**
+     * @deprecated
+     */
     questions: {
       total: questions,
       unanswered: questions.filter((question) => !question.isSolved),
