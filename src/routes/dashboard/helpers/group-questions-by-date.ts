@@ -10,6 +10,7 @@ export type GroupByDateOptions = {
 
 /**
  * Group questions by date, by day, week, month, or year
+ * @todo prefill empty groups for weeks without questions
  */
 export function groupQuestionsByDate(
   questions: Question[],
@@ -18,55 +19,37 @@ export function groupQuestionsByDate(
   const grouped = questions.reduce<Record<string, Question[]>>(
     (acc, question) => {
       const date = new Date(question.createdAt)
+      let key: string
       switch (options?.period ?? 'week') {
         case 'day': {
-          const day = date.toLocaleDateString('en-US', {
-            month: 'numeric',
-            day: 'numeric',
-            year: 'numeric',
-          })
-          if (acc[day]) {
-            acc[day].push(question)
-          } else {
-            acc[day] = [question]
-          }
+          const day = date.toDateString()
+          key = day
           break
         }
         case 'week': {
           const monday = getMonday(date)
-          const weekOf = monday.toLocaleDateString('en-US', {
-            month: 'numeric',
-            day: 'numeric',
-            year: 'numeric',
-          })
-          if (acc[weekOf]) {
-            acc[weekOf].push(question)
-          } else {
-            acc[weekOf] = [question]
-          }
+          const weekOf = monday.toDateString()
+          key = weekOf
           break
         }
         case 'month': {
-          const month = date.toLocaleDateString('en-US', {
-            month: 'long',
-            year: 'numeric',
-          })
-          if (acc[month]) {
-            acc[month].push(question)
-          } else {
-            acc[month] = [question]
-          }
+          date.setDate(1)
+          const month = date.toDateString()
+          key = month
           break
         }
         case 'year': {
           const year = date.getFullYear()
-          if (acc[year]) {
-            acc[year].push(question)
-          } else {
-            acc[year] = [question]
-          }
+          key = year.toString()
           break
         }
+        default:
+          throw new Error('Invalid time period')
+      }
+      if (acc[key]) {
+        acc[key].push(question)
+      } else {
+        acc[key] = [question]
       }
       return acc
     },
