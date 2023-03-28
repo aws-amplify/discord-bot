@@ -1,4 +1,5 @@
 import { ACCESS_LEVELS } from '$lib/constants'
+import { COHORTS } from '../constants'
 import type { Question } from '../types'
 
 /**
@@ -7,27 +8,32 @@ import type { Question } from '../types'
 export function groupQuestionsByCohort(questions: Question[]) {
   const grouped = questions.reduce<Record<string, Question[]>>(
     (acc, question) => {
-      if (question.answer) {
-        // here we only really need whether the member is 'staff' or not
-        const isStaff = question.answer.participation.participantRoles.some(
-          ({ role }) => role?.accessLevelId === ACCESS_LEVELS.STAFF
-        )
-        if (isStaff) {
-          if (acc[ACCESS_LEVELS.STAFF]) {
-            acc[ACCESS_LEVELS.STAFF].push(question)
+      let key: ValueOf<typeof COHORTS>
+      if (question.isSolved) {
+        if (question.answer) {
+          // here we only really need whether the member is 'staff' or not
+          const isStaff = question.answer.participation.participantRoles.some(
+            ({ role }) => role?.accessLevelId === ACCESS_LEVELS.STAFF
+          )
+          if (isStaff) {
+            // bucket staff to 'staff'
+            key = COHORTS.STAFF
           } else {
-            acc[ACCESS_LEVELS.STAFF] = [question]
+            // bucket everyone else to 'community'
+            key = COHORTS.COMMUNITY
           }
         } else {
-          acc[ACCESS_LEVELS.MEMBER] = [question]
+          // if the question is solved but there is no answer, bucket it to 'solved without answer'
+          key = COHORTS.SOLVED_WITHOUT_ANSWER
         }
       } else {
-        const key = 'UNANSWERED'
-        if (acc[key]) {
-          acc[key].push(question)
-        } else {
-          acc[key] = [question]
-        }
+        // if the question is not solved, bucket it to 'unanswered'
+        key = COHORTS.UNANSWERED
+      }
+      if (acc[key]) {
+        acc[key].push(question)
+      } else {
+        acc[key] = [question]
       }
       return acc
     },
