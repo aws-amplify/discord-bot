@@ -46,6 +46,7 @@ async function getRandomFakeRole(): Promise<DiscordRole> {
 }
 
 const CHANNELS = [
+  'amplify-help',
   'android-help',
   'authentication-help',
   'cli-help',
@@ -104,10 +105,11 @@ function createFakeQuestions(
       const randomFakeUser = await getRandomFakeUser()
       const randomFakeRole = await getRandomFakeRole()
       const randomTag = getRandomTag()
+      const randomChannel = getRandomChannel()
       const input: Prisma.QuestionCreateInput = {
         threadId: `999770${faker.random.numeric(12)}`,
         ownerId: '143912968529117185',
-        channelName: getRandomChannel(),
+        channelName: randomChannel,
         title: faker.random.words(15),
         isSolved: shouldAdd(0.9),
         url: 'https://discord.com/channels/976838371383083068/976838372205137982/999770893356122152',
