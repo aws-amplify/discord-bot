@@ -80,7 +80,7 @@
             { key: 'url', value: 'URL' },
             { key: 'createdAt', value: 'Created At' },
           ]}"
-          size="compact"
+          size="short"
           sortable
         >
           <svelte:fragment slot="cell" let:cell>
