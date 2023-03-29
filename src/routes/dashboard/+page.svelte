@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { BarChartStacked, PieChart } from '@carbon/charts-svelte'
   import {
     Button,
     Column,
@@ -8,14 +7,8 @@
     DataTableSkeleton,
     Grid,
     Row,
-    Tag,
   } from 'carbon-components-svelte'
-  import {
-    ArrowUp,
-    CaretUp,
-    DocumentDownload,
-    Group,
-  } from 'carbon-icons-svelte'
+  import { CaretUp, DocumentDownload } from 'carbon-icons-svelte'
   import { toCSVContributors, toCSVQuestions } from './csv/downloadCSV'
   import { sortChannels } from './helpers/channels'
   import {
@@ -27,11 +20,11 @@
   import { getTopContributors } from './helpers/contributors'
   import { timeBetweenDates } from './helpers/dates'
   import { COHORTS } from './constants'
-  import ChannelHealthOld from './components/ChannelHealth.svelte'
   import ChannelHealthTable from './ChannelHealthTable.svelte'
   import ForumChannelTagHealthTable from './ForumChannelTagHealthTable.svelte'
   import GuildMembers from './GuildMembers.svelte'
   import QuestionBarChart from './QuestionBarChart.svelte'
+  import QuestionPieChart from './QuestionPieChart.svelte'
   import QuestionBreakdownCards from './QuestionBreakdownCards.svelte'
   import QuestionFilterMenu from './QuestionFilterMenu.svelte'
   import type {
@@ -72,34 +65,6 @@
   )
   let topOverallPromise = getTopContributors(contributors.all, gitHubStaff, 9)
   let topStaffPromise = getTopContributors(contributors.staff, gitHubStaff, 9)
-  const availableChartColors = [
-    '#6929c4',
-    '#1192e8',
-    '#005d5d',
-    '#9f1853',
-    '#fa4d56',
-    '#520408',
-    '#198038',
-    '#002d9c',
-    '#ee5396',
-    '#b28600',
-    '#009d9a',
-    '#012749',
-    '#8a3800',
-    '#a56eff',
-    '#6929c4',
-    '#1192e8',
-  ]
-  const chartColors = allHelpChannels.reduce(
-    (accumulator, channel, idx) => ({
-      ...accumulator,
-      [channel]:
-        idx < availableChartColors.length - 1
-          ? availableChartColors[idx]
-          : availableChartColors[idx % availableChartColors.length],
-    }),
-    {}
-  )
 
   const tableHeaders = [
     { key: 'discord', value: 'Discord User' },
@@ -128,11 +93,6 @@
     contributors.staff
   )
 
-  /** @TODO check for divide by zero */
-  $: total = filteredQuestions.get('aggregate')?.total?.length ?? ''
-  $: unanswered = filteredQuestions.get('aggregate')?.unanswered?.length ?? ''
-  $: staff = filteredQuestions.get('aggregate')?.staff?.length ?? ''
-  $: community = filteredQuestions.get('aggregate')?.community?.length ?? ''
   $: pieDataTotal = sortChannels(filteredQuestions.get('aggregate')!.total)
   $: pieDataUnanswered = sortChannels(
     filteredQuestions.get('aggregate')!.unanswered
@@ -179,13 +139,47 @@
    * @todo fix the need to typecast
    */
   $: filteredQuestions2 = filterQuestions(allQuestions, {
+    channels: selectedChannels,
     dates: [selectedStartDate, selectedEndDate],
     tags: selectedTags,
   })
 
+  /**
+   * Questions grouped by cohort. In this sense, cohort is a group of questions by status
+   */
   $: questionsGroupedByCohort = groupQuestions(filteredQuestions2, {
     by: 'cohort',
   })
+  $: questionsGroupedByChannel = groupQuestions(filteredQuestions2, {
+    by: 'channel',
+  })
+  $: questionsGroupedByTag = groupQuestions(filteredQuestions2, {
+    by: 'tag',
+  })
+
+  /**
+   * Unanswered questions by tag, used by pie chart
+   */
+  $: unansweredQuestionsByTag = groupQuestions(
+    filterQuestions(filteredQuestions2, {
+      isSolved: false,
+    }),
+    {
+      by: 'tag',
+    }
+  )
+
+  /**
+   * Unanswered questions by channel, used by pie chart
+   */
+  $: unansweredQuestionsByChannel = groupQuestions(
+    filterQuestions(filteredQuestions2, {
+      isSolved: false,
+    }),
+    {
+      by: 'channel',
+    }
+  )
 
   /**
    * Question breakdown - fed into cards
@@ -298,106 +292,30 @@
       <!-- pie charts for channels -->
       <Row padding>
         <Column sm="{4}" lg="{8}">
-          <PieChart
-            bind:data="{pieDataTotal}"
-            options="{{
-              color: {
-                scale: chartColors,
-              },
-              title: 'All questions by Channel',
-              resizable: true,
-              pie: {
-                labels: {
-                  enabled: false,
-                },
-                valueMapsTo: 'count',
-              },
-              legend: {
-                enabled: true,
-                // @ts-expect-error enums are silly
-                position: 'right',
-              },
-              height: '400px',
-            }}"
-            theme="g100"
+          <QuestionPieChart
+            bind:data="{questionsGroupedByChannel}"
+            title="All Questions by Channel"
           />
         </Column>
         <Column sm="{4}" lg="{8}">
-          <PieChart
-            bind:data="{pieDataUnanswered}"
-            options="{{
-              color: {
-                scale: chartColors,
-              },
-              title: 'Unanswered Questions by Channel',
-              resizable: true,
-              pie: {
-                labels: {
-                  enabled: false,
-                },
-                valueMapsTo: 'count',
-              },
-              legend: {
-                enabled: true,
-                // @ts-expect-error enums are silly
-                position: 'right',
-              },
-              height: '400px',
-            }}"
-            theme="g100"
+          <QuestionPieChart
+            bind:data="{unansweredQuestionsByChannel}"
+            title="Unanswered Questions by Channel"
           />
         </Column>
       </Row>
       <!-- pie charts for tags -->
       <Row padding>
         <Column sm="{4}" lg="{8}">
-          <PieChart
-            bind:data="{pieDataTotal}"
-            options="{{
-              color: {
-                scale: chartColors,
-              },
-              title: 'All questions by Tag',
-              resizable: true,
-              pie: {
-                labels: {
-                  enabled: false,
-                },
-                valueMapsTo: 'count',
-              },
-              legend: {
-                enabled: true,
-                // @ts-expect-error enums are silly
-                position: 'right',
-              },
-              height: '400px',
-            }}"
-            theme="g100"
+          <QuestionPieChart
+            bind:data="{questionsGroupedByTag}"
+            title="All questions by Tag"
           />
         </Column>
         <Column sm="{4}" lg="{8}">
-          <PieChart
-            bind:data="{pieDataUnanswered}"
-            options="{{
-              color: {
-                scale: chartColors,
-              },
-              title: 'Unanswered Questions by Tag',
-              resizable: true,
-              pie: {
-                labels: {
-                  enabled: false,
-                },
-                valueMapsTo: 'count',
-              },
-              legend: {
-                enabled: true,
-                // @ts-expect-error enums are silly
-                position: 'right',
-              },
-              height: '400px',
-            }}"
-            theme="g100"
+          <QuestionPieChart
+            bind:data="{unansweredQuestionsByTag}"
+            title="Unanswered questions by Tag"
           />
         </Column>
       </Row>
@@ -405,7 +323,7 @@
       <Row padding>
         <Column>
           <ChannelHealthTable
-            questions="{filteredQuestions2}"
+            bind:questions="{filteredQuestions2}"
             allHelpChannels="{allHelpChannels}"
           />
         </Column>
@@ -413,7 +331,7 @@
       <!-- tag health -->
       <Row padding>
         <Column>
-          <ForumChannelTagHealthTable questions="{filteredQuestions2}" />
+          <ForumChannelTagHealthTable bind:questions="{filteredQuestions2}" />
         </Column>
       </Row>
       <section aria-label="Top Contributors">
