@@ -5,6 +5,8 @@ import type {
   QuestionTag,
 } from '@prisma/client'
 
+export type TimePeriod = 'day' | 'week' | 'month' | 'year'
+
 export type Questions = {
   total: Question[]
   unanswered: Question[]
@@ -20,8 +22,10 @@ export type Contributors = {
 
 export type Question = Pick<
   PrismaQuestion,
-  'channelName' | 'createdAt' | 'id' | 'isSolved'
+  'channelName' | 'id' | 'isSolved' | 'title'
 > & {
+  // we're overriding the createdAt type from a string to Date
+  createdAt: Date
   tags: QuestionTag[]
   answer: Pick<PrismaAnswer, 'id'> & {
     participation: {
@@ -62,4 +66,30 @@ export type GitHubUser = {
   received_events_url: string
   type: string
   site_admin: boolean
+}
+
+/**
+ * Question breakdown item
+ */
+export type QuestionBreakdownItem = {
+  /**
+   * The title of the card
+   */
+  title: string
+  /**
+   * The count of the questions
+   */
+  count: number
+  /**
+   * The color of the card
+   */
+  color?: string
+  /**
+   * The color of the card's percentage tag (if any)
+   */
+  percentageColor?: string
+  /**
+   * The percentage of the questions
+   */
+  percentage?: number
 }
