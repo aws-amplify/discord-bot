@@ -65,10 +65,10 @@
     },
   ]
 
-  const onDateChange = (d: CustomEvent) => {
-    startDate = d.detail.selectedDates[0]
-    endDate = d.detail.selectedDates[1]
-    dates = timeBetweenDates(frequency, d.detail.selectedDates)
+  const onDateChange = (event: CustomEvent) => {
+    startDate = event.detail.selectedDates[0]
+    endDate = event.detail.selectedDates[1]
+    dates = timeBetweenDates(frequency, event.detail.selectedDates)
   }
 
   const getChannels = (channel_selectedIds: string[]) => {
