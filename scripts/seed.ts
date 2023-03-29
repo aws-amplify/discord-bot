@@ -106,12 +106,13 @@ function createFakeQuestions(
       const randomFakeRole = await getRandomFakeRole()
       const randomTag = getRandomTag()
       const randomChannel = getRandomChannel()
+      const isSolved = shouldAdd(0.8)
       const input: Prisma.QuestionCreateInput = {
         threadId: `999770${faker.random.numeric(12)}`,
         ownerId: '143912968529117185',
         channelName: randomChannel,
         title: faker.random.words(15),
-        isSolved: shouldAdd(0.9),
+        isSolved,
         url: 'https://discord.com/channels/976838371383083068/976838372205137982/999770893356122152',
         createdAt: faker.date.recent(100),
         tags: shouldAdd(0.9)
@@ -156,7 +157,7 @@ function createFakeQuestions(
         },
       }
 
-      if (shouldAdd(0.8)) {
+      if (isSolved && shouldAdd(0.8)) {
         input.answer = {
           create: {
             content: faker.random.words(15),
