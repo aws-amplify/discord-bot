@@ -7,7 +7,7 @@
     MultiSelect,
     Row,
   } from 'carbon-components-svelte'
-  import { timeBetweenDates } from '../helpers/dates'
+  import { timeBetweenDates } from './helpers/dates'
 
   export let dates: Date[]
   export let today: Date
@@ -36,7 +36,7 @@
   }
 
   let channel_selectedIds = channelDropdownItems.map((item) => item.id)
-  let tag_selectedIds = tags
+  let tag_selectedIds = [...availableTags]
 
   // filter by date
   let frequency_selectedId = '2'
@@ -93,61 +93,94 @@
   $: channels = getChannels(channel_selectedIds)
   $: tags = getTags(tag_selectedIds)
   $: dates = timeBetweenDates(frequency, [startDate, endDate])
+
+  function getTagLabel(availableTags: string[], selectedTags: string[]) {
+    if (availableTags.length === 0) {
+      return 'No tags available'
+    } else if (selectedTags.length === 0) {
+      return 'Filter by tags'
+    } else if (selectedTags.length === availableTags.length) {
+      return 'All tags'
+    } else {
+      return selectedTags.join(', ')
+    }
+  }
+
+  function getChannelLabel(
+    availableChannels: string[],
+    selectedChannels: string[]
+  ) {
+    if (availableChannels.length === 0) {
+      return 'No channels available'
+    } else if (selectedChannels.length === 0) {
+      return 'Filter by channels'
+    } else if (selectedChannels.length === availableChannels.length) {
+      return 'All channels'
+    } else {
+      return availableChannels
+        .filter((channel, idx) => selectedChannels.includes(idx.toString()))
+        .join(', ')
+    }
+  }
+
+  $: tagLabel = getTagLabel(availableTags, tag_selectedIds)
+  $: channelLabel = getChannelLabel(channels, channel_selectedIds)
 </script>
 
-<Row>
+<Row padding>
   <Column>
-    <Dropdown
-      class="frequency-selector"
-      titleText="Frequency"
-      bind:selectedId="{frequency_selectedId}"
-      items="{frequencyDropdownItems}"
-      let:item
-    >
+    <section>
+      <Dropdown
+        class="frequency-selector"
+        titleText="Frequency"
+        bind:selectedId="{frequency_selectedId}"
+        items="{frequencyDropdownItems}"
+        let:item
+      >
+        <div>
+          <strong>{item.text}</strong>
+        </div>
+        <div>
+          {item.description}
+        </div>
+      </Dropdown>
+
       <div>
-        <strong>{item.text}</strong>
+        <DatePicker
+          datePickerType="range"
+          maxDate="{today}"
+          on:change="{onDateChange}"
+          valueFrom="{startDate.toLocaleDateString()}"
+          valueTo="{endDate.toLocaleDateString()}"
+        >
+          <DatePickerInput labelText="FROM" placeholder="mm/dd/yyyy" />
+          <DatePickerInput labelText="TO" placeholder="mm/dd/yyyy" />
+        </DatePicker>
+        <span class="bx--form__helper-text">{label}</span>
       </div>
-      <div>
-        {item.description}
-      </div>
-    </Dropdown>
-  </Column>
-  <Column>
-    <DatePicker
-      datePickerType="range"
-      maxDate="{today}"
-      on:change="{onDateChange}"
-      valueFrom="{startDate.toLocaleDateString()}"
-      valueTo="{endDate.toLocaleDateString()}"
-    >
-      <DatePickerInput labelText="FROM" placeholder="mm/dd/yyyy" />
-      <DatePickerInput labelText="TO" placeholder="mm/dd/yyyy" />
-    </DatePicker>
-    <p>{label}</p>
-  </Column>
-  <Column>
-    <MultiSelect
-      class="frequency-selector"
-      items="{channelDropdownItems}"
-      titleText="Filter by Channel"
-      bind:selectedIds="{channel_selectedIds}"
-    />
-    <MultiSelect
-      titleText="Filter by tags"
-      label="{tag_selectedIds.length === availableTags.length
-        ? 'All tags'
-        : tag_selectedIds.length === 0
-        ? 'Filter by tags'
-        : tag_selectedIds.join(', ')}"
-      name="tags"
-      items="{availableTags.map((name) => ({
-        id: name,
-        text: name,
-      }))}"
-      bind:selectedIds="{tag_selectedIds}"
-      itemToString="{(item) => item?.text}"
-      placeholder="All tags"
-    />
+
+      <MultiSelect
+        class="frequency-selector"
+        items="{channelDropdownItems}"
+        label="{channelLabel}"
+        placeholder="All channels"
+        titleText="Filter by Channel"
+        bind:selectedIds="{channel_selectedIds}"
+      />
+
+      <MultiSelect
+        titleText="Filter by tags"
+        label="{tagLabel}"
+        name="tags"
+        items="{availableTags.map((name) => ({
+          id: name,
+          text: name,
+        }))}"
+        bind:selectedIds="{tag_selectedIds}"
+        itemToString="{(item) => item?.text}"
+        placeholder="All tags"
+      />
+    </section>
   </Column>
 </Row>
 
@@ -164,5 +197,17 @@
   p {
     font-weight: 300;
     font-size: 14px;
+  }
+
+  section {
+    display: grid;
+    column-gap: var(--cds-spacing-04);
+    row-gap: var(--cds-spacing-05);
+  }
+
+  @media (min-width: 640px) {
+    section {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 </style>

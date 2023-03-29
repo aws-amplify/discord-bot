@@ -26,33 +26,53 @@
   import { groupQuestions } from './helpers/group-questions'
   import { getTopContributors } from './helpers/contributors'
   import { timeBetweenDates } from './helpers/dates'
-  import FilterMenu from './components/FilterMenu.svelte'
-  import ChannelHealth from './components/ChannelHealth.svelte'
-  import type { Contributor, Questions } from './types'
+  import { COHORTS } from './constants'
+  import ChannelHealthOld from './components/ChannelHealth.svelte'
+  import ChannelHealthTable from './ChannelHealthTable.svelte'
+  import ForumChannelTagHealthTable from './ForumChannelTagHealthTable.svelte'
+  import GuildMembers from './GuildMembers.svelte'
+  import QuestionBarChart from './QuestionBarChart.svelte'
+  import QuestionBreakdownCards from './QuestionBreakdownCards.svelte'
+  import QuestionFilterMenu from './QuestionFilterMenu.svelte'
+  import type {
+    Contributor,
+    Question,
+    Questions,
+    QuestionBreakdownItem,
+  } from './types'
   import type { PageServerData } from './$types'
 
   export let data: PageServerData
-  let { channels, contributors, gitHubStaff, guild, tags, questions } = data
+  let {
+    allHelpChannels,
+    allQuestions,
+    availableTags,
+    contributors,
+    gitHubStaff,
+    guild,
+    tags,
+    questions,
+  } = data
 
   let today = new Date()
   let endDate = today
   let startDate = new Date(today.getFullYear(), today.getMonth() - 3, 1)
   let dates: Date[] = timeBetweenDates('months', [startDate, endDate])
   let filteredQuestions: Map<string, Questions> =
-    filterQuestionsByChannelAndDate(questions, channels, [], dates)
+    filterQuestionsByChannelAndDate(questions, allHelpChannels, [], dates)
   let filteredContributors: Contributor[] = filterAnswers(
-    channels,
+    allHelpChannels,
     [dates[0], today],
     contributors.all
   )
   let filteredStaffContributors: Contributor[] = filterAnswers(
-    channels,
+    allHelpChannels,
     [dates[0], today],
     contributors.staff
   )
   let topOverallPromise = getTopContributors(contributors.all, gitHubStaff, 9)
   let topStaffPromise = getTopContributors(contributors.staff, gitHubStaff, 9)
-  const colors = [
+  const availableChartColors = [
     '#6929c4',
     '#1192e8',
     '#005d5d',
@@ -70,11 +90,13 @@
     '#6929c4',
     '#1192e8',
   ]
-  const chartColors = channels.reduce(
+  const chartColors = allHelpChannels.reduce(
     (accumulator, channel, idx) => ({
       ...accumulator,
       [channel]:
-        idx < colors.length - 1 ? colors[idx] : colors[idx % colors.length],
+        idx < availableChartColors.length - 1
+          ? availableChartColors[idx]
+          : availableChartColors[idx % availableChartColors.length],
     }),
     {}
   )
@@ -85,40 +107,23 @@
     { key: 'name', value: 'Name' },
     { key: 'answers', value: 'Answers' },
   ]
-  const getBarData = (filteredQuestions: Map<string, Questions>) => {
-    const map = new Map(filteredQuestions)
-    map.delete('aggregate')
-    const values: Record<string, any>[] = []
-    for (const [date, questionCategories] of map) {
-      Object.entries(questionCategories).forEach(
-        ([category, questionsArray]) => {
-          values.push({
-            group: category,
-            key: date,
-            value: questionsArray?.length,
-          })
-        }
-      )
-    }
-    return values
-  }
 
   /**
    * filtered questions by category ("all", "unanswered", "staff", "community")
    */
   $: filteredQuestions = filterQuestionsByChannelAndDate(
     questions,
-    channels,
-    tags,
+    allHelpChannels,
+    selectedTags,
     dates
   )
   $: filteredContributors = filterAnswers(
-    channels,
+    allHelpChannels,
     [dates[0], today],
     contributors.all
   )
   $: filteredStaffContributors = filterAnswers(
-    channels,
+    allHelpChannels,
     [dates[0], today],
     contributors.staff
   )
@@ -126,22 +131,8 @@
   /** @TODO check for divide by zero */
   $: total = filteredQuestions.get('aggregate')?.total?.length ?? ''
   $: unanswered = filteredQuestions.get('aggregate')?.unanswered?.length ?? ''
-  $: unansweredPct =
-    total && unanswered
-      ? `${Math.round((100 * parseInt(unanswered)) / parseInt(total))}%`
-      : ''
   $: staff = filteredQuestions.get('aggregate')?.staff?.length ?? ''
-  $: staffPct =
-    total && staff
-      ? `${Math.round((100 * parseInt(staff)) / parseInt(total))}%`
-      : ''
   $: community = filteredQuestions.get('aggregate')?.community?.length ?? ''
-  $: communityPct =
-    total && staff
-      ? `${Math.round((100 * parseInt(community)) / parseInt(total))}%`
-      : ''
-
-  $: barData = getBarData(filteredQuestions)
   $: pieDataTotal = sortChannels(filteredQuestions.get('aggregate')!.total)
   $: pieDataUnanswered = sortChannels(
     filteredQuestions.get('aggregate')!.unanswered
@@ -156,6 +147,100 @@
     gitHubStaff,
     9
   )
+
+  // add tag pie charts
+  // add tag health charts
+
+  /**
+   * Selected start date
+   * @default "3 months ago"
+   */
+  let selectedStartDate = new Date(today.getFullYear(), today.getMonth() - 3, 1)
+  /**
+   * Selected end date
+   * @default "today"
+   */
+  let selectedEndDate = today
+  /**
+   * Selected time period
+   */
+  let selectedTimePeriod = 'months'
+  /**
+   * Selected post tags
+   */
+  let selectedTags: string[] = [...availableTags]
+  /**
+   * Selected channels
+   */
+  let selectedChannels: string[] = [...allHelpChannels]
+
+  /**
+   * @todo rename this when we have finished the migration to the revised helpers
+   * @todo fix the need to typecast
+   */
+  $: filteredQuestions2 = filterQuestions(allQuestions, {
+    dates: [selectedStartDate, selectedEndDate],
+    tags: selectedTags,
+  })
+
+  $: questionsGroupedByCohort = groupQuestions(filteredQuestions2, {
+    by: 'cohort',
+  })
+
+  /**
+   * Question breakdown - fed into cards
+   */
+  $: questionBreakdown = [
+    {
+      title: 'Total Questions',
+      count: filteredQuestions2.length,
+    },
+    {
+      title: 'Answered by Staff',
+      count: questionsGroupedByCohort[COHORTS.STAFF]?.length || 0,
+      color: 'var(--ha-cohort-staff)',
+      percentageColor: 'var(--ha-cohort-staff-dim)',
+      percentage: Math.round(
+        (questionsGroupedByCohort[COHORTS.STAFF]?.length /
+          filteredQuestions2.length) *
+          100
+      ),
+    },
+    {
+      title: 'Answered by Community',
+      count: questionsGroupedByCohort[COHORTS.COMMUNITY]?.length || 0,
+      color: 'var(--ha-cohort-community)',
+      percentageColor: 'var(--ha-cohort-community-dim)',
+      percentage: Math.round(
+        (questionsGroupedByCohort[COHORTS.COMMUNITY]?.length /
+          filteredQuestions2.length) *
+          100
+      ),
+    },
+    {
+      title: 'Solved without answer',
+      count:
+        questionsGroupedByCohort[COHORTS.SOLVED_WITHOUT_ANSWER]?.length || 0,
+      color: 'var(--ha-cohort-solved-without-answer)',
+      percentageColor: 'var(--ha-cohort-solved-without-answer-dim)',
+      percentage: Math.round(
+        (questionsGroupedByCohort[COHORTS.SOLVED_WITHOUT_ANSWER]?.length /
+          filteredQuestions2.length) *
+          100
+      ),
+    },
+    {
+      title: 'Unanswered',
+      count: questionsGroupedByCohort[COHORTS.UNANSWERED]?.length || 0,
+      color: 'var(--ha-cohort-unanswered)',
+      percentageColor: 'var(--ha-cohort-unanswered-dim)',
+      percentage: Math.round(
+        (questionsGroupedByCohort[COHORTS.UNANSWERED]?.length /
+          filteredQuestions2.length) *
+          100
+      ),
+    },
+  ]
 </script>
 
 <svelte:head>
@@ -163,139 +248,63 @@
 </svelte:head>
 
 <Content>
-  <Grid>
-    <Row>
-      <Column>
-        <h1>Questions Dashboard</h1>
-      </Column>
-      <Column>
-        <div style:display="flex" style:justify-content="flex-end">
-          <Button
-            iconDescription="Download CSV"
-            kind="ghost"
-            icon="{DocumentDownload}"
-            on:click="{() => toCSVQuestions(channels, filteredQuestions)}"
+  <div class="ha-dashboard--container">
+    <Grid>
+      <Row>
+        <Column>
+          <h1>Questions Dashboard</h1>
+        </Column>
+        <Column>
+          <div
+            style:display="flex"
+            style:align-items="center"
+            style:justify-content="flex-end"
           >
-            Download CSV
-          </Button>
-        </div>
-      </Column>
-    </Row>
-    <Row>
-      <Column class="styled-col" style="background: rgb(15, 98, 254, 0.1);">
-        <h1 class="number">
-          {guild.totalMemberCount}
-          <ArrowUp size="{32}" color="#0c4fcc" />
-        </h1>
-        <h4 class="number-text">Total Members</h4>
-      </Column>
-      <Column class="styled-col" style="background: rgb(0, 255, 0, 0.1);">
-        <h1 class="number">
-          {guild.onlineMemberCount}
-          <Group size="{32}" color="#036b03" />
-        </h1>
-        <h4 class="number-text">Members Online</h4>
-      </Column>
-    </Row>
-    <Row class="date-container">
-      <Column>
-        <FilterMenu
-          bind:dates
-          bind:channels
-          bind:tags
-          today="{today}"
-          startDate="{startDate}"
-          endDate="{endDate}"
-        />
-      </Column>
-    </Row>
-    <Row>
-      <Column class="split-counts">
-        <h1 class="number">{total}</h1>
-        <h4 class="number-text">Total Questions</h4>
-      </Column>
-      <Column class="split-counts" style="color: rgb(255, 153, 0)">
-        <h1 class="number">
-          {staff}
-          <Tag style="background-color:rgb(255, 153, 0, 0.6)">{staffPct}</Tag>
-        </h1>
-        <h4 class="number-text">Answered by Staff</h4>
-      </Column>
-      <Column class="split-counts" style="color:rgb(15, 98, 254)">
-        <h1 class="number">
-          {community}
-          <Tag style="background-color:rgb(15, 98, 254, 0.6)">
-            {communityPct}
-          </Tag>
-        </h1>
-        <h4 class="number-text">Answered by Community</h4>
-      </Column>
-      <Column class="split-counts">
-        <h1 class="number">
-          {parseInt(total, 10) - parseInt(staff, 10) - parseInt(community, 10)}
-          <!-- <Tag>{communityPct}</Tag> -->
-        </h1>
-        <h4 class="number-text">Solved without answer</h4>
-      </Column>
-      <Column class="split-counts" style="color: rgb(255, 0, 0);">
-        <h1 class="number">
-          {unanswered}
-          <Tag style="background-color:rgb(255, 0, 0, 0.4)">{unansweredPct}</Tag
-          >
-        </h1>
-        <h4 class="number-text">Unanswered</h4>
-      </Column>
-    </Row>
-    <Row style="margin-top:16px">
-      <Column>
-        <BarChartStacked
-          bind:data="{barData}"
-          options="{{
-            title: '',
-            axes: {
-              left: {
-                title: 'Questions',
-                mapsTo: 'value',
-                stacked: true,
-              },
-              bottom: {
-                title: 'Date',
-                mapsTo: 'key',
-                scaleType: 'time',
-              },
-            },
-            color: {
-              scale: {
-                total: '#6f6f6f',
-                staff: 'rgb(255, 153, 0, 0.8)',
-                community: 'rgb(15, 98, 254)',
-                unanswered: 'rgb(255, 0, 0, 0.7)',
-              },
-            },
-            grid: {
-              x: {
-                enabled: false,
-              },
-            },
-            height: '400px',
-          }}"
-          theme="g100"
-        /></Column
-      >
-    </Row>
-    <Row>
-      <Column sm="{2}" md="{6}" lg="{8}" class="styled-col"
-        ><ChannelHealth bind:filteredQuestions /></Column
-      >
-      <Column sm="{2}" md="{2}" lg="{4}" class="styled-col">
-        <Row style="justify-content: center;" class="styled-col">
+            <Button
+              iconDescription="Download CSV"
+              kind="ghost"
+              icon="{DocumentDownload}"
+              on:click="{() =>
+                toCSVQuestions(allHelpChannels, filteredQuestions)}"
+            >
+              Download CSV
+            </Button>
+          </div>
+        </Column>
+      </Row>
+      <GuildMembers guild="{guild}" />
+      <QuestionFilterMenu
+        bind:dates
+        bind:channels="{selectedChannels}"
+        bind:tags="{selectedTags}"
+        today="{today}"
+        startDate="{startDate}"
+        endDate="{endDate}"
+      />
+      <Row padding>
+        <Column>
+          <QuestionBreakdownCards breakdown="{questionBreakdown}" />
+        </Column>
+      </Row>
+      <!-- answer breakdown -->
+      <Row padding>
+        <Column>
+          <QuestionBarChart
+            bind:questions="{filteredQuestions2}"
+            timePeriod="{'month'}"
+          />
+        </Column>
+      </Row>
+      <!-- pie charts for channels -->
+      <Row padding>
+        <Column sm="{4}" lg="{8}">
           <PieChart
             bind:data="{pieDataTotal}"
             options="{{
               color: {
                 scale: chartColors,
               },
-              title: 'All questions',
+              title: 'All questions by Channel',
               resizable: true,
               pie: {
                 labels: {
@@ -303,19 +312,24 @@
                 },
                 valueMapsTo: 'count',
               },
+              legend: {
+                enabled: true,
+                // @ts-expect-error enums are silly
+                position: 'right',
+              },
               height: '400px',
             }}"
             theme="g100"
           />
-        </Row>
-        <Row style="justify-content: center;" class="styled-col">
+        </Column>
+        <Column sm="{4}" lg="{8}">
           <PieChart
             bind:data="{pieDataUnanswered}"
             options="{{
               color: {
                 scale: chartColors,
               },
-              title: 'Unanswered',
+              title: 'Unanswered Questions by Channel',
               resizable: true,
               pie: {
                 labels: {
@@ -323,31 +337,103 @@
                 },
                 valueMapsTo: 'count',
               },
+              legend: {
+                enabled: true,
+                // @ts-expect-error enums are silly
+                position: 'right',
+              },
               height: '400px',
             }}"
             theme="g100"
           />
-        </Row>
-      </Column>
-    </Row>
-    <h1 style="margin-top:12px;" class="number-text">Top Contributors</h1>
-    <Row>
-      <Column class="styled-col">
-        <Row
-          ><h2>
-            Overall<CaretUp
-              style="vertical-align:middle"
-              color="green"
-              size="{32}"
-            />
-          </h2></Row
-        >
-        <Row>
-          {#await topOverallPromise}
-            <DataTableSkeleton headers="{tableHeaders}" rows="{10}" />
-          {:then topOverall}
-            <DataTable headers="{tableHeaders}" rows="{topOverall}">
-              <strong slot="description" style="font-size: 1rem">
+        </Column>
+      </Row>
+      <!-- pie charts for tags -->
+      <Row padding>
+        <Column sm="{4}" lg="{8}">
+          <PieChart
+            bind:data="{pieDataTotal}"
+            options="{{
+              color: {
+                scale: chartColors,
+              },
+              title: 'All questions by Tag',
+              resizable: true,
+              pie: {
+                labels: {
+                  enabled: false,
+                },
+                valueMapsTo: 'count',
+              },
+              legend: {
+                enabled: true,
+                // @ts-expect-error enums are silly
+                position: 'right',
+              },
+              height: '400px',
+            }}"
+            theme="g100"
+          />
+        </Column>
+        <Column sm="{4}" lg="{8}">
+          <PieChart
+            bind:data="{pieDataUnanswered}"
+            options="{{
+              color: {
+                scale: chartColors,
+              },
+              title: 'Unanswered Questions by Tag',
+              resizable: true,
+              pie: {
+                labels: {
+                  enabled: false,
+                },
+                valueMapsTo: 'count',
+              },
+              legend: {
+                enabled: true,
+                // @ts-expect-error enums are silly
+                position: 'right',
+              },
+              height: '400px',
+            }}"
+            theme="g100"
+          />
+        </Column>
+      </Row>
+      <!-- channel health -->
+      <Row padding>
+        <Column>
+          <ChannelHealthTable
+            questions="{filteredQuestions2}"
+            allHelpChannels="{allHelpChannels}"
+          />
+        </Column>
+      </Row>
+      <!-- tag health -->
+      <Row padding>
+        <Column>
+          <ForumChannelTagHealthTable questions="{filteredQuestions2}" />
+        </Column>
+      </Row>
+      <section aria-label="Top Contributors">
+        <Row padding>
+          <!-- <h2>Top Contributors</h2> -->
+          <Column sm="{4}" lg="{8}">
+            {@const title = 'Top Overall'}
+            {#await topOverallPromise}
+              <DataTableSkeleton
+                title="{title}"
+                headers="{tableHeaders}"
+                rows="{10}"
+              />
+            {:then topOverall}
+              <DataTable
+                title="{title}"
+                headers="{tableHeaders}"
+                rows="{topOverall}"
+              >
+                <!-- <strong slot="description" style="font-size: 1rem">
                 Download table contents <Button
                   iconDescription="Download CSV"
                   kind="ghost"
@@ -355,48 +441,80 @@
                   on:click="{() => toCSVContributors(topOverall, 'Overall')}"
                   style="vertical-align:middle"
                 />
-              </strong>
-            </DataTable>
-          {:catch error}
-            <p>Failed to fetch top contributors: {error.message}</p>
-          {/await}
+              </strong> -->
+                <svelte:fragment slot="title">
+                  {title}
+                  <CaretUp
+                    style="vertical-align:middle"
+                    color="green"
+                    size="{32}"
+                  />
+                </svelte:fragment>
+              </DataTable>
+            {:catch error}
+              <p>Failed to fetch top contributors: {error.message}</p>
+            {/await}
+          </Column>
+          <Column sm="{4}" lg="{8}">
+            {@const title = 'Top Staff'}
+            {#await topStaffPromise}
+              <DataTableSkeleton
+                title="{title}"
+                headers="{tableHeaders}"
+                rows="{10}"
+              />
+            {:then topStaff}
+              <DataTable
+                title="{title}"
+                headers="{tableHeaders}"
+                rows="{topStaff}"
+              >
+                <svelte:fragment slot="title">
+                  {title}
+                  <CaretUp
+                    style="vertical-align:middle"
+                    color="var(--ha-cohort-staff-dim)"
+                    size="{32}"
+                  />
+                </svelte:fragment>
+                <!-- <strong slot="description" style="font-size: 1rem">
+                  Download table contents <Button
+                    iconDescription="Download CSV"
+                    kind="ghost"
+                    icon="{DocumentDownload}"
+                    on:click="{() => toCSVContributors(topStaff, 'Staff')}"
+                    style="vertical-align:middle"
+                  />
+                </strong> -->
+              </DataTable>
+            {:catch error}
+              <p>Failed to fetch top staff contributors: {error.message}</p>
+            {/await}
+          </Column>
         </Row>
-      </Column>
-      <Column class="styled-col">
-        <Row
-          ><h2>
-            Staff<CaretUp
-              style="vertical-align:middle"
-              color="rgb(255, 153, 0, 0.6)"
-              size="{32}"
-            />
-          </h2></Row
-        >
-        {#await topStaffPromise}
-          <DataTableSkeleton headers="{tableHeaders}" rows="{10}" />
-        {:then topStaff}
-          <Row
-            ><DataTable headers="{tableHeaders}" rows="{topStaff}">
-              <strong slot="description" style="font-size: 1rem">
-                Download table contents <Button
-                  iconDescription="Download CSV"
-                  kind="ghost"
-                  icon="{DocumentDownload}"
-                  on:click="{() => toCSVContributors(topStaff, 'Staff')}"
-                  style="vertical-align:middle"
-                />
-              </strong></DataTable
-            >
-          </Row>
-        {:catch error}
-          <p>Failed to fetch top staff contributors: {error.message}</p>
-        {/await}
-      </Column>
-    </Row>
-  </Grid>
+      </section>
+    </Grid>
+  </div>
 </Content>
 
 <style>
+  .ha-dashboard--container {
+    --ha-cohort-staff: rgb(255, 153, 0);
+    --ha-cohort-staff-dim: rgb(255, 153, 0, 0.6);
+    --ha-cohort-community: rgb(15, 98, 254);
+    --ha-cohort-community-dim: rgb(15, 98, 254, 0.6);
+    --ha-cohort-unanswered: rgb(255, 0, 0);
+    --ha-cohort-unanswered-dim: rgb(255, 0, 0, 0.6);
+    --ha-cohort-total: rgb(198, 198, 198);
+    --ha-cohort-total-dim: rgb(198, 198, 198, 0.6);
+    --ha-cohort-solved-without-answer: rgb(0, 170, 0);
+    --ha-cohort-solved-without-answer-dim: rgb(0, 170, 0, 0.6);
+
+    --ha-health-low: rgb(255, 0, 0, 0.4);
+    --ha-health-okay: rgb(255, 153, 0, 0.4);
+    --ha-health-good: rgb(0, 170, 0, 0.4);
+  }
+
   :global(.styled-col) {
     flex: 1;
     position: relative;
