@@ -222,12 +222,12 @@ client.on(Events.MessageCreate, async (message: Message) => {
               id: message.guild?.id,
             },
           },
-          tags: {
-            connectOrCreate: tags?.map(({ id, name }) => ({
-              where: { id },
-              create: { id, name },
-            })),
-          },
+          // tags: {
+          //   connectOrCreate: tags?.map(({ id, name }) => ({
+          //     where: { id },
+          //     create: { id, name },
+          //   })),
+          // },
         },
         select: {
           id: true,
