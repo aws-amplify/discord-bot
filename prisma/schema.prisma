@@ -43,8 +43,10 @@ model Question {
 model QuestionTag {
   // discord forum post tag id
   id        String     @id
-  name      String     @unique
+  name      String
   questions Question[]
+
+  @@unique([id, name])
 }
 
 model Participation {
