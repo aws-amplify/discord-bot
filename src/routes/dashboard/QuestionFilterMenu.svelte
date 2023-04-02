@@ -7,7 +7,9 @@
     MultiSelect,
     Row,
   } from 'carbon-components-svelte'
-  import { timeBetweenDates } from './helpers/dates'
+  import { TIME_PERIODS } from './constants'
+  import { timeBetweenDates } from './helpers/legacy-dates'
+  import type { TimePeriod } from './types'
 
   export let dates: Date[]
   export let today: Date
@@ -15,84 +17,66 @@
   export let endDate: Date
   export let channels: string[]
   export let tags: string[]
-
-  const dateOptions = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }
+  export let timePeriod: TimePeriod = TIME_PERIODS.MONTH
 
   const availableTags = tags
+  const availableChannels = channels
 
-  // filter by channel
-  const channelDropdownItems: { id: string; text: string }[] = []
+  // construct channel dropdown items
+  const channelDropdownItems = channels.map((channel, idx) => ({
+    id: idx,
+    text: channel,
+  }))
 
-  for (const [idx, channel] of channels.entries()) {
-    channelDropdownItems.push({
-      id: idx.toString(),
-      text: channel,
-    })
-  }
-
-  let channel_selectedIds = channelDropdownItems.map((item) => item.id)
-  let tag_selectedIds = [...availableTags]
-
-  // filter by date
-  let frequency_selectedId = '2'
+  // construct frequency (time period) items
   const frequencyDropdownItems = [
-    { id: '0', text: 'Daily', disabled: false, value: 'days', description: '' },
+    { id: 0, text: 'Daily', disabled: false, value: 'days', description: '' },
     {
-      id: '1',
+      id: 1,
       text: 'Weekly',
       disabled: false,
-      value: 'weeks',
+      value: TIME_PERIODS.WEEK,
       description: 'Starting Monday',
     },
     {
-      id: '2',
+      id: 2,
       text: 'Monthly',
       disabled: false,
-      value: 'months',
+      value: TIME_PERIODS.MONTH,
       description: 'Starting first of the month',
     },
     {
-      id: '3',
+      id: 3,
       text: 'Yearly',
       disabled: false,
-      value: 'years',
+      value: TIME_PERIODS.YEAR,
       description: 'Starting January 1',
     },
   ]
 
-  const onDateChange = (event: CustomEvent) => {
+  // set initial selections
+  let selectedChannelIds = channelDropdownItems.map((item) => item.id)
+  let selectedTagIds = [...availableTags]
+  let selectedFrequencyId = 2
+
+  // update bound timePeriod
+  $: timePeriod = frequencyDropdownItems.find(
+    (item) => item.id === selectedFrequencyId
+  )?.value as TimePeriod
+  // update bound channels
+  $: channels = availableChannels.filter((channel, idx) =>
+    selectedChannelIds.includes(idx)
+  )
+  // update bound tags
+  $: tags = availableTags.filter((tag) => selectedTagIds.includes(tag))
+  // update bound dates
+  $: dates = timeBetweenDates(timePeriod, [startDate, endDate])
+
+  function onDateChange(event: CustomEvent) {
     startDate = event.detail.selectedDates[0]
     endDate = event.detail.selectedDates[1]
-    dates = timeBetweenDates(frequency, event.detail.selectedDates)
+    dates = timeBetweenDates(timePeriod, event.detail.selectedDates)
   }
-
-  const getChannels = (channel_selectedIds: string[]) => {
-    return channel_selectedIds.map(
-      (id) => channelDropdownItems.find((item) => item.id === id)?.text
-    )
-  }
-
-  const getTags = (tag_selectedIds: string[]) => {
-    return tag_selectedIds.map((id) => availableTags.find((tag) => tag === id))
-  }
-
-  const frequencySpelling = () =>
-    dates.length === 1 ? frequency.slice(0, -1) : frequency
-
-  $: label = `${dates.length} ${frequencySpelling()} (beginning ${
-    dates[0]?.toDateString() ?? ''
-  })`
-  $: frequency =
-    frequencyDropdownItems.find((item) => item.id === frequency_selectedId)
-      ?.value ?? ''
-  $: channels = getChannels(channel_selectedIds)
-  $: tags = getTags(tag_selectedIds)
-  $: dates = timeBetweenDates(frequency, [startDate, endDate])
 
   function getTagLabel(availableTags: string[], selectedTags: string[]) {
     if (availableTags.length === 0) {
@@ -108,7 +92,7 @@
 
   function getChannelLabel(
     availableChannels: string[],
-    selectedChannels: string[]
+    selectedChannels: number[]
   ) {
     if (availableChannels.length === 0) {
       return 'No channels available'
@@ -118,13 +102,20 @@
       return 'All channels'
     } else {
       return availableChannels
-        .filter((channel, idx) => selectedChannels.includes(idx.toString()))
+        .filter((channel, idx) => selectedChannels.includes(idx))
         .join(', ')
     }
   }
 
-  $: tagLabel = getTagLabel(availableTags, tag_selectedIds)
-  $: channelLabel = getChannelLabel(channels, channel_selectedIds)
+  function getDateLabel() {
+    return `${dates.length} ${timePeriod}${
+      dates.length !== 1 ? 's' : ''
+    } (beginning ${dates[0]?.toDateString() ?? ''})`
+  }
+
+  $: dateLabel = getDateLabel()
+  $: tagLabel = getTagLabel(availableTags, selectedTagIds)
+  $: channelLabel = getChannelLabel(channels, selectedChannelIds)
 </script>
 
 <Row padding>
@@ -133,7 +124,7 @@
       <Dropdown
         class="frequency-selector"
         titleText="Frequency"
-        bind:selectedId="{frequency_selectedId}"
+        bind:selectedId="{selectedFrequencyId}"
         items="{frequencyDropdownItems}"
         let:item
       >
@@ -156,7 +147,7 @@
           <DatePickerInput labelText="FROM" placeholder="mm/dd/yyyy" />
           <DatePickerInput labelText="TO" placeholder="mm/dd/yyyy" />
         </DatePicker>
-        <span class="bx--form__helper-text">{label}</span>
+        <span class="bx--form__helper-text">{dateLabel}</span>
       </div>
 
       <MultiSelect
@@ -165,7 +156,7 @@
         label="{channelLabel}"
         placeholder="All channels"
         titleText="Filter by Channel"
-        bind:selectedIds="{channel_selectedIds}"
+        bind:selectedIds="{selectedChannelIds}"
       />
 
       <MultiSelect
@@ -176,7 +167,7 @@
           id: name,
           text: name,
         }))}"
-        bind:selectedIds="{tag_selectedIds}"
+        bind:selectedIds="{selectedTagIds}"
         itemToString="{(item) => item?.text}"
         placeholder="All tags"
       />

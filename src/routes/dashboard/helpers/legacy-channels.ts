@@ -1,5 +1,9 @@
 import { type Question, type Questions } from '../types'
 
+/**
+ * Sort questions by channel
+ * @deprecated
+ */
 export function sortChannels(questions: Question[]) {
   const counts = questions.reduce((count, question) => {
     const key = question.channelName
@@ -11,6 +15,10 @@ export function sortChannels(questions: Question[]) {
     .sort((a, b) => a.group.localeCompare(b.group))
 }
 
+/**
+ * Get color for channel health
+ * @deprecated
+ */
 const getColor = (percent: number) => {
   if (percent < 50) {
     return 'rgb(255, 0, 0, 0.4)'
@@ -20,6 +28,10 @@ const getColor = (percent: number) => {
   return 'rgb(0, 255, 0, 0.4'
 }
 
+/**
+ * Get channel health
+ * @deprecated
+ */
 export function getChannelHealth(questions: Questions) {
   const totalObj = questions.total.reduce((count, question) => {
     const key = question.channelName

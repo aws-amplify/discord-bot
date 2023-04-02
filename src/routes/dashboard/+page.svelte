@@ -9,17 +9,14 @@
     Row,
   } from 'carbon-components-svelte'
   import { CaretUp, DocumentDownload } from 'carbon-icons-svelte'
-  import { toCSVContributors, toCSVQuestions } from './csv/downloadCSV'
-  import { sortChannels } from './helpers/channels'
-  import {
-    filterAnswers,
-    filterQuestionsByChannelAndDate,
-  } from './helpers/filter'
+  import { downloadCSV } from './helpers/download-csv'
+  import { toCSV } from './helpers/to-csv'
+  import { filterAnswers } from './helpers/filter-answers'
   import { filterQuestions } from './helpers/filter-questions'
   import { groupQuestions } from './helpers/group-questions'
-  import { getTopContributors } from './helpers/contributors'
-  import { timeBetweenDates } from './helpers/dates'
-  import { COHORTS } from './constants'
+  import { getTopContributors } from './helpers/legacy-contributors'
+  import { timeBetweenDates } from './helpers/legacy-dates'
+  import { COHORTS, TIME_PERIODS } from './constants'
   import ChannelHealthTable from './ChannelHealthTable.svelte'
   import ForumChannelTagHealthTable from './ForumChannelTagHealthTable.svelte'
   import GuildMembers from './GuildMembers.svelte'
@@ -27,12 +24,7 @@
   import QuestionPieChart from './QuestionPieChart.svelte'
   import QuestionBreakdownCards from './QuestionBreakdownCards.svelte'
   import QuestionFilterMenu from './QuestionFilterMenu.svelte'
-  import type {
-    Contributor,
-    Question,
-    Questions,
-    QuestionBreakdownItem,
-  } from './types'
+  import type { Contributor, TimePeriod } from './types'
   import type { PageServerData } from './$types'
 
   export let data: PageServerData
@@ -43,16 +35,13 @@
     contributors,
     gitHubStaff,
     guild,
-    tags,
-    questions,
   } = data
 
   let today = new Date()
   let endDate = today
   let startDate = new Date(today.getFullYear(), today.getMonth() - 3, 1)
   let dates: Date[] = timeBetweenDates('months', [startDate, endDate])
-  let filteredQuestions: Map<string, Questions> =
-    filterQuestionsByChannelAndDate(questions, allHelpChannels, [], dates)
+
   let filteredContributors: Contributor[] = filterAnswers(
     allHelpChannels,
     [dates[0], today],
@@ -73,15 +62,6 @@
     { key: 'answers', value: 'Answers' },
   ]
 
-  /**
-   * filtered questions by category ("all", "unanswered", "staff", "community")
-   */
-  $: filteredQuestions = filterQuestionsByChannelAndDate(
-    questions,
-    allHelpChannels,
-    selectedTags,
-    dates
-  )
   $: filteredContributors = filterAnswers(
     allHelpChannels,
     [dates[0], today],
@@ -93,10 +73,6 @@
     contributors.staff
   )
 
-  $: pieDataTotal = sortChannels(filteredQuestions.get('aggregate')!.total)
-  $: pieDataUnanswered = sortChannels(
-    filteredQuestions.get('aggregate')!.unanswered
-  )
   $: topStaffPromise = getTopContributors(
     filteredStaffContributors,
     gitHubStaff,
@@ -107,9 +83,6 @@
     gitHubStaff,
     9
   )
-
-  // add tag pie charts
-  // add tag health charts
 
   /**
    * Selected start date
@@ -124,7 +97,7 @@
   /**
    * Selected time period
    */
-  let selectedTimePeriod = 'months'
+  let selectedTimePeriod: TimePeriod = TIME_PERIODS.MONTH
   /**
    * Selected post tags
    */
@@ -259,7 +232,10 @@
               kind="ghost"
               icon="{DocumentDownload}"
               on:click="{() =>
-                toCSVQuestions(allHelpChannels, filteredQuestions)}"
+                downloadCSV(
+                  toCSV(filteredQuestions2),
+                  `discord-questions.csv`
+                )}"
             >
               Download CSV
             </Button>
@@ -271,6 +247,7 @@
         bind:dates
         bind:channels="{selectedChannels}"
         bind:tags="{selectedTags}"
+        bind:timePeriod="{selectedTimePeriod}"
         today="{today}"
         startDate="{startDate}"
         endDate="{endDate}"
@@ -285,7 +262,7 @@
         <Column>
           <QuestionBarChart
             bind:questions="{filteredQuestions2}"
-            timePeriod="{'month'}"
+            timePeriod="{selectedTimePeriod}"
           />
         </Column>
       </Row>

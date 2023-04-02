@@ -1,22 +1,18 @@
-import { Octokit } from '@octokit/rest'
+import { createOctokit } from '$lib/github/create-octokit'
 import type { RequestHandler } from '@sveltejs/kit'
-import { authenticate } from '../../../dashboard/helpers/github'
 
 export const GET: RequestHandler = async ({ params }) => {
+  const octokit = await createOctokit()
   try {
     const { username } = params
-    const token = await authenticate()
-    const octokit = new Octokit({
-      auth: `token ${token}`,
-    })
     const { data } = await octokit.request(`GET /users/${username}`, {
       org: process.env.GITHUB_ORG_LOGIN,
     })
     if (data?.name) {
       return new Response(data.name)
     }
-  } catch (error) {
-    console.error(`User not found: ${error.message}`)
+  } catch (cause) {
+    throw new Error('Unable to fetch GitHub members', { cause })
   }
   return new Response(null, { status: 204 })
 }

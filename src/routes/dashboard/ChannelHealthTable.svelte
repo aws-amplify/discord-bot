@@ -84,7 +84,7 @@
           sortable
         >
           <svelte:fragment slot="cell" let:cell>
-            <!-- control how we render URLs and isSolved -->
+            <!-- control how we render URLs -->
             <span>
               {#if cell.key === 'url'}
                 <a href="{cell.value}">Visit HTTPS</a>
@@ -94,8 +94,6 @@
                 </a>
               {:else if cell.key === 'createdAt'}
                 {new Date(cell.value).toLocaleString()}
-                <!-- {:else if cell.key === 'isSolved'}
-                {cell.value ? '✅' : '❌'} -->
               {:else}
                 {cell.value}
               {/if}
