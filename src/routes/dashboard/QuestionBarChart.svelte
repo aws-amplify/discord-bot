@@ -29,7 +29,7 @@
    */
   export let timePeriod: TimePeriod
 
-  function createBarChartData(questions: Question[]) {
+  function createBarChartData(questions: Question[], timePeriod: TimePeriod) {
     let data: BarChartData = []
     const grouped = groupQuestions(questions, {
       by: 'date',
@@ -83,7 +83,7 @@
     return data
   }
 
-  $: data = createBarChartData(questions)
+  $: data = createBarChartData(questions, timePeriod)
 </script>
 
 <BarChartStacked

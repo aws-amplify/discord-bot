@@ -1,11 +1,17 @@
 import { type GitHubUser, type Contributor } from '../types'
 
+/**
+ * Get GitHub username from GitHub staff list
+ */
 export function getGitHubUsername(gitHubStaff: GitHubUser[], userId: string) {
   const user = gitHubStaff.find((user) => user.id === Number(userId))
   if (user?.login) return user.login
   return ''
 }
 
+/**
+ * Get top contributors
+ */
 export async function getTopContributors(
   contributors: Contributor[],
   gitHubStaff: GitHubUser[],

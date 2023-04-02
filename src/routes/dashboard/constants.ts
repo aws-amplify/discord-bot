@@ -4,3 +4,10 @@ export const COHORTS = {
   SOLVED_WITHOUT_ANSWER: 'solved_without_answer',
   UNANSWERED: 'unanswered',
 } as const
+
+export const TIME_PERIODS = {
+  DAY: 'day',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+} as const

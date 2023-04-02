@@ -1,3 +1,4 @@
+import { TIME_PERIODS } from './constants'
 import type {
   Answer as PrismaAnswer,
   Question as PrismaQuestion,
@@ -5,7 +6,7 @@ import type {
   QuestionTag,
 } from '@prisma/client'
 
-export type TimePeriod = 'day' | 'week' | 'month' | 'year'
+export type TimePeriod = ValueOf<typeof TIME_PERIODS>
 
 export type Questions = {
   total: Question[]
