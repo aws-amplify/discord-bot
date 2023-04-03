@@ -407,6 +407,7 @@ client.on(Events.ThreadUpdate, async (oldThread, newThread) => {
     // update the participants (we do this after the question is created/updated to ensure the question exists in the database and has a valid ID to create the participation records with)
     if (record) {
       console.log('Updating participants', newThread.id)
+      const messages = await newThread.messages.fetch()
       try {
         await prisma.question.update({
           where: {
@@ -414,7 +415,7 @@ client.on(Events.ThreadUpdate, async (oldThread, newThread) => {
           },
           data: {
             participation: {
-              connectOrCreate: newThread.messages.cache.map((message) => ({
+              connectOrCreate: messages.map((message) => ({
                 where: {
                   questionId_participantId: {
                     questionId: record.id,
