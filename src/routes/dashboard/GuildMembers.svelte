@@ -37,10 +37,6 @@
 
 <style>
   .ha-dashboard--member-container {
-    /* display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; */
     padding: var(--cds-spacing-06);
     padding-left: var(--cds-spacing-06);
     height: 100%;
