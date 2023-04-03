@@ -36,10 +36,6 @@
 </Row>
 
 <style>
-  /* .ha-dashboard--member-col {
-    padding: var(--cds-spacing-04);
-  } */
-
   .ha-dashboard--member-container {
     /* display: flex;
     flex-direction: column;
