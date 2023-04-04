@@ -11,6 +11,7 @@ import { handleSetSessionLocals } from '$lib/server/hooks/handle-set-session-loc
 
 /**
  * Add additional user data to the session
+ * @deprecated
  */
 const handleSessionUser: Handle = async ({ event, resolve }) => {
   const { session } = event.locals
@@ -26,7 +27,7 @@ const handleSessionUser: Handle = async ({ event, resolve }) => {
   if (savedGuild) activeGuild = savedGuild
 
   if (session?.user) {
-    if (!session.guild) session.guild = activeGuild
+    if (!guild) guild = activeGuild
     event.locals.session = session
     const user = await prisma.user.findUnique({
       where: {
@@ -52,7 +53,7 @@ const handleSessionUser: Handle = async ({ event, resolve }) => {
     )[0].providerAccountId
     let access
     try {
-      access = await getUserAccess(discordUserId, session.guild)
+      access = await getUserAccess(discordUserId, guild)
     } catch (error) {
       console.error('Error getting access', error)
     }
