@@ -83,7 +83,7 @@ export class HeyAmplifyApp extends Construct {
       subdomain,
     } = props
 
-    const secrets = {}
+    const secrets: Record<string, ecs.Secret> = {}
     for (const [name, param] of Object.entries(props.secrets)) {
       secrets[name] = ecs.Secret.fromSsmParameter(param)
     }
@@ -122,6 +122,12 @@ export class HeyAmplifyApp extends Construct {
           publicLoadBalancer: true, // needed for bridge to CF
         }
       )
+
+    // const frontendContainer = albFargateService.service.taskDefinition.addContainer('BotFrontend', {
+    //   image: ecs.ContainerImage.fromAsset(docker.context, {
+
+    //   }),
+    // })
 
     // grant read/write to bucket for Litestream backups
     bucket.grantReadWrite(albFargateService.service.taskDefinition.taskRole)

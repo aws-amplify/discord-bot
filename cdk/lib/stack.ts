@@ -1,3 +1,4 @@
+import * as path from 'node:path'
 import { Stack, StackProps, Tags, RemovalPolicy } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
@@ -41,7 +42,7 @@ export class HeyAmplifyStack extends Stack {
     ] as const
     // NOTE: this TypeScript trick is to say `secrets` should include key value pairs where the keys are one of the names in the array above
     const secrets: Partial<
-      Record<typeof requiredSecrets[number], ssm.IParameter>
+      Record<(typeof requiredSecrets)[number], ssm.IParameter>
     > = {}
 
     for (const secret of requiredSecrets) {
@@ -147,10 +148,10 @@ export class HeyAmplifyStack extends Stack {
       cluster,
       docker: {
         name: `${this.appName}-bot`,
-        context: PROJECT_ROOT,
+        context: path.join(PROJECT_ROOT, 'apps/discord-bot'),
         dockerfile: 'Dockerfile',
         environment: {
-          DATABASE_URL: `file:${filesystemMountPoint}/${this.envName}.db`,
+          DATABASE_URL: `file:${filesystemMountPoint}/${this.envName}.db?connection_limit=1`,
           ...getSvelteKitEnvironmentVariables(this.envName),
         },
       },
