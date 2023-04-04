@@ -30,3 +30,7 @@ node_modules
 
 # ignore env files
 .env*
+
+# take .turbo and .svelte-kit for build cache
+!.turbo
+!.svelte-kit
