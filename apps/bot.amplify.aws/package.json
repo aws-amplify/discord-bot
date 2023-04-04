@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
+    "start": "node ./build/index.js",
     "dev": "vite",
     "build": "vite build",
     "test": "vitest",
