@@ -35,8 +35,10 @@ ARG VITE_NEXTAUTH_URL=http://localhost:3000
 ARG VITE_DISCORD_GUILD_ID=976838371383083068
 
 # run build
-RUN pnpm run build
+RUN --mount=type=secret,id=env,required=true,target=/workspace/.env \
+  pnpm run build
+# RUN pnpm run build
 # deploy app
-RUN pnpm deploy --filter @aws-amplify/discord-bot-frontend ./dist/bot.amplify.aws
+RUN pnpm --filter ./apps/bot.amplify.aws deploy ./build/bot.amplify.aws
 # deploy bot
-RUN pnpm deploy --filter @aws-amplify/discord-bot ./dist/discord-bot
+RUN pnpm --filter ./apps/discord-bot deploy ./build/discord-bot
