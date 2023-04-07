@@ -264,12 +264,22 @@ importers:
 
   packages/prisma-client:
     specifiers:
+      '@faker-js/faker': ^7.6.0
+      '@hey-amplify/constants': workspace:*
+      '@hey-amplify/discord': workspace:*
+      '@hey-amplify/features': workspace:*
       '@prisma/client': ^4.12.0
       prisma: ^4.12.0
+      vite-node: ^0.29.8
     dependencies:
       '@prisma/client': 4.12.0_prisma@4.12.0
     devDependencies:
+      '@faker-js/faker': 7.6.0
+      '@hey-amplify/constants': link:../constants
+      '@hey-amplify/discord': link:../discord
+      '@hey-amplify/features': link:../features
       prisma: 4.12.0
+      vite-node: 0.29.8
 
   packages/scripts:
     specifiers:
@@ -1655,7 +1665,6 @@ packages:
   /@faker-js/faker/7.6.0:
     resolution: {integrity: sha512-XK6BTq1NDMo9Xqw/YkYyGjSsg44fbNwYRx7QK2CuoQgyy+f1rrTDHoExVM5PsyXCtfl2vs2vVJ0MN0yN6LppRw==}
     engines: {node: '>=14.0.0', npm: '>=6.0.0'}
-    dev: false
 
   /@humanwhocodes/config-array/0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==}

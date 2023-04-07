@@ -14,13 +14,16 @@
   "types": "./build/generated/client/index.d.ts",
   "scripts": {
     "build": "prisma generate",
-    "db-push": "prisma db push",
     "prepare": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^4.12.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
+    "@hey-amplify/constants": "workspace:*",
+    "@hey-amplify/discord": "workspace:*",
+    "@hey-amplify/features": "workspace:*",
     "prisma": "^4.12.0"
   }
 }

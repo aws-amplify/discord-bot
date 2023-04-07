@@ -1,7 +1,13 @@
 import { faker } from '@faker-js/faker'
-import { prisma, init } from '$lib/db'
-import { ACCESS_LEVELS } from '$lib/constants'
-import type { DiscordUser, DiscordRole, Prisma } from '@prisma/client'
+import { ACCESS_LEVELS } from '@hey-amplify/constants'
+import { PrismaClient } from '../build/generated/client/index.js'
+import type {
+  DiscordUser,
+  DiscordRole,
+  Prisma,
+} from '../build/generated/client/index.js'
+
+const prisma = new PrismaClient()
 
 function createFakeUsers(): Prisma.DiscordUserCreateInput[] {
   return Array.from({ length: 10 }).map((_, i) => ({

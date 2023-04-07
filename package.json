@@ -15,10 +15,11 @@
     "check": "prettier --check .",
     "lint": "eslint .",
     "test": "turbo run test",
-    "push-db": "prisma db push --schema packages/prisma-client/schema.prisma",
+    "push-db": "prisma db push",
+    "seed-db": "prisma db seed",
     "setup-dev": "pnpm install && pnpm start-db --detach && pnpm push-db",
     "setup-test": "echo 'no setup required :)'",
-    "studio": "prisma studio --schema packages/prisma-client/schema.prisma",
+    "studio": "prisma studio",
     "docker-build-workspace": "sh ./scripts/docker-build-workspace.sh",
     "docker-build-apps": "docker compose build discord-bot discord-bot-frontend",
     "docker-build": "pnpm docker-build-workspace && pnpm docker-build-apps"
@@ -47,6 +48,10 @@
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=7.29.3"
+  },
+  "prisma": {
+    "schema": "./packages/prisma-client/schema.prisma",
+    "seed": "vite-node ./packages/prisma-client/scripts/init.ts"
   },
   "prettier": {
     "tabWidth": 2,

@@ -1,10 +1,9 @@
-import { PrismaClient } from '@hey-amplify/prisma-client'
-import { ACCESS_LEVELS, FEATURE_TYPES } from './constants'
+import { PrismaClient } from '../build/generated/client/index.js'
+import { ACCESS_LEVELS, FEATURE_TYPES } from '@hey-amplify/constants'
 import { integrations, types as featureTypes } from '@hey-amplify/features'
 import { createCommandFeatures } from '@hey-amplify/discord'
 
-export const prisma = new PrismaClient()
-
+const prisma = new PrismaClient()
 const DB_INIT_MESSAGE = '[database] init'
 
 export async function init() {
@@ -67,3 +66,13 @@ export async function init() {
   }
   console.timeEnd(DB_INIT_MESSAGE)
 }
+
+init()
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })
