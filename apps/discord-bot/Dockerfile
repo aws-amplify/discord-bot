@@ -2,7 +2,7 @@
 FROM workspace
 WORKDIR /app
 # copy built files
-COPY --from=builder /workspace/build/discord-bot ./build
+COPY --from=workspace /workspace/build/discord-bot ./build
 # expose port
 EXPOSE 3000
 # start the app

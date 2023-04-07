@@ -19,7 +19,7 @@
     "setup-dev": "pnpm install && pnpm start-db --detach && pnpm push-db",
     "setup-test": "echo 'no setup required :)'",
     "studio": "prisma studio --schema packages/prisma-client/schema.prisma",
-    "docker-build-workspace": "docker compose build workspace",
+    "docker-build-workspace": "sh ./scripts/docker-build-workspace.sh",
     "docker-build-apps": "docker compose build discord-bot discord-bot-frontend",
     "docker-build": "pnpm docker-build-workspace && pnpm docker-build-apps"
   },

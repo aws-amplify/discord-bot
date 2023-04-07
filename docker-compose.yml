@@ -1,8 +1,4 @@
 version: '3.9'
-# secrets:
-#   env:
-#     file: ./.env
-#     external: true
 services:
   # MariaDB Database to use with local development
   db:
@@ -19,37 +15,34 @@ services:
     ports:
       - 8080:8080
   # Monorepo builder
-  workspace:
-    image: workspace
-    depends_on:
-      - db
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    environment:
-      # - DATABASE_URL=mysql://example-user:top-secret@db:3306/hey-amplify
-      - DATABASE_URL=file:/data/local.db
-      - PNPM_STORE_PATH=$$(pnpm store path)
-    # secrets:
-    #   - source: env
-    #     target: /workspace/.env
-  discord-bot-frontend:
-    image: discord-bot-frontend
-    build:
-      context: ./apps/bot.amplify.aws
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    volumes:
-      - ./packages/prisma-client/prisma/data:/data
-  discord-bot:
-    image: discord-bot
-    build:
-      context: ./apps/discord-bot
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    volumes:
-      - ./packages/prisma-client/prisma/data:/data
+  # workspace:
+  #   image: workspace
+  #   depends_on:
+  #     - db
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     # - DATABASE_URL=mysql://example-user:top-secret@db:3306/hey-amplify
+  #     - DATABASE_URL=file:/data/local.db
+  #     - PNPM_STORE_PATH=$$(pnpm store path)
+  # discord-bot-frontend:
+  #   image: discord-bot-frontend
+  #   build:
+  #     context: ./apps/bot.amplify.aws
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./packages/prisma-client/prisma/data:/data
+  # discord-bot:
+  #   image: discord-bot
+  #   build:
+  #     context: ./apps/discord-bot
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./packages/prisma-client/prisma/data:/data
