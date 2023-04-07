@@ -6,7 +6,7 @@ export const ACCESS_LEVELS = {
   STAFF: 'STAFF',
   CONTRIBUTOR: 'CONTRIBUTOR',
   MEMBER: 'MEMBER',
-}
+} as const
 
 /**
  * Feature codes to be used with frontend and bot apps
@@ -14,7 +14,7 @@ export const ACCESS_LEVELS = {
  */
 export const FEATURE_CODES = {
   GITHUB: 'GITHUB',
-}
+} as const
 
 /**
  * Feature types describe the types of features we support
@@ -24,4 +24,4 @@ export const FEATURE_CODES = {
 export const FEATURE_TYPES = {
   COMMAND: 'COMMAND',
   INTEGRATION: 'INTEGRATION',
-}
+} as const
