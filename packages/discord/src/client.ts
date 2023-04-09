@@ -326,8 +326,9 @@ client.on(Events.ThreadUpdate, async (thread) => {
   console.log(`Thread ${thread.id} updated`)
 })
 
-export function createBot(token = process.env.DISCORD_BOT_TOKEN) {
-  return client.login(token)
+export async function createBot(token = process.env.DISCORD_BOT_TOKEN) {
+  await client.login(token)
+  return client
 }
 
 // capture SIGINT (Ctrl+C) to gracefully shutdown
