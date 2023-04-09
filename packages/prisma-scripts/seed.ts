@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker'
 import { ACCESS_LEVELS } from '@hey-amplify/constants'
-import { PrismaClient } from '../build/generated/client/index.js'
+import { PrismaClient } from '@hey-amplify/prisma-client'
 import type {
   DiscordUser,
   DiscordRole,
   Prisma,
-} from '../build/generated/client/index.js'
+} from '@hey-amplify/prisma-client'
 
 const prisma = new PrismaClient()
 

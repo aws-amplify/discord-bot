@@ -51,7 +51,7 @@
   },
   "prisma": {
     "schema": "./packages/prisma-client/schema.prisma",
-    "seed": "vite-node ./packages/prisma-client/scripts/init.ts"
+    "seed": "vite-node ./packages/prisma-scripts/init.ts"
   },
   "prettier": {
     "tabWidth": 2,
