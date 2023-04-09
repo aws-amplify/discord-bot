@@ -264,22 +264,26 @@ importers:
 
   packages/prisma-client:
     specifiers:
+      '@prisma/client': ^4.12.0
+      prisma: ^4.12.0
+    dependencies:
+      '@prisma/client': 4.12.0_prisma@4.12.0
+    devDependencies:
+      prisma: 4.12.0
+
+  packages/prisma-scripts:
+    specifiers:
       '@faker-js/faker': ^7.6.0
       '@hey-amplify/constants': workspace:*
       '@hey-amplify/discord': workspace:*
       '@hey-amplify/features': workspace:*
-      '@prisma/client': ^4.12.0
-      prisma: ^4.12.0
-      vite-node: ^0.29.8
-    dependencies:
-      '@prisma/client': 4.12.0_prisma@4.12.0
+      '@hey-amplify/prisma-client': workspace:*
     devDependencies:
       '@faker-js/faker': 7.6.0
       '@hey-amplify/constants': link:../constants
       '@hey-amplify/discord': link:../discord
       '@hey-amplify/features': link:../features
-      prisma: 4.12.0
-      vite-node: 0.29.8
+      '@hey-amplify/prisma-client': link:../prisma-client
 
   packages/scripts:
     specifiers:

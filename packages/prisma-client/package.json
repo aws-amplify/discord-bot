@@ -20,10 +20,6 @@
     "@prisma/client": "^4.12.0"
   },
   "devDependencies": {
-    "@faker-js/faker": "^7.6.0",
-    "@hey-amplify/constants": "workspace:*",
-    "@hey-amplify/discord": "workspace:*",
-    "@hey-amplify/features": "workspace:*",
     "prisma": "^4.12.0"
   }
 }

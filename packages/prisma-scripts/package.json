@@ -1,0 +1,19 @@
+{
+  "name": "@hey-amplify/prisma-scripts",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "exports": {
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "echo 'no build needed'"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
+    "@hey-amplify/constants": "workspace:*",
+    "@hey-amplify/discord": "workspace:*",
+    "@hey-amplify/features": "workspace:*",
+    "@hey-amplify/prisma-client": "workspace:*"
+  }
+}

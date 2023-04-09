@@ -1,4 +1,4 @@
-import { PrismaClient } from '../build/generated/client/index.js'
+import { PrismaClient } from '@hey-amplify/prisma-client'
 import { ACCESS_LEVELS, FEATURE_TYPES } from '@hey-amplify/constants'
 import { integrations, types as featureTypes } from '@hey-amplify/features'
 import { createCommandFeatures } from '@hey-amplify/discord'
