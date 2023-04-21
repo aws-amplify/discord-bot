@@ -220,7 +220,7 @@
           <h1>Questions Dashboard</h1>
         </Column>
         <Column>
-          <div
+          <!-- <div
             style:display="flex"
             style:align-items="center"
             style:justify-content="flex-end"
@@ -234,7 +234,7 @@
             >
               Download CSV
             </Button>
-          </div>
+          </div> -->
         </Column>
       </Row>
       <GuildMembers guild="{guild}" />
