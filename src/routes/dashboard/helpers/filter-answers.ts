@@ -5,6 +5,7 @@ import type { Contributor } from '../types'
 /**
  * Filter answers by channel and date range
  * @TODO refactor this to be more generic
+ * @deprecated
  */
 export function filterAnswers(
   channels: string[],

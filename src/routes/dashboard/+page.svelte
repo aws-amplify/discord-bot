@@ -37,52 +37,7 @@
     guild,
   } = data
 
-  let today = new Date()
-  let endDate = today
-  let startDate = new Date(today.getFullYear(), today.getMonth() - 3, 1)
-  let dates: Date[] = timeBetweenDates('months', [startDate, endDate])
-
-  let filteredContributors: Contributor[] = filterAnswers(
-    allHelpChannels,
-    [dates[0], today],
-    contributors.all
-  )
-  let filteredStaffContributors: Contributor[] = filterAnswers(
-    allHelpChannels,
-    [dates[0], today],
-    contributors.staff
-  )
-  let topOverallPromise = getTopContributors(contributors.all, gitHubStaff, 9)
-  let topStaffPromise = getTopContributors(contributors.staff, gitHubStaff, 9)
-
-  const tableHeaders = [
-    { key: 'discord', value: 'Discord User' },
-    { key: 'github', value: 'GitHub' },
-    { key: 'name', value: 'Name' },
-    { key: 'answers', value: 'Answers' },
-  ]
-
-  $: filteredContributors = filterAnswers(
-    allHelpChannels,
-    [dates[0], today],
-    contributors.all
-  )
-  $: filteredStaffContributors = filterAnswers(
-    allHelpChannels,
-    [dates[0], today],
-    contributors.staff
-  )
-
-  $: topStaffPromise = getTopContributors(
-    filteredStaffContributors,
-    gitHubStaff,
-    9
-  )
-  $: topOverallPromise = getTopContributors(
-    filteredContributors,
-    gitHubStaff,
-    9
-  )
+  const today = new Date()
 
   /**
    * Selected start date
@@ -106,6 +61,49 @@
    * Selected channels
    */
   let selectedChannels: string[] = [...allHelpChannels]
+
+  /**
+   * Dates between selected start and end dates
+   */
+  let dates: Date[] = timeBetweenDates(selectedTimePeriod, [
+    selectedStartDate,
+    selectedEndDate,
+  ])
+
+  let filteredContributors: Contributor[] = filterAnswers(
+    allHelpChannels,
+    [dates[0], selectedEndDate],
+    contributors.all
+  )
+  let filteredStaffContributors: Contributor[] = filterAnswers(
+    allHelpChannels,
+    [dates[0], selectedEndDate],
+    contributors.staff
+  )
+
+  /**
+   * @todo refactor contributor tables to component
+   */
+  let topOverallPromise = getTopContributors(contributors.all, gitHubStaff, 9)
+  let topStaffPromise = getTopContributors(contributors.staff, gitHubStaff, 9)
+
+  const tableHeaders = [
+    { key: 'discord', value: 'Discord User' },
+    { key: 'github', value: 'GitHub' },
+    { key: 'name', value: 'Name' },
+    { key: 'answers', value: 'Answers' },
+  ]
+
+  $: topStaffPromise = getTopContributors(
+    filteredStaffContributors,
+    gitHubStaff,
+    9
+  )
+  $: topOverallPromise = getTopContributors(
+    filteredContributors,
+    gitHubStaff,
+    9
+  )
 
   /**
    * @todo rename this when we have finished the migration to the revised helpers
@@ -208,8 +206,6 @@
       ),
     },
   ]
-
-  $: console.log()
 </script>
 
 <svelte:head>
@@ -247,9 +243,9 @@
         bind:channels="{selectedChannels}"
         bind:tags="{selectedTags}"
         bind:timePeriod="{selectedTimePeriod}"
+        bind:startDate="{selectedStartDate}"
+        bind:endDate="{selectedEndDate}"
         today="{today}"
-        startDate="{startDate}"
-        endDate="{endDate}"
       />
       <Row padding>
         <Column>
