@@ -295,7 +295,7 @@
       <Row padding>
         <Column>
           <ChannelHealthTable
-            bind:questions="{filteredQuestions}"
+            questions="{filteredQuestions}"
             allHelpChannels="{allHelpChannels}"
           />
         </Column>
@@ -303,7 +303,7 @@
       <!-- tag health -->
       <Row padding>
         <Column>
-          <ForumChannelTagHealthTable bind:questions="{filteredQuestions}" />
+          <ForumChannelTagHealthTable questions="{filteredQuestions}" />
         </Column>
       </Row>
       <section aria-label="Top Contributors">
