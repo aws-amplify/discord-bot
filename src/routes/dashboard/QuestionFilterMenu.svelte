@@ -20,8 +20,8 @@
   export let tags: string[]
   export let timePeriod: TimePeriod = TIME_PERIODS.MONTH
 
-  const availableTags = tags
-  const availableChannels = channels
+  const availableTags = [...tags]
+  const availableChannels = [...channels]
 
   // construct channel dropdown items
   const channelDropdownItems = channels.map((channel, idx) => ({
@@ -124,7 +124,7 @@
 
   $: dateLabel = getDateLabel()
   $: tagLabel = getTagLabel(availableTags, selectedTagIds)
-  $: channelLabel = getChannelLabel(channels, selectedChannelIds)
+  $: channelLabel = getChannelLabel(availableChannels, selectedChannelIds)
 </script>
 
 <Row padding>
