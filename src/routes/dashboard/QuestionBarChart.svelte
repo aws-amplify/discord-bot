@@ -1,6 +1,6 @@
 <script lang="ts">
   import { BarChartStacked } from '@carbon/charts-svelte'
-  import { COHORTS } from './constants'
+  import { COHORTS, TIME_PERIODS } from './constants'
   import { groupQuestions } from './helpers/group-questions'
   import type { TimePeriod, Question } from './types'
 
@@ -36,7 +36,12 @@
       byDateOptions: { period: timePeriod },
     })
     for (const [date, questionsGroupedByDate] of Object.entries(grouped)) {
+      const isGroupedByDayOrWeek = [
+        TIME_PERIODS.DAY as string,
+        TIME_PERIODS.WEEK as string,
+      ].includes(timePeriod)
       const key = new Date(date).toLocaleDateString('en-US', {
+        day: isGroupedByDayOrWeek ? 'numeric' : undefined,
         month: 'short',
         year: 'numeric',
       })
@@ -84,6 +89,7 @@
   }
 
   $: data = createBarChartData(questions, timePeriod)
+  $: console.log({ timePeriod, data })
 </script>
 
 <BarChartStacked
