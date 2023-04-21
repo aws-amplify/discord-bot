@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    Button,
     Column,
     DatePicker,
     DatePickerInput,
@@ -78,6 +79,14 @@
     dates = timeBetweenDates(timePeriod, event.detail.selectedDates)
   }
 
+  function handleSelectAllChannels() {
+    selectedChannelIds = channelDropdownItems.map((item) => item.id)
+  }
+
+  function handleSelectAllTags() {
+    selectedTagIds = [...availableTags]
+  }
+
   function getTagLabel(availableTags: string[], selectedTags: string[]) {
     if (availableTags.length === 0) {
       return 'No tags available'
@@ -150,27 +159,51 @@
         <span class="bx--form__helper-text">{dateLabel}</span>
       </div>
 
-      <MultiSelect
-        class="frequency-selector"
-        items="{channelDropdownItems}"
-        label="{channelLabel}"
-        placeholder="All channels"
-        titleText="Filter by Channel"
-        bind:selectedIds="{selectedChannelIds}"
-      />
+      <div class="ha--filter-dropdown-container">
+        <MultiSelect
+          class="frequency-selector"
+          items="{channelDropdownItems}"
+          label="{channelLabel}"
+          placeholder="All channels"
+          titleText="Filter by Channel"
+          bind:selectedIds="{selectedChannelIds}"
+        />
+        <div>
+          <Button
+            kind="secondary"
+            size="field"
+            disabled="{selectedChannelIds.length === availableChannels.length}"
+            on:click="{handleSelectAllChannels}"
+          >
+            Select all
+          </Button>
+        </div>
+      </div>
 
-      <MultiSelect
-        titleText="Filter by tags"
-        label="{tagLabel}"
-        name="tags"
-        items="{availableTags.map((name) => ({
-          id: name,
-          text: name,
-        }))}"
-        bind:selectedIds="{selectedTagIds}"
-        itemToString="{(item) => item?.text}"
-        placeholder="All tags"
-      />
+      <div class="ha--filter-dropdown-container">
+        <MultiSelect
+          titleText="Filter by tags"
+          label="{tagLabel}"
+          name="tags"
+          items="{availableTags.map((name) => ({
+            id: name,
+            text: name,
+          }))}"
+          bind:selectedIds="{selectedTagIds}"
+          itemToString="{(item) => item?.text}"
+          placeholder="All tags"
+        />
+        <div>
+          <Button
+            kind="secondary"
+            size="field"
+            disabled="{selectedTagIds.length === availableTags.length}"
+            on:click="{handleSelectAllTags}"
+          >
+            Select all
+          </Button>
+        </div>
+      </div>
     </section>
   </Column>
 </Row>
@@ -183,6 +216,17 @@
   :global(.frequency-selector
       .bx--list-box__menu-item, .bx--list-box__menu-item__option) {
     height: auto;
+  }
+
+  .ha--filter-dropdown-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+
+  .ha--filter-dropdown-container :global(.bx--list-box__label) {
+    /* prevent span from causing overflow */
+    max-width: 200px;
   }
 
   p {
@@ -198,7 +242,7 @@
 
   @media (min-width: 640px) {
     section {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 50% 50%;
     }
   }
 </style>
