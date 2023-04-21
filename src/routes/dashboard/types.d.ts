@@ -1,4 +1,4 @@
-import { TIME_PERIODS } from './constants'
+import { TIME_PERIODS, HEALTH_STATUS } from './constants'
 import type {
   Answer as PrismaAnswer,
   Question as PrismaQuestion,
@@ -7,6 +7,7 @@ import type {
 } from '@prisma/client'
 
 export type TimePeriod = ValueOf<typeof TIME_PERIODS>
+export type HealthStatus = ValueOf<typeof HEALTH_STATUS>
 
 export type Questions = {
   total: Question[]
