@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { DataTable } from 'carbon-components-svelte'
+  import { browser } from '$app/environment'
   import { groupQuestions } from './helpers/group-questions'
   import { getPercentageOfQuestionsSolved } from './helpers/get-percentage-of-questions-solved'
   import { filterQuestions } from './helpers/filter-questions'
@@ -40,7 +41,7 @@
 
   const title = 'Tag health'
 
-  onMount(() => {
+  function setHealthRowColor() {
     for (const row of rows) {
       const element = document.querySelector(`tr[data-row="${row.tag}"]`)
       if (!element) continue
@@ -52,7 +53,13 @@
         element.setAttribute('data-health', 'good')
       }
     }
+  }
+
+  onMount(() => {
+    setHealthRowColor()
   })
+
+  $: if (rows.length && browser) setHealthRowColor()
 </script>
 
 <section aria-label="{title}">
