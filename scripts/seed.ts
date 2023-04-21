@@ -105,6 +105,10 @@ function createFakeQuestions(
       const randomFakeUser = await getRandomFakeUser()
       const randomFakeRole = await getRandomFakeRole()
       const randomTag = getRandomTag()
+      const randomTags = Array.from({
+        // generate an array with a length of 1-5
+        length: Math.floor(Math.random() * 4) + 1,
+      }).map(() => getRandomTag())
       const randomChannel = getRandomChannel()
       const isSolved = shouldAdd(0.8)
       const input: Prisma.QuestionCreateInput = {
@@ -117,17 +121,21 @@ function createFakeQuestions(
         createdAt: faker.date.recent(100),
         tags: shouldAdd(0.9)
           ? {
-              connectOrCreate: [
-                {
+              connectOrCreate: randomTags.map((tag) => {
+                const id = `999990${faker.random.numeric(12)}`
+                return {
                   where: {
-                    name: randomTag,
+                    id_name: {
+                      id,
+                      name: tag,
+                    },
                   },
                   create: {
-                    id: `999770${faker.random.numeric(12)}`,
-                    name: randomTag,
+                    id,
+                    name: tag,
                   },
-                },
-              ],
+                }
+              }),
             }
           : undefined,
         guild: {
