@@ -111,7 +111,7 @@
    * @todo rename this when we have finished the migration to the revised helpers
    * @todo fix the need to typecast
    */
-  $: filteredQuestions2 = filterQuestions(allQuestions, {
+  $: filteredQuestions = filterQuestions(allQuestions, {
     channels: selectedChannels,
     dates: [selectedStartDate, selectedEndDate],
     tags: selectedTags,
@@ -120,13 +120,13 @@
   /**
    * Questions grouped by cohort. In this sense, cohort is a group of questions by status
    */
-  $: questionsGroupedByCohort = groupQuestions(filteredQuestions2, {
+  $: questionsGroupedByCohort = groupQuestions(filteredQuestions, {
     by: 'cohort',
   })
-  $: questionsGroupedByChannel = groupQuestions(filteredQuestions2, {
+  $: questionsGroupedByChannel = groupQuestions(filteredQuestions, {
     by: 'channel',
   })
-  $: questionsGroupedByTag = groupQuestions(filteredQuestions2, {
+  $: questionsGroupedByTag = groupQuestions(filteredQuestions, {
     by: 'tag',
   })
 
@@ -134,7 +134,7 @@
    * Unanswered questions by tag, used by pie chart
    */
   $: unansweredQuestionsByTag = groupQuestions(
-    filterQuestions(filteredQuestions2, {
+    filterQuestions(filteredQuestions, {
       isSolved: false,
     }),
     {
@@ -146,7 +146,7 @@
    * Unanswered questions by channel, used by pie chart
    */
   $: unansweredQuestionsByChannel = groupQuestions(
-    filterQuestions(filteredQuestions2, {
+    filterQuestions(filteredQuestions, {
       isSolved: false,
     }),
     {
@@ -160,7 +160,7 @@
   $: questionBreakdown = [
     {
       title: 'Total Questions',
-      count: filteredQuestions2.length,
+      count: filteredQuestions.length,
     },
     {
       title: 'Answered by Staff',
@@ -169,7 +169,7 @@
       percentageColor: 'var(--ha-cohort-staff-dim)',
       percentage: Math.round(
         (questionsGroupedByCohort[COHORTS.STAFF]?.length /
-          filteredQuestions2.length) *
+          filteredQuestions.length) *
           100
       ),
     },
@@ -180,7 +180,7 @@
       percentageColor: 'var(--ha-cohort-community-dim)',
       percentage: Math.round(
         (questionsGroupedByCohort[COHORTS.COMMUNITY]?.length /
-          filteredQuestions2.length) *
+          filteredQuestions.length) *
           100
       ),
     },
@@ -192,7 +192,7 @@
       percentageColor: 'var(--ha-cohort-solved-without-answer-dim)',
       percentage: Math.round(
         (questionsGroupedByCohort[COHORTS.SOLVED_WITHOUT_ANSWER]?.length /
-          filteredQuestions2.length) *
+          filteredQuestions.length) *
           100
       ),
     },
@@ -203,11 +203,13 @@
       percentageColor: 'var(--ha-cohort-unanswered-dim)',
       percentage: Math.round(
         (questionsGroupedByCohort[COHORTS.UNANSWERED]?.length /
-          filteredQuestions2.length) *
+          filteredQuestions.length) *
           100
       ),
     },
   ]
+
+  $: console.log()
 </script>
 
 <svelte:head>
@@ -232,10 +234,7 @@
               kind="ghost"
               icon="{DocumentDownload}"
               on:click="{() =>
-                downloadCSV(
-                  toCSV(filteredQuestions2),
-                  `discord-questions.csv`
-                )}"
+                downloadCSV(toCSV(filteredQuestions), `discord-questions.csv`)}"
             >
               Download CSV
             </Button>
@@ -261,7 +260,7 @@
       <Row padding>
         <Column>
           <QuestionBarChart
-            bind:questions="{filteredQuestions2}"
+            bind:questions="{filteredQuestions}"
             timePeriod="{selectedTimePeriod}"
           />
         </Column>
@@ -300,7 +299,7 @@
       <Row padding>
         <Column>
           <ChannelHealthTable
-            bind:questions="{filteredQuestions2}"
+            bind:questions="{filteredQuestions}"
             allHelpChannels="{allHelpChannels}"
           />
         </Column>
@@ -308,7 +307,7 @@
       <!-- tag health -->
       <Row padding>
         <Column>
-          <ForumChannelTagHealthTable bind:questions="{filteredQuestions2}" />
+          <ForumChannelTagHealthTable bind:questions="{filteredQuestions}" />
         </Column>
       </Row>
       <section aria-label="Top Contributors">
