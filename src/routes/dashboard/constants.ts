@@ -11,3 +11,9 @@ export const TIME_PERIODS = {
   MONTH: 'month',
   YEAR: 'year',
 } as const
+
+export const HEALTH_STATUS = {
+  LOW: 'low',
+  OKAY: 'okay',
+  GOOD: 'good',
+} as const

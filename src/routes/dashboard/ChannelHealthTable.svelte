@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
   import { DataTable } from 'carbon-components-svelte'
-  import { browser } from '$app/environment'
+  import { getHealth } from './helpers/get-health'
   import { groupQuestions } from './helpers/group-questions'
   import { getPercentageOfQuestionsSolved } from './helpers/get-percentage-of-questions-solved'
   import { filterQuestions } from './helpers/filter-questions'
@@ -40,26 +39,6 @@
     })
 
   const title = 'Channel health'
-
-  function setHealthRowColor() {
-    for (const row of rows) {
-      const element = document.querySelector(`tr[data-row="${row.channel}"]`)
-      if (!element) continue
-      if (row.percentage < 50) {
-        element.setAttribute('data-health', 'low')
-      } else if (row.percentage < 75) {
-        element.setAttribute('data-health', 'okay')
-      } else {
-        element.setAttribute('data-health', 'good')
-      }
-    }
-  }
-
-  onMount(() => {
-    setHealthRowColor()
-  })
-
-  $: if (rows.length && browser) setHealthRowColor()
 </script>
 
 <section aria-label="{title}">
@@ -78,6 +57,13 @@
     sortable
     size="tall"
   >
+    <svelte:fragment slot="cell" let:cell let:row>
+      {#if cell.key === 'answered'}
+        <span data-health="{getHealth(cell.value)}">{cell.value}</span>
+      {:else}
+        <span>{cell.value}</span>
+      {/if}
+    </svelte:fragment>
     <svelte:fragment slot="expanded-row" let:row>
       <div class="ha-channel-health--expanded-container">
         <DataTable
@@ -113,15 +99,15 @@
 </section>
 
 <style>
-  section :global([data-health='low'] td:nth-child(3)) {
+  section :global(td:has([data-health='low'])) {
     background-color: var(--ha-health-low);
   }
 
-  section :global([data-health='okay'] td:nth-child(3)) {
+  section :global(td:has([data-health='okay'])) {
     background-color: var(--ha-health-okay);
   }
 
-  section :global([data-health='good'] td:nth-child(3)) {
+  section :global(td:has([data-health='good'])) {
     background-color: var(--ha-health-good);
   }
 
