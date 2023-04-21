@@ -89,7 +89,6 @@
   }
 
   $: data = createBarChartData(questions, timePeriod)
-  $: console.log({ timePeriod, data })
 </script>
 
 <BarChartStacked
