@@ -59,7 +59,7 @@
   >
     <svelte:fragment slot="cell" let:cell let:row>
       {#if cell.key === 'answered'}
-        <span data-health="{getHealth(cell.value)}">{cell.value}</span>
+        <span data-health="{getHealth(row.percentage)}">{cell.value}</span>
       {:else}
         <span>{cell.value}</span>
       {/if}
