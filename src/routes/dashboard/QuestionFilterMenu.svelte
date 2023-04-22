@@ -31,7 +31,13 @@
 
   // construct frequency (time period) items
   const frequencyDropdownItems = [
-    { id: 0, text: 'Daily', disabled: false, value: 'days', description: '' },
+    {
+      id: 0,
+      text: 'Daily',
+      disabled: false,
+      value: TIME_PERIODS.DAY,
+      description: '',
+    },
     {
       id: 1,
       text: 'Weekly',
