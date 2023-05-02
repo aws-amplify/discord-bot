@@ -11,11 +11,16 @@ export const integrations = [
   },
 ]
 
-export const types: Prisma.FeatureTypeCreateInput[] = [
+export const components = [
   {
-    code: FEATURE_TYPES.COMMAND,
-  },
-  {
-    code: FEATURE_TYPES.INTEGRATION,
+    code: FEATURE_CODES.AUDIT_LOG,
+    name: 'Audit Log',
+    description:
+      'A component that logs things to a Discord channel for auditing purposes',
+    type: FEATURE_TYPES.COMPONENT,
   },
 ]
+
+export const types: Prisma.FeatureTypeCreateInput[] = Object.values(
+  FEATURE_TYPES
+).map((code) => ({ code }))
