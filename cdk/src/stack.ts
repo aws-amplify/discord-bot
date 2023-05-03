@@ -170,6 +170,12 @@ export class HeyAmplifyStack extends Stack {
 
     new PrivacyNotificationFunction(this, 'PrivacyNotificationFunction', {
       vpc,
+      secret: {
+        WEBHOOK_URL: this.getSecret(
+          this,
+          'DISCORD_WEBHOOK_URL_PRIVACY_NOTIFICATION'
+        ),
+      },
     })
   }
 

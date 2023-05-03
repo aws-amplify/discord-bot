@@ -1,17 +1,21 @@
+import * as path from 'node:path'
 import * as cdk from 'aws-cdk-lib'
-import { Construct } from 'constructs'
+import * as events from 'aws-cdk-lib/aws-events'
+import * as ec2 from 'aws-cdk-lib/aws-ec2'
+import * as iam from 'aws-cdk-lib/aws-iam'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as nodejsLambda from 'aws-cdk-lib/aws-lambda-nodejs'
-import * as path from 'node:path'
-import * as events from 'aws-cdk-lib/aws-events'
 import * as targets from 'aws-cdk-lib/aws-events-targets'
-import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
-import * as iam from 'aws-cdk-lib/aws-iam'
+
+import { Construct } from 'constructs'
 
 // Define the properties for the PrivacyNotificationFunction construct
 export interface PrivacyNotificationFunctionProps {
   vpc: ec2.Vpc
+  secret: {
+    WEBHOOK_URL: ssm.IParameter
+  }
 }
 
 export class PrivacyNotificationFunction extends Construct {
@@ -22,13 +26,7 @@ export class PrivacyNotificationFunction extends Construct {
   ) {
     super(scope, id)
 
-    const { vpc } = props
-
-    // Create a secret in SSM Parameter Store using the env variable
-    const ssmSecret = new ssm.StringParameter(this, 'WebhookUrl', {
-      parameterName: '/privacy-notification-function/webhook-url',
-      stringValue: process.env.DISCORD_WEBHOOK_URL_PRIVACY as string,
-    })
+    const { vpc, secret } = props
 
     // Create a Lambda function nodejs 18.x
     const lambdaFunction = new nodejsLambda.NodejsFunction(
@@ -45,7 +43,7 @@ export class PrivacyNotificationFunction extends Construct {
           externalModules: ['@aws-sdk/client-ssm'],
         },
         environment: {
-          WEBHOOK_URL: ssmSecret.parameterName, // Pass the SSM Parameter Store secret name to the Lambda function
+          WEBHOOK_URL: secret.WEBHOOK_URL.parameterName, // Pass the SSM Parameter Store secret name to the Lambda function
         },
         vpc: vpc,
       }
@@ -55,7 +53,7 @@ export class PrivacyNotificationFunction extends Construct {
     const ssmIAMPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: ['ssm:GetParameter'],
-      resources: [ssmSecret.parameterArn],
+      resources: [secret.WEBHOOK_URL.parameterArn],
     })
 
     lambdaFunction.addToRolePolicy(ssmIAMPolicy)

@@ -33,7 +33,7 @@ async function sendNotification(url: string): Promise<void> {
   })
 }
 
-const client = new SSMClient({ region: 'us-east-1' })
+const client = new SSMClient({ region: process.env.AWS_REGION })
 export async function handler() {
   try {
     const input = {
