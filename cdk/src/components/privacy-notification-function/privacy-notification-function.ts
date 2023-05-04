@@ -45,6 +45,9 @@ export class PrivacyNotificationFunction extends Construct {
           WEBHOOK_URL: secret.WEBHOOK_URL.parameterName, // Pass the SSM Parameter Store secret name to the Lambda function
         },
         vpc: vpc,
+        vpcSubnets: {
+          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+        },
       }
     )
 
