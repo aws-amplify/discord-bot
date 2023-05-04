@@ -134,7 +134,7 @@ importers:
       '@hey-amplify/support': workspace:*
       '@hey-amplify/tsconfig': workspace:*
       '@types/node': 18.7.16
-      aws-cdk: 2.41.0
+      aws-cdk: 2.77.0
       aws-cdk-lib: 2.77.0
       constructs: 10.1.97
       source-map-support: ^0.5.21
@@ -148,7 +148,7 @@ importers:
       '@hey-amplify/support': link:../packages/support
       '@hey-amplify/tsconfig': link:../packages/tsconfig
       '@types/node': 18.7.16
-      aws-cdk: 2.41.0
+      aws-cdk: 2.77.0
       aws-cdk-lib: 2.77.0_constructs@10.1.97
       constructs: 10.1.97
       source-map-support: 0.5.21
@@ -2324,8 +2324,8 @@ packages:
       - table
       - yaml
 
-  /aws-cdk/2.41.0:
-    resolution: {integrity: sha512-Ubko4X8VcbaLzcXvCQZPKBtgwBq033m5sSWtdrbdlDp7s2J4uWtY6KdO1uYKAvHyWjm7kGVmDyL1Wj1zx3TPUg==}
+  /aws-cdk/2.77.0:
+    resolution: {integrity: sha512-f0UpWjBxrFkINqlwL50OpIIC03V39hTzg4+NEBlfUc/ftFX8WQQYyT6h29IfxT9Tgo+YoEMlM1nnH/s1c+VKSw==}
     engines: {node: '>= 14.15.0'}
     hasBin: true
     optionalDependencies:

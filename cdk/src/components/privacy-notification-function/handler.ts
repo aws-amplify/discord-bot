@@ -34,24 +34,15 @@ async function sendNotification(url: string): Promise<void> {
 }
 
 const client = new SSMClient({ region: process.env.AWS_REGION })
+
 export async function handler() {
   try {
-    const input = {
-      // GetParameterRequest
+    const command = new GetParameterCommand({
       Name: process.env.WEBHOOK_URL,
-    }
-    const command = new GetParameterCommand(input)
+    })
     const response = await client.send(command)
     await sendNotification(response?.Parameter?.Value ?? '')
-
-    return {
-      statusCode: 200,
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error)
-    return {
-      statusCode: 500,
-      body: 'Error sending notification',
-    }
+  } catch (cause) {
+    throw new Error('Error sending webhook', { cause })
   }
 }
