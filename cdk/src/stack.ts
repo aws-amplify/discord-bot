@@ -10,8 +10,8 @@ import { PROJECT_ROOT } from './constants'
 import { getSvelteKitEnvironmentVariables } from './support'
 import { AmplifyAwsSubdomain } from './components/amplify-aws-subdomain'
 import { SupportBox } from './components/support-box'
-import type { AmplifyAwsSubdomainProps } from './components/amplify-aws-subdomain'
 import { PrivacyNotificationFunction } from './components/privacy-notification-function/privacy-notification-function'
+import type { AmplifyAwsSubdomainProps } from './components/amplify-aws-subdomain'
 
 type HeyAmplifyStackProps = Partial<StackProps> & {
   subdomain: AmplifyAwsSubdomainProps | undefined
