@@ -1,4 +1,4 @@
-import * as path from 'node:path'
+import * as url from 'node:url'
 import * as cdk from 'aws-cdk-lib'
 import * as events from 'aws-cdk-lib/aws-events'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
@@ -32,7 +32,7 @@ export class PrivacyNotificationFunction extends Construct {
       this,
       'PrivacyNotificationFunction',
       {
-        entry: path.join('./handler.ts'),
+        entry: url.fileURLToPath(new URL('./handler.ts', import.meta.url)),
         handler: 'handler',
         runtime: lambda.Runtime.NODEJS_18_X,
         bundling: {
