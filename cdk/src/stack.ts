@@ -9,8 +9,8 @@ import { HeyAmplifyApp } from './components/hey-amplify-app'
 import { PROJECT_ROOT } from './constants'
 import { getSvelteKitEnvironmentVariables } from './support'
 import { AmplifyAwsSubdomain } from './components/amplify-aws-subdomain'
-import { SupportBox } from './components/support-box'
 import { PrivacyNotificationFunction } from './components/privacy-notification-function/privacy-notification-function'
+
 import type { AmplifyAwsSubdomainProps } from './components/amplify-aws-subdomain'
 
 type HeyAmplifyStackProps = Partial<StackProps> & {
@@ -159,13 +159,6 @@ export class HeyAmplifyStack extends Stack {
       subdomain,
       filesystem,
       filesystemMountPoint,
-    })
-
-    new SupportBox(this, 'SupportBox', {
-      bucket,
-      filesystem,
-      subdomain,
-      vpc,
     })
 
     new PrivacyNotificationFunction(this, 'PrivacyNotificationFunction', {
