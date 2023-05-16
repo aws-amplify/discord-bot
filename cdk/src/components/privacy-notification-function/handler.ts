@@ -39,6 +39,7 @@ export async function handler() {
   try {
     const command = new GetParameterCommand({
       Name: process.env.WEBHOOK_URL,
+      WithDecryption: true,
     })
     const response = await client.send(command)
     await sendNotification(response?.Parameter?.Value ?? '')
