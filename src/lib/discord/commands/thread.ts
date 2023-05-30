@@ -30,6 +30,17 @@ export function parseTitle(title: string) {
   return title.replace(parseTitlePrefix(title) as string, '')
 }
 
+export function truncateSuffix(title: string, newPrefix: string) {
+  const ellipsis = '...'
+  const trimLength = newPrefix.length + ellipsis.length
+  return title.slice(0, -trimLength) + ellipsis
+}
+
+export function fitsPrefix(title: string, prefix: string) {
+  const maxTitleLength = 100
+  return title.length <= maxTitleLength - prefix.length
+}
+
 export async function handler(
   interaction: ChatInputCommandInteraction
 ): Promise<InteractionReplyOptions | string> {
@@ -115,7 +126,9 @@ export async function handler(
       }
 
       // mark the thread as solved
-      const title = parseTitle(channel.name)
+      let title = parseTitle(channel.name)
+      title = fitsPrefix(title, PREFIXES.solved) ? title : truncateSuffix(title, PREFIXES.solved)
+
       if (await channel.setName(`${PREFIXES.solved}${title}`)) {
         try {
           await prisma.question.update({
