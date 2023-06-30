@@ -1,0 +1,110 @@
+name: create-release
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        description: 'Type of release'
+        options: # put in ascending order to not accidentally cut a "major" release PR
+          - prerelease
+          - prepatch
+          - preminor
+          - premajor
+          - patch
+          - minor
+          - major
+        required: true
+jobs:
+  create-release:
+    permissions:
+      # needed to create release PR
+      pull-requests: write
+      # needed to create draft release
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: true
+      - uses: pnpm/action-setup@v2
+      - name: set git config for pnpm version, git push
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email noreply@github.com
+      - name: is-prerelease
+        id: is-prerelease
+        run: |
+          is=false
+          if [[ ${{ github.event.inputs.type }} == pre* ]]
+          then
+            is=true
+          fi
+          echo "is-prerelease=$is" >> $GITHUB_OUTPUT
+      - name: set-version
+        id: version
+        run: |
+          if [[ ${{ steps.is-prerelease.outputs.is-prerelease }} == true ]]
+          then
+            version=$(pnpm version ${{ github.event.inputs.type }} --no-git-tag-version --preid next)
+          else
+            version=$(pnpm version ${{ github.event.inputs.type }}  --no-git-tag-version)
+          fi
+          echo "version=$version" >> $GITHUB_OUTPUT
+      - run: echo "::debug::version is ${{ steps.version.outputs.version }}"
+      - run: echo "::notice title="releasing"::${{ steps.version.outputs.version }}"
+      - if: ${{ steps.version.outputs.version == '' }}
+        run: echo "::error ::Invalid version" && exit 1
+      # - uses: actions/setup-node@v3  # is this needed???
+      #   with:
+      #     node-version-file: '.nvmrc'
+      #     cache: 'pnpm'
+      - id: branch
+        run: echo "name=release/${{ steps.version.outputs.version }}" >> $GITHUB_OUTPUT
+      - name: create release branch
+        run: git checkout -b ${{ steps.branch.outputs.name }}
+      # this is not required when pnpm is creating the git tag
+      - name: add and commit changes to release branch
+        run: |
+          git add package.json
+          git commit -m '[automated] release: ${{ steps.version.outputs.version }}'
+      - name: push to release branch
+        run: git push origin ${{ steps.branch.outputs.name }}
+      - name: create draft release
+        id: draft-release
+        run: |
+          if [[ ${{ steps.is-prerelease.outputs.is-prerelease }} == true ]]
+          then
+            url=$(gh release create ${{ steps.version.outputs.version }} --generate-notes --draft --prerelease)
+          else
+            url=$(gh release create ${{ steps.version.outputs.version }} --generate-notes --draft)
+          fi
+          echo "url=$url" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # TODO: remove sleep https://github.com/cli/cli/issues/6599#issuecomment-1314562972
+      - run: sleep 5
+      - name: create pull request
+        id: pr
+        run: |
+          body_file=body.md
+          # get URL to this workflow run
+          run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          # output intro message to an ephemeral markdown file
+          echo "_This pull request was automatically created by [GitHub Actions]($run)_" > $body_file
+          # output the generated release notes to an ephemeral markdown file
+          gh release view ${{ steps.version.outputs.version }} --json body --jq .body >> $body_file
+          # get the pull request URL
+          url=$(gh pr create --title "release: ${{ steps.version.outputs.version }}" --body-file $body_file)
+          echo "link=$url" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo ::notice title="created"::${{ steps.pr.outputs.link }}
+      - run: echo ::notice title="type"::${{ github.event.inputs.type }}
+      - run: echo ::notice title="draft release"::${{ steps.draft-release.outputs.url }}
+      - name: cleanup
+        if: failure()
+        uses: ./.github/actions/cleanup-discarded-release
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ steps.branch.outputs.name }}
+          version: ${{ steps.version.outputs.version }}

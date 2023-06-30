@@ -1,0 +1,31 @@
+name: cleanup-discarded-release
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    # We run cleanup action only if:
+    #   1. PR comes from internal branch (i.e. not a fork)
+    #   2. PR is NOT merged
+    #   3. PR branch name begins with "release/"
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.merged == false &&
+      startsWith(github.event.pull_request.head.ref, 'release/')
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - id: version
+        uses: ./.github/actions/extract-version-from-branch
+        with:
+          branch: ${{ github.head_ref }}
+      - uses: ./.github/actions/cleanup-discarded-release
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.head_ref }}
+          version: ${{ steps.version.outputs.version }}
