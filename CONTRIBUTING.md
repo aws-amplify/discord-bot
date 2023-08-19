@@ -15,7 +15,7 @@ Refer to the [readme guide](./README.md#getting-started) to get started.
 - [`cdk/`](./cdk) - AWS CDK application to deploy apps
 - [`docs/`](./docs) - Documentation related to project including architecture diagrams
 - [`tests/`](./tests) - End-to-end test suite powered by [Vitest](https://vitest.dev/), supports in-source unit testing
-- [`packages/`](./packages) - collection of library packages, including Discord, support helpers, and a shared TypeScript configuration
+- [`packages/`](./packages) - a collection of library packages, including Discord, support helpers, and a shared TypeScript configuration
 - [`scripts/`](./scripts) - small CLI helper for automating tasks
 
 ## Architecture Reference
