@@ -2,7 +2,7 @@
 
 This repository contains the source code for the [AWS Amplify Discord Server](https://discord.gg/8RFCGKMfVM)'s bot!
 
-## Features
+## Features 
 
 - auto-threads "help" channels; if a channel follows the `<category>-help` naming convention messages will automatically get converted into threads
   - thread data is tracked by title, original poster ID, and whether the thread is solved (`GET /api/questions`)
