@@ -1,14 +1,8 @@
 import { SvelteKitAuth } from '@auth/sveltekit'
-// import GitHub from '@auth/core/providers/github'
+import GitHub from '@auth/core/providers/github'
 import Discord from '@auth/core/providers/discord'
 import { get } from 'svelte/store'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
-import {
-  DISCORD_AUTH_CLIENT_ID,
-  DISCORD_AUTH_CLIENT_SECRET,
-  // GITHUB_CLIENT_ID,
-  // GITHUB_CLIENT_SECRET,
-} from '$env/static/private'
 import { getUserAccess } from '$lib/discord/get-user-access'
 import { prisma } from '$lib/db'
 import { guild } from '$lib/store'
@@ -33,10 +27,13 @@ export const handleAuth = SvelteKitAuth({
   //   },
   // },
   providers: [
-    // GitHub({ clientId: GITHUB_CLIENT_ID, clientSecret: GITHUB_CLIENT_SECRET }),
+    GitHub({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    }),
     Discord({
-      clientId: DISCORD_AUTH_CLIENT_ID,
-      clientSecret: DISCORD_AUTH_CLIENT_SECRET,
+      clientId: process.env.DISCORD_AUTH_CLIENT_ID,
+      clientSecret: process.env.DISCORD_AUTH_CLIENT_SECRET,
     }),
   ],
   pages: {
