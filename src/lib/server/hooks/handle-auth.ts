@@ -32,10 +32,6 @@ export const handleAuth = SvelteKitAuth({
   },
   callbacks: {
     async session({ session, token, user }): Promise<AppSession> {
-      if (!session.user) {
-        // cast AppSession type (all of the missing properties are booleans)
-        return session as AppSession
-      }
       // read guild from store, set initially by handleSavedGuild hook
       const guildId = get(guild)
       // get GitHub user data from database and set on session (if exists)
