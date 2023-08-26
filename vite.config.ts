@@ -3,7 +3,6 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig, loadEnv } from 'vite'
-import { server } from '@hey-amplify/vite-plugin-server'
 import type { UserConfig } from 'vitest/config'
 
 function relative(path) {
@@ -42,7 +41,7 @@ const base: UserConfig = {
     },
     include: ['@carbon/charts'],
   },
-  plugins: [sveltekit(), server({ dev: false })],
+  plugins: [sveltekit()],
   resolve: {
     alias: {
       $discord: relative('./src/lib/discord'),
