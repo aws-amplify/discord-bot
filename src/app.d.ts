@@ -20,7 +20,7 @@ interface AppSession extends Auth.Session {
 declare global {
   namespace App {
     interface Locals {
-      session: AppSession
+      session?: AppSession
       // Guild ID of the guild the user is currently viewing
       guild: string
     }
