@@ -7,7 +7,7 @@ import {
 } from '$discord/commands'
 
 export const POST: RequestHandler = async ({ locals }) => {
-  const list = await registerCommands(undefined, locals.session.guild)
+  const list = await registerCommands(undefined, locals.guild)
 
   if (!list) {
     return new Response(undefined, { status: 500 })
@@ -28,7 +28,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
   const stored = commands.get(command)
   if (!stored) return new Response('Invalid command', { status: 400 })
 
-  const registered = await registerCommand(stored, locals.session.guild)
+  const registered = await registerCommand(stored, locals.guild)
 
   if (!registered) {
     return new Response('Unable to register command', { status: 500 })
@@ -52,11 +52,11 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
   }
 
   try {
-    await unregisterCommand(id, locals.session.guild)
+    await unregisterCommand(id, locals.guild)
     return new Response('success', { status: 200 })
   } catch (error) {
     console.error(
-      `Something went wrong unregistering command ${id} for guild ${locals.session.guild}`,
+      `Something went wrong unregistering command ${id} for guild ${locals.guild}`,
       error
     )
     return new Response('Something went wrong unregistering the command', {

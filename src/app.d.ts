@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /// <reference types="@sveltejs/kit" />
-import type * as NextAuth from 'next-auth'
+import * as Auth from '@auth/core/types'
 
-interface User extends NextAuth.User {
+interface User extends Auth.User {
   id: string
+  discordUserId: string
   isAdmin: boolean
   isStaff: boolean
+  isGuildOwner: boolean
+  isGithubLinked?: boolean
 }
 
-interface AppSession extends NextAuth.Session {
-  user: User
-  // Guild ID of the guild the user is currently viewing
-  guild: string
+interface AppSession extends Auth.Session {
+  user?: User
 }
 
 // See https://kit.svelte.dev/docs/typescript
@@ -20,6 +21,8 @@ declare global {
   namespace App {
     interface Locals {
       session: AppSession
+      // Guild ID of the guild the user is currently viewing
+      guild: string
     }
 
     interface Platform {}

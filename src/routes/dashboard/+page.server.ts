@@ -11,7 +11,7 @@ import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ locals }) => {
   console.debug('[dashboard] server load')
-  const guildId = locals.session.guild
+  const guildId = locals.guild
   const questions = (
     await prisma.question.findMany({
       where: {

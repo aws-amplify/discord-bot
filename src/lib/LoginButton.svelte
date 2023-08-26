@@ -5,13 +5,14 @@
 
   type Provider = 'discord' | 'github'
 
-  export let provider: Provider
+  export let provider: Provider = 'discord'
   export let buttonText = ''
 
-  const redirect = import.meta.env.VITE_HOST
+  // const redirect = import.meta.env.VITE_HOST
+  const redirect = `/`
 </script>
 
-<form action="{`/api/auth/signin/${provider}`}" method="POST">
+<form action="{`/auth/signin/${provider}`}" method="POST">
   {#await getCsrfToken() then csrfToken}
     <input type="hidden" name="csrfToken" value="{csrfToken}" />
   {/await}
