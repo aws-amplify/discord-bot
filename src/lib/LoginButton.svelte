@@ -8,7 +8,6 @@
   export let provider: Provider = 'discord'
   export let buttonText = ''
 
-  // const redirect = import.meta.env.VITE_HOST
   const redirect = `/`
 </script>
 
