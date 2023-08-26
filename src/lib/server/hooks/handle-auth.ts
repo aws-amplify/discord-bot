@@ -15,17 +15,6 @@ import type { AppSession } from '../../../app'
 export const handleAuth = SvelteKitAuth({
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
-  // cookies: {
-  //   pkceCodeVerifier: {
-  //     name: 'next-auth.pkce.code_verifier',
-  //     options: {
-  //       httpOnly: true,
-  //       sameSite: 'none',
-  //       path: '/',
-  //       secure: true,
-  //     },
-  //   },
-  // },
   providers: [
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID,
