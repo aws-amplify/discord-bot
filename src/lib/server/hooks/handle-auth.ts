@@ -58,15 +58,13 @@ export const handleAuth = SvelteKitAuth({
       let discordUserId: string
 
       try {
-        const storedUserDiscordId = storedUser?.accounts.find(
+        discordUserId = storedUser?.accounts.find(
           (account) => account.provider === 'discord'
         )?.providerAccountId
-        if (!storedUserDiscordId) {
+        if (!discordUserId) {
           throw new Error('User does not have a Discord account linked')
         }
-        access = await getUserAccess(storedUserDiscordId, guildId)
-        // set discord user ID and assert that we've extended the session and already checked if user
-        discordUserId = storedUserDiscordId
+        access = await getUserAccess(discordUserId, guildId)
       } catch (cause) {
         console.error('Error getting user access', cause)
       }
