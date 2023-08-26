@@ -1,6 +1,5 @@
 import cookie from 'cookie'
 import { GUILD_COOKIE } from '$lib/constants'
-import { guild as store } from '$lib/store'
 import type { Handle } from '@sveltejs/kit'
 
 export const handleSavedGuild: Handle = async ({ event, resolve }) => {
@@ -15,8 +14,6 @@ export const handleSavedGuild: Handle = async ({ event, resolve }) => {
 
   // set guild on locals
   event.locals.guild = activeGuild
-  // set guild store
-  store.set(activeGuild)
 
   const response = await resolve(event)
 
