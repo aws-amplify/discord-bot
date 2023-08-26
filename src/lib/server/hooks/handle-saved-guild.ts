@@ -8,7 +8,7 @@ export const handleSavedGuild: Handle = async ({ event, resolve }) => {
   const cookies = event.request.headers.get('cookie')
   if (cookies) {
     const parsed = cookie.parse(cookies)
-    savedGuild = parsed['hey-amplify.guild']
+    savedGuild = parsed[GUILD_COOKIE]
   }
 
   let activeGuild = import.meta.env.VITE_DISCORD_GUILD_ID
