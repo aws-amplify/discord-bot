@@ -18,18 +18,17 @@ function isPublicApiRoute(pathname: URL['pathname']) {
  */
 export const handleApiAuth: Handle = async ({ event, resolve }) => {
   // protect API routes
-  if (isApiRoute(event.url.pathname)) {
-    if (!isPublicApiRoute(event.url.pathname)) {
-      if (!event.locals.session?.user) {
-        return new Response('Unauthorized', { status: 401 })
-      }
-      if (
-        isApiAdminRoute(event.url.pathname) &&
-        !event.locals.session.user.isAdmin
-      ) {
-        return new Response('Forbidden', { status: 403 })
-      }
-    }
+  if (!isApiRoute(event.url.pathname) || isPublicApiRoute(event.url.pathname)) {
+    return resolve(event);
+  }
+  if (!event.locals.session?.user) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+  if (
+    isApiAdminRoute(event.url.pathname) &&
+    !event.locals.session.user.isAdmin
+  ) {
+    return new Response('Forbidden', { status: 403 })
   }
 
   return resolve(event)
