@@ -186,7 +186,6 @@ client.on(Events.MessageCreate, async (message: Message) => {
   // capture thread updates in public "help" channels
   if (
     message.channel.type === ChannelType.PublicThread &&
-    !message.author.bot &&
     isThreadWithinHelpChannel(message.channel)
   ) {
     let record
@@ -444,6 +443,29 @@ client.on(Events.ThreadUpdate, async (oldThread, newThread) => {
     console.log(`Thread ${oldThread.id} updated`)
     console.debug('[client:events:ThreadUpdate] finished')
   }
+})
+
+client.on(Events.ThreadDelete, async (thread) => {
+  const log = (message: string) =>
+    console.log(`[client:events.ThreadDelete] ${message}`)
+  log('started')
+  const timeMessage = '[client:events:ThreadDelete] finished'
+  console.time(timeMessage)
+  log('deleting question...')
+  try {
+    await prisma.question.delete({
+      where: {
+        threadId: thread.id,
+      },
+      include: {
+        participation: true,
+        answer: true,
+      },
+    })
+  } catch (error) {
+    console.error('Unable to delete question', error)
+  }
+  console.timeEnd(timeMessage)
 })
 
 export function createBot(token = process.env.DISCORD_BOT_TOKEN) {
