@@ -5,7 +5,6 @@ import { type LayoutServerLoad } from './$types'
 export const load: LayoutServerLoad = async ({ locals }) => {
   const defaultGuildId = locals.guild
   const botGuilds = (await api.get(Routes.userGuilds())) as APIGuild[]
-  const defaultGuild = botGuilds.find((g) => g.id === defaultGuildId)
 
   const guilds = []
   // only attempt to fetch guild memberships if the user is logged in
@@ -35,6 +34,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
         : null,
     })),
     // falling back to `defaultGuildId` assumes the bot is at least a member of the default guild
-    selectedGuild: guilds.find((g) => g.id === locals.guild) || defaultGuild,
+    selectedGuild:
+      guilds.find((g) => g.id === locals.guild)?.id || defaultGuildId,
   }
 }

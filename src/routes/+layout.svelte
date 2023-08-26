@@ -41,7 +41,7 @@
   export let data: LayoutData
   let { guilds, selectedGuild } = data
   $: ({ guilds, selectedGuild } = data)
-  $: guild.set(selectedGuild.id)
+  $: guild.set(selectedGuild)
 
   let theme: CarbonTheme = 'g100'
 
