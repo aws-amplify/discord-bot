@@ -51,8 +51,6 @@
   afterNavigate(() => {
     if (isUserPanelOpen) isUserPanelOpen = false
   })
-
-  // $: console.log('SESSION FROM LAYOUT', $session, $page.data.session)
 </script>
 
 <svelte:head>
