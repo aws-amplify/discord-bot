@@ -11,8 +11,7 @@ export const handleSavedGuild: Handle = async ({ event, resolve }) => {
     savedGuild = parsed[GUILD_COOKIE]
   }
 
-  let activeGuild = import.meta.env.VITE_DISCORD_GUILD_ID
-  if (savedGuild) activeGuild = savedGuild
+  const activeGuild = savedGuild ?? import.meta.env.VITE_DISCORD_GUILD_ID
 
   // set guild on locals
   event.locals.guild = activeGuild
