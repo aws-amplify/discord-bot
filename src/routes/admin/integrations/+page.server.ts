@@ -6,7 +6,7 @@ import { createIntegrationHrefFromCode } from '../breadcrumbs'
 export const load: PageServerLoad = async ({ locals }) => {
   const integrations = await prisma.configurationFeature.findMany({
     where: {
-      configurationId: locals.guild,
+      configurationId: locals.guildId,
       feature: {
         type: {
           code: FEATURE_TYPES.INTEGRATION,

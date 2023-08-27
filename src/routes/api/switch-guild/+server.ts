@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
     return new Response('Invalid request', { status: 400 })
   }
 
-  if (guildId !== locals.guild) {
+  if (guildId !== locals.guildId) {
     const headers = new Headers()
     headers.set(
       'Set-Cookie',
