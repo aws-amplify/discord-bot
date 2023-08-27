@@ -35,14 +35,6 @@ export async function signIn(provider: Provider) {
   const res = await fetch(request)
   const data = await res.json()
 
-  // if (redirect || !isSupportingReturn) {
-  //   const url = data.url ?? callbackUrl
-  //   window.location.href = url
-  //   // If url contains a hash, the browser does not reload the page. We reload manually
-  //   if (url.includes('#')) window.location.reload()
-  //   return
-  // }
-
   const error = new URL(data.url).searchParams.get('error')
 
   return {

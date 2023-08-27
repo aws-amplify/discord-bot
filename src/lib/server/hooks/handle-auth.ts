@@ -6,6 +6,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { getUserAccess } from '$lib/discord/get-user-access'
 import { prisma } from '$lib/db'
 import { guild } from '$lib/store'
+import type { Handle } from '@sveltejs/kit'
 import type { AppSession } from '../../../app'
 
 /**
@@ -15,6 +16,7 @@ import type { AppSession } from '../../../app'
 export const handleAuth = SvelteKitAuth({
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: process.env.IS_TEST === 'true' ? true : undefined,
   providers: [
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID,
@@ -84,4 +86,4 @@ export const handleAuth = SvelteKitAuth({
       }
     },
   },
-})
+}) satisfies Handle
