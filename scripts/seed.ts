@@ -5,7 +5,7 @@ import { ACCESS_LEVELS } from '$lib/constants'
 import type { DiscordUser, DiscordRole, Prisma } from '@prisma/client'
 
 function createFakeUsers(): Prisma.DiscordUserCreateInput[] {
-  return Array.from({ length: 10 }).map((_, i) => ({
+  return Array.from({ length: 10 }).map(() => ({
     id: faker.random.numeric(18),
   }))
 }
@@ -101,10 +101,9 @@ function createFakeQuestions(
   length = 3000
 ): Promise<Prisma.QuestionCreateInput[]> {
   return Promise.all(
-    Array.from({ length }).map(async (_, i) => {
+    Array.from({ length }).map(async () => {
       const randomFakeUser = await getRandomFakeUser()
       const randomFakeRole = await getRandomFakeRole()
-      const randomTag = getRandomTag()
       const randomTags = Array.from({
         // generate an array with a length of 1-5
         length: Math.floor(Math.random() * 4) + 1,
@@ -230,6 +229,6 @@ export async function seed(options?: SeedOptions) {
 
 try {
   await seed()
-} catch (error) {
-  throw new Error(`Unable to seed database: ${error.message}`)
+} catch (cause) {
+  throw new Error(`Unable to seed database`, { cause })
 }

@@ -1,6 +1,5 @@
 <script lang="ts">
   import {
-    Button,
     Column,
     Content,
     DataTable,
@@ -8,9 +7,7 @@
     Grid,
     Row,
   } from 'carbon-components-svelte'
-  import { CaretUp, DocumentDownload } from 'carbon-icons-svelte'
-  import { downloadCSV } from './helpers/download-csv'
-  import { toCSV } from './helpers/to-csv'
+  import { CaretUp } from 'carbon-icons-svelte'
   import { filterAnswers } from './helpers/filter-answers'
   import { filterQuestions } from './helpers/filter-questions'
   import { groupQuestions } from './helpers/group-questions'

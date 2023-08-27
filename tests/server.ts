@@ -1,6 +1,5 @@
 // @vitest-environment node
 import { type Server } from 'node:http'
-import { resolve } from 'node:path'
 import { EOL } from 'node:os'
 import { installPolyfills } from '@sveltejs/kit/node/polyfills'
 import request from 'supertest'
@@ -19,15 +18,9 @@ import {
 } from './mock/github-webhook'
 import { verifyGithubWebhookEvent } from './../src/routes/api/webhooks/_verifyWebhook'
 import { ACCESS_LEVELS } from '$lib/constants'
-import type { Session } from 'next-auth'
 
 let config
-let staffRoleId: string
 let app: Express.Application
-const session: Session = {
-  expires: '1',
-  user: { email: 'hello@fake.com', name: 'Bob', image: 'llama.jpg' },
-}
 
 beforeAll(async () => {
   installPolyfills() // we're in Node, so we need to polyfill `fetch` and `Request` etc

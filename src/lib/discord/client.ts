@@ -190,14 +190,6 @@ client.on(Events.MessageCreate, async (message: Message) => {
     isThreadWithinHelpChannel(message.channel)
   ) {
     let record
-    // const messages = await message.channel.messages.fetch()
-    let tags = []
-    if (message.channel.parent?.type === ChannelType.GuildForum) {
-      const appliedTagIds = message.channel.appliedTags
-      tags = message.channel.parent.availableTags
-        .filter((tag) => appliedTagIds.includes(tag.id))
-        .map(({ id, name }) => ({ id, name }))
-    }
     try {
       /**
        * @TODO if we need to backfill the question, we'll need to fetch all messages from the thread first
@@ -222,12 +214,6 @@ client.on(Events.MessageCreate, async (message: Message) => {
               id: message.guild?.id,
             },
           },
-          // tags: {
-          //   connectOrCreate: tags?.map(({ id, name }) => ({
-          //     where: { id },
-          //     create: { id, name },
-          //   })),
-          // },
         },
         select: {
           id: true,

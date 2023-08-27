@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig, loadEnv } from 'vite'
@@ -24,8 +22,6 @@ export function loadEnvVars(mode = 'development') {
     ])
   )
 }
-
-const pkg = JSON.parse(await readFile(resolve('package.json'), 'utf-8'))
 
 const base: UserConfig = {
   build: {

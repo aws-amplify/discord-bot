@@ -1,7 +1,7 @@
 // https://dev.to/danawoodman/getting-form-body-data-in-your-sveltekit-endpoints-4a85
 export default function getFormBody(
   body: FormData | null
-): Record<string, any> {
+): Record<string, unknown> {
   if (!body) return {}
 
   // @ts-expect-error: Entries property type missing

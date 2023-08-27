@@ -1,19 +1,14 @@
 import { type RequestHandler } from '@sveltejs/kit'
 import cookie from 'cookie'
-import { z } from 'zod'
 import { GUILD_COOKIE } from '$lib/constants'
 
-const schema = z.object({
-  guildId: z.string().min(1),
-})
-
-export const POST: RequestHandler = async ({ request, locals, url }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   let guildId
   let redirect
   try {
     const data = await request.formData()
-    guildId = data.get('guild')
-    redirect = data.get('redirect') || '/'
+    guildId = data.get('guild') as string
+    redirect = (data.get('redirect') as string) || '/'
   } catch (error) {
     return new Response('Invalid FormData', { status: 400 })
   }
