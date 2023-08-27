@@ -9,6 +9,6 @@
   export let buttonText = ''
 </script>
 
-<Button icon="{Login}" on:click="{() => signIn('discord')}">
+<Button icon="{Login}" on:click="{() => signIn(provider)}">
   <slot>Login {buttonText}</slot>
 </Button>
