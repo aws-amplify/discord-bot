@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /// <reference types="@sveltejs/kit" />
 import * as Auth from '@auth/core/types'
+import type { APIGuild } from 'discord.js'
 
 interface User extends Auth.User {
   id: string
@@ -22,7 +23,9 @@ declare global {
     interface Locals {
       session?: AppSession
       // Guild ID of the guild the user is currently viewing
-      guild: string
+      guildId: string
+      // Guilds that are shared between the current user and bot
+      guilds: APIGuild[]
     }
 
     interface Platform {}
