@@ -39,9 +39,9 @@
   import '../styles/sidenav.css'
 
   export let data: LayoutData
-  let { guilds, selectedGuild } = data
-  $: ({ guilds, selectedGuild } = data)
-  $: guild.set(selectedGuild)
+  let { guilds, guildId } = data
+  $: ({ guilds, guildId } = data)
+  $: guild.set(guildId)
 
   let theme: CarbonTheme = 'g100'
 
@@ -73,7 +73,7 @@
       <HeaderUtilities>
         {#if $session?.user}
           {#if guilds.length > 1}
-            <GuildSwitcher guilds="{guilds}" bind:selected="{selectedGuild}" />
+            <GuildSwitcher guilds="{guilds}" bind:selected="{guildId}" />
           {/if}
           <HeaderAction
             aria-label="User settings"
