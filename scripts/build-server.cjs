@@ -8,8 +8,10 @@ require('esbuild').build({
   define: {
     'import.meta.env.DEV': 'false',
     'import.meta.env.PROD': 'true',
-    'import.meta.env.VITE_HOST': `${process.env.VITE_HOST}`,
-    'import.meta.env.VITE_DISCORD_GUILD_ID': `${process.env.VITE_DISCORD_GUILD_ID}`,
+    'import.meta.env.VITE_HOST': JSON.stringify(process.env.VITE_HOST),
+    'import.meta.env.VITE_DISCORD_GUILD_ID': JSON.stringify(
+      process.env.VITE_DISCORD_GUILD_ID
+    ),
   },
   banner: {
     js: "import { handler } from './handler.js';import { createRequire } from 'node:module';const require = createRequire(import.meta.url)",
