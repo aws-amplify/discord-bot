@@ -19,7 +19,7 @@
     "setup-dev": "pnpm install && prisma db push && svelte-kit sync && pnpm build:lib",
     "setup-docker": "echo \"\nPNPM_STORE\"=$(pnpm store path) >> .env && docker -v",
     "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push && vite build",
-    "test": "vitest",
+    "test": "vitest run",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
