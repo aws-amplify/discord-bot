@@ -6,7 +6,7 @@ import type {
   GuildMember,
   MessageContextMenuCommandInteraction,
 } from 'discord.js'
-import { parseTitle, parseTitlePrefix, PREFIXES } from './thread'
+import { parseTitle, parseTitlePrefix, fitsPrefix, truncateSuffix, PREFIXES } from './thread'
 
 export const config = new ContextMenuCommandBuilder()
   .setName('select-answer')
@@ -131,7 +131,8 @@ export const handler = async (
   // is the channel already marked as solved?
   const prefix = parseTitlePrefix(channel.name)
   if (prefix !== PREFIXES.solved) {
-    const title = parseTitle(channel.name)
+    let title = parseTitle(channel.name)
+    title = fitsPrefix(title, PREFIXES.solved) ? title : truncateSuffix(title, PREFIXES.solved)
     try {
       await channel.setName(`${PREFIXES.solved}${title}`)
     } catch (error) {
