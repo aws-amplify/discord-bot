@@ -58,7 +58,7 @@ jobs:
       # build ./packages/*
       - run: pnpm build:lib
       # build SvelteKit app and Server
-      - run: pnpm build --logLevel silent
+      - run: pnpm build
         env:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           VITE_HOST: ${{ secrets.VITE_HOST }}
@@ -67,7 +67,7 @@ jobs:
       - run: pnpm prisma db push
         env:
           DATABASE_URL: 'file:data/test.db'
-      - run: pnpm vitest run --silent
+      - run: pnpm test
         env:
           DISCORD_WEBHOOK_URL_RELEASES: ${{ secrets.DISCORD_WEBHOOK_URL_RELEASES }}
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
