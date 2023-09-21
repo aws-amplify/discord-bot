@@ -22,10 +22,7 @@
     "setup-dev": "pnpm install && prisma db push && svelte-kit sync && pnpm build:lib",
     "setup-docker": "echo \"\nPNPM_STORE\"=$(pnpm store path) >> .env && docker -v",
     "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push && vite build",
-    "test": "pnpm test:unit && pnpm test:integration",
-    "test:integration": "playwright test",
-    "test:unit": "vitest",
-    "coverage": "vitest run --coverage"
+    "test": "playwright test"
   },
   "dependencies": {
     "@auth/core": "^0.12.0",
