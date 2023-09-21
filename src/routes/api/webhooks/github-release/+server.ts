@@ -40,29 +40,27 @@ export const POST: RequestHandler = async function post({ request }) {
     )
   }
 
-  if (!import.meta.vitest) {
-    const sig256 = request.headers.get('x-hub-signature-256')
-    if (
-      !sig256 ||
-      !verifyGithubWebhookEvent(
-        process.env.GITHUB_WEBHOOK_SECRET,
-        payload,
-        sig256
-      )
-    ) {
-      return json(
-        {
-          errors: [
-            {
-              message: 'Unable to verify signature',
-            },
-          ],
-        },
-        {
-          status: 403,
-        }
-      )
-    }
+  const sig256 = request.headers.get('x-hub-signature-256')
+  if (
+    !sig256 ||
+    !verifyGithubWebhookEvent(
+      process.env.GITHUB_WEBHOOK_SECRET,
+      payload,
+      sig256
+    )
+  ) {
+    return json(
+      {
+        errors: [
+          {
+            message: 'Unable to verify signature',
+          },
+        ],
+      },
+      {
+        status: 403,
+      }
+    )
   }
 
   if (payload.action !== 'released') {
@@ -81,7 +79,6 @@ export const POST: RequestHandler = async function post({ request }) {
 
   // if response is not okay or if Discord did not return a 204
   if (!res.ok) {
-    if (res.body) console.log(await res.json())
     return new Response(undefined, { status: 400 })
   } else {
     return new Response(undefined, { status: 201 })
