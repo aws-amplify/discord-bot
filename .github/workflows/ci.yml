@@ -69,6 +69,7 @@ jobs:
           DATABASE_URL: 'file:data/test.db'
       - run: pnpm test
         env:
+          DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
           DISCORD_WEBHOOK_URL_RELEASES: ${{ secrets.DISCORD_WEBHOOK_URL_RELEASES }}
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
