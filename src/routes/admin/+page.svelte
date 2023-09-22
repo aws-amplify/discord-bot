@@ -117,7 +117,7 @@
     togglingCommandIds = togglingCommandIds.filter((id) => id !== command.id)
   }
 
-  const handleOnCommandToggleSubmit = async (event, command) => {
+  const handleOnCommandToggleSubmit = async (event) => {
     event.preventDefault()
     const form = event.target
     const data = new FormData(form)
@@ -127,7 +127,6 @@
   const handleOnCommandToggleChange = async (event, command) => {
     const { checked } = event.target
     await toggleCommand(command, checked)
-    /** @TODO throttling */
   }
 </script>
 
@@ -140,18 +139,12 @@
     <h2>Commands</h2>
     <ul class="ha--command-list">
       {#each commands as command (command)}
-        {@const tags = [command.registration && 'Registered'].filter(Boolean)}
         <li class="ha--command">
           <p>
             <span class="ha--command-name">{command.name}</span><br />
             {command.description}
           </p>
-          <form on:submit="{(e) => handleOnCommandToggleSubmit(e, command)}">
-            <!-- <InlineLoading
-                            status="{togglingCommandId !== command.id
-                              ? 'inactive'
-                              : 'active'}"
-                          /> -->
+          <form on:submit="{(e) => handleOnCommandToggleSubmit(e)}">
             <Toggle
               labelText="{`Enable/disable ${command.name}`}"
               hideLabel

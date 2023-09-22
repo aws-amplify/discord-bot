@@ -1,5 +1,4 @@
 import { access, readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
 
 export async function exists(path) {
   try {

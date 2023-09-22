@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const integration = await prisma.configurationFeature.findUnique({
     where: {
       configurationId_featureCode: {
-        configurationId: locals.session.guild,
+        configurationId: locals.guildId,
         featureCode: code.toUpperCase(),
       },
     },
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     },
   })
   return {
-    configurationId: locals.session.guild,
+    configurationId: locals.guildId,
     integration: integration?.feature,
   }
 }

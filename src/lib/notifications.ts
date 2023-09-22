@@ -12,20 +12,6 @@ type NotificationStore = Readable<Notification[]> & {
   remove: (notification: Notification) => void
 }
 
-if (import.meta.vitest) {
-  const { test } = import.meta.vitest
-
-  const notification: Notification = {
-    id: '123',
-    kind: 'success',
-    title: 'Successfully synced commands',
-    subtitle: '',
-    caption: new Date().toLocaleString(),
-  }
-
-  test.todo('notifications')
-}
-
 function createNotifications(): NotificationStore {
   const { subscribe, update } = writable<Notification[]>([])
 

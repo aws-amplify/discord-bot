@@ -1,11 +1,5 @@
 <script lang="ts">
-  import {
-    Grid,
-    Column,
-    Row,
-    Toggle,
-    TextInput,
-  } from 'carbon-components-svelte'
+  import { Toggle, TextInput } from 'carbon-components-svelte'
   import { notifications } from '$lib/store'
   import type { PageServerData } from './$types'
   import { createIntegrationHrefFromCode } from '../../breadcrumbs'
@@ -62,11 +56,9 @@
   const handleOnFeatureToggleChange = async (event, feature) => {
     const { checked } = event.target
     await toggleFeature(feature, checked)
-    /** @TODO throttling */
-    // throttle(toggleFeature(feature, checked), 5)
   }
 
-  const handleOnFeatureSubmit = async (event, feature) => {
+  const handleOnFeatureSubmit = async (event) => {
     event.preventDefault()
     const form = event.target
     const data = new FormData(form)
