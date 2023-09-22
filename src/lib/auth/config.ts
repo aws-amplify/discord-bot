@@ -11,7 +11,7 @@ import type { SvelteKitAuthConfig } from '@auth/sveltekit'
 export const config: SvelteKitAuthConfig = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
-  trustHost: process.env.IS_TEST === 'true' ? true : undefined,
+  trustHost: true,
   providers: [
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID,
