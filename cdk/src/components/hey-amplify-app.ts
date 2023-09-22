@@ -2,8 +2,6 @@ import { Construct } from 'constructs'
 import { Port } from 'aws-cdk-lib/aws-ec2'
 import * as cdk from 'aws-cdk-lib'
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
-import * as events from 'aws-cdk-lib/aws-events'
-import * as targets from 'aws-cdk-lib/aws-events-targets'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns'
 import * as efs from 'aws-cdk-lib/aws-efs'
@@ -11,7 +9,6 @@ import * as elb from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as route53 from 'aws-cdk-lib/aws-route53'
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets'
-import * as sns from 'aws-cdk-lib/aws-sns'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import { v4 as uuid } from 'uuid'
 import { WAF } from './waf'
@@ -254,39 +251,6 @@ export class HeyAmplifyApp extends Construct {
         }),
       })
     }
-
-    /**
-     * Set up alarms
-     */
-    const restartTopic = new sns.Topic(this, 'ContainerRestarts', {
-      displayName: 'ContainerRestarts',
-    })
-
-    const restartRuleTarget = new targets.SnsTopic(restartTopic, {
-      message: events.RuleTargetInput.fromText(
-        `Container restarted in ${process.env.CDK_DEFAULT_REGION as string}`
-      ),
-    })
-
-    /**
-     * Set up event rule for container restarts
-     */
-    const restartRule = new events.Rule(this, 'RestartRule', {
-      eventPattern: {
-        source: ['aws.ecs'],
-        detailType: ['ECS Task State Change'],
-        region: [process.env.CDK_DEFAULT_REGION as string],
-        detail: {
-          lastStatus: ['STOPPED'],
-          desiredStatus: ['RUNNING'],
-          clusterArn: [cluster.clusterArn],
-          taskDefinitionArn: [
-            albFargateService.service.taskDefinition.taskDefinitionArn,
-          ],
-        },
-      },
-      targets: [restartRuleTarget],
-    })
 
     // enable access logging for load balancer
     albFargateService.loadBalancer.logAccessLogs(bucket, 'alb-access')

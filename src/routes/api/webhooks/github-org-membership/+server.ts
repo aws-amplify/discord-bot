@@ -52,29 +52,27 @@ export const POST: RequestHandler = async function post({ request }) {
     )
   }
 
-  if (!import.meta.vitest) {
-    const sig256 = request.headers.get('x-hub-signature-256')
-    if (
-      !sig256 ||
-      !verifyGithubWebhookEvent(
-        process.env.GITHUB_WEBHOOK_SECRET,
-        payload,
-        sig256
-      )
-    ) {
-      return json(
-        {
-          errors: [
-            {
-              message: 'Unable to verify signature',
-            },
-          ],
-        },
-        {
-          status: 403,
-        }
-      )
-    }
+  const sig256 = request.headers.get('x-hub-signature-256')
+  if (
+    !sig256 ||
+    !verifyGithubWebhookEvent(
+      process.env.GITHUB_WEBHOOK_SECRET,
+      payload,
+      sig256
+    )
+  ) {
+    return json(
+      {
+        errors: [
+          {
+            message: 'Unable to verify signature',
+          },
+        ],
+      },
+      {
+        status: 403,
+      }
+    )
   }
 
   /**

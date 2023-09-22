@@ -12,6 +12,8 @@ import {
   type ChatInputCommandInteraction,
   type ContextMenuCommandInteraction,
   type InteractionReplyOptions,
+  type MessagePayload,
+  type InteractionEditReplyOptions,
 } from 'discord.js'
 import { prisma } from '$lib/db'
 import { FEATURE_TYPES } from '$lib/constants'
@@ -24,6 +26,13 @@ import * as selectAnswer from './commands/select-answer'
 import * as thread from './commands/thread'
 import * as q from './commands/q'
 import { api } from './api'
+
+type AuthoredCommand = {
+  handler: (
+    interaction: ChatInputCommandInteraction
+  ) => Promise<string | MessagePayload | InteractionEditReplyOptions>
+  config: Omit<SlashCommandBuilder, 'addSubcommandGroup' | 'addSubcommand'>
+}
 
 export type Command = {
   name: string
@@ -39,7 +48,7 @@ function createCommandCode(name: string) {
   return `COMMAND_${name.replace('-', '').toUpperCase()}`
 }
 
-function createCommandsMap(commands: any[]) {
+function createCommandsMap(commands: AuthoredCommand[]): Map<string, Command> {
   const map = new Map()
   for (const command of commands) {
     const stored = {
@@ -54,6 +63,7 @@ function createCommandsMap(commands: any[]) {
         const somethingWentWrongResponse = '🤕 Something went wrong'
         let response
         try {
+          // @ts-expect-error type collision
           response = await command.handler(interaction)
         } catch (error) {
           console.error(

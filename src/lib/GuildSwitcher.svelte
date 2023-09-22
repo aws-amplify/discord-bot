@@ -3,7 +3,7 @@
   import { browser } from '$app/environment'
   import { guild, isSplashScreenActive } from '$lib/store'
 
-  export let guilds: [{ id: string; text: string }]
+  export let guilds: { id: string; text: string; icon: string | null }[]
   export let selected = guilds[0].id
 
   $: if (browser && $guild !== selected) {

@@ -97,11 +97,11 @@ async function createDiscussionBody(
   threadUrl: string
 ): Promise<string> {
   let body = ''
-  for (const [id, message] of messages) {
+  for (const [, message] of messages) {
     const user = await getUser(message)
     body += `${user} ${formatContent(message.content)}\n\n`
     if (message.attachments?.size) {
-      message.attachments.forEach((attachment, id) => {
+      message.attachments.forEach((attachment) => {
         body += `<img src="${attachment.attachment}" />\n\n`
       })
     }

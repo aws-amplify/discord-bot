@@ -59,7 +59,7 @@ type AdminPageReturn = {
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const commands = Array.from(bank.values())
-  const guildId = locals.guild
+  const guildId = locals.guildId
 
   // get guild info
   const guild = (await api.get(Routes.guild(guildId))) as Guild

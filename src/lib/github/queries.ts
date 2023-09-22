@@ -72,16 +72,6 @@ const MUTATION_RESOLVE_DISCUSSION = gql`
   }
 `
 
-const MUTATION_DELETE_DISCUSSION = gql`
-  mutation DeleteDiscussion($discussionId: ID!, $clientMutationId: String) {
-    deleteDiscussion(
-      input: { id: $discussionId, clientMutationId: $clientMutationId }
-    ) {
-      __typename
-    }
-  }
-`
-
 const QUERY_GET_REPOSITORIES = gql`
   query GetRepositories($login: String!) {
     organization(login: $login) {
