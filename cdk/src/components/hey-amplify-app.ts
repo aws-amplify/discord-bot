@@ -105,6 +105,7 @@ export class HeyAmplifyApp extends Construct {
             environment: {
               ...docker.environment,
               BUCKET_NAME: bucket.bucketName,
+              ORIGIN: docker.environment?.VITE_NEXTAUTH_URL || '',
               NEXTAUTH_URL: docker.environment?.VITE_NEXTAUTH_URL || '',
               DATABASE_FILE_PATH: docker.environment!.DATABASE_URL.replace(
                 'file:',
