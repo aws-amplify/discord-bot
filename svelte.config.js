@@ -23,6 +23,7 @@ const config = {
       mode: 'auto',
       directives: {
         'default-src': ['self'],
+        'connect-src': ['self', 'https://discord.com'],
         'img-src': ['self', 'data:', 'https://cdn.discordapp.com'],
         'script-src': ['self'],
         'style-src': ['self', 'unsafe-inline'],
