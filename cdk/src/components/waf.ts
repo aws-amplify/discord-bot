@@ -69,7 +69,7 @@ export class WAF extends wafv2.CfnWebACL {
         {
           // rate-limit requests
           name: 'RateLimitApi',
-          priority: 2,
+          priority: 1,
           action: {
             block: {},
           },
