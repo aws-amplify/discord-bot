@@ -13,7 +13,7 @@ function relative(path) {
 export function loadEnvVars(mode = 'development') {
   Object.assign(
     process.env,
-    loadEnv(mode, relative('.'), [
+    loadEnv(mode, relative('../..'), [
       'DISCORD_',
       'GITHUB_',
       'DATABASE_',
@@ -29,7 +29,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
   },
-  envDir: '.',
+  envDir: '../..',
   define: {
     'import.meta.vitest': 'undefined',
   },

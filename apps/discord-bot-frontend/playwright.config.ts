@@ -6,7 +6,7 @@ process.env.IS_TEST = 'true'
 
 const config: PlaywrightTestConfig = {
   webServer: {
-    command: 'pnpm run build:app && pnpm run preview',
+    command: 'pnpm run build-app && pnpm run preview',
     port: 3000,
   },
   testDir: 'tests',
