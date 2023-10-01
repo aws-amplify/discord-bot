@@ -81,17 +81,15 @@ export class WAF extends wafv2.CfnWebACL {
                 byteMatchStatement: {
                   searchString: '/api/',
                   fieldToMatch: {
-                    singleHeader: {
-                      name: ':path',
-                    },
+                    uriPath: {},
                   },
+                  positionalConstraint: 'STARTS_WITH',
                   textTransformations: [
                     {
                       priority: 0,
-                      type: 'URL_DECODE',
+                      type: 'NONE',
                     },
                   ],
-                  positionalConstraint: 'STARTS_WITH',
                 },
               },
             },
