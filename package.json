@@ -25,8 +25,8 @@
     "test": "playwright test"
   },
   "dependencies": {
-    "@auth/core": "^0.15.2",
-    "@auth/sveltekit": "^0.3.6",
+    "@auth/core": "^0.16.0",
+    "@auth/sveltekit": "^0.3.7",
     "@aws-crypto/sha256-js": "^2.0.1",
     "@carbon/styles": "^1.11.0",
     "@discordjs/builders": "^1.1.0",

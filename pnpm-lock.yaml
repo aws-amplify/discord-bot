@@ -9,8 +9,8 @@ importers:
 
   .:
     specifiers:
-      '@auth/core': ^0.15.2
-      '@auth/sveltekit': ^0.3.6
+      '@auth/core': ^0.16.0
+      '@auth/sveltekit': ^0.3.7
       '@aws-crypto/sha256-js': ^2.0.1
       '@carbon/charts': ^1.5.2
       '@carbon/charts-svelte': ^1.5.2
@@ -69,8 +69,8 @@ importers:
       vitest: ^0.22.1
       zod: ^3.19.1
     dependencies:
-      '@auth/core': 0.15.2
-      '@auth/sveltekit': 0.3.6_s5pncfdenylc7kgwxpqv63idfq
+      '@auth/core': 0.16.0
+      '@auth/sveltekit': 0.3.7_s5pncfdenylc7kgwxpqv63idfq
       '@aws-crypto/sha256-js': 2.0.1
       '@carbon/styles': 1.11.0
       '@discordjs/builders': 1.1.0
@@ -214,8 +214,8 @@ packages:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.19
 
-  /@auth/core/0.10.0:
-    resolution: {integrity: sha512-mmvAzFUcDHG0m6avQ6/sYI3wtQtt3Tjbk4wCr27OlCeNnlzqK8lDQJIDFbJOTXEu/dNUx8sUQ0xMp7A6GAaHQw==}
+  /@auth/core/0.13.0:
+    resolution: {integrity: sha512-StjrzUenaKfMr68kmvhiqfY0xvxRvg8wllmem9JAULpPAAAt3uwRUDXICWOP/PfWB4OZ2wQT7rgfm0n42b+Mjg==}
     peerDependencies:
       nodemailer: ^6.8.0
     peerDependenciesMeta:
@@ -230,8 +230,8 @@ packages:
       preact-render-to-string: 5.2.3_preact@10.11.3
     dev: false
 
-  /@auth/core/0.15.2:
-    resolution: {integrity: sha512-z79WfH+7Hub/DP3bd5/oiymi6zqSkpeltG2u/vvZrLUXTz3LHWXEVtSxYIusHXpzLpEGfDwnACkiFB4izP1wEg==}
+  /@auth/core/0.16.0:
+    resolution: {integrity: sha512-g9Aj+N4dzGhZwOtR7qOW0T+OhpH7zbHa29tonLB5V+FxaQoWCsNTrZsjfzBVfvCI8VEkBqPbPHkIIyWSoTw0iA==}
     peerDependencies:
       nodemailer: ^6.8.0
     peerDependenciesMeta:
@@ -246,13 +246,13 @@ packages:
       preact-render-to-string: 5.2.3_preact@10.11.3
     dev: false
 
-  /@auth/sveltekit/0.3.6_s5pncfdenylc7kgwxpqv63idfq:
-    resolution: {integrity: sha512-wL9YR8raosHR+iPDvIBExqvYiaOsseM681eYLjfU+ELmkjlKtGk+B4VxiLYMxlPfjqNagrzLNyS58PYXy2oh7A==}
+  /@auth/sveltekit/0.3.7_s5pncfdenylc7kgwxpqv63idfq:
+    resolution: {integrity: sha512-2aIQbACu4F6oBUMgi9c1yCPVzOd3VQmMslk4y7U1Ec5A8CGstJfvMyL1N2J4zc3bemmvzhlrZ9ng0baKc695lg==}
     peerDependencies:
       '@sveltejs/kit': ^1.0.0
       svelte: ^3.54.0 || ^4.0.0
     dependencies:
-      '@auth/core': 0.10.0
+      '@auth/core': 0.13.0
       '@sveltejs/kit': 1.23.0_svelte@4.2.1+vite@4.4.9
       svelte: 4.2.1
     transitivePeerDependencies:
