@@ -3,7 +3,8 @@
   "version": "1.5.0-next.5",
   "type": "module",
   "scripts": {
-    "start": "node ./build/index.js",
+    "start": "sh ./scripts/start.sh",
+    "start-server": "node ./build/index.js",
     "dev": "vite",
     "build": "pnpm run build-app && pnpm run build-server",
     "build-app": "vite build",
