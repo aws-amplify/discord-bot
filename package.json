@@ -9,7 +9,6 @@
     "dev-lib": "pnpm -r run build -w",
     "build": "pnpm -r run build",
     "build-docker": "sh ./scripts/build-docker.sh",
-    "build:lib": "pnpm run build-lib",
     "build-lib": "pnpm --filter \"./packages/*\" run build",
     "check": "prettier --check .",
     "lint": "eslint .",
