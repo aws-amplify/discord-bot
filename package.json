@@ -14,6 +14,7 @@
     "check": "prettier --check .",
     "lint": "eslint .",
     "setup-dev": "pnpm install && pnpm run build-lib",
+    "setup-test": "pnpm run -r --if-present setup-test",
     "test": "pnpm -r run test"
   },
   "devDependencies": {

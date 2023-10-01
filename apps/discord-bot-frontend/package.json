@@ -11,7 +11,7 @@
     "build-server": "node scripts/build-server.cjs",
     "test": "playwright test",
     "setup-dev": "prisma db push",
-    "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push && vite build",
+    "setup-test": "DATABASE_URL=\"file:data/test.db\" prisma db push",
     "postinstall": "prisma generate; playwright install",
     "preview": "vite preview --port 3000",
     "seed": "vite-node ./scripts/seed.ts",
