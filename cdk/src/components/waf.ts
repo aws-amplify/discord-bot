@@ -113,15 +113,13 @@ export class WAF extends wafv2.CfnWebACL {
               // if request ends in .sql
               searchString: '.sql',
               fieldToMatch: {
-                singleHeader: {
-                  name: ':path',
-                },
+                uriPath: {},
               },
               positionalConstraint: 'ENDS_WITH',
               textTransformations: [
                 {
                   priority: 0,
-                  type: 'URL_DECODE',
+                  type: 'NONE',
                 },
               ],
             },
@@ -143,15 +141,13 @@ export class WAF extends wafv2.CfnWebACL {
               // if requested path is wp-admin
               searchString: '/wp-admin',
               fieldToMatch: {
-                singleHeader: {
-                  name: ':path',
-                },
+                uriPath: {},
               },
-              positionalConstraint: 'CONTAINS',
+              positionalConstraint: 'STARTS_WITH',
               textTransformations: [
                 {
                   priority: 0,
-                  type: 'URL_DECODE',
+                  type: 'NONE',
                 },
               ],
             },
@@ -173,15 +169,13 @@ export class WAF extends wafv2.CfnWebACL {
               // if requested path is wp-content
               searchString: '/wp-content',
               fieldToMatch: {
-                singleHeader: {
-                  name: ':path',
-                },
+                uriPath: {},
               },
-              positionalConstraint: 'CONTAINS',
+              positionalConstraint: 'STARTS_WITH',
               textTransformations: [
                 {
                   priority: 0,
-                  type: 'URL_DECODE',
+                  type: 'NONE',
                 },
               ],
             },
@@ -203,15 +197,13 @@ export class WAF extends wafv2.CfnWebACL {
               // if requested path is swagger
               searchString: '/swagger',
               fieldToMatch: {
-                singleHeader: {
-                  name: ':path',
-                },
+                uriPath: {},
               },
-              positionalConstraint: 'CONTAINS',
+              positionalConstraint: 'STARTS_WITH',
               textTransformations: [
                 {
                   priority: 0,
-                  type: 'URL_DECODE',
+                  type: 'NONE',
                 },
               ],
             },
