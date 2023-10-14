@@ -199,6 +199,7 @@ export class HeyAmplifyApp extends Construct {
       'X-GitHub-Hook-Installation-Target-Type',
       'X-Hub-Signature',
       'X-Hub-Signature-256',
+      'X-Auth-Return-Redirect', // support auth.js client-side redirect
     ]
 
     // set up CloudFront
