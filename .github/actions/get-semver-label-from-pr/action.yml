@@ -1,0 +1,34 @@
+# used to extract the version from a semver label
+name: get-semver-label-from-pr
+description: Gets semver label from PR event
+outputs:
+  semver-label:
+    description: Semver label name
+    value: ${{ steps.get-label.outputs.result }}
+  semver-bump:
+    description: Semver bump type
+    value: ${{ steps.get-bump.outputs.result }}
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/github-script@v6
+      id: get-label
+      with:
+        script: |
+          const labels = context.payload.pull_request.labels
+          const semverLabels = labels.filter(label => label.name.startsWith('semver:'))
+          if (semverLabels.length === 0) {
+            return core.setFailed('No semver label found')
+          }
+          if (semverLabels.length > 1) {
+            return core.setFailed('Cannot have multiple semver labels')
+          }
+          return semverLabels[0].name
+    - uses: actions/github-script@v6
+      id: get-bump
+      if: ${{ success() }}
+      env:
+        LABEL_NAME: ${{ steps.get-label.outputs.result }}
+      with:
+        script: |
+          return process.env.LABEL_NAME.replace('semver: ', '')
