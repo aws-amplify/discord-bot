@@ -83,7 +83,7 @@
       "@typescript-eslint/no-non-null-assertion": "off"
     }
   },
-  "packageManager": "pnpm@7.13.1",
+  "packageManager": "pnpm@8.9.0",
   "pnpm": {
     "peerDependencyRules": {
       "ignoreMissing": [
