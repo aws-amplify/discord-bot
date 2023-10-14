@@ -32,13 +32,17 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
           aws-region: ${{ inputs.aws-region }}
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
+        id: setup-node
         with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile --silent
+          node-version-file: '.node-version'
+      - uses: actions/cache@v3
+        with:
+          path: '~/.pnpm-store'
+          key: ${{ runner.os }}-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: corepack enable
+      - run: pnpm install
       - run: pnpm build:lib
       - name: cdk synth
         run: |
