@@ -69,7 +69,7 @@ export class WAF extends wafv2.CfnWebACL {
         {
           // rate-limit requests
           name: 'RateLimitApi',
-          priority: 2,
+          priority: 1,
           action: {
             block: {},
           },
@@ -81,17 +81,15 @@ export class WAF extends wafv2.CfnWebACL {
                 byteMatchStatement: {
                   searchString: '/api/',
                   fieldToMatch: {
-                    singleHeader: {
-                      name: ':path',
-                    },
+                    uriPath: {},
                   },
+                  positionalConstraint: 'STARTS_WITH',
                   textTransformations: [
                     {
                       priority: 0,
-                      type: 'URL_DECODE',
+                      type: 'NONE',
                     },
                   ],
-                  positionalConstraint: 'STARTS_WITH',
                 },
               },
             },
@@ -113,15 +111,13 @@ export class WAF extends wafv2.CfnWebACL {
               // if request ends in .sql
               searchString: '.sql',
               fieldToMatch: {
-                singleHeader: {
-                  name: ':path',
-                },
+                uriPath: {},
               },
               positionalConstraint: 'ENDS_WITH',
               textTransformations: [
                 {
                   priority: 0,
-                  type: 'URL_DECODE',
+                  type: 'NONE',
                 },
               ],
             },
@@ -143,15 +139,13 @@ export class WAF extends wafv2.CfnWebACL {
               // if requested path is wp-admin
               searchString: '/wp-admin',
               fieldToMatch: {
-                singleHeader: {
-                  name: ':path',
-                },
+                uriPath: {},
               },
-              positionalConstraint: 'CONTAINS',
+              positionalConstraint: 'STARTS_WITH',
               textTransformations: [
                 {
                   priority: 0,
-                  type: 'URL_DECODE',
+                  type: 'NONE',
                 },
               ],
             },
@@ -173,15 +167,13 @@ export class WAF extends wafv2.CfnWebACL {
               // if requested path is wp-content
               searchString: '/wp-content',
               fieldToMatch: {
-                singleHeader: {
-                  name: ':path',
-                },
+                uriPath: {},
               },
-              positionalConstraint: 'CONTAINS',
+              positionalConstraint: 'STARTS_WITH',
               textTransformations: [
                 {
                   priority: 0,
-                  type: 'URL_DECODE',
+                  type: 'NONE',
                 },
               ],
             },
@@ -203,15 +195,13 @@ export class WAF extends wafv2.CfnWebACL {
               // if requested path is swagger
               searchString: '/swagger',
               fieldToMatch: {
-                singleHeader: {
-                  name: ':path',
-                },
+                uriPath: {},
               },
-              positionalConstraint: 'CONTAINS',
+              positionalConstraint: 'STARTS_WITH',
               textTransformations: [
                 {
                   priority: 0,
-                  type: 'URL_DECODE',
+                  type: 'NONE',
                 },
               ],
             },
