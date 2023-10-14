@@ -43,7 +43,7 @@ jobs:
           key: ${{ runner.os }}-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
       - run: corepack enable
       - run: pnpm install
-      - run: pnpm build:lib
+      - run: pnpm run build
       - name: cdk synth
         run: |
           pnpm --filter ./cdk run synth \
