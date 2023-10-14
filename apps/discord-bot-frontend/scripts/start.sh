@@ -9,4 +9,4 @@ fi
 echo "Finish existing database prep"
 cd -
 
-pnpm start
+pnpm run start-server

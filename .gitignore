@@ -10,7 +10,6 @@ cypress.env.json
 notes.md
 
 /prisma/data
-/.svelte-kit
 /build
 
 packages/**/build

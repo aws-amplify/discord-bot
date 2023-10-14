@@ -1,49 +1,49 @@
 #syntax=docker/dockerfile:1.4
-FROM --platform=linux/amd64 alpine as builder
-# Download the static build of Litestream directly into the path & make it executable.
-# This is done in the builder and copied as the chmod doubles the size.
-ADD https://github.com/benbjohnson/litestream/releases/download/v0.3.8/litestream-v0.3.8-linux-amd64-static.tar.gz /tmp/litestream.tar.gz
-RUN tar -C /usr/local/bin -xzf /tmp/litestream.tar.gz
+ARG NODE_VERSION="18.15.0"
+ARG ALPINE_VERSION="3.17"
+FROM --platform=linux/amd64 node:${NODE_VERSION}-alpine${ALPINE_VERSION} as base
+ENV CI=true
+# for turbo - https://turbo.build/repo/docs/handbook/deploying-with-docker#example
+RUN apk add --no-cache libc6-compat curl
+RUN apk update
+WORKDIR /workspace
+# enable corepack for pnpm
+RUN corepack enable
 
-FROM --platform=linux/amd64 node:18-alpine
-WORKDIR /usr/src
-
-# @todo - remove this after upgrading prisma to ~4.8.0
-# https://github.com/prisma/prisma/issues/16553#issuecomment-1353302617
-RUN apk add --update --no-cache openssl1.1-compat
-
-# Copy executable & Litestream from builder.
-COPY --from=builder /usr/local/bin/litestream /usr/local/bin/litestream
-# Copy litestream config
-COPY scripts/litestream.yml /etc/litestream.yml
-
-# add bash
-RUN apk add bash
-
-# Create data directory (although this will likely be mounted too)
-RUN mkdir -p /data
-
-# Install pnpm
-ARG PNPM_VERSION=7.9.5
-RUN npm install --global pnpm@${PNPM_VERSION}
+FROM base as fetcher
 # pnpm fetch only requires lockfile, but we'll need to build workspaces
 COPY pnpm*.yaml ./
-# RUN pnpm fetch
-# add project source to build
-ADD . .
-# install dependencies
-RUN pnpm install --frozen-lockfile
-# expose arguments for VITE environment variables
-ARG VITE_HOST=http://localhost:3000
-ARG VITE_NEXTAUTH_URL=http://localhost:3000
-ARG VITE_DISCORD_GUILD_ID=976838371383083068
-ARG DATABASE_URL="file:/data/sqlite.db"
-# expose necessary env vars
-ENV PORT=3000
-# run build
-RUN pnpm run build:lib && pnpm run build
-# install production dependencies
-RUN pnpm install --frozen-lockfile --prod --ignore-scripts
+COPY patches ./patches
+# mount pnpm store as cache & fetch dependencies
+RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm-store \
+  pnpm fetch --ignore-scripts
 
-EXPOSE 3000
-CMD ["./scripts/start.sh"]
+FROM fetcher as builder
+ARG APP_NAME="@aws-amplify/discord-bot-frontend"
+ENV APP_NAME=${APP_NAME}
+WORKDIR /workspace
+COPY . .
+RUN --mount=type=secret,id=env,required=true,target=/workspace/.env \
+  pnpm install --frozen-lockfile --offline --loglevel=error
+# build workspace
+RUN --mount=type=secret,id=env,required=true,target=/workspace/.env \
+  --mount=type=cache,target=/workspace/node_modules/.cache \
+  pnpm run build
+
+FROM builder as deployer
+WORKDIR /workspace
+# deploy app
+RUN pnpm --filter ${APP_NAME} deploy --prod --ignore-scripts ./out
+
+FROM base as runner
+WORKDIR /workspace
+# Don't run production as root
+RUN addgroup --system --gid 1001 amplifygroup
+RUN adduser --system --uid 1001 amplifyuser
+USER amplifyuser
+# copy files needed to run the app
+COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/package.json .
+COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/node_modules/ ./node_modules
+COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/build/ ./build
+# start the app
+CMD pnpm run start

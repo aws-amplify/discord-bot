@@ -1,3 +1,15 @@
+if (!process.env.CI) {
+  // local builds require env vars
+  const path = require('node:path')
+  const { loadEnv } = require('vite')
+  const env = loadEnv('', path.relative(process.cwd(), '../../'), [
+    'VITE_',
+    'DISCORD_',
+    'NEXTAUTH_',
+  ])
+  Object.assign(process.env, env)
+}
+
 require('esbuild').build({
   entryPoints: ['src/server.ts'],
   bundle: true,
