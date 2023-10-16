@@ -85,3 +85,9 @@ jobs:
           VITE_HOST: ${{ secrets.VITE_HOST }}
           VITE_NEXTAUTH_URL: ${{ secrets.VITE_NEXTAUTH_URL }}
           VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: apps/discord-bot-frontend/playwright-report/
+          retention-days: 30

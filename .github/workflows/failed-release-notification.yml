@@ -1,0 +1,20 @@
+name: failed-release-notification
+on:
+  deployment_status:
+env:
+  NEEDS_TRIAGE_LABEL: 'needs: triage'
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: create an issue
+        uses: actions/script@v6
+        with:
+          script: |
+            github.rest.issues.create({
+              title: "Release failed"
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ["${{ env.NEEDS_TRIAGE_LABEL }}"]
+            })
+      # @TODO: message to Slack?

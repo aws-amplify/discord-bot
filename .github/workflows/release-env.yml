@@ -7,12 +7,8 @@ on:
         type: string
         required: true
       version:
-        description: 'Version of the release'
+        description: 'New version to deploy'
         type: string
-        required: true
-      is-prerelease:
-        description: 'Determines if the release is a prerelease'
-        type: boolean
         required: true
       aws-region:
         description: 'AWS Region to deploy to'
@@ -32,14 +28,12 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
           aws-region: ${{ inputs.aws-region }}
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
         with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile --silent
-      - run: pnpm build:lib
+          persist-credentials: false
+      - uses: ./.github/actions/configure-node
+      - run: pnpm install
+      - run: pnpm build
       - name: cdk synth
         run: |
           pnpm --filter ./cdk run synth \
@@ -47,27 +41,28 @@ jobs:
             --context version=${{ inputs.version }} \
             --quiet
       - name: cdk deploy
+        timeout-minutes: 20
         run: |
           pnpm --filter ./cdk run deploy \
+            --require-approval never \
             --context env=${{ inputs.env }} \
             --context version=${{ inputs.version }}
         env:
           VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
           VITE_NEXTAUTH_URL: ${{ secrets.VITE_NEXTAUTH_URL }}
           VITE_HOST: ${{ secrets.VITE_HOST }}
-      - name: release
-        run: |
-          # exit early when performing a sequential release (next -> main)
-          if [ ${{ inputs.env }} != main ]; then exit 0; fi
-          # otherwise proceed with creating GitHub release and git tag
-          if [ ${{ inputs.is-prerelease }} == true ]
-          then
-            url=$(gh release create ${{ inputs.version }} --generate-notes --prerelease)
-          else
-            url=$(gh release create ${{ inputs.version }} --generate-notes)
-          fi
-          tag=$(echo "${url/releases\/tag/tree}")
-          echo ::notice title="release"::$url
-          echo ::notice title="tag"::$tag
+  test-env:
+    runs-on: ubuntu-latest
+    needs: [release-env]
+    environment: ${{ inputs.env }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/configure-node
+      - run: pnpm install
+      # run tests on live environment
+      - run: pnpm run test
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEST_HOST: ${{ secrets.VITE_HOST }}
+          DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}

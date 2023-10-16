@@ -1,4 +1,9 @@
 name: release
+concurrency:
+  group: release
+  # do not cancel previous deployment, this may cause a CloudFormation rollback which can cause the subsequent deployment to fail waiting for the rollback to complete
+  # @TODO: can CDK wait for the rollback to complete before proceeding? this would allow us to cancel in-progress runs
+  cancel-in-progress: false
 on:
   pull_request:
     branches:
@@ -14,33 +19,81 @@ jobs:
     #   3. PR branch name begins with "release/"
     if: |
       github.event.pull_request.head.repo.full_name == github.repository &&
-      github.event.pull_request.merged == true && 
-      startsWith(github.event.pull_request.head.ref, 'release/')
+      github.event.pull_request.merged == true
     outputs:
-      version: ${{ steps.version.outputs.result }}
-      is-prerelease: ${{ contains(steps.version.outputs.result, 'next') }}
+      version-bump: ${{ steps.get-semver.outputs.semver-bump }}
     steps:
-      - name: extract-version
-        id: version
-        uses: actions/github-script@0.2.0
+      - uses: actions/checkout@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            return context.payload.pull_request.title.replace(/release\: /, '');
-  prerelease:
-    needs: verify-run
+          persist-credentials: false
+          sparse-checkout: |
+            .github
+      - uses: ./.github/actions/get-semver-label-from-pr
+        id: get-semver
+  # @TODO: verify whether this commit changes the env deployment commit (where it should show the PR's commit)
+  increase-version:
+    runs-on: ubuntu-latest
+    needs: [verify-run]
+    outputs:
+      new-version: ${{ steps.version.outputs.result }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout: |
+            package.json
+      - name: configure git credentials
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email noreply@github.com
+      - name: bump version
+        id: version
+        run: pnpm version ${{ needs.verify-run.outputs.version-bump }} --no-git-tag-version
+      - name: push version changes
+        run: |
+          git add package.json
+          git commit -m "[automated] ${{ steps.version.outputs.result }}"
+          # push back to PR base -- i.e. the "main" branch
+          git push origin ${{ github.event.pull_request.base.ref }}
+  # release to "next" environment
+  release-to-next:
+    needs:
+      - verify-run
+      - increase-version
     uses: ./.github/workflows/release-env.yml
     secrets: inherit
     with:
       env: next
-      version: ${{ needs.verify-run.outputs.version }}
-      is-prerelease: true
-  release:
-    needs: [verify-run, prerelease]
-    if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == false }}
+      version: ${{ needs.increase-version.outputs.new-version }}
+  # release to "main" environment
+  release-to-main:
+    needs:
+      - verify-run
+      - increase-version
+      - release-to-next
     uses: ./.github/workflows/release-env.yml
     secrets: inherit
     with:
       env: main
-      version: ${{ needs.verify-run.outputs.version }}
-      is-prerelease: false
+      version: ${{ needs.increase-version.outputs.new-version }}
+  # release on GitHub
+  create-github-release:
+    runs-on: ubuntu-latest
+    needs:
+      - verify-run
+      - increase-version
+      - release-to-next
+      - release-to-main
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: create
+        run: |
+          # otherwise proceed with creating GitHub release and git tag
+          url=$(gh release create ${{ needs.increase-version.outputs.new-version }} --generate-notes)
+          tag=$(echo "${url/releases\/tag/tree}")
+          echo ::notice title="release"::$url
+          echo ::notice title="tag"::$tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
