@@ -339,7 +339,7 @@ client.on(Events.ThreadCreate, async(thread) => {
         data: {
           ownerId: thread.ownerId as string,
           threadId: thread.id,
-          channelName: 'amplify-help', // TODO: Hard coded for now, need to figure out how to get it from the event payload
+          channelName: thread.parent!.name,
           title: thread.name,
           createdAt: thread.createdAt as Date,
           url: thread.url,
