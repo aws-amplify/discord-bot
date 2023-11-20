@@ -1,0 +1,31 @@
+name: pr-has-semver-label
+on:
+  pull_request_target:
+    branches:
+      - main
+    types:
+      - opened
+      - labeled
+      - unlabeled
+      - ready_for_review
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  pr-has-semver-label:
+    if: github.event.pull_request.draft == false
+    name: pr-has-semver-label
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            .github
+      - name: Does the PR have a single semver label?
+        id: get-semver-label
+        uses: ./.github/actions/get-semver-label-from-pr
+      - name: update GitHub Action summary
+        id: set-semver-label-output
+        if: ${{ success() }}
+        run: echo "PR merge will cause a ${{ steps.get-semver-label.outputs.semver-bump }} version bump" >> $GITHUB_STEP_SUMMARY

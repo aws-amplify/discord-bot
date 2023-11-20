@@ -1,0 +1,20 @@
+name: configure-node
+description: Shareable action to configure Node.js for project environment
+outputs:
+  node-version:
+    description: Node.js version
+    value: ${{ steps.setup-node.outputs.node-version }}
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/setup-node@v3
+      id: setup-node
+      with:
+        node-version-file: '.node-version'
+    - uses: actions/cache@v3
+      id: cache
+      with:
+        path: '~/.pnpm-store'
+        key: ${{ runner.os }}-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
+    - run: corepack enable
+      shell: bash
