@@ -182,7 +182,6 @@ client.on(Events.MessageCreate, async (message: Message) => {
     )
     thread.send({ embeds: [embed] })
   }
-
 })
 
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {
@@ -214,57 +213,55 @@ client.on('rateLimit', (info) => {
  * Listen for Thread creation events, used for `amplify-help` channel/forum.
  */
 
-client.on(Events.ThreadCreate, async(thread) => {
-  console.log('thread created',thread.appliedTags)
+client.on(Events.ThreadCreate, async (thread) => {
+  console.log('thread created', thread.appliedTags)
 
   let tagsApplied = undefined
 
-  
   // TODO: If we need to check if a bot created the thread similar to on `MessageCreate`
-  const owner = await thread.fetchOwner() 
-  if (owner?.user?.bot) return;
-
+  const owner = await thread.fetchOwner()
+  if (owner?.user?.bot) return
 
   if (thread?.parent?.type === ChannelType.GuildForum) {
-      const appliedTagIds = thread.appliedTags
-      // get all tags currently applied to the thread
-      tagsApplied = thread.parent.availableTags
-        .filter((tag) => appliedTagIds.includes(tag.id))
-        .map(({ id, name }) => ({ id, name }))
-
+    const appliedTagIds = thread.appliedTags
+    // get all tags currently applied to the thread
+    tagsApplied = thread.parent.availableTags
+      .filter((tag) => appliedTagIds.includes(tag.id))
+      .map(({ id, name }) => ({ id, name }))
   }
 
-  let record; // TODO: Get correct type
+  let record: Question | undefined
 
-    try {
-      record = await prisma.question.create({
-        data: {
-          ownerId: thread.ownerId as string,
-          threadId: thread.id,
-          channelName: thread.parent!.name,
-          title: thread.name,
-          createdAt: thread.createdAt as Date,
-          url: thread.url,
-          guild: {
-            connect: {
-              id: thread.guild?.id,
-            },
+  try {
+    record = await prisma.question.create({
+      data: {
+        ownerId: thread.ownerId as string,
+        threadId: thread.id,
+        channelName: thread.parent!.name,
+        title: thread.name,
+        createdAt: thread.createdAt as Date,
+        url: thread.url,
+        guild: {
+          connect: {
+            id: thread.guild?.id,
           },
-          tags: {
-            connectOrCreate: tagsApplied?.map(({ id, name }) => ({
-              where: { id },
-              create: { id, name },
-            })),
-          }
         },
-      })
-      console.info(`Created question ${record.id}`)
-    } catch (error) {
-      console.error('Unable to create Question in db', error)
-    }
+        tags: {
+          connectOrCreate: tagsApplied?.map(({ id, name }) => ({
+            where: { id },
+            create: { id, name },
+          })),
+        },
+      },
+    })
+    console.info(`Created question ${record.id}`)
+  } catch (error) {
+    record = undefined
+    console.error('Unable to create Question in db', error)
+  }
 
-   // update the participants (we do this after the question is created/updated to ensure the question exists in the database and has a valid ID to create the participation records with)
-   if (record) {
+  // update the participants (we do this after the question is created/updated to ensure the question exists in the database and has a valid ID to create the participation records with)
+  if (record != undefined) {
     console.log('Updating participants', thread.id)
     const messages = await thread.messages.fetch()
     try {
@@ -277,7 +274,7 @@ client.on(Events.ThreadCreate, async(thread) => {
             connectOrCreate: messages.map((message) => ({
               where: {
                 questionId_participantId: {
-                  questionId: record.id,
+                  questionId: record!.id,
                   participantId: message.author.id,
                 },
               },
@@ -299,9 +296,9 @@ client.on(Events.ThreadCreate, async(thread) => {
       throw new Error('Unable to update participants', { cause })
     }
     console.log('Successfully updated participants')
-   }
-   console.log(`Thread ${thread.id} updated`)
-   console.debug('[client:events:ThreaCreate] finished')
+  }
+  console.log(`Thread ${thread.id} updated`)
+  console.debug('[client:events:ThreaCreate] finished')
 })
 /**
  * Listen for thread updates. This is important to keep questions in sync -- for example, when a post's tags are updated
