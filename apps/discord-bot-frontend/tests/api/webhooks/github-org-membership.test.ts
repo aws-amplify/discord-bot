@@ -8,6 +8,16 @@ import {
   removedPayloadUserDNE,
 } from '../../mock/github-webhook'
 
+test.skip(
+  ({ baseURL }) => !baseURL?.startsWith('http://localhost'),
+  'Skip in live environments'
+)
+
+test.fail(
+  !process.env.GITHUB_WEBHOOK_SECRET,
+  'GITHUB_WEBHOOK_SECRET is not set'
+)
+
 test.describe('POST api/webhooks/github-org-membership', () => {
   test.describe('webhook verification', () => {
     test('should return true with payload for added member', () => {
@@ -90,22 +100,25 @@ test.describe('POST api/webhooks/github-org-membership', () => {
     expect(response.status()).toBe(403)
   })
 
-  /**
-   * @TODO fix this in CI, test runs fine locally
-   */
-  // test('should return 201 if everything is correct', async () => {
-  //   const response = await request(app)
-  //     .post('/api/webhooks/github-org-membership')
-  //     .send(addedPayload1.body)
-  //     .set(addedPayload1.headers)
-  //   expect(response.status).toBe(201)
-  // })
+  test.fixme(
+    'should return 201 if everything is correct',
+    async ({ request }) => {
+      const response = await request.post(
+        '/api/webhooks/github-org-membership',
+        {
+          data: addedPayload1.body,
+          headers: addedPayload1.headers,
+        }
+      )
+      expect(response.status).toBe(201)
+    }
+  )
 
-  // test(`should return 403 if user isn't in db`, async ({ request }) => {
-  //   const response = await request.post('/api/webhooks/github-org-membership', {
-  //     data: addedPayloadUserDNE.body,
-  //     headers: addedPayloadUserDNE.headers,
-  //   })
-  //   expect(response.status()).toBe(403)
-  // })
+  test.fixme(`should return 403 if user isn't in db`, async ({ request }) => {
+    const response = await request.post('/api/webhooks/github-org-membership', {
+      data: addedPayloadUserDNE.body,
+      headers: addedPayloadUserDNE.headers,
+    })
+    expect(response.status()).toBe(403)
+  })
 })
