@@ -23,10 +23,10 @@ ARG APP_NAME="@aws-amplify/discord-bot-frontend"
 ENV APP_NAME=${APP_NAME}
 WORKDIR /workspace
 COPY . .
-RUN --mount=type=secret,id=env,required=true,target=/workspace/.env \
+RUN --mount=type=secret,id=env,required=false,target=/workspace/.env \
   pnpm install --frozen-lockfile --offline --loglevel=error
 # build workspace
-RUN --mount=type=secret,id=env,required=true,target=/workspace/.env \
+RUN --mount=type=secret,id=env,required=false,target=/workspace/.env \
   --mount=type=cache,target=/workspace/node_modules/.cache \
   pnpm run build
 
