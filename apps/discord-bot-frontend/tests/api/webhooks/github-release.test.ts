@@ -1,6 +1,16 @@
 import { test, expect } from '@playwright/test'
 import { mockedCreated, mockedReleased } from '../../mock/github-webhook'
 
+test.skip(
+  ({ baseURL }) => !baseURL?.startsWith('http://localhost'),
+  'Skip in live environments'
+)
+
+test.fail(
+  !process.env.DISCORD_WEBHOOK_URL_RELEASES,
+  'DISCORD_WEBHOOK_URL_RELEASES is not set'
+)
+
 test.describe('GitHub Release webhook', () => {
   test('should not return 401', async ({ request }) => {
     const response = await request.post('/api/webhooks/github-release', {
@@ -24,8 +34,7 @@ test.describe('GitHub Release webhook', () => {
     expect(response.status()).toBe(403)
   })
 
-  /** @todo unskip */
-  test.skip('should return 400 if webhook URL is bad', async ({ request }) => {
+  test.fixme('should return 400 if webhook URL is bad', async ({ request }) => {
     const url = process.env.DISCORD_WEBHOOK_URL_RELEASES
     process.env.DISCORD_WEBHOOK_URL_RELEASES =
       'https://discordapp.com/api/webhooks/bad'
@@ -49,17 +58,17 @@ test.describe('GitHub Release webhook', () => {
     expect(response.status()).toBe(400)
   })
 
-  /** @todo unskip */
-  test.skip('should return 201 if everything is correct', async ({
-    request,
-  }) => {
-    const response = await request.post('/api/webhooks/github-release', {
-      headers: mockedReleased.headers,
-      data: mockedReleased.body,
-    })
+  test.fixme(
+    'should return 201 if everything is correct',
+    async ({ request }) => {
+      const response = await request.post('/api/webhooks/github-release', {
+        headers: mockedReleased.headers,
+        data: mockedReleased.body,
+      })
 
-    expect(response.status()).toBe(201)
-  })
+      expect(response.status()).toBe(201)
+    }
+  )
 
   test(`should return 204 is event action is not 'released'`, async ({
     request,

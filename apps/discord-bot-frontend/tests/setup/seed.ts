@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { init } from '$lib/db'
+import { env } from '../../playwright.config'
 const prisma = new PrismaClient()
 
 export async function seed() {
@@ -36,7 +37,7 @@ export async function seed() {
   const STAFF_ROLE = '1001228846768590934'
   const CONTRIBUTOR_ROLE = '1001228846768590931'
   await prisma.configuration.upsert({
-    where: { id: import.meta.env.VITE_DISCORD_GUILD_ID },
+    where: { id: env.DISCORD_GUILD_ID },
     update: {},
     create: {
       name: 'hey-amplify-e2e',
@@ -75,8 +76,8 @@ export async function seed() {
       },
       guild: {
         connectOrCreate: {
-          where: { id: import.meta.env.VITE_DISCORD_GUILD_ID },
-          create: { id: import.meta.env.VITE_DISCORD_GUILD_ID },
+          where: { id: env.DISCORD_GUILD_ID },
+          create: { id: env.DISCORD_GUILD_ID },
         },
       },
     },
