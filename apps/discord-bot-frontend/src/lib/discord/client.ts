@@ -182,103 +182,6 @@ client.on(Events.MessageCreate, async (message: Message) => {
     )
     thread.send({ embeds: [embed] })
   }
-
-  // capture thread updates in public "help" channels
-  if (
-    message.channel.type === ChannelType.PublicThread &&
-    !message.author.bot &&
-    isThreadWithinHelpChannel(message.channel)
-  ) {
-    let record
-    try {
-      /**
-       * @TODO if we need to backfill the question, we'll need to fetch all messages from the thread first
-       */
-      record = await prisma.question.upsert({
-        where: { threadId: message.channel.id },
-        update: {
-          threadMetaUpdatedAt: message.createdAt as Date,
-        },
-        create: {
-          ownerId: (
-            await message.channel.fetchStarterMessage()
-          ).author.id as string,
-          threadId: message.channel.id,
-          channelName: message.channel.parent!.name,
-          title: message.channel.name,
-          createdAt: message.channel.createdAt as Date,
-          url: message.url,
-          isSolved: message.channel.name.startsWith(PREFIXES.solved),
-          guild: {
-            connect: {
-              id: message.guild?.id,
-            },
-          },
-        },
-        select: {
-          id: true,
-          ownerId: true,
-        },
-      })
-      console.info(`Created/updated question ${record.id}`)
-    } catch (error) {
-      console.error('Unable to create/update Question in db', error)
-    }
-
-    try {
-      /**
-       * add the participants separately
-       */
-      if (record) {
-        const roleIds = message.member?.roles.cache.map((role) => role.id)
-        await prisma.question.update({
-          where: {
-            id: record.id,
-          },
-          data: {
-            // participation record
-            participation: {
-              connectOrCreate: {
-                where: {
-                  questionId_participantId: {
-                    questionId: record.id,
-                    participantId: message.author.id,
-                  },
-                },
-                create: {
-                  // DiscordUser
-                  participant: {
-                    connectOrCreate: {
-                      where: { id: message.author.id },
-                      create: {
-                        id: message.author.id,
-                      },
-                    },
-                  },
-                  // capture roles of the participant at the time of participating
-                  participantRoles: {
-                    connectOrCreate: roleIds?.map((id) => ({
-                      where: {
-                        id: id,
-                      },
-                      create: {
-                        id: id,
-                      },
-                    })),
-                  },
-                },
-              },
-            },
-          },
-        })
-        console.log(
-          `Successfully updated participants for question ${record.id}`
-        )
-      }
-    } catch (error) {
-      console.error(`Unable to update participants`, error)
-    }
-  }
 })
 
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {
@@ -306,7 +209,97 @@ client.on('rateLimit', (info) => {
     `Rate limit hit ${info.timeout ? info.timeout : 'Unknown timeout '}`
   )
 })
+/**
+ * Listen for Thread creation events, used for `amplify-help` channel/forum.
+ */
 
+client.on(Events.ThreadCreate, async (thread) => {
+  console.log('thread created', thread.appliedTags)
+
+  let tagsApplied = undefined
+
+  // TODO: If we need to check if a bot created the thread similar to on `MessageCreate`
+  const owner = await thread.fetchOwner()
+  if (owner?.user?.bot) return
+
+  if (thread?.parent?.type === ChannelType.GuildForum) {
+    const appliedTagIds = thread.appliedTags
+    // get all tags currently applied to the thread
+    tagsApplied = thread.parent.availableTags
+      .filter((tag) => appliedTagIds.includes(tag.id))
+      .map(({ id, name }) => ({ id, name }))
+  }
+
+  let record: Question | undefined
+
+  try {
+    record = await prisma.question.create({
+      data: {
+        ownerId: thread.ownerId as string,
+        threadId: thread.id,
+        channelName: thread.parent!.name,
+        title: thread.name,
+        createdAt: thread.createdAt as Date,
+        url: thread.url,
+        guild: {
+          connect: {
+            id: thread.guild?.id,
+          },
+        },
+        tags: {
+          connectOrCreate: tagsApplied?.map(({ id, name }) => ({
+            where: { id },
+            create: { id, name },
+          })),
+        },
+      },
+    })
+    console.info(`Created question ${record.id}`)
+  } catch (error) {
+    record = undefined
+    console.error('Unable to create Question in db', error)
+  }
+
+  // update the participants (we do this after the question is created/updated to ensure the question exists in the database and has a valid ID to create the participation records with)
+  if (record != undefined) {
+    console.log('Updating participants', thread.id)
+    const messages = await thread.messages.fetch()
+    try {
+      await prisma.question.update({
+        where: {
+          id: record.id,
+        },
+        data: {
+          participation: {
+            connectOrCreate: messages.map((message) => ({
+              where: {
+                questionId_participantId: {
+                  questionId: record!.id,
+                  participantId: message.author.id,
+                },
+              },
+              create: {
+                participant: {
+                  connectOrCreate: {
+                    where: { id: message.author.id },
+                    create: {
+                      id: message.author.id,
+                    },
+                  },
+                },
+              },
+            })),
+          },
+        },
+      })
+    } catch (cause) {
+      throw new Error('Unable to update participants', { cause })
+    }
+    console.log('Successfully updated participants')
+  }
+  console.log(`Thread ${thread.id} updated`)
+  console.debug('[client:events:ThreaCreate] finished')
+})
 /**
  * Listen for thread updates. This is important to keep questions in sync -- for example, when a post's tags are updated
  */
