@@ -1,5 +1,5 @@
 {
-  "name": "@hey-amplify/scripts",
+  "name": "@aws-amplify/discord-bot-scripts",
   "private": true,
   "type": "module",
   "version": "0.1.0",
@@ -9,7 +9,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@hey-amplify/support": "workspace:*",
+    "@aws-amplify/discord-bot-support": "workspace:*",
     "command-line-args": "^5.2.1",
     "command-line-commands": "^3.0.2",
     "command-line-usage": "^6.1.3",

@@ -1,6 +1,6 @@
 import c from 'picocolors'
 import generateUsage from 'command-line-usage'
-import { createSecrets } from '@hey-amplify/support'
+import { createSecrets } from '@aws-amplify/discord-bot-support'
 
 export const name = 'create-secrets'
 export const description = 'Create secrets in SSM from local dotenv files'
