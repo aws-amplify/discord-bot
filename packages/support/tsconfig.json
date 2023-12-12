@@ -1,5 +1,5 @@
 {
-  "extends": "@hey-amplify/tsconfig/base.json",
+  "extends": "@aws-amplify/discord-bot-tsconfig/base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "build",

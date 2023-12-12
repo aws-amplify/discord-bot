@@ -8,8 +8,8 @@
     "deploy-github-actions": "cdk deploy --app \"vite-node src/app-github-actions.ts\""
   },
   "devDependencies": {
-    "@hey-amplify/support": "workspace:*",
-    "@hey-amplify/tsconfig": "workspace:*",
+    "@aws-amplify/discord-bot-support": "workspace:*",
+    "@aws-amplify/discord-bot-tsconfig": "workspace:*",
     "@types/node": "18.7.16",
     "aws-cdk": "2.77.0",
     "aws-cdk-lib": "2.77.0",

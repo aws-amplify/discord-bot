@@ -13,7 +13,7 @@ importers:
 
   .:
     devDependencies:
-      '@hey-amplify/scripts':
+      '@aws-amplify/discord-bot-scripts':
         specifier: workspace:*
         version: link:packages/scripts
       '@typescript-eslint/eslint-plugin':
@@ -110,6 +110,15 @@ importers:
         specifier: ^3.19.1
         version: 3.19.1
     devDependencies:
+      '@aws-amplify/discord-bot-scripts':
+        specifier: workspace:*
+        version: link:../../packages/scripts
+      '@aws-amplify/discord-bot-support':
+        specifier: workspace:*
+        version: link:../../packages/support
+      '@aws-amplify/discord-bot-tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
       '@carbon/charts':
         specifier: ^1.5.2
         version: 1.5.2(d3@7.6.1)(sass@1.69.3)
@@ -122,15 +131,6 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^17.0.3
         version: 17.0.3
-      '@hey-amplify/scripts':
-        specifier: workspace:*
-        version: link:../../packages/scripts
-      '@hey-amplify/support':
-        specifier: workspace:*
-        version: link:../../packages/support
-      '@hey-amplify/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
       '@playwright/test':
         specifier: ^1.37.1
         version: 1.37.1
@@ -234,10 +234,10 @@ importers:
         specifier: ^1.1.0
         version: 1.5.0
     devDependencies:
-      '@hey-amplify/support':
+      '@aws-amplify/discord-bot-support':
         specifier: workspace:*
         version: link:../packages/support
-      '@hey-amplify/tsconfig':
+      '@aws-amplify/discord-bot-tsconfig':
         specifier: workspace:*
         version: link:../packages/tsconfig
       '@types/node':
@@ -273,7 +273,7 @@ importers:
 
   packages/scripts:
     dependencies:
-      '@hey-amplify/support':
+      '@aws-amplify/discord-bot-support':
         specifier: workspace:*
         version: link:../support
       command-line-args:
@@ -291,12 +291,12 @@ importers:
 
   packages/support:
     devDependencies:
+      '@aws-amplify/discord-bot-tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@aws-sdk/client-ssm':
         specifier: ^3.142.0
         version: 3.142.0
-      '@hey-amplify/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
       '@types/node':
         specifier: ^18.6.4
         version: 18.6.5

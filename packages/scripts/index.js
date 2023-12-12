@@ -16,7 +16,7 @@ const { command, argv } = parseCommands(
 
 const sections = [
   {
-    header: '@hey-amplify/scripts',
+    header: '@aws-amplify/discord-bot-scripts',
     content: 'Collection of scripts',
   },
   {
