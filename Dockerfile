@@ -7,7 +7,7 @@ ENV CI=true
 RUN apk add --no-cache libc6-compat curl
 # @todo - remove this after upgrading prisma to ~4.8.0
 # https://github.com/prisma/prisma/issues/16553#issuecomment-1353302617
-RUN apk add --update --no-cache openssl1.1-compat
+RUN apk add --no-cache openssl1.1-compat
 RUN apk update
 
 WORKDIR /workspace
