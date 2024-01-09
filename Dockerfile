@@ -5,7 +5,11 @@ FROM --platform=linux/amd64 node:${NODE_VERSION}-alpine${ALPINE_VERSION} as base
 ENV CI=true
 # for turbo - https://turbo.build/repo/docs/handbook/deploying-with-docker#example
 RUN apk add --no-cache libc6-compat curl
+# @todo - remove this after upgrading prisma to ~4.8.0
+# https://github.com/prisma/prisma/issues/16553#issuecomment-1353302617
+RUN apk add --update --no-cache openssl1.1-compat
 RUN apk update
+
 WORKDIR /workspace
 # enable corepack for pnpm
 RUN corepack enable
