@@ -2,14 +2,8 @@
 node_modules
 *.log
 
-.env
-.env.*
+.env*
 !.env.sample
-cypress.env.json
-
-notes.md
-
-/prisma/data
-/build
 
 packages/**/build
+apps/**/build
