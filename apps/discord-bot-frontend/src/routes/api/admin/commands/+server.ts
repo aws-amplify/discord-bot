@@ -4,7 +4,7 @@ import {
   registerCommands,
   unregisterCommand,
   commands,
-} from '$discord/commands'
+} from '$lib/discord/commands'
 
 export const POST: RequestHandler = async ({ locals }) => {
   const list = await registerCommands(undefined, locals.guildId)

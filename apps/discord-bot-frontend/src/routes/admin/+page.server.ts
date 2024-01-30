@@ -15,7 +15,7 @@ import { env } from '$env/dynamic/private'
 import {
   commands as bank,
   type Command as CommandType,
-} from '$discord/commands'
+} from '$lib/discord/commands'
 import { prisma } from '$lib/db'
 import { FEATURE_TYPES } from '$lib/constants'
 import { type PageServerLoad } from './$types'

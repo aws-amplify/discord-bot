@@ -34,11 +34,6 @@ export default defineConfig({
     'import.meta.vitest': 'undefined',
   },
   plugins: [sveltekit()],
-  resolve: {
-    alias: {
-      $discord: relative('./src/lib/discord'),
-    },
-  },
   ssr: {
     noExternal: process.env.NODE_ENV === 'production' ? ['@carbon/charts'] : []
   },

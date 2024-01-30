@@ -1,7 +1,7 @@
 import { resolve } from 'node:path'
 import adapter from '@sveltejs/adapter-node'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { optimizeCarbonImports, optimizeCss } from 'carbon-preprocess-svelte'
+import { optimizeCarbonImports } from 'carbon-preprocess-svelte'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
