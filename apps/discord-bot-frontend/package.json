@@ -46,8 +46,6 @@
     "@aws-amplify/discord-bot-tsconfig": "workspace:*",
     "@carbon/charts": "^1.5.2",
     "@carbon/charts-svelte": "^1.13.25",
-    "@commitlint/cli": "^17.0.3",
-    "@commitlint/config-conventional": "^17.0.3",
     "@faker-js/faker": "^7.3.0",
     "@playwright/test": "^1.37.1",
     "@sveltejs/adapter-node": "^4.0.1",
