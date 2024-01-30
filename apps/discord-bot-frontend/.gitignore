@@ -1,6 +1,6 @@
 # ignore SvelteKit output
 /.svelte-kit
-/build
+# /build
 # ignore test state files
 /playwright/*
 # ignore test report files

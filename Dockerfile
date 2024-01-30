@@ -25,6 +25,10 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm-store \
 FROM fetcher as builder
 ARG APP_NAME="@aws-amplify/discord-bot-frontend"
 ENV APP_NAME=${APP_NAME}
+# expose arguments for VITE environment variables
+ARG VITE_HOST=http://localhost:3000
+ARG VITE_NEXTAUTH_URL=http://localhost:3000
+ARG VITE_DISCORD_GUILD_ID=976838371383083068
 WORKDIR /workspace
 COPY . .
 RUN --mount=type=secret,id=env,required=false,target=/workspace/.env \
