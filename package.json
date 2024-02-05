@@ -90,9 +90,6 @@
         "react",
         "react-dom"
       ]
-    },
-    "patchedDependencies": {
-      "@aws-sdk/util-user-agent-node@3.127.0": "patches/@aws-sdk__util-user-agent-node@3.127.0.patch"
     }
   },
   "lint-staged": {
