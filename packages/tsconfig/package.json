@@ -6,12 +6,6 @@
     "base.json"
   ],
   "peerDependencies": {
-    "typescript": "^4.7.4",
-    "vitest": "^0.20.3"
-  },
-  "peerDependenciesMeta": {
-    "vitest": {
-      "optional": true
-    }
+    "typescript": "^4.7.4"
   }
 }
