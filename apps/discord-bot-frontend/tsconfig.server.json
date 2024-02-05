@@ -8,8 +8,6 @@
     "paths": {
       "$lib": ["./src/lib"],
       "$lib/*": ["./src/lib/*"],
-      "$discord": ["./src/lib/discord"],
-      "$discord/*": ["./src/lib/discord/*"]
     },
     "skipLibCheck": true,
     "sourceMap": true,

@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import adapter from '@sveltejs/adapter-node'
-import { vitePreprocess } from '@sveltejs/kit/vite'
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { optimizeCarbonImports } from 'carbon-preprocess-svelte'
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -14,11 +14,9 @@ const config = {
     // You can create optimized builds for different platforms by
     // specifying a different adapter
     adapter: adapter(),
-
     files: {
       assets: resolve('public'),
     },
-
     csp: {
       mode: 'auto',
       directives: {

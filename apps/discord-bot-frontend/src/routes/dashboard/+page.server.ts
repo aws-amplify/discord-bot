@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit'
 import { Routes } from 'discord-api-types/v10'
-import { api } from '$discord/api'
+import { api } from '$lib/discord/api'
 import { prisma } from '$lib/db'
 import { getGitHubMembers } from '$lib/github/get-github-members'
 import { getStaffContributors } from './helpers/get-staff-contributors'

@@ -1,4 +1,4 @@
-import { createBot } from '$discord/client'
+import { createBot } from '$lib/discord/client'
 import { init } from '$lib/db'
 import express from 'express'
 

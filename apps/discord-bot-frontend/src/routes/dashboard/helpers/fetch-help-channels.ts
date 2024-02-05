@@ -1,5 +1,5 @@
 import { Routes } from 'discord-api-types/v10'
-import { api } from '$discord/api'
+import { api } from '$lib/discord/api'
 import { isHelpChannel } from '$lib/discord/support'
 import type { APIPartialChannel } from 'discord-api-types/v10'
 import type { ForumChannel, TextChannel } from 'discord.js'

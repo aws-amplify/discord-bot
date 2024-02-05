@@ -33,19 +33,8 @@ export default defineConfig({
   define: {
     'import.meta.vitest': 'undefined',
   },
-  optimizeDeps: {
-    esbuildOptions: {
-      target: 'esnext',
-    },
-    include: ['@carbon/charts'],
-  },
   plugins: [sveltekit()],
-  resolve: {
-    alias: {
-      $discord: relative('./src/lib/discord'),
-    },
-  },
   ssr: {
-    noExternal: ['@carbon/charts', 'carbon-components'],
+    noExternal: process.env.NODE_ENV === 'production' ? ['@carbon/charts'] : []
   },
 })
