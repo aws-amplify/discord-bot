@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
-import { ACCESS_LEVELS } from '$lib/constants'
-import { init } from '$lib/db'
+import { ACCESS_LEVELS } from '../../src/lib/constants'
+import { init } from '../../src/lib/db'
 import { env } from '../../playwright.config'
 const prisma = new PrismaClient()
 

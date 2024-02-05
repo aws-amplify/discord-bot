@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { GUILD_COOKIE } from '$lib/constants'
+import { GUILD_COOKIE } from '../src/lib/constants'
 import { env } from '../playwright.config'
 
 test.describe('guild cookie', () => {
