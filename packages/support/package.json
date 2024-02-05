@@ -19,15 +19,14 @@
     "clean": "rimraf build",
     "prepublishOnly": "pnpm build"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@aws-sdk/client-ssm": "^3.142.0",
     "@aws-amplify/discord-bot-tsconfig": "workspace:*",
+    "@aws-sdk/client-ssm": "^3.142.0",
     "@types/node": "^18.6.4",
     "fast-glob": "^3.2.11",
     "rimraf": "^3.0.2",
     "typescript": "^4.7.4",
-    "vite": "^3.0.4",
+    "vite": "^5.0.12",
     "vitest": "^0.20.3"
   }
 }
