@@ -101,36 +101,8 @@ export class WAF extends wafv2.CfnWebACL {
           },
         },
         {
-          name: 'DenyRequestsForSqlFiles',
-          priority: 3,
-          action: {
-            block: {},
-          },
-          statement: {
-            byteMatchStatement: {
-              // if request ends in .sql
-              searchString: '.sql',
-              fieldToMatch: {
-                uriPath: {},
-              },
-              positionalConstraint: 'ENDS_WITH',
-              textTransformations: [
-                {
-                  priority: 0,
-                  type: 'NONE',
-                },
-              ],
-            },
-          },
-          visibilityConfig: {
-            cloudWatchMetricsEnabled: true,
-            metricName: 'MetricForWaf-DenyRequestsForSqlFiles',
-            sampledRequestsEnabled: true,
-          },
-        },
-        {
           name: 'DenyRequestsToWpAdmin',
-          priority: 4,
+          priority: 3,
           action: {
             block: {},
           },
@@ -158,7 +130,7 @@ export class WAF extends wafv2.CfnWebACL {
         },
         {
           name: 'DenyRequestsToWpContent',
-          priority: 5,
+          priority: 4,
           action: {
             block: {},
           },
@@ -186,7 +158,7 @@ export class WAF extends wafv2.CfnWebACL {
         },
         {
           name: 'DenyRequestsForSwagger',
-          priority: 6,
+          priority: 5,
           action: {
             block: {},
           },
@@ -214,12 +186,63 @@ export class WAF extends wafv2.CfnWebACL {
         },
       ],
     })
+
+    this.ignoreFileExtension('.sql')
+    this.ignoreFileExtension('.zip')
+    this.ignoreFileExtension('.rar')
+    this.ignoreFileExtension('.axd')
+    this.ignoreFileExtension('.txt')
+    this.ignoreFileExtension('.md')
+    this.ignoreFileExtension('.yml')
+    this.ignoreFileExtension('.tar.gz')
+  }
+
+  private get nextPriority() {
+    const rules = this.rules as wafv2.CfnWebACL.RuleProperty[]
+    return rules.reduce((acc, curr) => {
+      if (acc > curr.priority) return acc
+      else return curr.priority + 1
+    }, 0)
   }
 
   public addAssociation(logicalId: string, resourceArn: string) {
     return new wafv2.CfnWebACLAssociation(this, logicalId, {
       resourceArn,
       webAclArn: this.attrArn,
+    })
+  }
+
+  public ignoreFileExtension(extension: `.${string}`) {
+    const display = extension.replace(/^\./, '')
+    const rules = this.rules as wafv2.CfnWebACL.RuleProperty[]
+
+    rules.push({
+      name: `DenyRequestsFor${display}Files`,
+      priority: this.nextPriority,
+      action: {
+        block: {},
+      },
+      statement: {
+        byteMatchStatement: {
+          // if request ends in .zip
+          searchString: extension,
+          fieldToMatch: {
+            uriPath: {},
+          },
+          positionalConstraint: 'ENDS_WITH',
+          textTransformations: [
+            {
+              priority: 0,
+              type: 'NONE',
+            },
+          ],
+        },
+      },
+      visibilityConfig: {
+        cloudWatchMetricsEnabled: true,
+        metricName: `MetricForWaf-DenyRequestsFor${display}Files`,
+        sampledRequestsEnabled: true,
+      }, 
     })
   }
 }
