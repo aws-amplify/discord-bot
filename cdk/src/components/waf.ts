@@ -194,7 +194,8 @@ export class WAF extends wafv2.CfnWebACL {
     this.ignoreFileExtension('.txt')
     this.ignoreFileExtension('.md')
     this.ignoreFileExtension('.yml')
-    this.ignoreFileExtension('.tar.gz')
+    this.ignoreFileExtension('.gz')
+    this.ignoreFileExtension('.tar')
   }
 
   private get nextPriority() {
@@ -242,7 +243,7 @@ export class WAF extends wafv2.CfnWebACL {
         cloudWatchMetricsEnabled: true,
         metricName: `MetricForWaf-DenyRequestsFor${display}Files`,
         sampledRequestsEnabled: true,
-      }, 
+      },
     })
   }
 }
