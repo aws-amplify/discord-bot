@@ -50,6 +50,7 @@ RUN adduser --system --uid 1001 amplifyuser
 USER amplifyuser
 # copy files needed to run the app
 COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/package.json .
+COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/scripts/start.sh ./scripts/start.sh
 COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/node_modules/ ./node_modules
 COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/build/ ./build
 # start the app
