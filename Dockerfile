@@ -17,7 +17,6 @@ RUN corepack enable
 FROM base as fetcher
 # pnpm fetch only requires lockfile, but we'll need to build workspaces
 COPY pnpm*.yaml ./
-COPY patches ./patches
 # mount pnpm store as cache & fetch dependencies
 RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm-store \
   pnpm fetch --ignore-scripts
