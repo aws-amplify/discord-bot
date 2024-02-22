@@ -1,6 +1,6 @@
+import type { Handle } from '@sveltejs/kit'
 import { SvelteKitAuth } from '@auth/sveltekit'
 import { config } from '$lib/auth/config'
-import type { Handle } from '@sveltejs/kit'
 
 /**
  * @todo use session callback to extend session?

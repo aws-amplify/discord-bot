@@ -1,6 +1,6 @@
+import type { Contributor } from '../types'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
-import type { Contributor } from '../types'
 
 export async function getAllContributors(
   guildId: string

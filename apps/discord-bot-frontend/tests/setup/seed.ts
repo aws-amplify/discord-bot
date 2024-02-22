@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { ACCESS_LEVELS } from '../../src/lib/constants'
 import { init } from '../../src/lib/db'
 import { env } from '../../playwright.config'
+
 const prisma = new PrismaClient()
 
 export async function seed() {

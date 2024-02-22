@@ -1,7 +1,7 @@
+import { createIntegrationHrefFromCode } from '../breadcrumbs'
+import { type PageServerLoad } from './$types'
 import { prisma } from '$lib/db'
 import { FEATURE_TYPES } from '$lib/constants'
-import { type PageServerLoad } from './$types'
-import { createIntegrationHrefFromCode } from '../breadcrumbs'
 
 export const load: PageServerLoad = async ({ locals }) => {
   const integrations = await prisma.configurationFeature.findMany({

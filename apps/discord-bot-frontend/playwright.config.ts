@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
-import { loadEnvVars } from './vite.config'
 import { z } from 'zod'
+import { loadEnvVars } from './vite.config'
 
 loadEnvVars()
 

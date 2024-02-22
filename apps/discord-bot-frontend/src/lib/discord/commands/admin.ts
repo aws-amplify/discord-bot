@@ -1,6 +1,15 @@
+import type {
+  Message,
+  ChatInputCommandInteraction,
+  InteractionReplyOptions,
+  ThreadChannel,
+} from 'discord.js'
+import type { Question } from '@prisma/client'
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { faker } from '@faker-js/faker'
 import { EmbedBuilder, PermissionFlagsBits } from 'discord.js'
+import { isThreadWithinHelpChannel } from '../support'
+import { repositoriesWithDiscussions as repositories } from './_repositories'
 import { getUserAccess } from '$lib/discord/get-user-access'
 import { prisma } from '$lib/db'
 import {
@@ -9,15 +18,6 @@ import {
   markAnswered,
   lockDiscussion,
 } from '$lib/github/queries'
-import { repositoriesWithDiscussions as repositories } from './_repositories'
-import { isThreadWithinHelpChannel } from '../support'
-import type {
-  Message,
-  ChatInputCommandInteraction,
-  InteractionReplyOptions,
-  ThreadChannel,
-} from 'discord.js'
-import type { Question } from '@prisma/client'
 
 const userIdToUsername = new Map<string, User>()
 

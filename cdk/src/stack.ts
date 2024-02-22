@@ -1,5 +1,7 @@
-import { Stack, StackProps, Tags, RemovalPolicy } from 'aws-cdk-lib'
-import { Construct } from 'constructs'
+import type { StackProps} from 'aws-cdk-lib';
+import type { Construct } from 'constructs'
+import type { AmplifyAwsSubdomainProps } from './components/amplify-aws-subdomain'
+import { Stack, Tags, RemovalPolicy } from 'aws-cdk-lib'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as efs from 'aws-cdk-lib/aws-efs'
@@ -10,8 +12,6 @@ import { PROJECT_ROOT } from './constants'
 import { getSvelteKitEnvironmentVariables } from './support'
 import { AmplifyAwsSubdomain } from './components/amplify-aws-subdomain'
 import { PrivacyNotificationFunction } from './components/privacy-notification-function/privacy-notification-function'
-
-import type { AmplifyAwsSubdomainProps } from './components/amplify-aws-subdomain'
 
 type HeyAmplifyStackProps = Partial<StackProps> & {
   subdomain: AmplifyAwsSubdomainProps | undefined

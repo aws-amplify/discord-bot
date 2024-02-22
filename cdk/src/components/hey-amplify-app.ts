@@ -1,19 +1,19 @@
+import type * as s3 from 'aws-cdk-lib/aws-s3'
+import type { AmplifyAwsSubdomain } from './amplify-aws-subdomain'
+import type * as efs from 'aws-cdk-lib/aws-efs'
+import type * as ssm from 'aws-cdk-lib/aws-ssm'
 import { Construct } from 'constructs'
 import { Port } from 'aws-cdk-lib/aws-ec2'
 import * as cdk from 'aws-cdk-lib'
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as ecs from 'aws-cdk-lib/aws-ecs'
 import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns'
-import * as efs from 'aws-cdk-lib/aws-efs'
 import * as elb from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as route53 from 'aws-cdk-lib/aws-route53'
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets'
-import * as ssm from 'aws-cdk-lib/aws-ssm'
 import { v4 as uuid } from 'uuid'
 import { WAF } from './waf'
-import type * as s3 from 'aws-cdk-lib/aws-s3'
-import type { AmplifyAwsSubdomain } from './amplify-aws-subdomain'
 
 interface DockerProps {
   name: string

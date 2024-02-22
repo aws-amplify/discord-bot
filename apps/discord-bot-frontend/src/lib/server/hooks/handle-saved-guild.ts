@@ -1,9 +1,9 @@
-import cookie from 'cookie'
+import type { Handle, RequestEvent } from '@sveltejs/kit'
+import * as cookie from 'cookie'
 import { Routes } from 'discord.js'
 import { GUILD_COOKIE } from '$lib/constants'
 import { api } from '$lib/discord/api'
 import { getBotGuilds } from '$lib/discord/get-bot-guilds'
-import type { Handle, RequestEvent } from '@sveltejs/kit'
 
 /**
  * Parse cookies from the event and returns the value of the guild cookie

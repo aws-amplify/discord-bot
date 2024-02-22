@@ -1,10 +1,10 @@
+import type { RequestHandler } from '@sveltejs/kit'
 import { json } from '@sveltejs/kit'
+import { verifyGithubWebhookEvent } from '../_verifyWebhook'
 import { addRole } from '$lib/discord/roles/addRole'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
 import { removeRole } from '$lib/discord/roles/removeRole'
-import { verifyGithubWebhookEvent } from '../_verifyWebhook'
-import type { RequestHandler } from '@sveltejs/kit'
 
 async function getDiscordUserId(ghUserId: string) {
   const data = await prisma.user.findFirst({

@@ -1,3 +1,4 @@
+import type { PutParameterCommandInput } from '@aws-sdk/client-ssm'
 import {
   SSMClient,
   GetParametersByPathCommand,
@@ -5,7 +6,6 @@ import {
   PutParameterCommand,
 } from '@aws-sdk/client-ssm'
 import { loadEnv } from 'vite'
-import type { PutParameterCommandInput } from '@aws-sdk/client-ssm'
 
 const REGION = process.env.REGION || 'us-east-1'
 const PROJECT_NAME = 'hey-amplify'

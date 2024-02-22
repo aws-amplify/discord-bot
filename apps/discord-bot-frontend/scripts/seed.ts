@@ -1,8 +1,8 @@
+import type { DiscordUser, DiscordRole, Prisma } from '@prisma/client'
 import { faker } from '@faker-js/faker'
 import task from 'tasuku'
 import { prisma, init } from '$lib/db'
 import { ACCESS_LEVELS } from '$lib/constants'
-import type { DiscordUser, DiscordRole, Prisma } from '@prisma/client'
 
 function createFakeUsers(): Prisma.DiscordUserCreateInput[] {
   return Array.from({ length: 10 }).map(() => ({

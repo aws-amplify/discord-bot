@@ -1,6 +1,6 @@
-import { ACCESS_LEVELS } from '$lib/constants'
-import { COHORTS } from '../constants'
 import type { Question } from '../types'
+import { COHORTS } from '../constants'
+import { ACCESS_LEVELS } from '$lib/constants'
 
 /**
  * Group questions by cohort. This will group questions by their answer's cohort.

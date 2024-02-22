@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import prettier from 'prettier'
+import { format } from 'prettier'
 
 test.describe('GET /api/p/color/[code]', () => {
   test('should return 200 if color code is valid', async ({ request }) => {
@@ -13,8 +13,8 @@ test.describe('GET /api/p/color/[code]', () => {
   test.skip('should return an SVG if color code is valid', async ({ request }) => {
     const response = await request.get('/api/p/color/f3f.svg')
     expect(response.headers()['content-type']).toBe('image/svg+xml')
-    expect(prettier.format(await response.text())).toBe(
-      prettier.format(
+    expect(format(await response.text())).toBe(
+      format(
         '<svg xmlns="http://www.w3.org/2000/svg" fill="#f3f" viewBox="0 0 100 100"><circle cx="50%" cy="50%" r="40%"/></svg>'
       )
     )

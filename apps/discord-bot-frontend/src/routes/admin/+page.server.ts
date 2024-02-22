@@ -11,6 +11,9 @@ import {
   type RESTGetAPIGuildRolesResult,
   type RESTGetAPIApplicationCommandResult,
 } from 'discord-api-types/v10'
+import { api } from '../api/_discord'
+import { type PageServerLoad } from './$types'
+import { tabs } from './tabs'
 import { env } from '$env/dynamic/private'
 import {
   commands as bank,
@@ -18,9 +21,6 @@ import {
 } from '$lib/discord/commands'
 import { prisma } from '$lib/db'
 import { FEATURE_TYPES } from '$lib/constants'
-import { type PageServerLoad } from './$types'
-import { api } from '../api/_discord'
-import { tabs } from './tabs'
 
 type AdminPageReturn = {
   commands: Array<

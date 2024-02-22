@@ -1,5 +1,5 @@
-import { api } from '$lib/discord/api'
 import { Routes } from 'discord-api-types/v10'
+import { api } from '$lib/discord/api'
 
 /** removes a role from a given user  */
 export async function removeRole(

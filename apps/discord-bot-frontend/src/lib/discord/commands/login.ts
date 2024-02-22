@@ -1,8 +1,8 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
 import type {
   ChatInputCommandInteraction,
   InteractionReplyOptions,
 } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
 
 export const config = new SlashCommandBuilder()
   .setName('login')

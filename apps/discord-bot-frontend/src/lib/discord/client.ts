@@ -1,3 +1,4 @@
+import type { Question } from '@prisma/client'
 import {
   Client,
   GatewayIntentBits,
@@ -10,7 +11,6 @@ import {
   type ThreadChannel,
   type Guild,
 } from 'discord.js'
-import { prisma } from '$lib/db'
 import {
   commands,
   createCommandFeatures,
@@ -18,9 +18,9 @@ import {
 } from './commands'
 import { PREFIXES } from './commands/thread'
 import { isHelpChannel, isThreadWithinHelpChannel } from './support'
+import { prisma } from '$lib/db'
 import { integrations } from '$lib/features/index'
 import { FEATURE_TYPES } from '$lib/constants'
-import type { Question } from '@prisma/client'
 
 export const client = new Client({
   intents: [

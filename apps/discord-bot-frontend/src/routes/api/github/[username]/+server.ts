@@ -1,5 +1,5 @@
-import { createOctokit } from '$lib/github/create-octokit'
 import type { RequestHandler } from '@sveltejs/kit'
+import { createOctokit } from '$lib/github/create-octokit'
 
 export const GET: RequestHandler = async ({ params }) => {
   const octokit = await createOctokit()

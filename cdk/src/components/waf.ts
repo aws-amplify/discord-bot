@@ -1,4 +1,4 @@
-import { Construct } from 'constructs'
+import type { Construct } from 'constructs'
 import * as wafv2 from 'aws-cdk-lib/aws-wafv2'
 
 type WAFProps = {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /// <reference types="@sveltejs/kit" />
-import * as Auth from '@auth/core/types'
 import type { APIGuild } from 'discord.js'
+import type * as Auth from '@auth/core/types'
 
 interface User extends Auth.User {
   id: string

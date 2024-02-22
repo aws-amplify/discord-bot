@@ -1,13 +1,13 @@
+import type { APIGuildPreview } from 'discord-api-types/v10'
+import type { PageServerLoad } from './$types'
 import { error } from '@sveltejs/kit'
 import { Routes } from 'discord-api-types/v10'
-import { api } from '$lib/discord/api'
-import { prisma } from '$lib/db'
-import { getGitHubMembers } from '$lib/github/get-github-members'
 import { getStaffContributors } from './helpers/get-staff-contributors'
 import { getAllContributors } from './helpers/get-all-contributors'
 import { fetchHelpChannels } from './helpers/fetch-help-channels'
-import type { APIGuildPreview } from 'discord-api-types/v10'
-import type { PageServerLoad } from './$types'
+import { api } from '$lib/discord/api'
+import { prisma } from '$lib/db'
+import { getGitHubMembers } from '$lib/github/get-github-members'
 
 export const load: PageServerLoad = async ({ locals }) => {
   console.debug('[dashboard] server load')

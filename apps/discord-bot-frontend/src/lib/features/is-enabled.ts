@@ -1,5 +1,5 @@
+import type { FEATURE_CODES } from '$lib/constants'
 import { prisma } from '$lib/db'
-import { FEATURE_CODES } from '$lib/constants'
 
 export const isEnabled = async (
   code: keyof typeof FEATURE_CODES,

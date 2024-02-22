@@ -1,5 +1,5 @@
 import { type RequestHandler } from '@sveltejs/kit'
-import cookie from 'cookie'
+import * as cookie from 'cookie'
 import { GUILD_COOKIE } from '$lib/constants'
 
 export const POST: RequestHandler = async ({ request, locals }) => {
