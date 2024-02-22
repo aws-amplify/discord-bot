@@ -17,7 +17,6 @@ RUN corepack enable
 FROM base as fetcher
 # pnpm fetch only requires lockfile, but we'll need to build workspaces
 COPY pnpm*.yaml ./
-COPY patches ./patches
 # mount pnpm store as cache & fetch dependencies
 RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm-store \
   pnpm fetch --ignore-scripts
@@ -51,6 +50,8 @@ RUN adduser --system --uid 1001 amplifyuser
 USER amplifyuser
 # copy files needed to run the app
 COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/package.json .
+COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/scripts/start.sh ./scripts/start.sh
+COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/prisma ./prisma
 COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/node_modules/ ./node_modules
 COPY --chown=amplifyuser:amplifygroup --from=deployer /workspace/out/build/ ./build
 # start the app
