@@ -80,7 +80,11 @@
     },
     "rules": {
       "@typescript-eslint/prefer-ts-expect-error": "warn",
-      "@typescript-eslint/no-non-null-assertion": "off"
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/consistent-type-imports": ["error", {
+        "prefer": "type-imports",
+        "fixStyle": "separate-type-imports"
+      }]
     }
   },
   "packageManager": "pnpm@8.10.5",
