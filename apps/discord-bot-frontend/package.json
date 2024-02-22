@@ -17,7 +17,7 @@
     "seed": "vite-node ./scripts/seed.ts",
     "prepare": "svelte-kit sync"
   },
-  "dependencies": { 
+  "dependencies": {
     "@auth/core": "^0.15.2",
     "@auth/sveltekit": "^0.3.6",
     "@aws-crypto/sha256-js": "^2.0.1",
