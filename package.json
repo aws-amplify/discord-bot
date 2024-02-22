@@ -22,6 +22,8 @@
     "@typescript-eslint/parser": "^6.20.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-svelte3": "^4.0.0",
     "lint-staged": "^15.2.0",
     "prettier": "^3.2.4",
@@ -47,12 +49,15 @@
     "extends": [
       "eslint:recommended",
       "prettier",
+      "plugin:import/recommended",
+      "plugin:import/typescript",
       "plugin:@typescript-eslint/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
       "ecmaVersion": 2022,
-      "sourceType": "module"
+      "sourceType": "module",
+      "project": "./tsconfig.eslint.json"
     },
     "env": {
       "browser": true,
@@ -76,15 +81,46 @@
       }
     ],
     "settings": {
-      "svelte3/typescript": true
+      "svelte3/typescript": true,
+      "import/resolver": {
+        "typescript": {},
+        "node": {}
+      }
     },
     "rules": {
       "@typescript-eslint/prefer-ts-expect-error": "warn",
       "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/consistent-type-imports": ["error", {
-        "prefer": "type-imports",
-        "fixStyle": "separate-type-imports"
-      }]
+      "@typescript-eslint/consistent-type-exports": [
+        "error",
+        {
+          "fixMixedExportsWithInlineTypeSpecifier": false
+        }
+      ],
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        {
+          "prefer": "type-imports"
+        }
+      ],
+      "import/first": "error",
+      "import/newline-after-import": "error",
+      "import/no-default-export": "error",
+      "import/order": [
+        "error",
+        {
+          "newlines-between": "never",
+          "groups": [
+            "type",
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+            "object"
+          ]
+        }
+      ]
     }
   },
   "packageManager": "pnpm@8.10.5",
