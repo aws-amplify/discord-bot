@@ -104,7 +104,8 @@
       ],
       "import/first": "error",
       "import/newline-after-import": "error",
-      "import/no-default-export": "error",
+      "import/no-default-export": "warn",
+      "import/no-unresolved": "off",
       "import/order": [
         "error",
         {
