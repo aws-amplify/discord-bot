@@ -1,6 +1,6 @@
 import { prisma } from '$lib/db'
 import { FEATURE_TYPES } from '$lib/constants'
-import { type PageServerLoad } from './$types'
+import type { PageServerLoad } from './$types'
 import { createIntegrationHrefFromCode } from '../breadcrumbs'
 
 export const load: PageServerLoad = async ({ locals }) => {
