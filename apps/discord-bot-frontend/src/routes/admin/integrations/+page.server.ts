@@ -1,5 +1,5 @@
 import { createIntegrationHrefFromCode } from '../breadcrumbs'
-import { type PageServerLoad } from './$types'
+import type { PageServerLoad } from './$types'
 import { prisma } from '$lib/db'
 import { FEATURE_TYPES } from '$lib/constants'
 
