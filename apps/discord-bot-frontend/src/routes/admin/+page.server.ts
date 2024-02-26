@@ -1,3 +1,4 @@
+import type { PageServerLoad } from './$types'
 import { error } from '@sveltejs/kit'
 import {
   type Configuration,
@@ -12,7 +13,6 @@ import {
   type RESTGetAPIApplicationCommandResult,
 } from 'discord-api-types/v10'
 import { api } from '../api/_discord'
-import type { PageServerLoad } from './$types'
 import { tabs } from './tabs'
 import { env } from '$env/dynamic/private'
 import {
