@@ -1,5 +1,5 @@
-import { getMonday } from './get-monday'
 import type { TimePeriod, Question } from '../types'
+import { getMonday } from './get-monday'
 
 export type GroupByDateOptions = {
   /**

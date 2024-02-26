@@ -1,7 +1,7 @@
+import type { Question } from '../types'
 import { filterQuestionsByDateRange } from './filter-questions-by-date-range'
 import { filterQuestionsByChannel } from './filter-questions-by-channel'
 import { filterQuestionsByTag } from './filter-questions-by-tag'
-import type { Question } from '../types'
 
 type DateRange = [Date, Date]
 type FilterOptions = {

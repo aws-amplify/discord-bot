@@ -1,6 +1,6 @@
+import type { Contributor } from '../types'
 import { filterQuestionsByChannel } from './filter-questions-by-channel'
 import { filterQuestionsByDateRange } from './filter-questions-by-date-range'
-import type { Contributor } from '../types'
 
 /**
  * Filter answers by channel and date range

@@ -1,6 +1,6 @@
+import type { ChatInputCommandInteraction } from 'discord.js'
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { repositories } from './_repositories'
-import type { ChatInputCommandInteraction } from 'discord.js'
 
 export const config = new SlashCommandBuilder()
   .setName('github')

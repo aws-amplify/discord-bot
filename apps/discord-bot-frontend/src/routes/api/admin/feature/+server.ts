@@ -1,6 +1,6 @@
+import type { FEATURE_CODES } from '$lib/constants'
 import { type RequestHandler } from '@sveltejs/kit'
 import { prisma } from '$lib/db'
-import { FEATURE_CODES } from '$lib/constants'
 
 type Payload = {
   /**

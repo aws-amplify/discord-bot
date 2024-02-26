@@ -1,7 +1,7 @@
-import { writable } from 'svelte/store'
-import { v4 as uuid } from 'uuid'
 import type { Readable } from 'svelte/store'
 import type { ToastNotificationProps } from 'carbon-components-svelte/types/Notification/ToastNotification.svelte'
+import { writable } from 'svelte/store'
+import { v4 as uuid } from 'uuid'
 
 type Notification = ToastNotificationProps & {
   id: string

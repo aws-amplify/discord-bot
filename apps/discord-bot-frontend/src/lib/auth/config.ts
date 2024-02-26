@@ -1,3 +1,5 @@
+import type { AppSession } from '../../app'
+import type { SvelteKitAuthConfig } from '@auth/sveltekit'
 import GitHub from '@auth/core/providers/github'
 import Discord from '@auth/core/providers/discord'
 import { get } from 'svelte/store'
@@ -5,8 +7,6 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { getUserAccess } from '$lib/discord/get-user-access'
 import { prisma } from '$lib/db'
 import { guild } from '$lib/store'
-import type { AppSession } from '../../app'
-import type { SvelteKitAuthConfig } from '@auth/sveltekit'
 
 export const config: SvelteKitAuthConfig = {
   adapter: PrismaAdapter(prisma),

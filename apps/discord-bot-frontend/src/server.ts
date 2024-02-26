@@ -1,6 +1,6 @@
+import express from 'express'
 import { createBot } from '$lib/discord/client'
 import { init } from '$lib/db'
-import express from 'express'
 
 // export for e2e tests
 export const app = express()

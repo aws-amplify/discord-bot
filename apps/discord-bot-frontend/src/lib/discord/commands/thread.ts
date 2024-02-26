@@ -1,14 +1,14 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { EmbedBuilder, MessageType } from 'discord.js'
-import { prisma } from '$lib/db'
-import { isThreadWithinHelpChannel } from '../support'
-import { isAdminOrStaff } from '../is-admin-or-staff'
 import type {
   ChatInputCommandInteraction,
   GuildMember,
   ThreadChannel,
   InteractionReplyOptions,
 } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { EmbedBuilder, MessageType } from 'discord.js'
+import { isThreadWithinHelpChannel } from '../support'
+import { isAdminOrStaff } from '../is-admin-or-staff'
+import { prisma } from '$lib/db'
 
 export const PREFIXES = {
   solved: '✅ - ',

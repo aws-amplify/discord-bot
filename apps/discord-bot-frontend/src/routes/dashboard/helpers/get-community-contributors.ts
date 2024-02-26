@@ -1,6 +1,6 @@
+import type { Contributor } from '../types'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
-import type { Contributor } from '../types'
 
 /**
  * Currently not displaying community contributors but leaving this here in case it's wanted in the future

@@ -1,9 +1,9 @@
-import { REST } from '@discordjs/rest'
 import type {
   RESTOptions,
   InternalRequest,
   RequestMethod,
 } from '@discordjs/rest'
+import { REST } from '@discordjs/rest'
 
 // we'll want to eventually expand this interface with more options specific to our DX
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

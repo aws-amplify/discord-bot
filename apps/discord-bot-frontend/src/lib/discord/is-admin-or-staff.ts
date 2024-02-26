@@ -1,6 +1,6 @@
+import type { GuildMember } from 'discord.js'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
-import type { GuildMember } from 'discord.js'
 
 export async function isAdminOrStaff(user: GuildMember) {
   const data = await prisma.configuration.findUnique({

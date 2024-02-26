@@ -1,6 +1,6 @@
+import type { Writable } from 'svelte/store'
 import { derived, writable } from 'svelte/store'
 import { page } from '$app/stores'
-import type { Writable } from 'svelte/store'
 
 export { store as notifications } from './notifications'
 

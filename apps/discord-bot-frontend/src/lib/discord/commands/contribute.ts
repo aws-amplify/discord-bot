@@ -1,9 +1,9 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { repositories } from './_repositories'
 import type {
   ChatInputCommandInteraction,
   InteractionReplyOptions,
 } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { repositories } from './_repositories'
 
 export const config = new SlashCommandBuilder()
   .setName('contribute')

@@ -1,8 +1,8 @@
+import type { APIGuild, APIGuildMember } from 'discord-api-types/v10'
 import { Routes } from 'discord-api-types/v10'
+import { api } from './api'
 import { ACCESS_LEVELS } from '$lib/constants'
 import { prisma } from '$lib/db'
-import { api } from './api'
-import type { APIGuild, APIGuildMember } from 'discord-api-types/v10'
 
 export async function getUserAccess(
   guildMemberId: string,

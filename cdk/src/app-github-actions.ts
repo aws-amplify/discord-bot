@@ -1,7 +1,7 @@
 import 'source-map-support/register.js'
+import type { Construct } from 'constructs'
 import * as cdk from 'aws-cdk-lib'
 import * as iam from 'aws-cdk-lib/aws-iam'
-import { Construct } from 'constructs'
 
 const app = new cdk.App({
   context: {

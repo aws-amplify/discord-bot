@@ -1,5 +1,5 @@
-import { page } from '$app/stores'
 import { derived } from 'svelte/store'
+import { page } from '$app/stores'
 
 export const createIntegrationHrefFromCode = (code: string) => {
   return `/admin/integrations/${code.toLowerCase()}`

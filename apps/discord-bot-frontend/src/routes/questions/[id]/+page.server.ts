@@ -1,6 +1,6 @@
+import type { PageServerLoad } from './$types'
 import { error } from '@sveltejs/kit'
 import { prisma } from '$lib/db'
-import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ params }) => {
   const question = await prisma.question.findUnique({

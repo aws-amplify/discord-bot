@@ -1,10 +1,3 @@
-import { EmbedBuilder, ButtonStyle } from 'discord.js'
-import {
-  SlashCommandBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-} from '@discordjs/builders'
-import { prisma } from '$lib/db'
 import type {
   ButtonInteraction,
   ChatInputCommandInteraction,
@@ -12,6 +5,13 @@ import type {
   TextBasedChannel,
 } from 'discord.js'
 import type { Question } from '@prisma/client'
+import { EmbedBuilder, ButtonStyle } from 'discord.js'
+import {
+  SlashCommandBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+} from '@discordjs/builders'
+import { prisma } from '$lib/db'
 
 function epoch(date: Date): number {
   return Math.floor(date.getTime() / 1000)

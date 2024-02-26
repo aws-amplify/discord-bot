@@ -1,10 +1,10 @@
-import { TIME_PERIODS, HEALTH_STATUS } from './constants'
 import type {
   Answer as PrismaAnswer,
   Question as PrismaQuestion,
   AccessLevelRole,
   QuestionTag,
 } from '@prisma/client'
+import type { TIME_PERIODS, HEALTH_STATUS } from './constants'
 
 export type TimePeriod = ValueOf<typeof TIME_PERIODS>
 export type HealthStatus = ValueOf<typeof HEALTH_STATUS>

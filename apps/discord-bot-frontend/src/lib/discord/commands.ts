@@ -15,8 +15,6 @@ import {
   type MessagePayload,
   type InteractionEditReplyOptions,
 } from 'discord.js'
-import { prisma } from '$lib/db'
-import { FEATURE_TYPES } from '$lib/constants'
 import * as admin from './commands/admin'
 import * as contribute from './commands/contribute'
 import * as github from './commands/github'
@@ -26,6 +24,8 @@ import * as selectAnswer from './commands/select-answer'
 import * as thread from './commands/thread'
 import * as q from './commands/q'
 import { api } from './api'
+import { FEATURE_TYPES } from '$lib/constants'
+import { prisma } from '$lib/db'
 
 type AuthoredCommand = {
   handler: (
