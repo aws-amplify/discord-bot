@@ -1,4 +1,4 @@
-import { type PageServerLoad } from './$types'
+import type { PageServerLoad } from './$types'
 import { prisma } from '$lib/db'
 
 export const load: PageServerLoad = async ({ locals, params }) => {
