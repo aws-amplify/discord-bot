@@ -18,7 +18,7 @@
     "prepare": "svelte-kit sync"
   },
   "dependencies": {
-    "@auth/core": "^0.15.2",
+    "@auth/core": "^0.28.1",
     "@auth/sveltekit": "^0.3.6",
     "@aws-crypto/sha256-js": "^2.0.1",
     "@carbon/styles": "^1.48.1",
