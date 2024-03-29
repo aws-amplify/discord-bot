@@ -33,7 +33,7 @@
     "cookie": "^0.5.0",
     "discord-api-types": "^0.37.10",
     "discord.js": "^14.8.0",
-    "express": "^4.18.1",
+    "express": "^4.19.2",
     "fast-glob": "^3.2.11",
     "prisma": "^4.5.0",
     "uuid": "^8.3.2",
