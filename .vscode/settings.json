@@ -6,5 +6,8 @@
   "markdown.styles": [
     "https://use.fontawesome.com/releases/v5.7.1/css/all.css"
   ],
-  "npm.packageManager": "pnpm"
+  "npm.packageManager": "pnpm",
+  "yaml.schemas": {
+    "https://www.artillery.io/schema.json": []
+  }
 }
