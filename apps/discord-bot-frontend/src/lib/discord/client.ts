@@ -424,6 +424,48 @@ client.on(Events.ThreadUpdate, async (oldThread, newThread) => {
     console.debug('[client:events:ThreadUpdate] finished')
   }
 })
+client.on(Events.ThreadDelete, async(thread) => {
+  console.debug('[client:events: ThreadDelete] Thread Deleted started');
+
+  if(!thread.id){
+    console.error("No thread id found"); return;
+  }
+
+  try {
+    
+    //Updating the flag but in this logic we will need to change the database field. Can be done later
+    
+    // if(question){
+    //   await prisma.question.update({
+    //     where: {
+    //       id: question.id,
+    //     },
+    //     data: {
+    //       isDeleted: true,
+    //     },
+    //   });
+    // }
+
+
+    // Alternate logic to deleting the question completely from the database. Easier for us to do this because we don't 
+    // have to update the database field. This is the same as the update above.
+      const deletedQuestion =  await prisma.question.delete({
+        where: {
+          threadId: thread.id,
+        },
+      });
+      if(deletedQuestion) {
+        console.log(`Deleted question from the database`);
+      }
+      else{
+        console.error(`Unable to find question in the database`);
+      }
+  } catch (error) {
+    console.error('Unable to delete question', error);
+  }
+})
+
+
 
 export function createBot(token = process.env.DISCORD_BOT_TOKEN) {
   return client.login(token)
