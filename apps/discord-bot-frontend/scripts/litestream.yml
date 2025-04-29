@@ -1,7 +1,0 @@
-access-key-id: ${AWS_ACCESS_KEY_ID}
-secret-access-key: ${AWS_SECRET_ACCESS_KEY}
-
-dbs:
-  - path: ${DATABASE_FILE_PATH}
-    replicas:
-      - url: s3://${BUCKET_NAME}/backup

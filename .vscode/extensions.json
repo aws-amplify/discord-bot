@@ -1,8 +1,0 @@
-{
-  "recommendations": [
-    "svelte.svelte-vscode",
-    "Prisma.prisma",
-    "ZixuanChen.vitest-explorer",
-    "ms-playwright.playwright"
-  ]
-}

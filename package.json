@@ -1,146 +1,66 @@
 {
   "name": "@aws-amplify/discord-bot",
-  "type": "module",
-  "version": "1.5.1-next.18",
-  "license": "Apache-2.0",
   "private": true,
+  "version": "2.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "pnpm --filter ./apps/discord-bot-frontend run dev",
-    "dev-lib": "pnpm -r run build -w",
-    "build": "pnpm -r run build",
-    "build-docker": "sh ./scripts/build-docker.sh",
-    "build-lib": "pnpm --filter \"./packages/*\" run build",
-    "check": "prettier --check .",
-    "lint": "eslint .",
-    "setup-dev": "pnpm install && pnpm run build-lib",
-    "setup-test": "pnpm run -r --if-present setup-test",
-    "test": "pnpm -r run test"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@aws-amplify/ui-react": "^6.9.1",
+    "@aws-sdk/protocol-http": "^3.374.0",
+    "@discordjs/rest": "^2.2.0",
+    "@hono/node-server": "^1.13.8",
+    "@radix-ui/react-accordion": "^1.1.2",
+    "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-popover": "^1.0.7",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@tanstack/react-query": "^5.26.3",
+    "aws-amplify": "^6.12.3",
+    "axios": "^1.6.7",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "date-fns": "^3.4.0",
+    "discord-api-types": "^0.37.74",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.7",
+    "homo": "^0.0.0",
+    "lucide-react": "^0.356.0",
+    "react": "^18.2.0",
+    "react-day-picker": "^8.10.0",
+    "react-dom": "^18.2.0",
+    "react-router": "^7.4.1",
+    "recharts": "^2.12.2",
+    "tailwind-merge": "^2.2.1",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@aws-amplify/discord-bot-scripts": "workspace:*",
-    "@typescript-eslint/eslint-plugin": "^6.20.0",
-    "@typescript-eslint/parser": "^6.20.0",
+    "@aws-amplify/backend": "1.14.0",
+    "@aws-amplify/backend-cli": "^1.4.9",
+    "@types/aws-lambda": "^8.10.136",
+    "@types/node": "^20.11.26",
+    "@types/react": "^18.2.56",
+    "@types/react-dom": "^18.2.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.18",
+    "aws-cdk": "^2.131.0",
+    "aws-cdk-lib": "^2.131.0",
+    "aws-lambda": "^1.0.7",
+    "constructs": "^10.3.0",
+    "esbuild": "^0.20.1",
     "eslint": "^8.56.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-import-resolver-typescript": "^3.6.1",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-svelte3": "^4.0.0",
-    "lint-staged": "^15.2.0",
-    "prettier": "^3.2.4",
-    "prettier-plugin-svelte": "^3.1.2",
-    "typescript": "^5.3.3"
-  },
-  "overrides": {
-    "ws": "8.17.1"
-  },
-  "prettier": {
-    "tabWidth": 2,
-    "bracketSpacing": true,
-    "singleQuote": true,
-    "printWidth": 80,
-    "useTabs": false,
-    "semi": false,
-    "svelteSortOrder": "options-scripts-markup-styles",
-    "svelteStrictMode": true,
-    "svelteAllowShorthand": false,
-    "plugins": [
-      "./node_modules/prettier-plugin-svelte"
-    ]
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "eslint:recommended",
-      "prettier",
-      "plugin:import/recommended",
-      "plugin:import/typescript",
-      "plugin:@typescript-eslint/recommended"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-      "ecmaVersion": 2022,
-      "sourceType": "module",
-      "project": "./tsconfig.eslint.json"
-    },
-    "env": {
-      "browser": true,
-      "node": true
-    },
-    "plugins": [
-      "svelte3",
-      "@typescript-eslint"
-    ],
-    "ignorePatterns": [
-      "*.cjs",
-      "cdk/cdk.out/",
-      "build/"
-    ],
-    "overrides": [
-      {
-        "files": [
-          "*.svelte"
-        ],
-        "processor": "svelte3/svelte3"
-      }
-    ],
-    "settings": {
-      "svelte3/typescript": true,
-      "import/resolver": {
-        "typescript": {},
-        "node": {}
-      }
-    },
-    "rules": {
-      "@typescript-eslint/prefer-ts-expect-error": "warn",
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/consistent-type-exports": [
-        "error",
-        {
-          "fixMixedExportsWithInlineTypeSpecifier": false
-        }
-      ],
-      "@typescript-eslint/consistent-type-imports": [
-        "error",
-        {
-          "prefer": "type-imports"
-        }
-      ],
-      "import/first": "error",
-      "import/newline-after-import": "error",
-      "import/no-default-export": "warn",
-      "import/no-unresolved": "off",
-      "import/order": [
-        "error",
-        {
-          "newlines-between": "never",
-          "groups": [
-            "type",
-            "builtin",
-            "external",
-            "internal",
-            "parent",
-            "sibling",
-            "index",
-            "object"
-          ]
-        }
-      ]
-    }
-  },
-  "packageManager": "pnpm@8.10.5",
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "react",
-        "react-dom"
-      ]
-    }
-  },
-  "lint-staged": {
-    "*.(ts|js|svelte)": [
-      "prettier --list-different",
-      "eslint"
-    ],
-    "*.(md|yaml|graphql,json)": "prettier --list-different"
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2",
+    "vite": "^5.1.4"
   }
 }

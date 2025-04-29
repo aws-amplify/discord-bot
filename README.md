@@ -4,51 +4,60 @@ This repository contains the source code for the [AWS Amplify Discord Server](ht
 
 ## Features
 
-- auto-threads "help" channels; if a channel follows the `<category>-help` naming convention messages will automatically get converted into threads
-  - thread data is tracked by title, original poster ID, and whether the thread is solved (`GET /api/questions`)
+- thread data is tracked by title, original poster ID, and whether the thread is solved (`GET /api/questions`)
 - dashboard component to visualize questions and channel "health"
-- support for GitHub to Discord webhooks (used for posting release notes)
-- command: `/admin mirror <repository>` accepts a REPOSITORY and posts the thread to GitHub Discussions
-- command: `/contribute` - accepts an Amplify project argument and returns the GitHub contribution URL
-- command: `/github` - accepts an Amplify project argument and returns the GitHub repository URL
-- command: `/giverole` - accepts a ROLE and USER argument to grant a role (NOTE: this command is disabled by default for `@everyone`)
-- command: `/login` sends an ephemeral link to login to GitHub and link accounts
-- command: `/thread` - command suite for thread owners
-  - `/thread rename <title>` - allows thread owners to rename their threads
-  - `/thread archive` - allows thread owners to optionally archive their thread
-  - `/thread solved` - allows thread owners to mark their question (thread) as "solved", which changes prepended `?` with ✅
-  - `/thread reopen` - allows thread owners to "reopen" their question (thread), which changes prepended ✅ with `?`
-- supports multiple guilds
+- `Select Answer` and `/solved` commands.
 
 ## Getting Started
 
 **Pre-requisites**:
 
 - Node.js v18.x
-- pnpm v7.13.1
 
 ### Quick Start
 
 1. `gh repo fork aws-amplify/discord-bot`
-2. `pnpm setup-dev`
-3. Using `.env.sample` as a template, create a `.env` file and [add necessary Discord environment values](#setting-up-a-discord-bot)
-4. Run the application with `pnpm dev`
-5. As the server owner navigate to `http://localhost:3000/`, log in, and visit `/admin` to configure the instance
+2. `npm install`
+3. Setup Ampilfy locally - LINK
+4. Using `.env.sample` as a template, create a `.env` file and [add necessary Discord environment values](#setting-up-a-discord-bot)
+   - Note: You may need to setup the IDP provider.
+5. Initiallize the sandbox `npx ampx sandbox`
+6. After the sandbox has deployed, run the application with `npm run dev`
+<!-- 5. As the server owner navigate to `http://localhost:3000/`, log in, and visit `/admin` to configure the instance -->
 
 ### Setting up a Discord Bot
 
-<!-- TODO: screenshots -->
-
 1. (optional) create a [new Discord server](https://discord.new) or create from the [AWS Amplify Discord server template](https://discord.new/vmyFvRYDtUsn)
 2. [Register Discord bot](https://discord.com/developers/applications)
-3. Make note of the App ID to add the bot to your Discord server using the following URL
+3. Make note of the App ID <!-- to add the bot to your Discord server using the following URL -->
+4. Make note of the Bot Secret
 
-   ```text
-   https://discord.com/api/oauth2/authorize?client_id=<app-id>&permissions=335812774976&scope=bot%20applications.commands
-   ```
+### Integrating backend
 
-4. Enable OAuth and add `http://localhost:3000/api/auth/callback/discord` as a redirect
-5. Make note of the OAuth secrets and populate `.env`
+- add discord bot app id and secret to SSM Parameter store
+- decide if using oAuth or user/password
+- if using oauth, retrieve your oidc details and add them to `./amplify/auth/resource.ts`
+- store the secrets
+
+  - sandbox: use `npx ampx sandbox secret set <SECRET_NAME>`
+  - git based deploy: use console
+
+<!--
+ ```text
+ https://discord.com/api/oauth2/authorize?client_id=<app-id>&permissions=335812774976&scope=bot%20applications.commands
+ ```
+-->
+
+<!-- 4. Enable OAuth and add `http://localhost:3000/api/auth/callback/discord` as a redirect -->
+
+<!-- 5. Make note of the OAuth secrets and populate `.env` -->
+
+<!-- ### .env
+
+The `.env` file contains the names of the secrets that are created locally with `npx ampx secret set` or in the Amplify Hosting console. For example locally:
+
+1. Create a secret called 'MY_IDP_CLIENT_ID' with `npx ampx secret set MY_GOOGLE_CLIENT_ID` and set the value.
+2. In the `.env` file, add the entry `AUTH_CLIENT_ID_NAME=MY_GOOGLE_CLIENT_ID`. -->
 
 #### Required Bot Permissions
 

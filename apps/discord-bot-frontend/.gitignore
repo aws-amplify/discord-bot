@@ -1,7 +1,0 @@
-# ignore SvelteKit output
-/.svelte-kit
-# /build
-# ignore test state files
-/playwright/*
-# ignore test report files
-/playwright-report

@@ -1,0 +1,31 @@
+{
+  "name": "@aws-amplify/discordbotcontainer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node src/index.js",
+    "build": "tsc",
+    "start": "node ./dist/index.js",
+    "start:local": "node ./dist/index.js --env-file=.env"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-crypto/sha256-js": "^5.2.0",
+    "@aws-sdk/credential-provider-node": "^3.529.1",
+    "@aws-sdk/protocol-http": "^3.374.0",
+    "@aws-sdk/signature-v4": "^3.374.0",
+    "@hono/node-server": "^1.8.2",
+    "@smithy/signature-v4": "^2.1.4",
+    "discord.js": "^14.14.1",
+    "hono": "^4.0.10",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.2"
+  }
+}
