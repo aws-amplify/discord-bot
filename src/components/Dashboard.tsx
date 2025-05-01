@@ -18,7 +18,6 @@ import QuestionsData from "@/components/QuestionsData";
 import { useState } from "react";
 import { amplifyClient } from "@/main";
 import { useQuery } from "@tanstack/react-query";
-import QuestionListByTag from "./QuestionListByTag";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 const initialDate = new Date();
 const initialDateRange: DateRange = {
