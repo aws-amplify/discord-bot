@@ -9,18 +9,22 @@ const commandsData = [
     .setName("Select Answer")
     .setType(ApplicationCommandType.Message),
 ];
-export const token = process.env.DISCORDBOT_TOKEN;
-const applicationID = process.env.DISCORDBOT_APPLICATION_ID;
+export const token = process.env.DISCORD_TOKEN;
+const clientId = process.env.DISCORD_CLIENT;
 
 const rest = new REST().setToken(token as string);
 
 export const registerCommands = async () => {
-  console.log(applicationID);
-  try {
-    await rest.put(Routes.applicationCommands("872475355502493766"), {
-      body: commandsData,
-    });
-  } catch (error) {
-    console.log(error);
+  console.log(clientId);
+  if (clientId) {
+    try {
+      await rest.put(Routes.applicationCommands(clientId as string), {
+        body: commandsData,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    console.log("no client id - failed to register commands");
   }
 };

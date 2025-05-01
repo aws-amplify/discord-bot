@@ -5,21 +5,31 @@ import { HttpRequest } from "@aws-sdk/protocol-http";
 import { default as fetch, Request } from "node-fetch";
 
 const { Sha256 } = crypto;
-const GRAPHQL_ENDPOINT =
-  (process.env.APPSYNC_GRAPHQL_ENDPOINT as string) ||
-  "https://tw4r2rj6anekdjnoh4ixmx5si4.appsync-api.us-east-1.amazonaws.com/graphql";
+const GRAPHQL_ENDPOINT = process.env.APPSYNC_GRAPHQL_ENDPOINT as string;
 const AWS_REGION = "us-east-1";
+
+export enum REQUEST_TYPE {
+  THREAD_CREATE = "THREAD_CREATE",
+  THREAD_DELETE = "THREAD_DELETE",
+  THREAD_UPDATE = "THREAD_UPDATE",
+  THREAD_UPDATE_RETRY = "THREAD_UPDATE_RETRY",
+  ANSWER_SELECTED = "ANSWER_SELECTED",
+  GENERATE_ANSWER = "GENERATE_ANSWER",
+  GET_USER = "GET_USER",
+  CREATE_USER = "CREATE_USER",
+  UPDATE_USER = "UPDATE_USER",
+}
 
 type RequestHandlerInput = {
   query: string;
-  variables: Record<"input", Input>;
-  //Input; //Record<>
+  variables: Record<"input", Input> | Record<string, string>;
 };
 
 type Input = Record<string, string | string[] | unknown>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const requestHandler = async (
-  payload: RequestHandlerInput
+  payload: RequestHandlerInput,
+  type: REQUEST_TYPE
 ): Promise<any> => {
   const endpoint = new URL(GRAPHQL_ENDPOINT);
 
@@ -52,7 +62,9 @@ export const requestHandler = async (
     console.log("Attempting request");
     const result = await fetch(request);
     const body = await result.json();
+    console.log(`s-${type}=====================`);
     console.log(body);
+    console.log(`e-${type}=====================`);
     return body;
   } catch (e) {
     console.log("Request error", e);

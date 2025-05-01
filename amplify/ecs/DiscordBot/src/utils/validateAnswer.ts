@@ -11,6 +11,6 @@ import { MessageContextMenuCommandInteraction } from "discord.js";
 export const validateAnswer = async (
   interaction: MessageContextMenuCommandInteraction
 ): Promise<boolean> => {
-  console.log(interaction);
+  // TODO: Add validation logic
   return true;
 };

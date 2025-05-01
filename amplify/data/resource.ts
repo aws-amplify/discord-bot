@@ -31,11 +31,29 @@ const schema = a.schema({
     })
     .authorization((allow) => allow.authenticated()),
 
-  Guild: a
+  serverStats: a
     .query()
-    .returns(a.boolean())
+    .returns(
+      a.customType({
+        members: a.integer(),
+        presence: a.integer(),
+        t: a.string(),
+      })
+    )
     .authorization((allow) => allow.authenticated())
     .handler(a.handler.function(discordRestAPIFunction)),
+
+  generateAnswer: a
+    .query()
+    .arguments({ prompt: a.string().required() })
+    .returns(a.string())
+    .authorization((allow) => [allow.publicApiKey()])
+    .handler(
+      a.handler.custom({
+        dataSource: "BedrockDataSource",
+        entry: "./resolvers/generateAnswer.js",
+      })
+    ),
 });
 
 export type Schema = ClientSchema<typeof schema>;

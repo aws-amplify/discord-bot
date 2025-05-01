@@ -1,5 +1,5 @@
 import { ChannelType, type AnyThreadChannel } from "discord.js";
-import { requestHandler } from "../requestHandler.js";
+import { REQUEST_TYPE, requestHandler } from "../requestHandler/index.js";
 
 let retryCount = 0;
 
@@ -7,9 +7,6 @@ export const threadUpdated = async (
   oldThread: AnyThreadChannel,
   newThread: AnyThreadChannel
 ) => {
-  console.log("handling thread update - created at", oldThread.createdAt);
-
-  console.log({ oldThread });
   const updateQuery = /* GraphQL */ `
     mutation UpdateQuestion($input: UpdateQuestionInput!) {
       updateQuestion(input: $input) {
@@ -37,8 +34,6 @@ export const threadUpdated = async (
       .map(({ name }) => name);
   }
 
-  console.log("new tags", tagsApplied);
-
   const updateVariables = {
     input: {
       id: oldThread.id,
@@ -58,19 +53,23 @@ export const threadUpdated = async (
   };
 
   try {
-    const response = await requestHandler({
-      query: updateQuery,
-      variables: updateVariables,
-    });
+    const response = await requestHandler(
+      {
+        query: updateQuery,
+        variables: updateVariables,
+      },
+      REQUEST_TYPE.THREAD_UPDATE
+    );
     if (response.data.errors !== null && retryCount < 1) {
       retryCount++;
       console.log(`=== retry ${retryCount}`);
-      await requestHandler({
-        query: createQuery,
-        variables: createVariables,
-      });
+      await requestHandler(
+        {
+          query: createQuery,
+          variables: createVariables,
+        },
+        REQUEST_TYPE.THREAD_UPDATE_RETRY
+      );
     }
-  } catch (e) {
-    console.log(e);
-  }
+  } catch (e) {}
 };

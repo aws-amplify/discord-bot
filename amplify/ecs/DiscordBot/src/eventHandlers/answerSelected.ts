@@ -5,8 +5,9 @@ import {
   //   GuildTextThreadManager,
   ThreadChannel,
 } from "discord.js";
-import { requestHandler } from "../requestHandler.js";
+import { REQUEST_TYPE, requestHandler } from "../requestHandler/index.js";
 import { validateAnswer } from "../utils/validateAnswer.js";
+import { setRespondent } from "../utils/setRespondent.js";
 
 export const answerSelected = async (
   interaction: MessageContextMenuCommandInteraction
@@ -14,37 +15,7 @@ export const answerSelected = async (
   if (await validateAnswer(interaction)) {
     const channel: ThreadChannel = interaction.channel as ThreadChannel;
 
-    /**
-     * @TODO
-     *
-     * - Check if "user" exists in DB as `DiscordUser`, if not create one
-     * - Add questions to `DiscordUser.answers[]`
-     */
-
-    try {
-      const checkUser = await requestHandler({
-        query: /* GraphQL */ `
-          query GetUser($id: String!) {
-            getDiscordUser(id: $id) {
-              id
-            }
-          }
-        `,
-        variables: {
-          input: {
-            id: interaction.targetMessage.author.id,
-          },
-        },
-      });
-      if (checkUser.res.data) {
-        // add to user db
-      } else {
-        // create new user and add question
-      }
-      // await channel.setName(`✅ - ${channel.name}`);
-    } catch (error) {
-      console.log(error);
-    }
+    const userID = setRespondent(interaction);
 
     const query = /* GraphQL */ `
       mutation UpdateQuestion($input: UpdateQuestionInput!) {
@@ -63,7 +34,9 @@ export const answerSelected = async (
       },
     };
 
-    await requestHandler({ query, variables });
+    await requestHandler({ query, variables }, REQUEST_TYPE.ANSWER_SELECTED);
+
+    await channel.setName(`✅ - ${channel.name}`);
 
     interaction.reply(
       `Answer by ${interaction.targetMessage.author.displayName} has been selected`

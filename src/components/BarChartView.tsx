@@ -11,10 +11,7 @@ import {
 } from "recharts";
 
 export const BarChartView: React.FC<BarChartViewProps> = ({ data }) => {
-  console.log({ data });
-
-  const graphdata = []; //= //Object.entries(data);
-  // console.log({ graphdata });
+  const graphdata = [];
   for (const tag in data) {
     graphdata.push({
       tag: tag,
@@ -24,8 +21,6 @@ export const BarChartView: React.FC<BarChartViewProps> = ({ data }) => {
       an: data[tag].filter((q) => q.answered === "yes").length,
     });
   }
-
-  console.log({ graphdata });
 
   return (
     <ResponsiveContainer className="min-h-[30vh]">

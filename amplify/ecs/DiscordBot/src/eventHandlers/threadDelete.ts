@@ -1,9 +1,9 @@
 import { ChannelType, type AnyThreadChannel } from "discord.js";
-import { requestHandler } from "../requestHandler.js";
+import { REQUEST_TYPE, requestHandler } from "../requestHandler/index.js";
 
 export const threadDeleted = async (thread: AnyThreadChannel) => {
   const query = /* GraphQL */ `
-    mutation AddQuestion($input: CreateQuestionInput!) {
+    mutation AddQuestion($input: DeleteQuestionInput!) {
       deleteQuestion(input: $input) {
         id
       }
@@ -17,8 +17,6 @@ export const threadDeleted = async (thread: AnyThreadChannel) => {
   };
 
   try {
-    await requestHandler({ query, variables });
-  } catch (e) {
-    console.log("delete request failed");
-  }
+    await requestHandler({ query, variables }, REQUEST_TYPE.THREAD_DELETE);
+  } catch (e) {}
 };

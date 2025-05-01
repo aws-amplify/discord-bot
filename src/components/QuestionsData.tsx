@@ -9,7 +9,6 @@ type QuestionsDataProps = {
   dateRange: DateRange;
 };
 const QuestionsData: React.FC<QuestionsDataProps> = ({ dateRange }) => {
-  console.log("render");
   const getQuestions = async (dateRangeFilter: DateRange) => {
     const result = await amplifyClient.models.Question.list({
       authMode: "userPool",
@@ -23,7 +22,6 @@ const QuestionsData: React.FC<QuestionsDataProps> = ({ dateRange }) => {
       },
     });
 
-    console.log(result);
     return result;
   };
 
@@ -65,7 +63,7 @@ const QuestionsData: React.FC<QuestionsDataProps> = ({ dateRange }) => {
   if (initQuery.isSuccess) {
     const groupedData = initQuery.data.data.reduce((groups, item) => {
       const tags = JSON.parse(item.tags!);
-      // console.log({ tags });
+
       if (tags) {
         tags.forEach((tag: string) => {
           // @ts-expect-error - Element implicitly has an 'any' type
@@ -75,10 +73,6 @@ const QuestionsData: React.FC<QuestionsDataProps> = ({ dateRange }) => {
       } else {
         return {};
       }
-
-      // console.log({ groups });
-
-      // return groups;
     }, {});
 
     return (

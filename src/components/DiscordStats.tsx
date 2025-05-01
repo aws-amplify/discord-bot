@@ -1,36 +1,19 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { amplifyClient } from "@/main";
 import { useQuery } from "@tanstack/react-query";
 
-import { get } from "aws-amplify/api";
-
 const DiscordStats = () => {
+  const fetchStats = async () => {
+    try {
+      const r = await amplifyClient.queries.serverStats();
+
+      return r.data;
+    } catch (e) {}
+  };
   const query = useQuery({
     queryKey: ["serverstats"],
-    queryFn: async (): Promise<{
-      approximate_member_count: number;
-      approximate_presence_count: number;
-    }> => {
-      try {
-        const req = get({
-          apiName: "discordBotApiEnpoint",
-          path: "/",
-        });
+    queryFn: async () => await fetchStats(),
 
-        const res = await req.response;
-        console.log("SUCCESS", await res.body.json());
-        const data = await res.body.json();
-        return data as {
-          approximate_member_count: number;
-          approximate_presence_count: number;
-        };
-      } catch (e) {
-        console.log(e);
-        return e as {
-          approximate_member_count: number;
-          approximate_presence_count: number;
-        };
-      }
-    },
     retry: false,
   });
 
@@ -42,9 +25,7 @@ const DiscordStats = () => {
             <CardTitle className="text-sm font-medium">Total Members</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-6xl font-bold">
-              {query.data?.approximate_member_count}
-            </div>
+            <div className="text-6xl font-bold">{query.data?.members}</div>
             <p className="text-xs text-muted-foreground">
               +20.1 from last month
             </p>
@@ -57,9 +38,7 @@ const DiscordStats = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-6xl font-bold">
-              {query.data?.approximate_presence_count}
-            </div>
+            <div className="text-6xl font-bold">{query.data?.presence}</div>
           </CardContent>
         </Card>
       </div>

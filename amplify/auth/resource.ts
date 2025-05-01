@@ -11,16 +11,16 @@ export const auth = defineAuth({
       oidc: [
         {
           name: "Federate",
-          clientId: secret(""),
-          clientSecret: secret(""),
-          issuerUrl: process.env.AUTH_ISSUER_URL,
+          clientId: secret("FEDERATE_CLIENT"),
+          clientSecret: secret("FEDERATE_SECRET"),
+          issuerUrl: process.env.ISSUER_URL,
           attributeMapping: {
             email: "EMAIL",
           },
         },
       ],
-      callbackUrls: JSON.parse(process.env.AUTH_CALLBACK_URLS), //["http://localhost:5173/admin"],
-      logoutUrls: JSON.parse(process.env.AUTH_LOGOUT_URLS),
+      callbackUrls: JSON.parse(process.env.CALLBACK_URLS),
+      logoutUrls: JSON.parse(process.env.LOGOUT_URLS),
     },
   },
 });

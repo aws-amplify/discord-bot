@@ -17,6 +17,9 @@ import DiscordStats from "@/components/DiscordStats";
 import QuestionsData from "@/components/QuestionsData";
 import { useState } from "react";
 import { amplifyClient } from "@/main";
+import { useQuery } from "@tanstack/react-query";
+import QuestionListByTag from "./QuestionListByTag";
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 const initialDate = new Date();
 const initialDateRange: DateRange = {
   from: new Date(initialDate.getFullYear(), initialDate.getMonth(), 1),
@@ -99,19 +102,46 @@ const Dashboard = () => {
 
       <QuestionsData dateRange={queryDateRange as DateRange} />
       <hr />
-      <Test />
+      <Users />
     </>
   );
 };
 
 export default Dashboard;
 
-const Test = () => {
-  const getUser = async () => {
-    const res = await amplifyClient.models.DiscordUser.get({
-      id: "1",
+const Users = () => {
+  const getUsers = async () => {
+    const res = await amplifyClient.models.DiscordUser.list({
+      authMode: "userPool",
     });
-    console.log({ res });
+
+    return res.data;
   };
-  return <button onClick={getUser}>TEST</button>;
+
+  const users = useQuery({
+    queryKey: ["user", "stats"],
+    queryFn: async () => await getUsers(),
+  });
+
+  if (users && users.isSuccess) {
+    return (
+      <Card className="my-4">
+        <CardHeader>
+          <CardTitle className="text-left">Answers by Users</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {users.data.map((u) => {
+            return (
+              <div key={u.id}>
+                <p>
+                  {u.name} - {u.answers?.length}
+                </p>
+              </div>
+            );
+          })}
+        </CardContent>
+      </Card>
+    );
+  }
+  return <></>;
 };

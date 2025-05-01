@@ -1,37 +1,29 @@
-import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser, signInWithRedirect } from "aws-amplify/auth";
-import Dashboard from "@/components/Dashboard";
+import Dashboard from "../components/Dashboard";
+import { useQuery } from "@tanstack/react-query";
 
 const Admin = () => {
-  const adminCheck = useQuery({
-    queryKey: ["initial", "gen2", new Date().toDateString()],
-    queryFn: async () => {
-      try {
-        const user = await getCurrentUser();
-        return {
-          isAuth: true,
-          user,
-        };
-      } catch (e) {
-        return {
-          isAuth: false,
-          user: null,
-        };
-      }
-    },
+  const checkAuth = async () => {
+    try {
+      await getCurrentUser();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const initQuery = useQuery({
+    queryKey: ["authCheck"],
+    queryFn: async () => await checkAuth(),
+
     retry: false,
     notifyOnChangeProps: "all",
   });
-
-  if (adminCheck && !adminCheck.data?.isAuth) {
-    signInWithRedirect({ provider: { custom: "Midway" } });
-    return "Error";
-  } else if (adminCheck.isSuccess && adminCheck.data) {
-    return <Dashboard />;
-  } else if (adminCheck && adminCheck.isError) {
-    return "Error";
+  if (initQuery.data === false) {
+    signInWithRedirect({ provider: { custom: "Federate" } });
+    return <div>Redirecting to login...</div>;
   } else {
-    return "";
+    return <Dashboard />;
   }
 };
 
