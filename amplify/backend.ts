@@ -56,6 +56,17 @@ const bedrockDataSource = backend.data.addHttpDataSource(
   }
 );
 
+const bedrockAgentDataSource = backend.data.addHttpDataSource(
+  "BedrockAgentDataSource",
+  `https://bedrock-agent-runtime.${backend.data.stack.region}.amazonaws.com`,
+  {
+    authorizationConfig: {
+      signingRegion: backend.data.stack.region,
+      signingServiceName: "bedrock",
+    },
+  }
+);
+
 bedrockDataSource.grantPrincipal.addToPrincipalPolicy(
   new PolicyStatement({
     effect: Effect.ALLOW,
@@ -66,6 +77,19 @@ bedrockDataSource.grantPrincipal.addToPrincipalPolicy(
       `arn:aws:bedrock:us-west-2::foundation-model/${MODEL_ID}`,
       `arn:aws:bedrock:${backend.data.stack.region}:${backend.data.stack.account}:inference-profile/us.${MODEL_ID}`,
     ],
+  })
+);
+
+bedrockAgentDataSource.grantPrincipal.addToPrincipalPolicy(
+  new PolicyStatement({
+    effect: Effect.ALLOW,
+    actions: [
+      "bedrock:RetrieveAndGenerate",
+      "bedrock:GetInferenceProfile",
+      "bedrock:Retrieve",
+      "bedrock:InvokeModel",
+    ],
+    resources: ["*"],
   })
 );
 

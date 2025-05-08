@@ -43,6 +43,19 @@ const schema = a.schema({
     .authorization((allow) => allow.authenticated())
     .handler(a.handler.function(discordRestAPIFunction)),
 
+  RAG: a.customType({ response: a.string(), citations: a.string().array() }),
+
+  retrieveAndGenerate: a
+    .query()
+    .arguments({ prompt: a.string().required() })
+    .returns(a.ref("RAG"))
+    .authorization((allow) => allow.publicApiKey())
+    .handler(
+      a.handler.custom({
+        dataSource: "BedrockAgentDataSource",
+        entry: "./resolvers/retrieveAndGenerate.js",
+      })
+    ),
   generateAnswer: a
     .query()
     .arguments({ prompt: a.string().required() })
@@ -63,6 +76,9 @@ export const data = defineData({
   schema,
   authorizationModes: {
     defaultAuthorizationMode: "userPool",
+    apiKeyAuthorizationMode: {
+      expiresInDays: 2,
+    },
   },
 });
 
