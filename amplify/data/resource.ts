@@ -48,25 +48,28 @@ const schema = a.schema({
   retrieveAndGenerate: a
     .query()
     .arguments({ prompt: a.string().required() })
-    .returns(a.ref("RAG"))
-    .authorization((allow) => allow.publicApiKey())
+    // .returns(a.ref("RAG"))
+    // .returns({ response: a.string(), citations: a.string().array() })
+    .returns(a.string())
+
+    .authorization((allow) => allow.authenticated())
     .handler(
       a.handler.custom({
         dataSource: "BedrockAgentDataSource",
         entry: "./resolvers/retrieveAndGenerate.js",
       })
     ),
-  generateAnswer: a
-    .query()
-    .arguments({ prompt: a.string().required() })
-    .returns(a.string())
-    .authorization((allow) => [allow.publicApiKey()])
-    .handler(
-      a.handler.custom({
-        dataSource: "BedrockDataSource",
-        entry: "./resolvers/generateAnswer.js",
-      })
-    ),
+  // generateAnswer: a
+  //   .query()
+  //   .arguments({ prompt: a.string().required() })
+  //   .returns(a.string())
+  //   .authorization((allow) => [allow.publicApiKey()])
+  //   .handler(
+  //     a.handler.custom({
+  //       dataSource: "BedrockDataSource",
+  //       entry: "./resolvers/generateAnswer.js",
+  //     })
+  //   ),
 });
 
 export type Schema = ClientSchema<typeof schema>;

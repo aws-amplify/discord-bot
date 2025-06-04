@@ -43,14 +43,14 @@ export function response(ctx) {
 
   console.log(res);
 
-  //   return response;
-  return {
-    response: res.output.text, // JSON.stringify(res),
-    citations: res.citations.map((citation) => {
-      return citation.retrievedReferences.flatMap(
-        (ref) => ref.location.webLocation.url
-      );
-    }),
-  };
+  return res.output.text;
+  // return {
+  // response: res.output.text, // JSON.stringify(res),
+  // citations: res.citations.map((citation) => {
+  //   return citation.retrievedReferences.flatMap(
+  //     (ref) => ref.location.webLocation.url
+  //   );
+  // }),
+  // };
   //   return res.output.message.content[0].text;
 }

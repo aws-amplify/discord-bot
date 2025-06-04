@@ -12,5 +12,6 @@ export const validateAnswer = async (
   interaction: MessageContextMenuCommandInteraction
 ): Promise<boolean> => {
   // TODO: Add validation logic
+  // 1. Check if thread is already answered
   return true;
 };

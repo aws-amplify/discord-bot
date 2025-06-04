@@ -24,11 +24,9 @@ import {
 } from "aws-cdk-lib/aws-iam"; // IAM components for security permissions
 import { StringParameter } from "aws-cdk-lib/aws-ssm"; // For accessing secure parameters
 import { CfnGraphQLApi } from "aws-cdk-lib/aws-appsync"; // For AppSync GraphQL API integration
-
 import path from "path";
 import { fileURLToPath } from "url";
 import { CDKContextKey } from "@aws-amplify/platform-core"; // Amplify platform context keys
-
 import dotenv from "dotenv"; // For loading environment variables
 import { secret } from "@aws-amplify/backend"; // For managing secrets
 import { ApplicationLoadBalancedFargateService } from "aws-cdk-lib/aws-ecs-patterns"; // ECS service with load balancer
@@ -41,6 +39,7 @@ import {
   LogDrivers,
   Secret,
 } from "aws-cdk-lib/aws-ecs"; // ECS components for container orchestration
+import { CfnWebACL, CfnWebACLAssociation } from "aws-cdk-lib/aws-wafv2";
 dotenv.config();
 
 // Helper for resolving file paths in ES modules
@@ -196,7 +195,7 @@ export class DiscordBotStack extends Construct {
      * - Places containers in private subnets for security
      * - Configures circuit breaker for reliability
      */
-    new ApplicationLoadBalancedFargateService(
+    const FargateService = new ApplicationLoadBalancedFargateService(
       this,
       "DiscordBotFargateService",
       {
@@ -214,5 +213,20 @@ export class DiscordBotStack extends Construct {
         },
       }
     );
+
+    const FireWall = new CfnWebACL(this, "DiscordWaf", {
+      defaultAction: { allow: {} },
+      scope: "REGIONAL",
+      visibilityConfig: {
+        cloudWatchMetricsEnabled: true,
+        metricName: "DiscordWaf",
+        sampledRequestsEnabled: true,
+      },
+    });
+
+    new CfnWebACLAssociation(this, "FargateWafAssociation", {
+      resourceArn: FargateService.loadBalancer.loadBalancerArn,
+      webAclArn: FireWall.attrArn,
+    });
   }
 }

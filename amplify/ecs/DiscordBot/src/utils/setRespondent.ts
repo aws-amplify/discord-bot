@@ -1,5 +1,11 @@
 import { MessageContextMenuCommandInteraction } from "discord.js";
-import { REQUEST_TYPE, requestHandler } from "../requestHandler/index.js";
+import { requestHandler } from "../requestHandler/index.js";
+import { REQUEST_TYPE } from "../types.js";
+import {
+  CREATE_USER_MUTATION,
+  UPDATE_USER_MUTATION,
+} from "../graphql/mutations.js";
+import { GET_USER_QUERY } from "../graphql/queries.js";
 
 export const setRespondent = async (
   interaction: MessageContextMenuCommandInteraction
@@ -7,14 +13,7 @@ export const setRespondent = async (
   try {
     const getUser = await requestHandler(
       {
-        query: /* GraphQL */ `
-          query GetUser($id: ID!) {
-            getDiscordUser(id: $id) {
-              id
-              answers
-            }
-          }
-        `,
+        query: GET_USER_QUERY,
         variables: {
           id: interaction.targetMessage.author.id,
         },
@@ -40,15 +39,9 @@ const createUser = async (
   interaction: MessageContextMenuCommandInteraction
 ) => {
   try {
-    const newUser = await requestHandler(
+    await requestHandler(
       {
-        query: /* GraphQL */ `
-          mutation CreateUser($input: CreateDiscordUserInput!) {
-            createDiscordUser(input: $input) {
-              id
-            }
-          }
-        `,
+        query: CREATE_USER_MUTATION,
         variables: {
           input: {
             id: interaction.targetMessage.author.id,
@@ -72,15 +65,9 @@ const updateUser = async (
   answers: string
 ) => {
   try {
-    const updateUser = await requestHandler(
+    await requestHandler(
       {
-        query: /* GraphQL */ `
-          mutation UpdateUser($input: UpdateDiscordUserInput!) {
-            updateDiscordUser(input: $input) {
-              id
-            }
-          }
-        `,
+        query: UPDATE_USER_MUTATION,
         variables: {
           input: {
             id: interaction.targetMessage.author.id,

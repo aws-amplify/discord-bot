@@ -5,9 +5,11 @@ import {
   //   GuildTextThreadManager,
   ThreadChannel,
 } from "discord.js";
-import { REQUEST_TYPE, requestHandler } from "../requestHandler/index.js";
+import { requestHandler } from "../requestHandler/index.js";
 import { validateAnswer } from "../utils/validateAnswer.js";
 import { setRespondent } from "../utils/setRespondent.js";
+import { REQUEST_TYPE } from "../types.js";
+import { UPDATE_QUESTION_MUTATION } from "../graphql/mutations.js";
 
 export const answerSelected = async (
   interaction: MessageContextMenuCommandInteraction
@@ -17,24 +19,20 @@ export const answerSelected = async (
 
     const userID = setRespondent(interaction);
 
-    const query = /* GraphQL */ `
-      mutation UpdateQuestion($input: UpdateQuestionInput!) {
-        updateQuestion(input: $input) {
-          id
-        }
-      }
-    `;
+    await requestHandler(
+      {
+        query: UPDATE_QUESTION_MUTATION,
+        variables: {
+          input: {
+            id: interaction.channelId,
 
-    const variables = {
-      input: {
-        id: interaction.channelId,
-
-        answered: "yes",
-        answer: interaction.targetMessage.author.id,
+            answered: "yes",
+            answer: interaction.targetMessage.author.id,
+          },
+        },
       },
-    };
-
-    await requestHandler({ query, variables }, REQUEST_TYPE.ANSWER_SELECTED);
+      REQUEST_TYPE.ANSWER_SELECTED
+    );
 
     await channel.setName(`✅ - ${channel.name}`);
 
