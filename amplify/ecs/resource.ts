@@ -63,6 +63,8 @@ type DiscordBotProps = {
  * This class defines all AWS resources needed to run the Discord bot
  */
 export class DiscordBotStack extends Construct {
+  public FargateWAF: CfnWebACL;
+
   // Backend identifier used for resource naming and secret resolution
   private backendIdentifier = {
     name: this.node.tryGetContext(CDKContextKey.BACKEND_NAME),
@@ -214,7 +216,7 @@ export class DiscordBotStack extends Construct {
       }
     );
 
-    const FireWall = new CfnWebACL(this, "DiscordWaf", {
+    this.FargateWAF = new CfnWebACL(this, "DiscordWaf", {
       defaultAction: { allow: {} },
       scope: "REGIONAL",
       visibilityConfig: {
@@ -226,7 +228,7 @@ export class DiscordBotStack extends Construct {
 
     new CfnWebACLAssociation(this, "FargateWafAssociation", {
       resourceArn: FargateService.loadBalancer.loadBalancerArn,
-      webAclArn: FireWall.attrArn,
+      webAclArn: this.FargateWAF.attrArn,
     });
   }
 }

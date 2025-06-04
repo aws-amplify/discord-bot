@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import { DiscordBotStack } from "./ecs/resource";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { BedrockModelDSStack } from "./bedrock/resource";
+import { MonitoringStack } from "./monitoring/resource";
 dotenv.config();
 
 declare global {
@@ -29,10 +30,14 @@ export type BackendType = typeof backend;
 export const ecsStack = backend.createStack("ECSStack");
 
 // Discord Bot container
-new DiscordBotStack(ecsStack, "CustomDiscordBotStack", {
-  dataApi: backend.data.resources.cfnResources.cfnGraphqlApi,
-  tag: ecsStack.stackId,
-});
+const discordBotContainer = new DiscordBotStack(
+  ecsStack,
+  "CustomDiscordBotStack",
+  {
+    dataApi: backend.data.resources.cfnResources.cfnGraphqlApi,
+    tag: ecsStack.stackId,
+  }
+);
 
 backend.discordRestAPIFunction.resources.lambda.addToRolePolicy(
   new PolicyStatement({
@@ -48,56 +53,36 @@ new BedrockModelDSStack(backend.stack, "nova", {
   backend,
   modelId: "amazon.nova-premier-v1:0",
 });
-// // Bedrock Datasource
-// const MODEL_ID = "amazon.nova-premier-v1:0";
-// const bedrockDataSource = backend.data.addHttpDataSource(
-//   "BedrockDataSource",
-//   `https://bedrock-runtime.${backend.data.stack.region}.amazonaws.com`,
+
+new MonitoringStack(backend.stack, "MonitoringStack", {
+  appsyncApi: backend.data.resources.cfnResources.cfnGraphqlApi,
+  waf: discordBotContainer.FargateWAF,
+});
+
+// import { aws_bedrock as bedrock } from "aws-cdk-lib";
+// const vectorKnowledgeBaseConfigurationProperty: bedrock.CfnKnowledgeBase.VectorKnowledgeBaseConfigurationProperty =
 //   {
-//     authorizationConfig: {
-//       signingRegion: backend.data.stack.region,
-//       signingServiceName: "bedrock",
+//     embeddingModelArn: "embeddingModelArn",
+
+//     // the properties below are optional
+//     embeddingModelConfiguration: {
+//       bedrockEmbeddingModelConfiguration: {
+//         dimensions: 123,
+//         embeddingDataType: "embeddingDataType",
+//       },
 //     },
-//   }
-// );
+//     supplementalDataStorageConfiguration: {
+//       supplementalDataStorageLocations: [
+//         {
+//           supplementalDataStorageLocationType:
+//             "supplementalDataStorageLocationType",
 
-// const bedrockAgentDataSource = backend.data.addHttpDataSource(
-//   "BedrockAgentDataSource",
-//   `https://bedrock-agent-runtime.${backend.data.stack.region}.amazonaws.com`,
-//   {
-//     authorizationConfig: {
-//       signingRegion: backend.data.stack.region,
-//       signingServiceName: "bedrock",
+//           // the properties below are optional
+//           // s3Location: {
+//           //   uri: "uri",
+//           // },
+
+//         },
+//       ],
 //     },
-//   }
-// );
-
-// bedrockDataSource.grantPrincipal.addToPrincipalPolicy(
-//   new PolicyStatement({
-//     effect: Effect.ALLOW,
-//     actions: ["bedrock:InvokeModel"],
-//     resources: [
-//       `arn:aws:bedrock:us-east-1::foundation-model/${MODEL_ID}`,
-//       `arn:aws:bedrock:us-east-2::foundation-model/${MODEL_ID}`,
-//       `arn:aws:bedrock:us-west-2::foundation-model/${MODEL_ID}`,
-//       `arn:aws:bedrock:${backend.data.stack.region}:${backend.data.stack.account}:inference-profile/us.${MODEL_ID}`,
-//     ],
-//   })
-// );
-
-// bedrockAgentDataSource.grantPrincipal.addToPrincipalPolicy(
-//   new PolicyStatement({
-//     effect: Effect.ALLOW,
-//     actions: [
-//       "bedrock:RetrieveAndGenerate",
-//       "bedrock:GetInferenceProfile",
-//       "bedrock:Retrieve",
-//       "bedrock:InvokeModel",
-//     ],
-//     resources: ["*"],
-//   })
-// );
-
-// backend.data.resources.cfnResources.cfnGraphqlApi.environmentVariables = {
-//   MODEL_ID: "us." + MODEL_ID,
-// };
+//   };
