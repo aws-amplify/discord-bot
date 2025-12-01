@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   verify-run:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       pull-requests: write # used to remove label
       contents: read
@@ -36,7 +36,7 @@ jobs:
             const label = 'run-ci';
             github.rest.issues.removeLabel({ owner, repo, issue_number, name: label });
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: verify-run
     environment: ci
     env:
