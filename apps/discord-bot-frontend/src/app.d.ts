@@ -21,6 +21,7 @@ interface AppSession extends Auth.Session {
 declare global {
   namespace App {
     interface Locals {
+      auth: () => Promise<AppSession | null>
       session?: AppSession
       // Guild ID of the guild the user is currently viewing
       guildId: string
@@ -35,3 +36,5 @@ declare global {
     interface Stuff {}
   }
 }
+
+export { User, AppSession }
