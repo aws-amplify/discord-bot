@@ -37,4 +37,4 @@ declare global {
   }
 }
 
-export { User, AppSession }
+export type { User, AppSession }
