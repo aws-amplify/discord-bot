@@ -24,8 +24,8 @@ This repository contains the source code for the [AWS Amplify Discord Server](ht
 
 **Pre-requisites**:
 
-- Node.js v18.x
-- pnpm v7.13.1
+- Node.js v18.x or later
+- pnpm v8.10.5 or later
 
 ### Quick Start
 
