@@ -29,6 +29,9 @@ jobs:
             return context.payload.pull_request.title.replace(/release\: /, '');
   prerelease:
     needs: verify-run
+    permissions:
+      id-token: write
+      contents: write
     uses: ./.github/workflows/release-env.yml
     secrets: inherit
     with:
@@ -38,6 +41,9 @@ jobs:
   release:
     needs: [verify-run, prerelease]
     if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == false }}
+    permissions:
+      id-token: write
+      contents: write
     uses: ./.github/workflows/release-env.yml
     secrets: inherit
     with:
