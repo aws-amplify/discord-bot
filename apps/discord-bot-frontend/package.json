@@ -18,8 +18,8 @@
     "prepare": "svelte-kit sync"
   },
   "dependencies": {
-    "@auth/core": "^0.28.1",
-    "@auth/sveltekit": "^0.3.6",
+    "@auth/core": "^0.37.0",
+    "@auth/sveltekit": "^1.7.0",
     "@aws-crypto/sha256-js": "^2.0.1",
     "@carbon/styles": "^1.48.1",
     "@discordjs/builders": "^1.1.0",
@@ -45,7 +45,7 @@
     "@aws-amplify/discord-bot-tsconfig": "workspace:*",
     "@carbon/charts": "^1.5.2",
     "@carbon/charts-svelte": "^1.13.25",
-    "@playwright/test": "^1.37.1",
+    "@playwright/test": "^1.49.0",
     "@sveltejs/adapter-node": "^4.0.1",
     "@sveltejs/kit": "^2.5.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
