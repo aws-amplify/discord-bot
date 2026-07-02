@@ -2,10 +2,22 @@ import type { RequestHandler } from '@sveltejs/kit'
 import { json } from '@sveltejs/kit'
 import { prisma } from '$lib/db'
 import { ACCESS_LEVELS } from '$lib/constants'
+import { isConfigurationAdmin } from '$lib/server/require-configuration-admin'
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   const { id, name, adminRoles, staffRoles, contributorRoles } =
     await request.json()
+
+  // Ensure the caller administers the target configuration. Creating a new
+  // configuration remains available to a guild owner (getUserAccess falls back
+  // to owner status when no configuration exists yet).
+  if (!locals.session?.user) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+  if (!(await isConfigurationAdmin(locals.session.user.discordUserId, id))) {
+    return new Response('Forbidden', { status: 403 })
+  }
+
   const record = await prisma.configuration.findUnique({
     where: { id },
     include: {
@@ -115,8 +127,17 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 }
 
-export const DELETE: RequestHandler = async ({ request }) => {
+export const DELETE: RequestHandler = async ({ request, locals }) => {
   const { id } = await request.json()
+
+  // Ensure the caller administers the target configuration.
+  if (!locals.session?.user) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+  if (!(await isConfigurationAdmin(locals.session.user.discordUserId, id))) {
+    return new Response('Forbidden', { status: 403 })
+  }
+
   return json(
     await prisma.configuration.delete({
       where: { id },
