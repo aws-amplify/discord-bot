@@ -1,6 +1,7 @@
 import type { FEATURE_CODES } from '$lib/constants'
 import { type RequestHandler } from '@sveltejs/kit'
 import { prisma } from '$lib/db'
+import { isConfigurationAdmin } from '$lib/server/require-configuration-admin'
 
 type Payload = {
   /**
@@ -17,7 +18,7 @@ type Payload = {
   enabled: boolean
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   let body: Payload
   try {
     /**
@@ -39,6 +40,19 @@ export const POST: RequestHandler = async ({ request }) => {
   const { configurationId, code, enabled } = body
   if (!configurationId || !code || enabled === undefined) {
     return new Response('Invalid request', { status: 400 })
+  }
+
+  // Ensure the caller administers the target configuration.
+  if (!locals.session?.user) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+  if (
+    !(await isConfigurationAdmin(
+      locals.session.user.discordUserId,
+      configurationId
+    ))
+  ) {
+    return new Response('Forbidden', { status: 403 })
   }
 
   try {
